@@ -1,0 +1,9 @@
+img_information/
+*.dat
+*.jpg
+resources/
+*.db
+simsun.ttc
+__pycahe__/
+settings.json
+*.xlsx
