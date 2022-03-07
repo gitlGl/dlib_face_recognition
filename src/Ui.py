@@ -138,10 +138,12 @@ class Ui(QWidget):
         self.qlabel.setScaledContents(True)  
 
     def creat_student_user(self):
-        list_error = CreatStudentUser().creat_user()
-        if list_error == None:
-            return
-        elif len(list_error) == 0:
+        path ,_= QFileDialog.getOpenFileName(
+                self, "选择文件", "c:\\", "files(*.xlsx )")
+        if path == '':
+            return        
+        list_error = CreatStudentUser().creat_user(path)
+        if len(list_error) == 0:
             QMessageBox.information(self, 'Information', 'Register Successfully')
             return 
         else:

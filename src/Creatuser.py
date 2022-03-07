@@ -10,23 +10,22 @@ import xlrd
 from pathlib import Path
 from PyQt5.QtCore import pyqtSignal
 from src.Studentdb import StudentDb
+from PyQt5.QtCore import pyqtSlot, QObject
 class CreatUser():
     def __init__(self):
+      
+       
         pass
 
     def get_pass_word(self, salt, password="12345"):
         return MyMd5().create_md5(password, salt)
 
-    def get_vector(self, id_number,img_path = None ):
+    def get_vector(self, id_number,img_path):
         """
         读取照片，获取人脸编码信息，把照片存储起来
         返回128维人脸编码信息
         """
-        file_path = ""
-        if img_path == None:
-            file_path, _ = QFileDialog.getOpenFileName(
-                None, "选择图片", "c:\\", "Image files(*.jpg *.gif *.png)")
-        else: file_path =  img_path
+        file_path =  img_path
 
         img = cv2.imread(file_path)
         if img is None:
@@ -46,12 +45,7 @@ class CreatStudentUser(CreatUser):
     def __init__(self):
         super().__init__()
 
-    def creat_user(self):
-        path ,_= QFileDialog.getOpenFileName(
-                None, "选择文件", "c:\\", "files(*.xlsx )")
-        if path == '':
-            return
-    
+    def creat_user(self,path):
         book = xlrd.open_workbook(path)
         sheets = book.sheets()
         list_problem = []
