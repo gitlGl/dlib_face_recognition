@@ -45,6 +45,7 @@ class OpenCapture(QThread):
                 p = convertToQtFormat(rgbImage)
                 self.emit_img.emit(p)
 
+    #获取判断结果后把帧通过队列发送到子进程进行人脸识别
     def to_put(self):
         
         self.timer3.stop()
@@ -55,7 +56,7 @@ class OpenCapture(QThread):
             self.emit_result.emit(self.Q2.get())
 
         self.timer3.start(2000)
-
+    #获取两帧（间隔0.2s）判断是否发生眨眼
     def collect_frame(self):
         self.timer1.stop()
         if not GlobalFlag.gflag2:
@@ -78,7 +79,7 @@ class OpenCapture(QThread):
                     return
                 self.list_img.clear()
             self.timer1.start(200)
-
+    #获取判断结果
     def get_result(self):
         self.timer2.stop()
         if self.Q2.qsize != 0:
@@ -90,11 +91,11 @@ class OpenCapture(QThread):
             self.timer2.start(1000)
 
     def close(self):
-        self.cap.release()
-        cv2.destroyAllWindows()
         self.terminate()  # 关闭线程
         self.wait()
-
+        self.cap.release()#关闭摄像头
+        cv2.destroyAllWindows()
+        
 
 
 

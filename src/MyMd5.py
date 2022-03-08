@@ -1,6 +1,8 @@
 from random import Random  
 import hashlib
 import string
+
+#密码加密
 class MyMd5():
     def __init__(self):
         pass

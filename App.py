@@ -39,7 +39,7 @@ class APP(QObject):
     def creat_folder(self):
         if not os.path.exists("img_information"):  # 判断是否存在文件夹如果不存在则创建文件夹
             os.makedirs("img_information")
-
+    #正常识别
     def open_normal(self):
         if self.ui.btn2.isChecked():  # 两个按钮互斥判断另一个按钮
             self.ui.btn3.setChecked(False)
@@ -58,7 +58,7 @@ class APP(QObject):
             if self.open_capture.isRunning():
                 if not self.open_capture.timer3.isActive():
                     self.open_capture.timer3.start(1000)
-
+    #活体识别
     def open_eye(self):
     
         if self.ui.btn3.isChecked(): 

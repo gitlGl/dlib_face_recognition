@@ -2,11 +2,10 @@
 import datetime
 import cv2
 import os
-
 class Log():
-
     def __init__(self, vector,img,student):
         self.student = student
+        #用户信息
         self.item = self.student.c.execute(
                 "SELECT  * from student where vector = ?",
                 (vector, )).fetchall()[0] # 取出返回所有数据，fetchall返回类型是[()]
@@ -14,7 +13,7 @@ class Log():
         self.insert_img(img)
         self.insert_cout()
         self.student.conn.close()      
-
+    #记录识别成功时间
     def insert_time(self):
         
         self.student.c.execute(
@@ -31,6 +30,7 @@ class Log():
         #      where log_time > '2022-03-03 23:24:05.835987' ORDER BY student_log_time.log_time").fetchall()
         # print(test)
 
+    #记录识别成功时照片
     def insert_img(self, img):
         """
         向数据库插入识时照片
@@ -43,7 +43,7 @@ class Log():
             img)
     def get_time(self):
         return str(datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S "))
-
+    #记录识别成功次数
     def insert_cout(self):
         if self.item[6] == None:
             cout = 1

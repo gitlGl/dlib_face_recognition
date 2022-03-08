@@ -52,12 +52,23 @@ class LoginUi(QWidget):
 
         self.user_line.textChanged.connect(self.check_input_func)
         self.pwd_line.textChanged.connect(self.check_input_func)
+    #检查输入是否完成
+    def check_input_func(self):
+        if self.user_line.text() and self.pwd_line.text():
+            self.login_button.setEnabled(True)
+        else:
+            self.login_button.setEnabled(False)
 
     def pushbutton_init(self):
         self.login_button.setEnabled(False)
-        self.login_button.clicked.connect(self.check_login_func)
         self.signin_button.clicked.connect(self.show_signin_page_func)
+        self.login_button.clicked.connect(self.check_login_func)
 
+         #切换注册页面  
+    def show_signin_page_func(self):
+      
+        self.signin_page.exec_()
+    #响应登录请求
     def check_login_func(self):
         student = StudentDb()
         def clear():
@@ -94,16 +105,9 @@ class LoginUi(QWidget):
 
        
 
-       
-    def show_signin_page_func(self):
-        #self.signin_page.show()
-        self.signin_page.exec_()
 
-    def check_input_func(self):
-        if self.user_line.text() and self.pwd_line.text():
-            self.login_button.setEnabled(True)
-        else:
-            self.login_button.setEnabled(False)
+
+    
     def closeEvent(self, event) :
         #self.emitsingal.emit() 
         pass
@@ -151,17 +155,19 @@ class SigninPage(QDialog):
         self.signin_user_line.textChanged.connect(self.check_input_func)
         self.signin_pwd_line.textChanged.connect(self.check_input_func)
         self.signin_pwd2_line.textChanged.connect(self.check_input_func)
-
-    def pushbutton_init(self):
-        self.signin_button.setEnabled(False)
-        self.signin_button.clicked.connect(self.check_signin_func)
-
+        
     def check_input_func(self):
         if self.signin_user_line.text() and self.signin_pwd_line.text() and self.signin_pwd2_line.text():
             self.signin_button.setEnabled(True)
         else:
             self.signin_button.setEnabled(False)
+    #响应注册请求
 
+    def pushbutton_init(self):
+        self.signin_button.setEnabled(False)
+        self.signin_button.clicked.connect(self.check_signin_func)
+
+    
     def check_signin_func(self):
         student = StudentDb()
         def clear():
@@ -203,7 +209,7 @@ class SigninPage(QDialog):
                 QMessageBox.information(self, 'Information', 'Register Successfully')
                 student.conn.commit()
                 student.conn.close()
-                self.close
+               
 
                 
        

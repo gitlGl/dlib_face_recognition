@@ -24,6 +24,7 @@ class LivenessDetection(QThread):
 
         self.lStart, self.lEnd = face_utils.FACIAL_LANDMARKS_IDXS["left_eye"]
         self.rStart, self.rEnd = face_utils.FACIAL_LANDMARKS_IDXS["right_eye"]
+        #68个人脸特征中嘴巴的位置
         self.mStart, self.mEnd = face_utils.FACIAL_LANDMARKS_IDXS["mouth"]
 
     def eye_aspect_ratio(self, eye):
@@ -35,8 +36,9 @@ class LivenessDetection(QThread):
         C = dist.euclidean(eye[0], eye[3])
 
         ear = (A + B) / (2.0 * C)  #眼睛大小值
-
         return ear
+
+    #计算嘴巴张开大小
     def mouth__aspect_ratio(self, mouth):
         A = dist.euclidean(mouth[2] ,mouth[9])  # 51, 59
         B = dist.euclidean(mouth[4] ,mouth[7])  # 53, 57
@@ -46,7 +48,7 @@ class LivenessDetection(QThread):
         return mar
 
 
-    def compare2faces(self, list_img):  #对比两张人脸照片对比是否发生眨眼
+    def compare2faces(self, list_img):  #对比两张人脸照片对比是否发生眨眼。两张照片眼睛距离大于0.1时认为发生眨眼
 
         gray1 = cv2.cvtColor(list_img[0], cv2.COLOR_RGB2GRAY)
         gray2 = cv2.cvtColor(list_img[1], cv2.COLOR_RGB2GRAY)
@@ -63,7 +65,7 @@ class LivenessDetection(QThread):
         else:
             return False
         return False
-
+    #判断是否眨眼
     def comput_eye(self, gray, rect):
         shape = models.predictor(gray, rect[0])
         shape = face_utils.shape_to_np(shape)  #68个人脸特征坐标
@@ -73,6 +75,8 @@ class LivenessDetection(QThread):
         rightEAR = self.eye_aspect_ratio(rightEye)
         ear = (leftEAR + rightEAR) / 2.0  # 两个眼睛大小平均值
         return ear
+
+    #判断是否张开嘴巴
     def comput_mouth(self, img):
         gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
         rect = models.detector(gray, 0)

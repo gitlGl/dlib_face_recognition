@@ -120,16 +120,20 @@ class Ui(QWidget):
         distance = round(self.slider.value()*0.05,2)
         self.share.value = distance
         self.qlabel3.setText(str(distance))
+
+    #清理活体识别提示信息，设置提示信息
     @pyqtSlot(str)    
     def change_text(self,str):
         self.qlabel1.clear()
         self.qlabel1.setText(str)
 
+    #帧显示视频流
     @pyqtSlot(QImage)
     def set_normal_img(self, image):
         self.qlabel4.setPixmap(QPixmap.fromImage(image))
-        self.qlabel4.setScaledContents(True)  
+        self.qlabel4.setScaledContents(True) 
 
+    #创建用户
     def creat_student_user(self):
         path ,_= QFileDialog.getOpenFileName(
                 self, "选择文件", "c:\\", "files(*.xlsx )")
@@ -145,9 +149,11 @@ class Ui(QWidget):
                 error_string = error_string + i + "\n"
             
             QMessageBox.information(self, 'Information', error_string)
+    #帮助页面        
     def help(self):
         self.help_qlabe = Help()
-        self.help_qlabe.exec_()   
+        self.help_qlabe.exec_()
+
     def closeEvent(self, event): #关闭线程
         self.open_capture.terminate()
         self.open_capture.wait()

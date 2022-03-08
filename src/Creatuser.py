@@ -55,6 +55,7 @@ class CreatStudentUser(CreatUser):
             rows = sheet.nrows
             for i in range(1,rows):
                 list1 =  sheet.row_values(rowx=i)
+                #判断用户名是否符合格式要求
                 if type(list1[0]) is str:
                     if list1[0].isdigit() and len(list1[0]) == 13:
                         user = student.c.execute("select id_number from student where id_number = {} ".format(int(list1[0]))).fetchall()
@@ -68,7 +69,7 @@ class CreatStudentUser(CreatUser):
                 else:  
                     list_problem.append("第{0}行第1列，用户名为文本格式13位数字 ".format(i) + str(list1[0]))
                     continue
-                
+                #判断用户姓名是否符合格式要求
                 lenth = len(str(list1[1]))
                 if lenth < 16 and lenth != 0:
                     list1[1] = str(list1[1])
@@ -80,14 +81,15 @@ class CreatStudentUser(CreatUser):
                 lenth = len(str(list1[2]))
                 if lenth < 13 and lenth >= 6:
                     list1[2] = str(list1[2])
-                    
+
+                #判断密码是否符合格式要求    
                 else:
                     list_problem.append("第{0}行第3列,密码为6-13位字符: ".format(i) + str(list1[2]))
                     continue
 
                 list1[3] = str(list1[3])
                 path =  Path(list1[3])
-               
+                #判断路径是否存在
                 if path.is_file():
                     pass
                 else:
@@ -100,7 +102,7 @@ class CreatStudentUser(CreatUser):
                 information =  self.set_information(dic)
                 self.insert_user(information)
                
-        student.c.close()    
+        student.conn.close()    
         return list_problem       
            
 

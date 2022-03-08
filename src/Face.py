@@ -8,7 +8,7 @@ import numpy as np
 from threading import Timer
 
 
-class Face():
+class Face():#基类，包含人脸编码，人脸识别
 
     def __init__(self):
         
@@ -45,7 +45,8 @@ class Face():
 
     
     #每一段时间重置face_data值
-    
+
+ #用于学生进入图书馆是别   
 class StudentRgFace(Face):
         def __init__(self):
             super().__init__()
