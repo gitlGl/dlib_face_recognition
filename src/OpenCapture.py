@@ -92,6 +92,10 @@ class OpenCapture(QThread):
     def close(self):
         self.cap.release()
         cv2.destroyAllWindows()
+        self.terminate()  # 关闭线程
+        self.wait()
+
+
 
 
 #转换位qt图像格式
