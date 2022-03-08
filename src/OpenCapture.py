@@ -90,12 +90,13 @@ class OpenCapture(QThread):
         else:
             self.timer2.start(1000)
 
-    def close(self):
-        self.terminate()  # 关闭线程
+    def close(self): #关闭线程
+        self.terminate()
         self.wait()
-        self.cap.release()#关闭摄像头
-        cv2.destroyAllWindows()
-        
+        if hasattr(self,"cap"):
+         self.cap.release()
+         cv2.destroyAllWindows()
+
 
 
 

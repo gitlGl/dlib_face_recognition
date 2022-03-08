@@ -4,6 +4,15 @@ from PyQt5.QtWidgets import QApplication, QWidget, QDialog, QLabel, QLineEdit, Q
 from PyQt5.QtCore import pyqtSignal
 from src.Studentdb import StudentDb
 from src.MyMd5 import MyMd5
+from src.OpenCapture import OpenCapture
+from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from multiprocessing import Process, Queue
+from src.Process import process_student_rg
+import multiprocessing  
+import psutil
+from src.FaceLoginPage import FaceLoginPage
 class LoginUi(QWidget):
     emitsingal  = pyqtSignal()
     def __init__(self):
@@ -14,8 +23,9 @@ class LoginUi(QWidget):
         self.pwd_label = QLabel('Password:', self)
         self.user_line = QLineEdit(self)
         self.pwd_line = QLineEdit(self)
-        self.login_button = QPushButton('Log in', self)
-        self.signin_button = QPushButton('Sign in', self)
+        self.login_button = QPushButton('账号密码登录', self)
+        self.signin_button = QPushButton('注册', self)
+        self.face_login_button = QPushButton("人脸识别登录",self)
 
         #self.grid_layout = QGridLayout()
         self.h_user_layout = QHBoxLayout()
@@ -35,7 +45,9 @@ class LoginUi(QWidget):
         self.h_password_layout.addWidget(self.pwd_label)
         self.h_password_layout.addWidget(self.pwd_line)
         self.h_in_layout.addWidget(self.login_button)
+        self.h_in_layout.addWidget(self.face_login_button)
         self.h_in_layout.addWidget(self.signin_button)
+        
 
 
         self.v_layout.addLayout(self.h_user_layout)
@@ -63,6 +75,7 @@ class LoginUi(QWidget):
         self.login_button.setEnabled(False)
         self.signin_button.clicked.connect(self.show_signin_page_func)
         self.login_button.clicked.connect(self.check_login_func)
+        self.face_login_button.clicked.connect(self.face_login)
 
          #切换注册页面  
     def show_signin_page_func(self):
@@ -97,20 +110,22 @@ class LoginUi(QWidget):
                 pass_word = MyMd5().create_md5(password,item[1])
                 if pass_word == item[2]:
                    self.emitsingal.emit()
+                   self.close()
                 else: 
                     QMessageBox.critical(self, 'Wrong', 'Wrong Username or Password!')    
                     clear()
                  
             else:QMessageBox.critical(self, 'Wrong', 'This User not exits')
+           
 
+    def face_login(self):
        
+        self.face_login_page = FaceLoginPage()
+        
 
 
 
-    
-    def closeEvent(self, event) :
-        #self.emitsingal.emit() 
-        pass
+
 
 class SigninPage(QDialog):
     def __init__(self):
