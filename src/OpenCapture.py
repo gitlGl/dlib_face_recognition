@@ -82,7 +82,7 @@ class OpenCapture(QThread):
     #获取判断结果
     def get_result(self):
         self.timer2.stop()
-        if self.Q2.qsize != 0:
+        if self.Q2.qsize() != 0:
             self.emit_result.emit(self.Q2.get())
             GlobalFlag.gflag2 = False
             self.emit_text.emit("提示：请张嘴")

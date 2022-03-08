@@ -188,8 +188,10 @@ class Ui(QObject):
                 self.open_capture.timer2.stop()
             while self.open_capture.timer1.isActive():
                 self.open_capture.timer1.stop()
-            while self.open_capture.timer2.isActive():
-                self.open_capture.timer2.stop()
+            while self.Q1.qsize() != 0:  # 清空队列 
+                pass
+            while self.Q2.qsize() != 0:
+                self.Q2.get()          
             self.qlabel1.clear()   
             if self.open_capture.isRunning():
                 if not self.open_capture.timer3.isActive():
@@ -204,6 +206,10 @@ class Ui(QObject):
             if self.open_capture.isRunning():
                 if self.open_capture.timer3.isActive():
                     self.open_capture.timer3.stop()
+                    while self.Q1.qsize() != 0:  # 清空队列 
+                        pass
+                    while self.Q2.qsize() != 0:
+                        self.Q2.get()
             if self.open_capture.isRunning():
                 if not self.open_capture.timer1.isActive():
                     self.open_capture.timer1.start(200)
@@ -226,11 +232,11 @@ class Ui(QObject):
         if self.btn2.isChecked():
         
             if not self.open_capture.timer3.isActive():
-                self.open_capture.timer1.start(1000)
+                self.open_capture.timer3.start(1000)
                 
         elif self.btn3.isChecked():
             if not self.open_capture.timer1.isActive():
-                self.open_capture.timer3.start(200)
+                self.open_capture.timer1.start(200)
                 self.qlabel1.setText("提示：请张嘴")
 
     def close(self):
@@ -250,8 +256,13 @@ class Ui(QObject):
             self.open_capture.timer2.stop()
         while self.open_capture.timer1.isActive():
             self.open_capture.timer1.stop()
-        while self.open_capture.timer2.isActive():
-            self.open_capture.timer2.stop()
+
+        while self.open_capture.timer3.isActive():
+            self.open_capture.timer3.stop()
+        while self.Q1.qsize() != 0:  # 清空队列 
+                    pass
+        while self.Q2.qsize() != 0:
+                self.Q2.get()
         self.qlabel1.clear()
         self.qlabel4.clear()
         if psutil.Process(self.p.pid).status() == "running":
