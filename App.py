@@ -56,30 +56,14 @@ class APP(QObject):
             if self.open_capture.isRunning():
                 if self.open_capture.timer3.isActive():
                     self.open_capture.timer3.stop()
-                    while self.Q1.qsize() != 0:  # 清空队列
-                        pass
-                    while self.Q2.qsize() != 0:
-                        self.Q2.get()
             if self.ui.btn1.isChecked():
                 if self.open_capture.isRunning():
-                    if psutil.Process(self.p.pid).status() == "stopped":
-                        psutil.Process(self.p.pid).resume()
-                        if not self.open_capture.timer1.isActive():
-                            self.open_capture.timer1.start(200)
-                            self.ui.qlabel1.setText("提示：请张嘴")
-                            return
                     if not self.open_capture.timer1.isActive():
                         self.open_capture.timer1.start(200)
                         self.ui.qlabel1.setText("提示：请张嘴")
         else:  # 判断被按下的的按钮
             if self.ui.btn1.isChecked():
                 if self.open_capture.isRunning():
-                    if psutil.Process(self.p.pid).status() == "stopped":
-                        psutil.Process(self.p.pid).resume()
-                        if not self.open_capture.timer1.isActive():
-                            self.open_capture.timer1.start(200)
-                            self.ui.qlabel1.setText("提示：请张嘴")
-                            return
                     if not self.open_capture.timer1.isActive():
                         self.open_capture.timer1.start(200)
                         self.ui.qlabel1.setText("提示：请张嘴")
@@ -95,14 +79,7 @@ class APP(QObject):
             while self.open_capture.timer2.isActive():
                 self.open_capture.timer2.stop()
             self.ui.qlabel1.clear()   
-            if self.p.is_alive():
-                if psutil.Process(self.p.pid).status() == "running":
-            
-                    while self.Q1.qsize() != 0:  # 清空队列
-                        pass
-                    while self.Q2.qsize() != 0:
-                        self.Q2.get()
-                    psutil.Process(self.p.pid).suspend()  # 挂起进程
+           
 
     def open_normal(self):
         """
@@ -121,40 +98,23 @@ class APP(QObject):
                 while self.open_capture.timer2.isActive():
                     self.open_capture.timer2.stop()
                 self.ui.qlabel1.clear()   
-                while self.Q1.qsize() != 0:  # 清空队列 
-                    pass
-                while self.Q2.qsize() != 0:
-                    self.Q2.get()
+               
             if self.ui.btn2.isChecked():
                 if self.open_capture.isRunning():
-                    if psutil.Process(self.p.pid).status() == "stopped":
-                        psutil.Process(self.p.pid).resume()
-                        if not self.open_capture.timer3.isActive():
-                            self.open_capture.timer3.start(1000)
-                            return
+                    
                     if not self.open_capture.timer3.isActive():
                         self.open_capture.timer3.start(1000)
         else:  # 判断被按下的的按钮
             if self.ui.btn2.isChecked():
                 if self.open_capture.isRunning():
-                    if psutil.Process(self.p.pid).status() == "stopped":
-                        psutil.Process(self.p.pid).resume()
-                        if not self.open_capture.timer3.isActive():
-                            self.open_capture.timer3.start(1000)
-                            return
+                        
                     if not self.open_capture.timer3.isActive():
                         self.open_capture.timer3.start(1000)
    # 两个按钮同时是False的状态
         if ((self.ui.btn1.isChecked() is False) and (self.ui.btn2.isChecked() is False)):
             while self.open_capture.timer3.isActive():
                 self.open_capture.timer3.stop()
-                while self.Q1.qsize() != 0:  # 清空队列
-                    pass
-                while self.Q2.qsize() != 0:
-                    self.Q2.get()
-
-                if psutil.Process(self.p.pid).status() == "running":
-                    psutil.Process(self.p.pid).suspend()  # 挂起进程
+               
 
     def open(self):
         #self.open_capture.emit_img.connect(self.ui.set_normal_img)
@@ -165,25 +125,15 @@ class APP(QObject):
         self.open_capture.start()
         if not self.p.is_alive():
             self.p.start()
-            if ((self.ui.btn1.isChecked() is False) and (self.ui.btn2.isChecked() is False)):
-                psutil.Process(self.p.pid).suspend()  # 挂起进程
+          
+            
 
         if self.ui.btn1.isChecked():
-            if psutil.Process(self.p.pid).status() == "stopped":
-                psutil.Process(self.p.pid).resume()
-                if not self.open_capture.timer1.isActive():
-                    self.open_capture.timer1.start(200)
-                    self.ui.qlabel1.setText("提示：请张嘴")
-                    return
+        
             if not self.open_capture.timer1.isActive():
                 self.open_capture.timer1.start(200)
                 self.ui.qlabel1.setText("提示：请张嘴")
-        if self.ui.btn2.isChecked():
-            if psutil.Process(self.p.pid).status() == "stopped":
-                psutil.Process(self.p.pid).resume()
-                if not self.open_capture.timer3.isActive():
-                    self.open_capture.timer3.start(1000)
-                    return
+        elif self.ui.btn2.isChecked():
             if not self.open_capture.timer3.isActive():
                 self.open_capture.timer3.start(1000)
 
@@ -208,13 +158,6 @@ class APP(QObject):
             self.open_capture.timer1.stop()
         while self.open_capture.timer2.isActive():
             self.open_capture.timer2.stop()
-    
-        while self.Q1.qsize() != 0:  # 清空队列
-            pass
-        while self.Q2.qsize() != 0:
-            self.Q2.get()
-        if psutil.Process(self.p.pid).status() == "running":
-            psutil.Process(self.p.pid).suspend()  # 挂起进程
         self.ui.qlabel1.clear()
         self.ui.qlabel.clear()
      
