@@ -15,6 +15,7 @@ import psutil
 from src.FaceLoginPage import FaceLoginPage
 class LoginUi(QWidget):
     emitsingal  = pyqtSignal()
+    emit_close  = pyqtSignal()
     def __init__(self):
         super().__init__()
         self.resize(400, 300)
@@ -121,10 +122,15 @@ class LoginUi(QWidget):
     def face_login(self):
        
         self.face_login_page = FaceLoginPage()
-        
+        self.face_login_page.emit_show_parent.connect(self.rev)
+    @pyqtSlot()   
+    def rev(self):
+        self.emitsingal.emit()
 
 
-
+    def closeEvent(self,Event):
+        self.emit_close.emit()
+      
 
 
 class SigninPage(QDialog):

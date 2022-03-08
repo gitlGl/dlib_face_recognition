@@ -13,6 +13,7 @@ from src.Help import Help
 from PyQt5.QtWidgets import  QDialog
 from multiprocessing import Process, Queue
 from src.OpenCapture import OpenCapture
+from src.Login import LoginUi
 class Ui(QObject):
     def __init__(self,parent):
         super().__init__()
@@ -113,9 +114,15 @@ class Ui(QObject):
         self.allvlaout.addLayout(self.Vlayout)
         self.parent.resize(480, 600)
         self.parent.setLayout(self.allvlaout)
+        self.login_ui = LoginUi()
+        self.login_ui.emitsingal.connect(self.show_parent)
+        self.login_ui.show()
+    @pyqtSlot()
+    def show_parent(self):
         self.parent.show()
- 
-    
+        del self.login_ui
+        gc.collect()
+
     #显示识别结果        
     @pyqtSlot(str)          
     def show_result(self,str_result):

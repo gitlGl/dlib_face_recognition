@@ -16,23 +16,44 @@ import psutil
 
 
 class FaceLoginPage(QWidget):
+    emit_show_parent = pyqtSignal()
     def __init__(self) -> None:
         super().__init__()
         self.label = QLabel(self)
         self.label.resize(480,530)
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.get_result)
+        self.timer.start(1000)
         self.Q1 = Queue()  # open_capture
- 
-        self.setWindowModality(Qt.WindowModal)
+        self.Q2 = Queue()
+        self.share = multiprocessing.Value("f",0.4)
+        self.open_capture = OpenCapture(self.Q1, self.Q2)
+        self.p = Process(target=process_student_rg, args=(self.Q1, self.Q2,self.share))
+        self.p.daemon = True
+        self.p.start()
+        self.open_capture.emit_img.connect(self.set_normal_img)
+        self.open_capture.start()
+        self.open_capture.timer3.start(1000)
+        self.setWindowModality( Qt.ApplicationModal )
         self.show()
-
-        while self.Q2.qsize() != 0:
-            if self.Q2.get():
+        print("test")
+    def get_result(self):
+        print("int")
+        if  self.Q2.qsize() != 0:
+            result =  self.Q2.get()
+            print(result)
+            if not result== "验证失败":
+                print("test")
+                if not result == "请先注册用户":
+                    if self.open_capture.timer3.isActive():
+                        self.open_capture.timer3.stop()
                 self.open_capture.close()
                 psutil.Process(self.p.pid).kill()
-                self.emitsingal.emit()
-
+                self.emit_show_parent.emit()
 
     def closeEvent(self, event):
+        if self.open_capture.timer3.isActive():
+            self.open_capture.timer3.stop()
         self.open_capture.close()
         psutil.Process(self.p.pid).kill()
         #self.p.terminate
