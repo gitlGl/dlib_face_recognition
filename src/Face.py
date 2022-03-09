@@ -47,6 +47,7 @@ class StudentRgFace(Face):
         face_data = self.encodeface(rgbImage, raw_face)
         flag = self.compare_faces(face_data, self.face_data, axis=0)
         if flag < share.value:
+            print("距离")
             return self.former_result
         else:
             result = self.rg_face(face_data,share.value)
