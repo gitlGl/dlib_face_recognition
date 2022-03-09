@@ -23,7 +23,7 @@ def process_student_rg(Q1, Q2,share):
         time.sleep(1)
 
 
-def process_admin_rg(Q1, Q2,share):
+def process_admin_rg(Q1, share):
     face_rg = AdminRgFace()
     while True:
         while not Q1.empty():
@@ -34,6 +34,5 @@ def process_admin_rg(Q1, Q2,share):
             if len(location_faces) == 1:
                 raw_face = models.predictor(gray, location_faces[0])
                 result = face_rg.rg_face(img, rgbImage, raw_face,share)
-                Q2.put(result)
-       
+           
         

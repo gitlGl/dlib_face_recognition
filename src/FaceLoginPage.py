@@ -26,9 +26,9 @@ class FaceLoginPage(QWidget):
         self.timer.start(500)
         self.Q1 = Queue()  # open_capture
         self.Q2 = Queue()
-        self.share = multiprocessing.Value("f",0.4)
+        self.share = multiprocessing.Value("b",False)
         self.open_capture = OpenCapture(self.Q1, self.Q2)
-        self.p = Process(target=process_admin_rg, args=(self.Q1, self.Q2,self.share))
+        self.p = Process(target=process_admin_rg, args=(self.Q1,self.share))
         self.p.daemon = True
         self.p.start()
         self.open_capture.emit_img.connect(self.set_normal_img)
@@ -40,19 +40,13 @@ class FaceLoginPage(QWidget):
     def get_result(self):
         self.timer.stop()
         print("int")
-        if  self.Q2.qsize() != 0:
-            result =  self.Q2.get()
-            print(result)
-            if result == "验证成功":
-               
-                if self.open_capture.timer3.isActive():
-                    self.open_capture.timer3.stop()
-               
-                self.open_capture.close()
-                print("kill")
-                psutil.Process(self.p.pid).kill()
-                self.emit_show_parent.emit()
-                return
+        if self.share.value == True:
+            self.emit_show_parent.emit()
+            self.open_capture.close()
+            psutil.Process(self.p.pid).kill()
+            print("kill")
+
+
         self.timer.start(500)
     def closeEvent(self, event):
         if self.open_capture.timer3.isActive():

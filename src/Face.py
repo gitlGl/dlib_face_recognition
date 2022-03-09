@@ -103,7 +103,8 @@ class AdminRgFace(Face):
             distances = self.compare_faces(np.array(list), face_data, axis=1)
             min_distance = np.argmin(distances)
             print("距离",distances[min_distance])
-            if distances[min_distance] < share.value:
+            if distances[min_distance] < 0.4:
+                share.value = True
                 self.face_data = face_data
                 tembyte = np.ndarray.dumps(list[min_distance])
                 adminlog(tembyte,img,admin)

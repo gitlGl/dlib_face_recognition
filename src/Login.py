@@ -17,7 +17,7 @@ import psutil
 import face_recognition
 import os
 from src.FaceLoginPage import FaceLoginPage
-class LoginUi(QDialog):
+class LoginUi(QWidget):
     emitsingal  = pyqtSignal()
     emit_close  = pyqtSignal()
     def __init__(self):
