@@ -1,7 +1,7 @@
 import sqlite3
 
 import datetime
-class StudentDb():
+class Database():
 
     def __init__(self):
         self.conn = sqlite3.connect('./resources/company.db')
@@ -25,7 +25,7 @@ class StudentDb():
         self.c.execute('''CREATE TABLE IF NOT EXISTS student_log_time
        ( 
         id_number            INT   NOT NULL ,
-       
+ 
         log_time datetime NOT NULL 
        
       
@@ -34,9 +34,11 @@ class StudentDb():
         self.c.execute('''CREATE TABLE IF NOT EXISTS admin
        ( 
         id_number            INT   NOT NULL ,
+
        
         password        char(20)    NOT NULL,
         salt            char(10)  NOT NULL ,
+        vector          blob        ,
         PRIMARY KEY (id_number )
                  )without rowid;''')
        

@@ -1,17 +1,20 @@
 import sys
+from turtle import clear
 from PyQt5.QtWidgets import QApplication, QWidget, QDialog, QLabel, QLineEdit, QPushButton, \
     QGridLayout, QVBoxLayout, QHBoxLayout, QMessageBox
 from PyQt5.QtCore import pyqtSignal
-from src.Studentdb import StudentDb
+from src.Database import Database
 from src.MyMd5 import MyMd5
 from src.OpenCapture import OpenCapture
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from multiprocessing import Process, Queue
-from src.Process import process_student_rg
+from src.GlobalVariable import models
 import multiprocessing  
+from .Creatuser import CreatStudentUser
 import psutil
+import face_recognition
 import os
 from src.FaceLoginPage import FaceLoginPage
 class LoginUi(QDialog):
@@ -85,26 +88,26 @@ class LoginUi(QDialog):
         self.signin_page.exec_()
     #响应登录请求
     def check_login_func(self):
-        student = StudentDb()
+        admin = Database()
         def clear():
            self.pwd_line.clear()
            self.user_line.clear()
         
         if not self.user_line.text().isdigit():
             QMessageBox.critical(self, 'Wrong', 'Wrong Username or Password!') 
-            clear()
+          
            
         elif len (self.pwd_line.text()) < 6 or len (self.pwd_line.text())>13 :
             QMessageBox.critical(self, 'Wrong', 'Wrong Username or Password!') 
-            clear()
+         
            
         else:
             user_name = int(self.user_line.text())
-            user = student.c.execute("select id_number,salt, password  from admin where id_number = {} ".format(user_name)).fetchall()
+            user = admin.c.execute("select id_number,salt, password  from admin where id_number = {} ".format(user_name)).fetchall()
             
             if len(user) == 0:
                 QMessageBox.information(self, 'Information', 'user not  exit')
-                clear()
+              
                
             elif len(user) == 1:
                 item = user[0]
@@ -112,7 +115,7 @@ class LoginUi(QDialog):
                 pass_word = MyMd5().create_md5(password,item[1])
                 if pass_word == item[2]:
                    self.emitsingal.emit()
-                   self.close()
+                   clear()
                 else: 
                     QMessageBox.critical(self, 'Wrong', 'Wrong Username or Password!')    
                     clear()
@@ -132,6 +135,7 @@ class LoginUi(QDialog):
     def closeEvent(self,Event):
         p = os.getpid()
         print("KILL")
+        print("KILL")
         psutil.Process(p).kill()
         print("KILL")
 
@@ -144,14 +148,20 @@ class SigninPage(QDialog):
         self.signin_user_label = QLabel('Username:', self)
         self.signin_pwd_label = QLabel('Password:', self)
         self.signin_pwd2_label = QLabel('Password:', self)
+     
         self.signin_user_line = QLineEdit(self)
         self.signin_pwd_line = QLineEdit(self)
         self.signin_pwd2_line = QLineEdit(self)
+        self.signin_vector_button = QPushButton( "picture:",self)
+        self.signin_vector_button.setStyleSheet("border:0px")
+        self.signin_vector_line = QLineEdit(self)
         self.signin_button = QPushButton('Sign in', self)
+
 
         self.user_h_layout = QHBoxLayout()
         self.pwd_h_layout = QHBoxLayout()
         self.pwd2_h_layout = QHBoxLayout()
+        self.vector_h_layout = QHBoxLayout()
         self.all_v_layout = QVBoxLayout()
         self.resize(300,200)
 
@@ -166,11 +176,15 @@ class SigninPage(QDialog):
         self.pwd_h_layout.addWidget(self.signin_pwd_line)
         self.pwd2_h_layout.addWidget(self.signin_pwd2_label)
         self.pwd2_h_layout.addWidget(self.signin_pwd2_line)
+        self.vector_h_layout.addWidget(self.signin_vector_button)
+        self.vector_h_layout.addWidget(self.signin_vector_line)
 
         self.all_v_layout.addLayout(self.user_h_layout)
         self.all_v_layout.addLayout(self.pwd_h_layout)
         self.all_v_layout.addLayout(self.pwd2_h_layout)
+        self.all_v_layout.addLayout(self.vector_h_layout)
         self.all_v_layout.addWidget(self.signin_button)
+        
 
         self.setLayout(self.all_v_layout)
 
@@ -181,13 +195,31 @@ class SigninPage(QDialog):
         self.signin_user_line.textChanged.connect(self.check_input_func)
         self.signin_pwd_line.textChanged.connect(self.check_input_func)
         self.signin_pwd2_line.textChanged.connect(self.check_input_func)
+        self.signin_vector_line.textChanged.connect(self.check_input_func)
+        self.signin_vector_button.clicked.connect(self.get_path)
+        
         
     def check_input_func(self):
-        if self.signin_user_line.text() and self.signin_pwd_line.text() and self.signin_pwd2_line.text():
+        if self.signin_user_line.text() and self.signin_pwd_line.text() and self.signin_pwd2_line.text() and self.signin_vector_line.text():
             self.signin_button.setEnabled(True)
         else:
             self.signin_button.setEnabled(False)
-    #响应注册请求
+    def get_path(self):
+        path ,_= QFileDialog.getOpenFileName(
+        self, "选择文件", "c:\\", "Image files(*.jpg *.gif *.png)")
+        if path == '':
+            return      
+        self.signin_vector_line.setText(path)
+        rgbImage = face_recognition.load_image_file(path)
+        faces = models.detector(rgbImage)
+        if len (faces) == 1:
+            return    
+        else:
+            QMessageBox.critical(self, 'Wrong', '文件不存在人脸或多个人脸')
+            self.signin_vector_line.setText(clear)
+            return  
+
+        #响应注册请求
 
     def pushbutton_init(self):
         self.signin_button.setEnabled(False)
@@ -195,33 +227,33 @@ class SigninPage(QDialog):
 
     
     def check_signin_func(self):
-        student = StudentDb()
+        admin = Database()
         def clear():
             self.signin_user_line.clear()
             self.signin_pwd_line.clear()
             self.signin_pwd2_line.clear()
-
+ 
         if not self.signin_user_line.text().isdigit():
            
             QMessageBox.critical(self, 'Wrong', 'Usernumber is only digit!')
-            clear()
+           
             return 
         elif self.signin_pwd_line.text() != self.signin_pwd2_line.text():
             QMessageBox.critical(self, 'Wrong', 'Two Passwords Typed Are Not Same!')
-            clear()
+          
             return 
         
         
         elif len (self.signin_pwd_line.text()) <6 or len (self.signin_pwd_line.text())>13 :
             QMessageBox.critical(self, 'Wrong', ' Passwords is too short!')
-            clear()
+          
             return 
         else:
             user_name = self.signin_user_line.text()
-            user = student.c.execute("select id_number from admin where id_number = {} ".format(user_name)).fetchall()
+            user = admin.c.execute("select id_number from admin where id_number = {} ".format(user_name)).fetchall()
             if len(user) == 1:
                QMessageBox.critical(self, 'Wrong', 'This Username Has Been Registered!')
-               clear()
+             
                return 
             else:
                 
@@ -230,11 +262,16 @@ class SigninPage(QDialog):
                 salt = MyMd5().create_salt()
                 pass_word = MyMd5().create_md5(pass_word,salt)
 
-                student.c.execute("INSERT INTO admin (id_number,password,salt) \
-      VALUES (?, ?,?)",(user_name,pass_word,salt))
+                creat_user = CreatStudentUser()
+               
+                vector = creat_user.get_vector(user_name,self.signin_vector_line.text(),"admin")
+
+                admin.c.execute("INSERT INTO admin (id_number,password,salt,vector) \
+      VALUES (?, ?,?,?)",(user_name,pass_word,salt,vector))
                 QMessageBox.information(self, 'Information', 'Register Successfully')
-                student.conn.commit()
-                student.conn.close()
+                admin.conn.commit()
+                admin.conn.close()
+                clear()
                
 
                 

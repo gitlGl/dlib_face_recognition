@@ -3,13 +3,13 @@ from src.MyMd5 import MyMd5
 from PyQt5.QtWidgets import QFileDialog
 import face_recognition
 import numpy as np
-from src.Studentdb import StudentDb
+from src.Database import Database
 import os, cv2
 from src.GlobalVariable import models
 import xlrd
 from pathlib import Path
 from PyQt5.QtCore import pyqtSignal
-from src.Studentdb import StudentDb
+from src.Database import Database
 from PyQt5.QtCore import pyqtSlot, QObject
 class CreatUser():
     def __init__(self):
@@ -20,21 +20,24 @@ class CreatUser():
     def get_pass_word(self, salt, password="12345"):
         return MyMd5().create_md5(password, salt)
 
-    def get_vector(self, id_number,img_path):
+    def get_vector(self, id_number,img_path,fuck):
         """
         读取照片，获取人脸编码信息，把照片存储起来
         返回128维人脸编码信息
         """
         file_path =  img_path
+        path =  "img_information/" + fuck+"/" +str(id_number) 
 
         img = cv2.imread(file_path)
         if img is None:
             return
+        if not os.path.exists(path):  # 判断是否存在文件夹如果不存在则创建为文件夹
+            os.makedirs(path)    
         cv2.imwrite(
-            "img_information/" + str(id_number) + "/" + str(id_number) +
+            "img_information/" +fuck + "/"+str(id_number) + "/" + str(id_number) +
             ".jpg", img)
         rgbImage = face_recognition.load_image_file(file_path)
-        face = models.detector(rgbImage, 1)[0]
+        face = models.detector(rgbImage)[0]
         frame = models.predictor(rgbImage, face)
         face_data = np.array(
             models.encoder.compute_face_descriptor(rgbImage,frame))
@@ -49,7 +52,7 @@ class CreatStudentUser(CreatUser):
         book = xlrd.open_workbook(path)
         sheets = book.sheets()
         list_problem = []
-        student =StudentDb()
+        student =Database()
 
         for sheet in sheets:
             rows = sheet.nrows
@@ -91,7 +94,17 @@ class CreatStudentUser(CreatUser):
                 path =  Path(list1[3])
                 #判断路径是否存在
                 if path.is_file():
-                    pass
+                    rgbImage = face_recognition.load_image_file(path)
+                    faces = models.detector(rgbImage)
+                    if len (faces) == 1:
+                        pass
+                    else:
+                        string = "第{0}行第4列，文件不存在人脸或多个人脸 ".format(i)+str(list1[3])
+                        list_problem.append(string)
+
+
+
+                  
                 else:
                     string = "第{0}行第4列，不存在该路径或文件 ".format(i)+str(list1[3])
                     list_problem.append(string)
@@ -113,12 +126,12 @@ class CreatStudentUser(CreatUser):
         information["img_path"] = self.get_img_path(part_information["id_number"])
         information["id_number"] = part_information["id_number"]
         information["password"] = self.get_pass_word(part_information["password"],information["salt"])
-        information["vector"] = self.get_vector(part_information["id_number"],part_information["img_path"])
+        information["vector"] = self.get_vector(part_information["id_number"],part_information["img_path"],"student")
         return information
 
 
     def insert_user(self,information):
-        StudentDb().insert_user(information["id_number"], information["user_name"], information["password"], 
+        Database().insert_user(information["id_number"], information["user_name"], information["password"], 
         information["img_path"], information["vector"],
                            information["salt"])
 
