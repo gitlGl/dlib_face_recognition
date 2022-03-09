@@ -14,7 +14,7 @@ import multiprocessing
 import psutil
 import os
 from src.FaceLoginPage import FaceLoginPage
-class LoginUi(QWidget):
+class LoginUi(QDialog):
     emitsingal  = pyqtSignal()
     emit_close  = pyqtSignal()
     def __init__(self):

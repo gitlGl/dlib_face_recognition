@@ -29,7 +29,6 @@ class FaceLoginPage(QWidget):
         self.share = multiprocessing.Value("f",0.4)
         self.open_capture = OpenCapture(self.Q1, self.Q2)
         self.p = Process(target=process_student_rg, args=(self.Q1, self.Q2,self.share))
-        self.p.daemon = True
         self.p.start()
         self.open_capture.emit_img.connect(self.set_normal_img)
         self.open_capture.start()
