@@ -21,6 +21,9 @@ class APP(QWidget):
 
     def closeEvent(self,Event):
         self.ui.open_capture.close()
+        if self.ui.p.is_alive():
+           psutil.Process(self.ui.p.pid).kill()
+           print("kill")
         p = os.getpid()
         psutil.Process(p).kill()
        

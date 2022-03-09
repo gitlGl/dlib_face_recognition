@@ -36,4 +36,4 @@ def process_admin_rg(Q1, Q2,share):
                 result = face_rg.rg_face(img, rgbImage, raw_face,share)
                 Q2.put(result)
        
-        time.sleep(1)
+        

@@ -23,12 +23,13 @@ class FaceLoginPage(QWidget):
         self.label.resize(480,530)
         self.timer = QTimer()
         self.timer.timeout.connect(self.get_result)
-        self.timer.start(1000)
+        self.timer.start(500)
         self.Q1 = Queue()  # open_capture
         self.Q2 = Queue()
         self.share = multiprocessing.Value("f",0.4)
         self.open_capture = OpenCapture(self.Q1, self.Q2)
         self.p = Process(target=process_admin_rg, args=(self.Q1, self.Q2,self.share))
+        self.p.daemon = True
         self.p.start()
         self.open_capture.emit_img.connect(self.set_normal_img)
         self.open_capture.start()
@@ -37,6 +38,7 @@ class FaceLoginPage(QWidget):
         self.show()
      
     def get_result(self):
+        self.timer.stop()
         print("int")
         if  self.Q2.qsize() != 0:
             result =  self.Q2.get()
@@ -45,12 +47,13 @@ class FaceLoginPage(QWidget):
                
                 if self.open_capture.timer3.isActive():
                     self.open_capture.timer3.stop()
-                if self.timer.isActive():   
-                    self.timer.stop()
+               
                 self.open_capture.close()
+                print("kill")
                 psutil.Process(self.p.pid).kill()
                 self.emit_show_parent.emit()
-
+                return
+        self.timer.start(500)
     def closeEvent(self, event):
         if self.open_capture.timer3.isActive():
             self.open_capture.timer3.stop()
@@ -59,7 +62,7 @@ class FaceLoginPage(QWidget):
             self.timer.stop()   
         self.open_capture.close()
         psutil.Process(self.p.pid).kill()
-        #self.p.terminate
+
 
 
     @pyqtSlot(QImage)

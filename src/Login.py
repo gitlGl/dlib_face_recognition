@@ -114,6 +114,7 @@ class LoginUi(QDialog):
                 password  = self.pwd_line.text()
                 pass_word = MyMd5().create_md5(password,item[1])
                 if pass_word == item[2]:
+                
                    self.emitsingal.emit()
                    clear()
                 else: 
@@ -133,6 +134,7 @@ class LoginUi(QDialog):
 
 
     def closeEvent(self,Event):
+   
         p = os.getpid()
         print("KILL")
         print("KILL")
@@ -154,6 +156,8 @@ class SigninPage(QDialog):
         self.signin_pwd2_line = QLineEdit(self)
         self.signin_vector_button = QPushButton( "picture:",self)
         self.signin_vector_button.setStyleSheet("border:0px")
+        self.signin_vector_button.setIcon(QIcon("./resources/文件.png"))
+      
         self.signin_vector_line = QLineEdit(self)
         self.signin_button = QPushButton('Sign in', self)
 

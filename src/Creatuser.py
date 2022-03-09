@@ -137,7 +137,7 @@ class CreatStudentUser(CreatUser):
 
 
     def get_img_path(self, id_number = 123456):
-        path = "img_information/{0}/log".format(str(id_number))
+        path = "img_information/student/{0}/log".format(str(id_number))
         if not os.path.exists(path):  #判断是否存在文件夹如果不存在则创建为文件夹
             os.makedirs(path)
         return path

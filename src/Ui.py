@@ -21,18 +21,7 @@ class Ui(QObject):
         #self.setStyleSheet('QWidget{background:transparent}')
         self.setParent(parent)
         self.parent = parent
-     
-        self.Q1 = Queue()  # open_capture
-        self.Q2 = Queue()
-        self.share = multiprocessing.Value("f",0.4)
-        self.open_capture = OpenCapture(self.Q1, self.Q2)
-        self.p = Process(target=process_student_rg, args=(self.Q1, self.Q2,self.share))
-        self.p.daemon = True
-        self.open_capture.emit_img.connect(self.set_normal_img)
-        self.open_capture.emit_result.connect(self.show_result)
-        self.open_capture.emit_text.connect(self.change_text)
-        self.timer = QTimer()
-        self.timer.timeout.connect(self.clear_qlabel2)  
+ 
 
         
         #self.setFixedSize(480, 600)
@@ -119,9 +108,22 @@ class Ui(QObject):
         self.login_ui.show()
     @pyqtSlot()
     def show_parent(self):
-        self.parent.show()
+     
         del self.login_ui
         gc.collect()
+        self.Q1 = Queue()  # open_capture
+        self.Q2 = Queue()
+        self.share = multiprocessing.Value("f",0.4)
+        self.open_capture = OpenCapture(self.Q1, self.Q2)
+        self.p = Process(target=process_student_rg, args=(self.Q1, self.Q2,self.share))
+        self.p.daemon = True
+        self.open_capture.emit_img.connect(self.set_normal_img)
+        self.open_capture.emit_result.connect(self.show_result)
+        self.open_capture.emit_text.connect(self.change_text)
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.clear_qlabel2)  
+        self.parent.show()
+     
 
     #显示识别结果        
     @pyqtSlot(str)          
