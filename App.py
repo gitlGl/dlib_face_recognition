@@ -21,6 +21,10 @@ class APP(QWidget):
 
     def closeEvent(self,Event):
         self.ui.open_capture.close()
+        p = os.getpid()
+        psutil.Process(p).kill()
+       
+
  
 if __name__ == '__main__':
 

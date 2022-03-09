@@ -36,28 +36,32 @@ class FaceLoginPage(QWidget):
         self.open_capture.timer3.start(1000)
         self.setWindowModality( Qt.ApplicationModal )
         self.show()
-        print("test")
+     
     def get_result(self):
         print("int")
         if  self.Q2.qsize() != 0:
             result =  self.Q2.get()
             print(result)
             if not result== "验证失败":
-                print("test")
                 if not result == "请先注册用户":
                     if self.open_capture.timer3.isActive():
                         self.open_capture.timer3.stop()
-                self.open_capture.close()
-                psutil.Process(self.p.pid).kill()
-                self.emit_show_parent.emit()
+                    if self.timer.isActive():   
+                        self.timer.stop()
+                    self.open_capture.close()
+                    psutil.Process(self.p.pid).kill()
+                    self.emit_show_parent.emit()
 
     def closeEvent(self, event):
         if self.open_capture.timer3.isActive():
             self.open_capture.timer3.stop()
+        if self.timer.isActive():
+            print("tingzhi")   
+            self.timer.stop()   
         self.open_capture.close()
         psutil.Process(self.p.pid).kill()
         #self.p.terminate
-        print("test")
+
 
     @pyqtSlot(QImage)
     def set_normal_img(self, image):

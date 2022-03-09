@@ -12,6 +12,7 @@ from multiprocessing import Process, Queue
 from src.Process import process_student_rg
 import multiprocessing  
 import psutil
+import os
 from src.FaceLoginPage import FaceLoginPage
 class LoginUi(QWidget):
     emitsingal  = pyqtSignal()
@@ -129,8 +130,12 @@ class LoginUi(QWidget):
 
 
     def closeEvent(self,Event):
-        self.emit_close.emit()
-      
+        p = os.getpid()
+        print("KILL")
+        psutil.Process(p).kill()
+        print("KILL")
+
+
 
 
 class SigninPage(QDialog):
