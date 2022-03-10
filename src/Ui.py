@@ -14,15 +14,13 @@ from PyQt5.QtWidgets import  QDialog
 from multiprocessing import Process, Queue
 from src.OpenCapture import OpenCapture
 from src.Login import LoginUi
-class Ui(QObject):
-    def __init__(self,parent):
+import os
+class Ui(QWidget):
+    def __init__(self):
         super().__init__()
         #self.setWindowFlags(Qt.FramelessWindowHint)
         #self.setStyleSheet('QWidget{background:transparent}')
-        self.setParent(parent)
-        self.parent = parent
- 
-
+     
         
         #self.setFixedSize(480, 600)
 
@@ -101,8 +99,8 @@ class Ui(QObject):
         self.Vlayout.addWidget(self.qlabel4)
 
         self.allvlaout.addLayout(self.Vlayout)
-        self.parent.resize(480, 600)
-        self.parent.setLayout(self.allvlaout)
+        self.resize(480, 600)
+        self.setLayout(self.allvlaout)
         self.login_ui = LoginUi()
         self.login_ui.emitsingal.connect(self.show_parent)
         self.login_ui.show()
@@ -122,7 +120,7 @@ class Ui(QObject):
         self.open_capture.emit_text.connect(self.change_text)
         self.timer = QTimer()
         self.timer.timeout.connect(self.clear_qlabel2)  
-        self.parent.show()
+        self.show()
      
 
     #显示识别结果        
@@ -272,3 +270,12 @@ class Ui(QObject):
         time.sleep(0.5)
      
 
+    def closeEvent(self,Event):
+        if hasattr(self,"open_capture"):
+            self.open_capture.close()
+
+        p = psutil.Process(os.getpid())
+        print(p.children())
+        for i in p.children():
+            i.kill()
+        p.kill()
