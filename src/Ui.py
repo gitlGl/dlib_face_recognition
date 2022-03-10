@@ -21,7 +21,7 @@ class Ui(QWidget):
         #self.setStyleSheet ("border:2px groove gray;border-radius:10px;padding:2px 2px;")
         self.groupbox_1 = QGroupBox()                       # 1
         self.groupbox_2 = QGroupBox()
-        self.groupbox_1.setFixedSize(460,35)
+        self.groupbox_1.setFixedSize(460,40)
         self.groupbox_2.setFixedSize(460,35)
         self.Vlayout = QVBoxLayout()
         self.Hlayout = QHBoxLayout()
@@ -42,9 +42,9 @@ class Ui(QWidget):
         self.btn5.setText("帮助")
         self.btn5.clicked.connect(self.help)
         self.btn5.setIcon(QIcon("./resources/帮助.png"))
-        self.btn1.setStyleSheet("border:0px")
-        self.btn4.setStyleSheet("border:0px;")
-        self.btn5.setStyleSheet("border:0px;")
+        self.btn1.setFlat(True)
+        self.btn4.setFlat(True)
+        self.btn5.setFlat(True)
         self.btn4.clicked.connect(self.creat_student_user)
 
 
@@ -215,6 +215,7 @@ class Ui(QWidget):
         self.btn1.clicked.connect(self.close)
         self.btn1.setText("关闭摄像头")
         self.btn1.setIcon(QIcon("./resources/摄像头.png"))
+        self.open_capture.cap = cv2.VideoCapture(0,cv2.CAP_DSHOW)
         self.open_capture.start()
         if not self.p.is_alive():
             self.p.start()

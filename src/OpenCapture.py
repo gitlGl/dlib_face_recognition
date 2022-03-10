@@ -15,8 +15,8 @@ class Capture(QThread):
         super().__init__()
         self.frame = np.random.randint(255, size=(900, 800, 3),
                                        dtype=np.uint8)  #初始化
+        self.cap = None
     def run(self):
-        self.cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
         while True:
             ret, frame = self.cap.read()
             if ret:

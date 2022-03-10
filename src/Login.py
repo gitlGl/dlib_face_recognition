@@ -156,7 +156,8 @@ class SigninPage(QDialog):
         self.signin_pwd_line = QLineEdit(self)
         self.signin_pwd2_line = QLineEdit(self)
         self.signin_vector_button = QPushButton( "picture:",self)
-        self.signin_vector_button.setStyleSheet("border:0px")
+        self.signin_vector_button.setFlat(True)
+       
         self.signin_vector_button.setIcon(QIcon("./resources/文件.png"))
       
         self.signin_vector_line = QLineEdit(self)

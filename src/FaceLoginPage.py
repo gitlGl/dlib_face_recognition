@@ -27,6 +27,7 @@ class FaceLoginPage(QWidget):
         self.setWindowModality( Qt.ApplicationModal )
         self.face_rg = AdminRgFace()
         self.capture = Capture()
+        self.capture.cap = cv2.VideoCapture(0,cv2.CAP_DSHOW)
         self.capture.emit_img.connect(self.set_normal_img)
         self.capture.start()        
         self.timer = QTimer()
