@@ -92,7 +92,6 @@ class OpenCapture(Capture):
                     return
                 self.list_img.clear()
             self.timer1.start(200)
-            print("ceshi")
     #获取判断结果
     def get_result(self):
         self.timer2.stop()
