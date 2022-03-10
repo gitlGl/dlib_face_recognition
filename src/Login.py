@@ -134,12 +134,13 @@ class LoginUi(QWidget):
 
 
     def closeEvent(self,Event):
+        pass
    
-        p = os.getpid()
-        print("KILL")
-        print("KILL")
-        #psutil.Process(p).kill()
-        print("KILL")
+        # p = os.getpid()
+        # print("KILL")
+        # print("KILL")
+        # #psutil.Process(p).kill()
+        # print("KILL")
 
 
 

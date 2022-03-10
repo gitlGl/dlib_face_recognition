@@ -18,12 +18,6 @@ import os
 class Ui(QWidget):
     def __init__(self):
         super().__init__()
-        #self.setWindowFlags(Qt.FramelessWindowHint)
-        #self.setStyleSheet('QWidget{background:transparent}')
-     
-        
-        #self.setFixedSize(480, 600)
-
         #self.setStyleSheet ("border:2px groove gray;border-radius:10px;padding:2px 2px;")
         self.groupbox_1 = QGroupBox()                       # 1
         self.groupbox_2 = QGroupBox()
@@ -157,19 +151,19 @@ class Ui(QWidget):
     #创建用户
     def creat_student_user(self):
         path ,_= QFileDialog.getOpenFileName(
-               self.parent, "选择文件", "c:\\", "files(*.xlsx )")
+               self, "选择文件", "c:\\", "files(*.xlsx )")
         if path == '':
             return        
         list_error = CreatStudentUser().creat_user(path)
         if len(list_error) == 0:
-            QMessageBox.information(self.parent, 'Information', 'Register Successfully')
+            QMessageBox.information(self, 'Information', 'Register Successfully')
             return 
         else:
             error_string = ""
             for i in list_error:
                 error_string = error_string + i + "\n"
             
-            QMessageBox.information(self.parent, 'Information', error_string)
+            QMessageBox.information(self, 'Information', error_string)
     #帮助页面        
     def help(self):
         self.help_qlabe = Help()
@@ -240,6 +234,7 @@ class Ui(QWidget):
                 self.qlabel1.setText("提示：请张嘴")
 
     def close(self):
+        GlobalFlag.gflag2 = False
 
         self.btn1.clicked.connect(self.open)
         self.btn1.clicked.disconnect(self.close)
@@ -267,7 +262,7 @@ class Ui(QWidget):
         self.qlabel4.clear()
         if psutil.Process(self.p.pid).status() == "running":
             psutil.Process(self.p.pid).suspend()  # 挂起进程
-        time.sleep(0.5)
+  
      
 
     def closeEvent(self,Event):

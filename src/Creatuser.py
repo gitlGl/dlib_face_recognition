@@ -13,10 +13,7 @@ from src.Database import Database
 from PyQt5.QtCore import pyqtSlot, QObject
 class CreatUser():
     def __init__(self):
-      
-       
         pass
-
     def get_pass_word(self, salt, password="12345"):
         return MyMd5().create_md5(password, salt)
 
@@ -101,9 +98,6 @@ class CreatStudentUser(CreatUser):
                     else:
                         string = "第{0}行第4列，文件不存在人脸或多个人脸 ".format(i)+str(list1[3])
                         list_problem.append(string)
-
-
-
                   
                 else:
                     string = "第{0}行第4列，不存在该路径或文件 ".format(i)+str(list1[3])
@@ -113,8 +107,7 @@ class CreatStudentUser(CreatUser):
                 list2 = ["id_number","user_name","password","img_path" ]
                 dic = dict(zip(list2,list1))
                 information =  self.set_information(dic)
-                self.insert_user(information)
-               
+                self.insert_user(information)   
         student.conn.close()    
         return list_problem       
            
@@ -129,12 +122,10 @@ class CreatStudentUser(CreatUser):
         information["vector"] = self.get_vector(part_information["id_number"],part_information["img_path"],"student")
         return information
 
-
     def insert_user(self,information):
         Database().insert_user(information["id_number"], information["user_name"], information["password"], 
         information["img_path"], information["vector"],
                            information["salt"])
-
 
     def get_img_path(self, id_number = 123456):
         path = "img_information/student/{0}/log".format(str(id_number))

@@ -9,11 +9,34 @@ from PyQt5.QtCore import pyqtSignal
 #from PIL import Image, ImageDraw, ImageFont
 from .LivenessDetection import LivenessDetection
 from .GlobalVariable import GlobalFlag
-class OpenCapture(QThread):
+class Capture(QThread):
+    emit_img = pyqtSignal(QImage)
+    def __init__(self):
+        super().__init__()
+        self.frame = np.random.randint(255, size=(900, 800, 3),
+                                       dtype=np.uint8)  #初始化
+    def run(self):
+        self.cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+        while True:
+            ret, frame = self.cap.read()
+            if ret:
+                rgbImage = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                self.frame = frame
+                #rgbImage = put_chines_test(frame,"请眨眼")
+                p = convertToQtFormat(rgbImage)
+                self.emit_img.emit(p)
+    def close(self): #关闭线程
+        if self.isRunning():
+            self.terminate()
+            self.wait()
+        if hasattr(self,"cap"):
+            self.cap.release()
+            cv2.destroyAllWindows()
+class OpenCapture(Capture):
     """
    用于启动普通识别模式
     """
-    emit_img = pyqtSignal(QImage)
+
     emit_result = pyqtSignal(str)
     emit_text = pyqtSignal(str)
 
@@ -34,17 +57,6 @@ class OpenCapture(QThread):
                                        dtype=np.uint8)  #初始化
         self.detector = dlib.get_frontal_face_detector()
 
-    def run(self):
-        self.cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
-        while True:
-            ret, frame = self.cap.read()
-            if ret:
-                rgbImage = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                self.frame = frame
-                #rgbImage = put_chines_test(frame,"请眨眼")
-                p = convertToQtFormat(rgbImage)
-                self.emit_img.emit(p)
-
     #获取判断结果后把帧通过队列发送到子进程进行人脸识别
     def to_put(self):
         
@@ -56,14 +68,14 @@ class OpenCapture(QThread):
         if not self.Q2.empty():
             self.emit_result.emit(self.Q2.get())
 
-        self.timer3.start(2000)
+        self.timer3.start(1000)
     #获取两帧（间隔0.2s）判断是否发生眨眼
     def collect_frame(self):
         self.timer1.stop()
         if not GlobalFlag.gflag2:
             img = copy.deepcopy(self.frame)
             flag = self.livecheck.comput_mouth(img)
-            if flag == True:
+            if flag:
                 self.emit_text.emit("提示：请看镜头眨眼睛")
             self.timer1.start(200)   
         else:
@@ -80,6 +92,7 @@ class OpenCapture(QThread):
                     return
                 self.list_img.clear()
             self.timer1.start(200)
+            print("ceshi")
     #获取判断结果
     def get_result(self):
         self.timer2.stop()
@@ -90,17 +103,6 @@ class OpenCapture(QThread):
             self.timer1.start(200)
         else:
             self.timer2.start(1000)
-
-    def close(self): #关闭线程
-        if self.isRunning():
-            self.terminate()
-            self.wait()
-        if hasattr(self,"cap"):
-         self.cap.release()
-         cv2.destroyAllWindows()
-
-
-
 
 #转换位qt图像格式
 def convertToQtFormat(frame_show):

@@ -82,6 +82,32 @@ class StudentRgFace(Face):
             return tembyte
         else:
             return  False
+
+class AdminRgFace(Face):
+    def __init__(self):
+        super().__init__()
+ 
+    def rg_face(self,img, rgbImage, raw_face):
+        face_data = self.encodeface(rgbImage, raw_face)
+        admin = Database()
+        list = []
+        for i in admin.c.execute("SELECT vector from admin"):
+            i = np.loads(i[0])
+            list.append(i)
+        if len(list) == 0:
+            return False
+        distances = self.compare_faces(np.array(list), face_data, axis=1)
+        min_distance = np.argmin(distances)
+        print("距离",distances[min_distance])
+        if distances[min_distance] < 0.4:
+            tembyte = np.ndarray.dumps(list[min_distance])
+            adminlog(tembyte,img,admin)
+            admin.conn.close() 
+            return True
+        else:
+            return False
+
+
 # class AdminRgFace(Face):
 #     def __init__(self):
 #         super().__init__()
@@ -120,28 +146,3 @@ class StudentRgFace(Face):
 #         self.refreshthread.setDaemon(True) 
 #         self.refreshthread.start() 
 
-class AdminRgFace(Face):
-    def __init__(self):
-        super().__init__()
- 
-    def rg_face(self,img, rgbImage, raw_face):
-        face_data = self.encodeface(rgbImage, raw_face)
- 
-        admin = Database()
-        list = []
-        for i in admin.c.execute("SELECT vector from admin"):
-            i = np.loads(i[0])
-            list.append(i)
-        if len(list) == 0:
-            return False
-        distances = self.compare_faces(np.array(list), face_data, axis=1)
-        min_distance = np.argmin(distances)
-        print("距离",distances[min_distance])
-        if distances[min_distance] < 0.4:
-            self.face_data = face_data
-            tembyte = np.ndarray.dumps(list[min_distance])
-            adminlog(tembyte,img,admin)
-            admin.conn.close() 
-            return True
-        else:
-            return False
