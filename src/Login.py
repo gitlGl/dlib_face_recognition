@@ -138,7 +138,7 @@ class LoginUi(QWidget):
         p = os.getpid()
         print("KILL")
         print("KILL")
-        psutil.Process(p).kill()
+        #psutil.Process(p).kill()
         print("KILL")
 
 
