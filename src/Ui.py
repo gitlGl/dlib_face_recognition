@@ -274,8 +274,8 @@ class Ui(QWidget):
         if hasattr(self,"open_capture"):
             self.open_capture.close()
 
-        p = psutil.Process(os.getpid())
-        print(p.children())
-        for i in p.children():
-            i.kill()
-        p.kill()
+        # p = psutil.Process(os.getpid())
+        # print(p.children())
+        # for i in p.children():
+        #     i.kill()
+        # p.kill()
