@@ -31,9 +31,11 @@ class FaceLoginPage(QWidget):
         self.p = Process(target=process_admin_rg, args=(self.Q1,self.share))
         self.p.daemon = True
         self.p.start()
+        self.timer.start(500)
         self.open_capture.emit_img.connect(self.set_normal_img)
         self.open_capture.start()
         self.open_capture.timer3.start(1000)
+        self.timer.start(500)
         self.setWindowModality( Qt.ApplicationModal )
         self.show()
      

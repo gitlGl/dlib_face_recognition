@@ -92,7 +92,7 @@ class AdminRgFace(Face):
     def rg_face(self,img, rgbImage, raw_face,share):
         face_data = self.encodeface(rgbImage, raw_face)
         flag = self.compare_faces(face_data, self.face_data, axis=0)
-        if flag < share.value:return ""
+        if flag < 0.6:return ""
         else:
             admin = Database()
             list = []

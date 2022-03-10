@@ -16,17 +16,17 @@ class APP(QWidget):
 
     def __init__(self):
         super().__init__()
-        self.ui = Ui(self)
+ 
 
 
     def closeEvent(self,Event):
-        self.ui.open_capture.close()
-        if self.ui.p.is_alive():
-           psutil.Process(self.ui.p.pid).kill()
-           print("kill")
-        p = os.getpid()
-        psutil.Process(p).kill()
-       
+        pass
+        
+        p = psutil.Process(os.getpid())
+        print(p.children())
+        for i in p.children():
+            i.kill()
+        p.kill()
 
  
 if __name__ == '__main__':
@@ -34,5 +34,9 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
 
     ex = APP()
+    ui = Ui(ex)
     #ex.ui.show()
     app.exec_()
+    if hasattr(ui,"open_capture"):
+        ui.open_capture.close()
+
