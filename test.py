@@ -1,44 +1,70 @@
+StyleSheet = """
+/*这里是通用设置，所有按钮都有效，不过后面的可以覆盖这个*/
+QPushButton {
+    border: none; /*去掉边框*/
+}
 
-from src.Creatuser import CreatUser
-from src.MyMd5 import MyMd5
-import sys
-from PyQt5.QtWidgets import QApplication,QWidget
-import random
-class timerexec():
+/*
+QPushButton#xxx
+或者
+#xx
+都表示通过设置的objectName来指定
+*/
+QPushButton#RedButton {
+    background-color: #f44336; /*背景颜色*/
+}
+#RedButton:hover {
+    background-color: #e57373; /*鼠标悬停时背景颜色*/
+}
+/*注意pressed一定要放在hover的后面，否则没有效果*/
+#RedButton:pressed {
+    background-color: #ffcdd2; /*鼠标按下不放时背景颜色*/
+}
 
-    def __init__(self):
-        print('这是构造函数')
+#GreenButton {
+    background-color: #4caf50;
+    border-radius: 5px; /*圆角*/
+}
+#GreenButton:hover {
+    background-color: #81c784;
+}
+#GreenButton:pressed {
+    background-color: #c8e6c9;
+}
 
-    def __del__(self):
-        print('这是析构函数')
+#BlueButton {
+    background-color: #2196f3;
+    /*限制最小最大尺寸*/
+    min-width: 96px;
+    max-width: 96px;
+    min-height: 96px;
+    max-height: 96px;
+    border-radius: 48px; /*圆形*/
+}
+#BlueButton:hover {
+    background-color: #64b5f6;
+}
+#BlueButton:pressed {
+    background-color: #bbdefb;
+}
 
-class test(QWidget):
-    def __init__(self):
-        super().__init__()
-        # self.id = random.randint(1, 20)
-       
-        # #self.vector = CreatUser().get_vector(self.id)
-        # dic = {"id_number":self.id,"user_name":"lin","password":"123456","img_path":None }
-        # CreatUser(dic)
-        # a = timerexec()
+#OrangeButton {
+    max-height: 48px;
+    border-top-right-radius: 20px; /*右上角圆角*/
+    border-bottom-left-radius: 20px; /*左下角圆角*/
+    background-color: #ff9800;
+}
+#OrangeButton:hover {
+    background-color: #ffb74d;
+}
+#OrangeButton:pressed {
+    background-color: #ffe0b2;
+}
 
-    def te(self,str):
-        def t():
-            print("test")
-        print(type(str))
-        print ("" is type(str))
-        t()
-        
-
-if __name__ == '__main__':
-  
-
-    app = QApplication(sys.argv)
-    
-    test1 = test()
-    test1.te(str)
-    
-    
-    app.exec()
-
+/*根据文字内容来区分按钮,同理还可以根据其它属性来区分*/
+QPushButton[text="purple button"] {
+    color: white; /*文字颜色*/
+    background-color: #9c27b0;
+}
+"""
 

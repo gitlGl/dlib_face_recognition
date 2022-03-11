@@ -1,13 +1,14 @@
 import sqlite3
 
 import datetime
-class Database():
 
+
+class Database():
     def __init__(self):
         self.conn = sqlite3.connect('./resources/company.db')
         self.c = self.conn.cursor()
         self.creatble()
-    
+
     def creatble(self):
         self.c.execute('''CREATE TABLE IF NOT EXISTS student
        ( 
@@ -21,7 +22,7 @@ class Database():
         cout              INT,
         PRIMARY KEY (id_number )
                  )without rowid;''')
-                 
+
         self.c.execute('''CREATE TABLE IF NOT EXISTS student_log_time
        ( 
         id_number            INT   NOT NULL ,
@@ -41,10 +42,11 @@ class Database():
         vector          blob        ,
         PRIMARY KEY (id_number )
                  )without rowid;''')
-       
+
         self.conn.commit()
 
-    def insert_user(self, id_number, user_name, password, img_path, vector, salt):
+    def insert_user(self, id_number, user_name, password, img_path, vector,
+                    salt):
         self.c.execute(
             "INSERT INTO student (id_number,user_name,password ,img_path ,vector,salt) \
       VALUES (?, ?, ? , ?,?,?)",
@@ -54,10 +56,3 @@ class Database():
     def delete(self, id):
         self.c.execute("delete from student where id_number = {0}".format(id))
         self.conn.commit()
-
-
-   
-      
-
-
-      

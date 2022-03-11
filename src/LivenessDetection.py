@@ -8,6 +8,7 @@ from src.Process import *
 from src.GlobalVariable import models
 from src.GlobalVariable import GlobalFlag
 
+
 class LivenessDetection(QThread):
     singal = pyqtSignal(list)
 
@@ -18,7 +19,7 @@ class LivenessDetection(QThread):
         self.singal.connect(self.compare2faces)
 
         self.EYE_AR_THRESH = 0.3  #小于0.3时认为是闭眼状态
-        self.MAR_THRESH = 0.5#大于于0.5时认为是张嘴状态
+        self.MAR_THRESH = 0.5  #大于于0.5时认为是张嘴状态
 
         #68个人脸特征中眼睛的位置
 
@@ -40,13 +41,12 @@ class LivenessDetection(QThread):
 
     #计算嘴巴张开大小
     def mouth__aspect_ratio(self, mouth):
-        A = dist.euclidean(mouth[2] ,mouth[9])  # 51, 59
-        B = dist.euclidean(mouth[4] ,mouth[7])  # 53, 57
-        C = dist.euclidean(mouth[0] ,mouth[6])  # 49, 55
-        mar = (A + B) / (2.0 * C) #嘴巴大小值
- 
-        return mar
+        A = dist.euclidean(mouth[2], mouth[9])  # 51, 59
+        B = dist.euclidean(mouth[4], mouth[7])  # 53, 57
+        C = dist.euclidean(mouth[0], mouth[6])  # 49, 55
+        mar = (A + B) / (2.0 * C)  #嘴巴大小值
 
+        return mar
 
     def compare2faces(self, list_img):  #对比两张人脸照片对比是否发生眨眼。两张照片眼睛距离大于0.1时认为发生眨眼
 
@@ -60,11 +60,12 @@ class LivenessDetection(QThread):
             list.append(self.comput_eye(gray2, rect2))
             result = abs(list[0] - list[1])
             if result >= 0.1:
-               
+
                 return True
         else:
             return False
         return False
+
     #判断是否眨眼
     def comput_eye(self, gray, rect):
         shape = models.predictor(gray, rect[0])
@@ -83,10 +84,10 @@ class LivenessDetection(QThread):
         if (len(rect) == 1):
             shape = models.predictor(gray, rect[0])
             shape = face_utils.shape_to_np(shape)  #68个人脸特征坐标
-            mouth = shape[self.mStart: self.mEnd]
+            mouth = shape[self.mStart:self.mEnd]
             mouth = self.mouth__aspect_ratio(mouth)
             if mouth > 0.5:
                 GlobalFlag.gflag2 = True
                 return True
-            return False    
-        return False                    
+            return False
+        return False
