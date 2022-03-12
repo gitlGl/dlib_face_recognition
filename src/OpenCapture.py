@@ -5,31 +5,35 @@ from PyQt5.QtGui import QImage
 import dlib
 from multiprocessing import Process, Queue
 from src.Process import *
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import pyqtSignal,pyqtSlot
 #from PIL import Image, ImageDraw, ImageFont
 from .LivenessDetection import LivenessDetection
 from .GlobalVariable import GlobalFlag
 class Capture(QThread):
-    emit_img = pyqtSignal(QImage)
+  
+    emit_img = pyqtSignal(list)
     def __init__(self):
         super().__init__()
         self.frame = np.random.randint(255, size=(900, 800, 3),
                                        dtype=np.uint8)  #初始化
+        self.emit_img.connect(self.set_p)
         self.cap = None
-    def run(self):
+    def run(self): 
         while True:
             ret, frame = self.cap.read()
             if ret:
-                rgbImage = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                self.frame = frame
-                #rgbImage = put_chines_test(frame,"请眨眼")
-                p = convertToQtFormat(rgbImage)
-                self.emit_img.emit(p)
+                self.emit_img.emit([frame])
+    
+                
+    @pyqtSlot(list)
+    def set_p(self,list_):
+        self.frame = list_[0]
+
     def close(self): #关闭线程
         if self.isRunning():
             self.terminate()
             self.wait()
-        if hasattr(self,"cap"):
+        if self.cap is not None:
             self.cap.release()
             cv2.destroyAllWindows()
 class OpenCapture(Capture):
@@ -114,17 +118,17 @@ def convertToQtFormat(frame_show):
 
 
 #为图片渲染中文
-def put_chines_test(frame, chinnes_text):
-    rgbImage = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    location = models.detector(rgbImage)
-    if len(location) == 1:
-        location = location[0]
-        font = ImageFont.truetype("./resources/simsun.ttc",
-                                  50,
-                                  encoding="utf-8")
-        rgbImage = Image.fromarray(rgbImage)
-        draw = ImageDraw.Draw(rgbImage)
-        draw.text(((location.right() + 6, location.top() - 6)), chinnes_text,
-                  (0, 0, 255), font)
-        rgbImage = np.asarray(rgbImage)
-    return rgbImage
+# def put_chines_test(frame, chinnes_text):
+#     rgbImage = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+#     location = models.detector(rgbImage)
+#     if len(location) == 1:
+#         location = location[0]
+#         font = ImageFont.truetype("./resources/simsun.ttc",
+#                                   50,
+#                                   encoding="utf-8")
+#         rgbImage = Image.fromarray(rgbImage)
+#         draw = ImageDraw.Draw(rgbImage)
+#         draw.text(((location.right() + 6, location.top() - 6)), chinnes_text,
+#                   (0, 0, 255), font)
+#         rgbImage = np.asarray(rgbImage)
+#     return rgbImage

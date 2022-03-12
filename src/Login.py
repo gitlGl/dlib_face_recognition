@@ -31,9 +31,9 @@ class LoginUi(QWidget):
         self.pwd_label = QLabel('Password:', self)
         self.user_line = QLineEdit(self)
         self.pwd_line = QLineEdit(self)
-        self.login_button = QPushButton('账号密码登录', self)
-        self.signin_button = QPushButton('注册', self)
-        self.face_login_button = QPushButton("人脸识别登录", self)
+        self.login_button = QPushButton('账号密码登录', self,objectName="GreenButton")
+        self.signin_button = QPushButton('注册', self,objectName="GreenButton")
+        self.face_login_button = QPushButton("人脸识别登录", self,objectName="GreenButton")
 
         #self.grid_layout = QGridLayout()
         self.h_user_layout = QHBoxLayout()
@@ -156,13 +156,13 @@ class SigninPage(QDialog):
         self.signin_user_line = QLineEdit(self)
         self.signin_pwd_line = QLineEdit(self)
         self.signin_pwd2_line = QLineEdit(self)
-        self.signin_vector_button = QPushButton("picture:", self)
+        self.signin_vector_button = QPushButton("picture:", self,objectName="GreenButton")
         self.signin_vector_button.setFlat(True)
 
         self.signin_vector_button.setIcon(QIcon("./resources/文件.png"))
 
         self.signin_vector_line = QLineEdit(self)
-        self.signin_button = QPushButton('Sign in', self)
+        self.signin_button = QPushButton('Sign in', self,objectName="GreenButton")
 
         self.user_h_layout = QHBoxLayout()
         self.pwd_h_layout = QHBoxLayout()

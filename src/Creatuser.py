@@ -104,6 +104,13 @@ class CreatStudentUser(CreatUser):
                 path = Path(list1[3])
                 #判断路径是否存在
                 if path.is_file():
+                    if list1[3][-3:] == "jpg":
+                        pass
+                    else:
+                        string = "第{0}行第4列，文件为jpg图片".format(i) + str( list1[3])
+                        list_problem.append(string)
+                        continue
+
                     rgbImage = face_recognition.load_image_file(path)
                     faces = models.detector(rgbImage)
                     if len(faces) == 1:
@@ -112,6 +119,7 @@ class CreatStudentUser(CreatUser):
                         string = "第{0}行第4列，文件不存在人脸或多个人脸 ".format(i) + str(
                             list1[3])
                         list_problem.append(string)
+                        continue
 
                 else:
                     string = "第{0}行第4列，不存在该路径或文件 ".format(i) + str(list1[3])

@@ -12,7 +12,7 @@ import multiprocessing
 from src.Help import Help
 from PyQt5.QtWidgets import QDialog
 from multiprocessing import Process, Queue
-from src.OpenCapture import OpenCapture
+from src.OpenCapture import OpenCapture,convertToQtFormat
 from src.Login import LoginUi
 import os
 
@@ -30,11 +30,11 @@ class Ui(QWidget):
         self.Hlayout2 = QHBoxLayout()
         self.allvlaout = QVBoxLayout()
 
-        self.btn1 = QPushButton()
+        self.btn1 = QPushButton(objectName="GreenButton")
         self.btn2 = QCheckBox()
         self.btn3 = QCheckBox()
-        self.btn4 = QPushButton()
-        self.btn5 = QPushButton()
+        self.btn4 = QPushButton(objectName="GreenButton")
+        self.btn5 = QPushButton(objectName="GreenButton")
         self.btn1.setText("打开摄像头")
         self.btn1.setIcon(QIcon("./resources/摄像头_关闭.png"))
         self.btn2.setText("普通识别")
@@ -142,9 +142,12 @@ class Ui(QWidget):
         self.qlabel1.setText(str)
 
     #帧显示视频流
-    @pyqtSlot(QImage)
-    def set_normal_img(self, image):
-        self.qlabel4.setPixmap(QPixmap.fromImage(image))
+    @pyqtSlot(list)
+    def set_normal_img(self, list_):
+        self.open_capture.frame = list_[0]
+        rgbImage = cv2.cvtColor(list_[0], cv2.COLOR_BGR2RGB)
+        p = convertToQtFormat(rgbImage)
+        self.qlabel4.setPixmap(QPixmap.fromImage(p))
         self.qlabel4.setScaledContents(True)
 
     #创建用户
@@ -271,6 +274,7 @@ class Ui(QWidget):
     def closeEvent(self, Event):
         if hasattr(self, "open_capture"):
             self.open_capture.close()
+        super().closeEvent(Event)
 
         # p = psutil.Process(os.getpid())
         # print(p.children())

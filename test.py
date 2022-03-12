@@ -22,7 +22,7 @@ QPushButton#RedButton {
 }
 
 #GreenButton {
-    background-color: #4caf50;
+    /*background-color: #4caf50;*/
     border-radius: 5px; /*圆角*/
 }
 #GreenButton:hover {
@@ -67,4 +67,3 @@ QPushButton[text="purple button"] {
     background-color: #9c27b0;
 }
 """
-

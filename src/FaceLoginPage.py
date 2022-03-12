@@ -60,10 +60,14 @@ class FaceLoginPage(QWidget):
             self.timer.stop()
         self.capture.close()
 
-    @pyqtSlot(QImage)
-    def set_normal_img(self, image):
-        self.label.setPixmap(QPixmap.fromImage(image))
+    @pyqtSlot(list)
+    def set_normal_img(self, list_):
+        self.capture.frame = list_[0]
+        rgbImage = cv2.cvtColor(list_[0], cv2.COLOR_BGR2RGB)
+        p = convertToQtFormat(rgbImage)
+        self.label.setPixmap(QPixmap.fromImage(p))
         self.label.setScaledContents(True)
+
 
 
 # class FaceLoginPage(QWidget):
