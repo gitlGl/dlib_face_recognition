@@ -1,6 +1,5 @@
 import sqlite3
 
-import datetime
 
 
 class Database():

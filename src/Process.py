@@ -1,11 +1,7 @@
-import cv2, dlib
-from threading import Timer
-import numpy as np
+import cv2
 import time
-import gc
 from src.GlobalVariable import models
-from src.Face import StudentRgFace, AdminRgFace
-from src.GlobalVariable import GlobalFlag
+from src.Face import StudentRgFace
 
 
 #此用于面部特征计算进程

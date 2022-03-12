@@ -2,21 +2,20 @@ import psutil
 from .Creatuser import CreatStudentUser
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QHBoxLayout
-from src.Process import *
+from src.Process import process_student_rg
 from PyQt5.QtWidgets import QSlider
 from PyQt5.QtCore import pyqtSlot, QTimer, Qt
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtGui import QIcon,QFont,QImage,QPixmap
+from PyQt5.QtWidgets import QGroupBox,QCheckBox,QLabel,QMessageBox, QFileDialog
 import multiprocessing
 from src.Help import Help
 from PyQt5.QtWidgets import QDialog
 from multiprocessing import Process, Queue
-from src.OpenCapture import OpenCapture,convertToQtFormat
+from .PutImg import PutImg
 from src.Login import LoginUi
-import os
-
-
+from .GlobalVariable import  GlobalFlag
+import gc
+import cv2,time
 class Ui(QWidget):
     def __init__(self):
         super().__init__()
@@ -102,16 +101,16 @@ class Ui(QWidget):
 
         del self.login_ui
         gc.collect()
-        self.Q1 = Queue()  # open_capture
+        self.Q1 = Queue()  # put_img
         self.Q2 = Queue()
         self.share = multiprocessing.Value("f", 0.4)
-        self.open_capture = OpenCapture(self.Q1, self.Q2)
+        self.put_img = PutImg(self.Q1, self.Q2)
         self.p = Process(target=process_student_rg,
                          args=(self.Q1, self.Q2, self.share))
         self.p.daemon = True
-        self.open_capture.emit_img.connect(self.set_normal_img)
-        self.open_capture.emit_result.connect(self.show_result)
-        self.open_capture.emit_text.connect(self.change_text)
+        self.put_img.emit_img.connect(self.set_normal_img)
+        self.put_img.emit_result.connect(self.show_result)
+        self.put_img.emit_text.connect(self.change_text)
         self.timer = QTimer()
         self.timer.timeout.connect(self.clear_qlabel2)
         self.show()
@@ -142,12 +141,10 @@ class Ui(QWidget):
         self.qlabel1.setText(str)
 
     #帧显示视频流
-    @pyqtSlot(list)
-    def set_normal_img(self, list_):
-        self.open_capture.frame = list_[0]
-        rgbImage = cv2.cvtColor(list_[0], cv2.COLOR_BGR2RGB)
-        p = convertToQtFormat(rgbImage)
-        self.qlabel4.setPixmap(QPixmap.fromImage(p))
+    @pyqtSlot(list,QImage)
+    def set_normal_img(self, list_,img):
+        self.put_img.frame = list_[0]
+        self.qlabel4.setPixmap(QPixmap.fromImage(img))
         self.qlabel4.setScaledContents(True)
 
     #创建用户
@@ -180,20 +177,20 @@ class Ui(QWidget):
             self.btn2.setEnabled(False)
             self.btn3.setEnabled(True)
 
-            while self.open_capture.timer1.isActive():
-                self.open_capture.timer1.stop()
-            while self.open_capture.timer2.isActive():
-                self.open_capture.timer2.stop()
-            while self.open_capture.timer1.isActive():
-                self.open_capture.timer1.stop()
+            while self.put_img.timer1.isActive():
+                self.put_img.timer1.stop()
+            while self.put_img.timer2.isActive():
+                self.put_img.timer2.stop()
+            while self.put_img.timer1.isActive():
+                self.put_img.timer1.stop()
             while self.Q1.qsize() != 0:  # 清空队列
                 pass
             while self.Q2.qsize() != 0:
                 self.Q2.get()
             self.qlabel1.clear()
-            if self.open_capture.isRunning():
-                if not self.open_capture.timer3.isActive():
-                    self.open_capture.timer3.start(1000)
+            if self.put_img.isRunning():
+                if not self.put_img.timer3.isActive():
+                    self.put_img.timer3.start(1000)
 
     #活体识别
     def open_eye(self):
@@ -203,26 +200,26 @@ class Ui(QWidget):
             self.btn3.setEnabled(False)
             self.btn2.setEnabled(True)
             GlobalFlag.gflag2 = False
-            if self.open_capture.isRunning():
-                if self.open_capture.timer3.isActive():
-                    self.open_capture.timer3.stop()
+            if self.put_img.isRunning():
+                if self.put_img.timer3.isActive():
+                    self.put_img.timer3.stop()
                     while self.Q1.qsize() != 0:  # 清空队列
                         pass
                     while self.Q2.qsize() != 0:
                         self.Q2.get()
-            if self.open_capture.isRunning():
-                if not self.open_capture.timer1.isActive():
-                    self.open_capture.timer1.start(200)
+            if self.put_img.isRunning():
+                if not self.put_img.timer1.isActive():
+                    self.put_img.timer1.start(200)
                     self.qlabel1.setText("提示：请张嘴")
 
     def open(self):
-        #self.open_capture.emit_img.connect(self.set_normal_img)
+        #self.put_img.emit_img.connect(self.set_normal_img)
         self.btn1.clicked.disconnect(self.open)
         self.btn1.clicked.connect(self.close)
         self.btn1.setText("关闭摄像头")
         self.btn1.setIcon(QIcon("./resources/摄像头.png"))
-        self.open_capture.cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
-        self.open_capture.start()
+        self.put_img.cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+        self.put_img.start()
         if not self.p.is_alive():
             self.p.start()
 
@@ -231,12 +228,12 @@ class Ui(QWidget):
 
         if self.btn2.isChecked():
 
-            if not self.open_capture.timer3.isActive():
-                self.open_capture.timer3.start(1000)
+            if not self.put_img.timer3.isActive():
+                self.put_img.timer3.start(1000)
 
         elif self.btn3.isChecked():
-            if not self.open_capture.timer1.isActive():
-                self.open_capture.timer1.start(200)
+            if not self.put_img.timer1.isActive():
+                self.put_img.timer1.start(200)
                 self.qlabel1.setText("提示：请张嘴")
 
     def close(self):
@@ -246,20 +243,20 @@ class Ui(QWidget):
         self.btn1.clicked.disconnect(self.close)
         self.btn1.setText("打开摄像头")
         self.btn1.setIcon(QIcon("./resources/摄像头_关闭.png"))
-        self.open_capture.close()  # 关闭摄像头
+        self.put_img.close()  # 关闭摄像头
 
-        while self.open_capture.timer3.isActive():
-            self.open_capture.timer3.stop()
+        while self.put_img.timer3.isActive():
+            self.put_img.timer3.stop()
 
-        while self.open_capture.timer1.isActive():
-            self.open_capture.timer1.stop()
-        while self.open_capture.timer2.isActive():
-            self.open_capture.timer2.stop()
-        while self.open_capture.timer1.isActive():
-            self.open_capture.timer1.stop()
+        while self.put_img.timer1.isActive():
+            self.put_img.timer1.stop()
+        while self.put_img.timer2.isActive():
+            self.put_img.timer2.stop()
+        while self.put_img.timer1.isActive():
+            self.put_img.timer1.stop()
 
-        while self.open_capture.timer3.isActive():
-            self.open_capture.timer3.stop()
+        while self.put_img.timer3.isActive():
+            self.put_img.timer3.stop()
         while self.Q1.qsize() != 0:  # 清空队列
             pass
         while self.Q2.qsize() != 0:
@@ -272,8 +269,8 @@ class Ui(QWidget):
         self.qlabel4.clear()
 
     def closeEvent(self, Event):
-        if hasattr(self, "open_capture"):
-            self.open_capture.close()
+        if hasattr(self, "put_img"):
+            self.put_img.close()
         super().closeEvent(Event)
 
         # p = psutil.Process(os.getpid())

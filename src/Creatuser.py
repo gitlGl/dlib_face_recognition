@@ -1,6 +1,4 @@
-import random
 from src.MyMd5 import MyMd5
-from PyQt5.QtWidgets import QFileDialog
 import face_recognition
 import numpy as np
 from src.Database import Database
@@ -8,9 +6,7 @@ import os, cv2
 from src.GlobalVariable import models
 import xlrd
 from pathlib import Path
-from PyQt5.QtCore import pyqtSignal
 from src.Database import Database
-from PyQt5.QtCore import pyqtSlot, QObject
 
 
 class CreatUser():

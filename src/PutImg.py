@@ -1,42 +1,14 @@
-import cv2, copy
-from PyQt5.QtCore import QThread, QTimer
+import copy
+from PyQt5.QtCore import QTimer
 import numpy as np
-from PyQt5.QtGui import QImage
 import dlib
-from multiprocessing import Process, Queue
 from src.Process import *
-from PyQt5.QtCore import pyqtSignal,pyqtSlot
+from PyQt5.QtCore import pyqtSignal
 #from PIL import Image, ImageDraw, ImageFont
 from .LivenessDetection import LivenessDetection
 from .GlobalVariable import GlobalFlag
-class Capture(QThread):
-  
-    emit_img = pyqtSignal(list)
-    def __init__(self):
-        super().__init__()
-        self.frame = np.random.randint(255, size=(900, 800, 3),
-                                       dtype=np.uint8)  #初始化
-        self.emit_img.connect(self.set_p)
-        self.cap = None
-    def run(self): 
-        while True:
-            ret, frame = self.cap.read()
-            if ret:
-                self.emit_img.emit([frame])
-    
-                
-    @pyqtSlot(list)
-    def set_p(self,list_):
-        self.frame = list_[0]
-
-    def close(self): #关闭线程
-        if self.isRunning():
-            self.terminate()
-            self.wait()
-        if self.cap is not None:
-            self.cap.release()
-            cv2.destroyAllWindows()
-class OpenCapture(Capture):
+from .Capture import Capture
+class PutImg(Capture):
     """
    用于启动普通识别模式
     """
@@ -106,29 +78,3 @@ class OpenCapture(Capture):
             self.timer1.start(200)
         else:
             self.timer2.start(1000)
-
-#转换位qt图像格式
-def convertToQtFormat(frame_show):
-    h, w, ch = frame_show.shape
-    bytesPerLine = ch * w
-    convertToQtFormat = QImage(frame_show.data, w, h, bytesPerLine,
-                               QImage.Format.Format_RGB888)
-    p = convertToQtFormat.scaled(480, 530)
-    return p
-
-
-#为图片渲染中文
-# def put_chines_test(frame, chinnes_text):
-#     rgbImage = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-#     location = models.detector(rgbImage)
-#     if len(location) == 1:
-#         location = location[0]
-#         font = ImageFont.truetype("./resources/simsun.ttc",
-#                                   50,
-#                                   encoding="utf-8")
-#         rgbImage = Image.fromarray(rgbImage)
-#         draw = ImageDraw.Draw(rgbImage)
-#         draw.text(((location.right() + 6, location.top() - 6)), chinnes_text,
-#                   (0, 0, 255), font)
-#         rgbImage = np.asarray(rgbImage)
-#     return rgbImage

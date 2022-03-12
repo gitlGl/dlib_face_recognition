@@ -1,23 +1,14 @@
 from pickle import NONE
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QDialog, QLabel, QLineEdit, QPushButton, \
-    QGridLayout, QVBoxLayout, QHBoxLayout, QMessageBox
+from PyQt5.QtWidgets import QWidget, QLabel
 from PyQt5.QtCore import pyqtSignal
-from src.Database import Database
-from src.MyMd5 import MyMd5
-from src.OpenCapture import *
+from src.Capture import Capture
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtCore import pyqtSlot, QTimer, Qt
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from multiprocessing import Process, Queue
-#from src.Process import process_admin_rg, process_student_rg
-import multiprocessing
-import psutil
-
+from PyQt5.QtGui import QImage,QPixmap
 from .Face import AdminRgFace
 import cv2
-from .GlobalVariable import *
+from .GlobalVariable import GlobalFlag,models
 
 
 class FaceLoginPage(QWidget):
@@ -60,12 +51,10 @@ class FaceLoginPage(QWidget):
             self.timer.stop()
         self.capture.close()
 
-    @pyqtSlot(list)
-    def set_normal_img(self, list_):
+    @pyqtSlot(list,QImage)
+    def set_normal_img(self, list_,img):
         self.capture.frame = list_[0]
-        rgbImage = cv2.cvtColor(list_[0], cv2.COLOR_BGR2RGB)
-        p = convertToQtFormat(rgbImage)
-        self.label.setPixmap(QPixmap.fromImage(p))
+        self.label.setPixmap(QPixmap.fromImage(img))
         self.label.setScaledContents(True)
 
 

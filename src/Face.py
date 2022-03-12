@@ -1,5 +1,3 @@
-from ast import Return
-import gc
 from src.Database import Database
 from src.Log import adminlog, studentlog
 from src.GlobalVariable import models

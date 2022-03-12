@@ -1,19 +1,15 @@
-import sys
 from turtle import clear
-from PyQt5.QtWidgets import QApplication, QWidget, QDialog, QLabel, QLineEdit, QPushButton, \
-    QGridLayout, QVBoxLayout, QHBoxLayout, QMessageBox
+from PyQt5.QtWidgets import QWidget, QDialog, QLabel, QLineEdit, QPushButton, \
+    QVBoxLayout, QHBoxLayout, QMessageBox
 from PyQt5.QtCore import pyqtSignal
 from src.Database import Database
 from src.MyMd5 import MyMd5
-from src.OpenCapture import OpenCapture
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
-from multiprocessing import Process, Queue
 from src.GlobalVariable import models
-import multiprocessing
 from .Creatuser import CreatStudentUser
-import psutil
+
 import face_recognition
 import os
 from src.FaceLoginPage import FaceLoginPage
