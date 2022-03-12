@@ -17,8 +17,8 @@ class Capture(QThread):
         while True:
             ret, frame = self.cap.read()
             if ret:
-                rgbImage = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                p = convertToQtFormat(rgbImage)
+                
+                p = convertToQtFormat(frame)
                 self.emit_img.emit([frame],p)
     
 
@@ -32,9 +32,16 @@ class Capture(QThread):
 
 #转换位qt图像格式
 def convertToQtFormat(frame_show):
-    h, w, ch = frame_show.shape
+    rgbImage = cv2.cvtColor(frame_show, cv2.COLOR_BGR2RGB)
+    gray = cv2.cvtColor(rgbImage,cv2.COLOR_RGB2GRAY)
+    faces = models.detector(gray)
+    if len(faces) == 1:
+        face = faces[0]
+        cv2.rectangle(rgbImage, (face.left(), face.top()), (face.right(), face.bottom()), (255,0,0), 4)
+
+    h, w, ch = rgbImage.shape
     bytesPerLine = ch * w
-    convertToQtFormat = QImage(frame_show.data, w, h, bytesPerLine,
+    convertToQtFormat = QImage(rgbImage.data, w, h, bytesPerLine,
                                QImage.Format.Format_RGB888)
     p = convertToQtFormat.scaled(480, 530)
     return p
