@@ -5,6 +5,6 @@ from test import StyleSheet
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    app.setStyleSheet(StyleSheet)
+    app.setStyleSheet(StyleSheet)    
     ui = Ui()
     app.exec_()

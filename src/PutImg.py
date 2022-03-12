@@ -31,8 +31,6 @@ class PutImg(Capture):
         self.Q2 = Q2
         self.frame = np.random.randint(255, size=(900, 800, 3),
                                        dtype=np.uint8)  #初始化
-        self.detector = dlib.get_frontal_face_detector()
-
     #获取判断结果后把帧通过队列发送到子进程进行人脸识别
     def to_put(self):
         
