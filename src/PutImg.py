@@ -50,6 +50,7 @@ class PutImg(Capture):
             img = copy.deepcopy(self.frame)
             flag = self.livecheck.comput_mouth(img)
             if flag:
+                GlobalFlag.gflag2 = True
                 self.emit_text.emit("提示：请看镜头眨眼睛")
             self.timer1.start(200)   
         else:

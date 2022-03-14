@@ -85,7 +85,7 @@ class LivenessDetection(QThread):
             mouth = shape[self.mStart:self.mEnd]
             mouth = self.mouth__aspect_ratio(mouth)
             if mouth > 0.5:
-                GlobalFlag.gflag2 = True
+        
                 return True
             return False
         return False

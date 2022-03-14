@@ -9,9 +9,8 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from src.GlobalVariable import models
 from .Creatuser import CreatStudentUser
-
-import face_recognition
-import os
+import PIL.Image
+import numpy as np
 from src.FaceLoginPage import FaceLoginPage
 
 
@@ -212,7 +211,9 @@ class SigninPage(QDialog):
         if path == '':
             return
         self.signin_vector_line.setText(path)
-        rgbImage = face_recognition.load_image_file(path)
+        rgbImage = PIL.Image.open(path)
+        rgbImage  =  rgbImage .convert("RGB")
+        rgbImage =  np.array(rgbImage )
         faces = models.detector(rgbImage)
         if len(faces) == 1:
             return

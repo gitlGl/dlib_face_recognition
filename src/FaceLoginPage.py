@@ -61,7 +61,7 @@ class FaceLoginPage(QWidget):
                 self.close
             else:
                 self.groupbox.show()
-                if self.cout> 3:
+                if self.cout> 2:
                     self.timer2.start(200)
                     self.livecheck  = LivenessDetection()
                     self.label1.setText("提示：请张嘴")
@@ -76,6 +76,7 @@ class FaceLoginPage(QWidget):
             img = copy.deepcopy(self.capture.frame)
             flag = self.livecheck.comput_mouth(img)
             if flag:
+                GlobalFlag.gflag2 = True
                 self.label1.setText("提示：请看镜头眨眼睛")
         else:
             if len(self.list_img) <= 1:
@@ -91,9 +92,10 @@ class FaceLoginPage(QWidget):
                     rgbImage = cv2.cvtColor(self.capture.frame, cv2.COLOR_BGR2RGB)
                     gray = cv2.cvtColor(rgbImage, cv2.COLOR_RGB2GRAY)
                     location_faces = models.detector(gray)
-                    raw_face = models.predictor(gray, location_faces[0])
-                    result = self.face_rg.rg_face(self.capture.frame, rgbImage,
-                                          raw_face)
+                    if len(location_faces) == 1:
+                        raw_face = models.predictor(gray, location_faces[0])
+                        result = self.face_rg.rg_face(self.capture.frame, rgbImage,
+                                            raw_face)
                                      
                     if result:                      
                         self.emit_show_parent.emit()

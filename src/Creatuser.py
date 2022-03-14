@@ -1,14 +1,12 @@
 from src.MyMd5 import MyMd5
-import face_recognition
 import numpy as np
 from src.Database import Database
-import os, cv2
+import os
 from src.GlobalVariable import models
 import xlrd
 from pathlib import Path
 from src.Database import Database
-
-
+import PIL.Image
 class CreatUser():
     def __init__(self):
         pass
@@ -22,17 +20,20 @@ class CreatUser():
         返回128维人脸编码信息
         """
         file_path = img_path
-        path = "img_information/" + fuck + "/" + str(id_number)
-
-        img = cv2.imread(file_path)
-        if img is None:
-            return
+    
+  
+        path = "img_information/" + fuck + "/" + str(id_number)     
         if not os.path.exists(path):  # 判断是否存在文件夹如果不存在则创建为文件夹
             os.makedirs(path)
-        cv2.imwrite(
-            "img_information/" + fuck + "/" + str(id_number) + "/" +
-            str(id_number) + ".jpg", img)
-        rgbImage = face_recognition.load_image_file(file_path)
+
+        rgbImage = PIL.Image.open(file_path)
+        rgbImage.save( "img_information/" + fuck + "/" + str(id_number) + "/" +
+            str(id_number) + ".jpg")
+        rgbImage  =  rgbImage .convert("RGB")
+        rgbImage =  np.array(rgbImage )
+  
+        #rgbImage  =  rgbImage.convert("RGB")
+        #rgbImage =  np.array(rgbImage )
         face = models.detector(rgbImage)[0]
         frame = models.predictor(rgbImage, face)
         face_data = np.array(
@@ -106,8 +107,9 @@ class CreatStudentUser(CreatUser):
                         string = "第{0}行第4列，文件为jpg图片".format(i) + str( list1[3])
                         list_problem.append(string)
                         continue
-
-                    rgbImage = face_recognition.load_image_file(path)
+                    rgbImage = PIL.Image.open(list1[3])
+                    rgbImage  =  rgbImage .convert("RGB")
+                    rgbImage =  np.array(rgbImage )
                     faces = models.detector(rgbImage)
                     if len(faces) == 1:
                         pass
