@@ -43,7 +43,7 @@ def convertToQtFormat(frame_show):
     bytesPerLine = ch * w
     convertToQtFormat = QImage(rgbImage.data, w, h, bytesPerLine,
                                QImage.Format.Format_RGB888)
-    p = convertToQtFormat.scaled(480, 530)
+    p = convertToQtFormat.scaled(460, 530)
     return p
 
 

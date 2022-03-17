@@ -22,7 +22,7 @@ class Database():
         PRIMARY KEY (id_number )
                  )without rowid;''')
 
-        self.c.execute('''CREATE TABLE IF NOT EXISTS student_log_time
+        self.c.execute('''CREATE TABLE IF NOT EXISTS student_log_time 
        ( 
         id_number            INT   NOT NULL ,
  

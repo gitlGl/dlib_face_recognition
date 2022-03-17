@@ -15,6 +15,7 @@ from .PutImg import PutImg
 from src.Login import LoginUi
 from .GlobalVariable import  GlobalFlag
 import gc
+from src.LineStack import Win
 import cv2,time
 class Ui(QWidget):
     def __init__(self):
@@ -34,19 +35,24 @@ class Ui(QWidget):
         self.btn3 = QCheckBox()
         self.btn4 = QPushButton(objectName="GreenButton")
         self.btn5 = QPushButton(objectName="GreenButton")
+        self.btn6 = QPushButton(objectName="GreenButton")
+
         self.btn1.setText("打开摄像头")
         self.btn1.setIcon(QIcon("./resources/摄像头_关闭.png"))
         self.btn2.setText("普通识别")
         self.btn3.setText("活体识别")
         self.btn4.setIcon(QIcon("./resources/文件.png"))
         self.btn4.setText("批量创建用户")
-        self.btn5.setText("帮助")
-        self.btn5.clicked.connect(self.help)
-        self.btn5.setIcon(QIcon("./resources/帮助.png"))
+        self.btn5.setText("数据")
+        self.btn6.setText("帮助")
+        self.btn6.clicked.connect(self.help)
+        self.btn5.setIcon(QIcon("./resources/数据.png"))
+        self.btn6.setIcon(QIcon("./resources/帮助.png"))
         self.btn1.setFlat(True)
         self.btn4.setFlat(True)
-        self.btn5.setFlat(True)
+        self.btn6.setFlat(True)
         self.btn4.clicked.connect(self.creat_student_user)
+        self.btn5.clicked.connect(self.analyze_data)
 
         self.btn1.clicked.connect(self.open)
         self.btn2.clicked.connect(self.open_normal)
@@ -77,6 +83,7 @@ class Ui(QWidget):
         self.Hlayout.addWidget(self.btn3)
         self.Hlayout.addWidget(self.btn4)
         self.Hlayout.addWidget(self.btn5)
+        self.Hlayout.addWidget(self.btn6)
         self.groupbox_1.setLayout(self.Hlayout)
 
         self.Hlayout2.addWidget(self.qlabel1)
@@ -95,7 +102,10 @@ class Ui(QWidget):
         self.login_ui = LoginUi()
         self.login_ui.emitsingal.connect(self.show_parent)
         self.login_ui.show()
-
+    def analyze_data(self):
+        self.view =Win()
+        self.view.show()
+        pass
     @pyqtSlot()
     def show_parent(self):
 

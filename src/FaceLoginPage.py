@@ -98,7 +98,9 @@ class FaceLoginPage(QWidget):
                                             raw_face)
                                      
                     if result:                      
+                        self.capture.close()
                         self.emit_show_parent.emit()
+                        self.close
                         return
                     else:
                         self.label1.setText("提示：请张嘴")
