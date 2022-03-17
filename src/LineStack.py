@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import numbers
 from src.Database import Database
 import sys,math
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-
+import copy
 from PyQt5.QtChart import QChartView, QChart, QLineSeries, QLegend, \
         QCategoryAxis
 from PyQt5.QtCore import Qt, QPointF, QRectF, QPoint
@@ -84,8 +85,9 @@ class GraphicsProxyWidget(QGraphicsProxyWidget):
 
 class ChartView(QChartView):
 
-    def __init__(self, datatabel,category ):
+    def __init__(self, datatabel,category, number):
         super(ChartView, self).__init__()
+        self.number = number
         self.datatabel = datatabel
         self.category = category
         self.resize(800, 600)
@@ -231,8 +233,18 @@ class ChartView(QChartView):
         axisX.setTickCount(len(self.category))  # x轴设置7个刻度,使用参数变更
         axisX.setGridLineVisible(False)  # 隐藏从x轴往上的线条
         axisY = self._chart.axisY()
-        axisY.setTickCount(len(self.category))  # y轴设置7个刻度
-        axisY.setRange(0, 20)  # 设置y轴范围
+        #Y轴刻度值与刻度范围动态变化
+        tick = [1,5,10,20,30,40,50,60,70,80,100,110,120,130,140,150]#刻度值
+        for i in tick:
+            if int(self.number/i) <= 20:
+                for k in range(i):
+                    if (self.number+k)%i == 0:
+                        axisY.setTickCount((self.number+k)/i+1)#刻度个数
+                        axisY.setRange(0,self.number+k)#刻度范围
+                        print(self.number+k)
+                        break
+                break
+                    
         # 自定义x轴
         axis_x = QCategoryAxis(
             self._chart, labelsPosition=QCategoryAxis.AxisLabelsPositionOnValue)#设置文字标示位置
@@ -259,7 +271,7 @@ class Win(QWidget):
     def __init__(self):
         super().__init__()
         self.setGeometry(300, 300,400, 380)
-        self.setWindowTitle('QDateTimeEdit的使用')
+        self.setWindowTitle('数据分析')
         self.setWindowModality(Qt.ApplicationModal)
         
 
@@ -289,33 +301,33 @@ class Win(QWidget):
         self.Vhlayout.addWidget(self.grou)
         self.setLayout(self.Vhlayout)
         self.btn.clicked.connect(self.analyze_data)
-        datatabel,data_title =  self.get_data(7,1)
-        self.view = ChartView(datatabel,data_title)
+        datatabel,data_title ,number=  self.get_data(7,1)
+        self.view = ChartView(datatabel,data_title,number)
         self.Vhlayout.addWidget(self.view)
 
     def analyze_data(self):
         self.Vhlayout.itemAt(1).widget().deleteLater()
         days = self.DateEdit1.date().daysTo(self.DateEdit2.date()) 
         if days < 2:
-            datatabel,data_title = self.get_data_(days)
-            self.view = ChartView(datatabel,data_title)
+            datatabel,data_title,number = self.get_data_(days)
+            self.view = ChartView(datatabel,data_title,number)
             self.Vhlayout.addWidget(self.view)
         elif days <14 and days >= 2:
-            datatabel,data_title =  self.get_data(abs(days),1)
-            self.view = ChartView(datatabel,data_title)
+            datatabel,data_title ,number=  self.get_data(abs(days),1)
+            self.view = ChartView(datatabel,data_title,number)
             self.Vhlayout.addWidget(self.view)
 
         elif days >=14 and days< 60:
-            datatabel,data_title =  self.get_data(int(abs(days)/7),7)
-            self.view = ChartView(datatabel,data_title)
+            datatabel,data_title ,number=  self.get_data(int(abs(days)/7),7)
+            self.view = ChartView(datatabel,data_title,number)
             self.Vhlayout.addWidget(self.view)
         elif days >= 60 and days< 365:
-            datatabel,data_title =  self.get_data(int(abs(days)/30),30)
-            self.view = ChartView(datatabel,data_title)
+            datatabel,data_title,number =  self.get_data(int(abs(days)/30),30)
+            self.view = ChartView(datatabel,data_title,number)
             self.Vhlayout.addWidget(self.view)
         elif days >= 365 : 
-            datatabel,data_title =  self.get_data(int(abs(days)/365),365)
-            self.view = ChartView(datatabel,data_title)
+            datatabel,data_title,number =  self.get_data(int(abs(days)/365),365)
+            self.view = ChartView(datatabel,data_title,number)
             self.Vhlayout.addWidget(self.view)  
             pass
     def get_data_(self,days):
@@ -350,7 +362,9 @@ class Win(QWidget):
         else:
             for i in timestr:
                 data_title.append(i+"时")
-        return datatabel,data_title
+        temdata = copy.deepcopy(data )
+        temdata.sort(reverse=True)    
+        return datatabel,data_title ,temdata[0]
 
     def get_data(self,days,step):
         self.DateEdit1.date()
@@ -394,9 +408,7 @@ class Win(QWidget):
                data_title.append(self.DateEdit2.date().addDays(step_).toPyDate().strftime("%Y-%m-%d"))
                #nonlocal step_
                step_ = step_+step
-        return datatabel,data_title
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    view =Win()
-    view.show()
-    sys.exit(app.exec_())
+        print(data)
+        temdata = copy.deepcopy(data )
+        temdata.sort(reverse=True)    
+        return datatabel,data_title ,temdata[0]
