@@ -233,10 +233,10 @@ class ChartView(QChartView):
         axisX.setTickCount(len(self.category))  # x轴设置7个刻度,使用参数变更
         axisX.setGridLineVisible(False)  # 隐藏从x轴往上的线条
         axisY = self._chart.axisY()
-        #Y轴刻度值与刻度范围动态变化
-        tick = [1,5,10,20,30,40,50,60,70,80,100,110,120,130,140,150]#刻度值
+        #Y轴刻度间隔与刻度范围随着输入数据量动态变化
+        tick = [1,5,10,20,30,40,50,60,70,80,100,110,120,130,140,150]#刻度间隔
         for i in tick:
-            if int(self.number/i) <= 20:
+            if int(self.number/i) <= 20:#刻度个数不大于20
                 for k in range(i):
                     if (self.number+k)%i == 0:
                         axisY.setTickCount((self.number+k)/i+1)#刻度个数

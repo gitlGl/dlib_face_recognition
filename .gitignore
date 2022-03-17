@@ -1,7 +1,7 @@
 img_information/
 *.dat
 *.jpg
-resources/
+*.dat
 *.db
 simsun.ttc
 __pycahe__/
