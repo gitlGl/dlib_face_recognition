@@ -8,7 +8,8 @@
 6.ui框架为pyqt5<br>
 7.内存占用500-600m，不懂怎么优化，不用多进程内存占用可以降到200-300m。<br>
 8.人脸跟踪是耗时操作，去掉绘制框可提高fps。<br>
-9.依赖<br>
+9.增加数据可视化功能，分析图书馆人流l量变化<br>
+10.依赖<br>
 dlib                    19.8.1<br>  
 face-recognition        1.3.0<br>  
 face-recognition-models 0.3.0 <br> 
@@ -19,3 +20,4 @@ psutil                  5.9.0 <br>
 PyQt5                   5.15.6<br>               
 scipy                   1.5.4 <br> 
 xlrd                    1.2.0 <br> 
+PyQtChart               5.15.5<br>

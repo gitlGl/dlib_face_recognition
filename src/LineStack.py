@@ -215,7 +215,7 @@ class ChartView(QChartView):
         series.setPen(pen)
 
     def initChart(self):
-        self._chart = QChart(title="折线图堆叠")
+        self._chart = QChart(title="折线图分析")
         self._chart.setAcceptHoverEvents(True)
      
         self._chart.setAnimationOptions(QChart.SeriesAnimations)

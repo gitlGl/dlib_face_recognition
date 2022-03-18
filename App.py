@@ -9,6 +9,7 @@ if __name__ == '__main__':
     ui = Ui()
     
     app.exec_()
+    
 
     #   dataTable = [
     #         ["test", [10, 132, 778, 134, 500, 280, 212]],
