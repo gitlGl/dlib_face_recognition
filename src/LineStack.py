@@ -234,16 +234,20 @@ class ChartView(QChartView):
         axisX.setGridLineVisible(False)  # 隐藏从x轴往上的线条
         axisY = self._chart.axisY()
         #Y轴刻度间隔与刻度范围随着输入数据量动态变化
-        tick = [1,5,10,20,30,40,50,60,70,80,100,110,120,130,140,150]#刻度间隔
-        for i in tick:
-            if int(self.number/i) <= 20:#刻度个数不大于20
-                for k in range(i):
-                    if (self.number+k)%i == 0:
-                        axisY.setTickCount((self.number+k)/i+1)#刻度个数
-                        axisY.setRange(0,self.number+k)#刻度范围
-                        print(self.number+k)
-                        break
-                break
+        tick = [5,10,20,30,40,50,60,70,80,100,110,120,130,140,150]#刻度间隔
+        #刻度范围不能太低
+        if self.number<=10:
+                axisY.setTickCount(11)#刻度个数
+                axisY.setRange(0,10)#刻度范围
+        else:
+            for i in tick:
+                if int(self.number/i) <= 20:#刻度个数不大于20
+                    k = i-self.number%i
+                    axisY.setTickCount((self.number+k)/i+1)#刻度个数
+                    axisY.setRange(0,self.number+k)#刻度范围
+                    #print(self.number+k)
+                    break
+              
                     
         # 自定义x轴
         axis_x = QCategoryAxis(
@@ -252,9 +256,10 @@ class ChartView(QChartView):
         axis_x.setGridLineVisible(False)
         min_x = axisX.min()
         max_x = axisX.max()
-        step = (max_x - min_x) / (len(self.category) - 1)  # 7个tick
-        for i in range(0,len(self.category)):
-            axis_x.append(self.category[i], min_x + i * step)#刻度位置
+        step = (max_x - min_x) / (len(self.category) -1)  # 7个tick
+        for h in range(0,len(self.category)):
+            #print("测试",i)
+            axis_x.append(self.category[h], min_x + h * step)#刻度位置
         self._chart.setAxisX(axis_x, self._chart.series()[-1])
         # chart的图例
         legend = self._chart.legend()
@@ -301,39 +306,40 @@ class Win(QWidget):
         self.Vhlayout.addWidget(self.grou)
         self.setLayout(self.Vhlayout)
         self.btn.clicked.connect(self.analyze_data)
-        datatabel,data_title ,number=  self.get_data(7,1)
+        datatabel,data_title ,number=  self.get_data_(0)
         self.view = ChartView(datatabel,data_title,number)
         self.Vhlayout.addWidget(self.view)
 
     def analyze_data(self):
         self.Vhlayout.itemAt(1).widget().deleteLater()
-        days = self.DateEdit1.date().daysTo(self.DateEdit2.date()) 
-        if days < 2:
-            datatabel,data_title,number = self.get_data_(days)
+        days = abs(self.DateEdit1.date().daysTo(self.DateEdit2.date()) )
+        temdays = self.DateEdit1.date().daysTo(self.DateEdit2.date())
+        if days < 1:
+            datatabel,data_title,number = self.get_data_( temdays)
+           
             self.view = ChartView(datatabel,data_title,number)
             self.Vhlayout.addWidget(self.view)
-        elif days <14 and days >= 2:
-            datatabel,data_title ,number=  self.get_data(abs(days),1)
+        elif days <14 and days >= 1:
+            datatabel,data_title ,number=  self.get_data( temdays,1)
+            #print(datatabel,data_title,number)
             self.view = ChartView(datatabel,data_title,number)
             self.Vhlayout.addWidget(self.view)
 
         elif days >=14 and days< 60:
-            datatabel,data_title ,number=  self.get_data(int(abs(days)/7),7)
+            datatabel,data_title ,number=  self.get_data(int( temdays/7),7)
             self.view = ChartView(datatabel,data_title,number)
             self.Vhlayout.addWidget(self.view)
         elif days >= 60 and days< 365:
-            datatabel,data_title,number =  self.get_data(int(abs(days)/30),30)
+            datatabel,data_title,number =  self.get_data(int(temdays/30),30)
             self.view = ChartView(datatabel,data_title,number)
             self.Vhlayout.addWidget(self.view)
-        elif days >= 365 : 
-            datatabel,data_title,number =  self.get_data(int(abs(days)/365),365)
+        elif days >= 365 :
+            datatabel,data_title,number =  self.get_data(int (temdays/365),365)
             self.view = ChartView(datatabel,data_title,number)
             self.Vhlayout.addWidget(self.view)  
             pass
     def get_data_(self,days):
-     
-        print(self.DateEdit1.date().addDays(1).toPyDate().strftime("%Y-%m-%d"))
-        print(days) 
+    
         self.DateEdit1.date()
         self.test = Database()
         timestr = ["-07","-08","-09","-10","-11","-12","-13","-14","-15","-16","-17","-18","-19","-20","-21","-22","-23"]
@@ -373,8 +379,6 @@ class Win(QWidget):
         sql = "SELECT count(id_number)  FROM student_log_time where log_time \
          between '{0}'  and '{1}';"
         if days >=0:
-            first = self.test.c.execute(sql.format(self.DateEdit1.date().addDays(-step).toPyDate().strftime("%Y-%m-%d"),self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d"))).fetchall()
-            data.append(first[0][0])
             step_= 0
             for k in range(abs(days)+1):   
                 for i in self.test.c.execute(sql.format(self.DateEdit1.date().addDays(step_).toPyDate().strftime("%Y-%m-%d"),self.DateEdit1.date().addDays(step_+step).toPyDate().strftime("%Y-%m-%d"))).fetchall():
@@ -382,13 +386,10 @@ class Win(QWidget):
                     step_ = step+step_
         else: 
             step_= 0
-            first = self.test.c.execute(sql.format(self.DateEdit2.date().addDays(-step).toPyDate().strftime("%Y-%m-%d"),self.DateEdit2.date().toPyDate().strftime("%Y-%m-%d"))).fetchall()
-            data.append(first[0][0])
             for k in range(abs(days)+1):   
                 for i in self.test.c.execute(sql.format(self.DateEdit2.date().addDays(step_).toPyDate().strftime("%Y-%m-%d"),self.DateEdit2.date().addDays(step_+step).toPyDate().strftime("%Y-%m-%d"))).fetchall():
                     data.append(i[0])
                     step_ = step+step_
-
         category = ["test"]    
         datatabel = []
         category.append(data)
@@ -397,18 +398,17 @@ class Win(QWidget):
         if days >=0 :
             step_ = step
             data_title.append(self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d"))
-            for i in range(days+1):
+            for i in range(days):
                data_title.append(self.DateEdit1.date().addDays(step_).toPyDate().strftime("%Y-%m-%d"))
-               #nonlocal step_
                step_ = step_+step
         else:
             step_ = step
             data_title.append(self.DateEdit2.date().toPyDate().strftime("%Y-%m-%d"))
-            for i in range(abs(days)+1):
+            for i in range(abs(days)):
                data_title.append(self.DateEdit2.date().addDays(step_).toPyDate().strftime("%Y-%m-%d"))
-               #nonlocal step_
                step_ = step_+step
         print(data)
+        print(data_title)
         temdata = copy.deepcopy(data )
         temdata.sort(reverse=True)    
         return datatabel,data_title ,temdata[0]
