@@ -18,9 +18,9 @@ class  studentlog():
     def insert_time(self):
         
         self.database.c.execute(
-            "INSERT INTO student_log_time (id_number,log_time ) \
-      VALUES (?, ?)",
-            (self.item[0], datetime.datetime.now().strftime("%Y-%m-%d-%H")))
+            "INSERT INTO student_log_time (id_number,gender,log_time ) \
+      VALUES (?, ?,?)",
+            (self.item[0], self.item[2],datetime.datetime.now().strftime("%Y-%m-%d-%H")))
 
        
         self.database.conn.commit()
@@ -46,14 +46,14 @@ class  studentlog():
         return str(datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S "))
     #记录识别成功次数
     def insert_cout(self):
-        if self.item[6] == None:
+        if self.item[7] == None:
             cout = 1
             self.database.c.execute(
             "UPDATE student SET cout = {0} WHERE id_number = {1}".format(cout,self.item[0]),)
             self.database.conn.commit()
            
         else:
-            cout = self.item[6] + 1
+            cout = self.item[7] + 1
             self.database.c.execute(
             "UPDATE student SET cout = {0} WHERE id_number = {1}".format(cout,self.item[0]),)
             self.database.conn.commit()

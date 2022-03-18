@@ -12,7 +12,9 @@ class Database():
         self.c.execute('''CREATE TABLE IF NOT EXISTS student
        ( 
         id_number       INT   NOT NULL ,
+   
         user_name       CHAR(50)    NOT NULL,
+        gender           bool,
         password        char(20)    NOT NULL,
         img_path        char(40),
         vector          blob        ,
@@ -25,6 +27,7 @@ class Database():
         self.c.execute('''CREATE TABLE IF NOT EXISTS student_log_time 
        ( 
         id_number            INT   NOT NULL ,
+        gender           bool,
  
         log_time datetime NOT NULL 
        
@@ -44,13 +47,14 @@ class Database():
 
         self.conn.commit()
 
-    def insert_user(self, id_number, user_name, password, img_path, vector,
+    def insert_user(self, id_number, user_name,gender, password, img_path, vector,
                     salt):
         self.c.execute(
-            "INSERT INTO student (id_number,user_name,password ,img_path ,vector,salt) \
-      VALUES (?, ?, ? , ?,?,?)",
-            (id_number, user_name, password, img_path, vector, salt))
+            "INSERT INTO student (id_number,user_name,gender,password ,img_path ,vector,salt) \
+      VALUES (?,?, ?, ? , ?,?,?)",
+            (id_number, user_name,gender, password, img_path, vector, salt))
         self.conn.commit()
+        
 
     def delete(self, id):
         self.c.execute("delete from student where id_number = {0}".format(id))

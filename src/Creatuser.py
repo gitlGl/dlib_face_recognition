@@ -77,6 +77,7 @@ class CreatStudentUser(CreatUser):
                     list_problem.append("第{0}行第1列，用户名为文本格式13位数字 ".format(i) +
                                         str(list1[0]))
                     continue
+
                 #判断用户姓名是否符合格式要求
                 lenth = len(str(list1[1]))
                 if lenth < 16 and lenth != 0:
@@ -86,45 +87,56 @@ class CreatStudentUser(CreatUser):
                     list_problem.append("第{0}行第2列,姓名为16个字符以下: ".format(i) +
                                         str(list1[1]))
                     continue
-
-                lenth = len(str(list1[2]))
-                if lenth < 13 and lenth >= 6:
+                
+                #判断用户性别格式
+                if str(list1[2]) == "男" or str(list1[2]) == "女":
                     list1[2] = str(list1[2])
-
-                #判断密码是否符合格式要求
                 else:
-                    list_problem.append("第{0}行第3列,密码为6-13位字符: ".format(i) +
-                                        str(list1[2]))
                     continue
 
-                list1[3] = str(list1[3])
-                path = Path(list1[3])
-                #判断路径是否存在
+                #判断密码是否符合格式要求
+                lenth = len(str(list1[3]))
+                if lenth < 13 and lenth >= 6:
+                    list1[3] = str(list1[3])
+
+               
+                else:
+                    list_problem.append("第{0}行第4列,密码为6-13位字符: ".format(i) +
+                                        str(list1[3]))
+                    continue
+
+           
+
+                      #判断路径是否存在
+                list1[4] = str(list1[4])
+                path = Path(list1[4])
+              
                 if path.is_file():
-                    if list1[3][-3:] == "jpg":
+                    if list1[4][-3:] == "jpg":
                         pass
                     else:
-                        string = "第{0}行第4列，文件为jpg图片".format(i) + str( list1[3])
+                        string = "第{0}行第4列，文件为jpg图片".format(i) + str( list1[4])
                         list_problem.append(string)
                         continue
-                    rgbImage = PIL.Image.open(list1[3])
+                    rgbImage = PIL.Image.open(list1[4])
                     rgbImage  =  rgbImage .convert("RGB")
                     rgbImage =  np.array(rgbImage )
                     faces = models.detector(rgbImage)
                     if len(faces) == 1:
                         pass
                     else:
-                        string = "第{0}行第4列，文件不存在人脸或多个人脸 ".format(i) + str(
-                            list1[3])
+                        string = "第{0}行第5列，文件不存在人脸或多个人脸 ".format(i) + str(
+                            list1[4])
                         list_problem.append(string)
                         continue
 
                 else:
-                    string = "第{0}行第4列，不存在该路径或文件 ".format(i) + str(list1[3])
+                    string = "第{0}行第5列，不存在该路径或文件 ".format(i) + str(list1[4])
                     list_problem.append(string)
                     continue
 
-                list2 = ["id_number", "user_name", "password", "img_path"]
+
+                list2 = ["id_number","user_name","gender", "password", "img_path"]
                 dic = dict(zip(list2, list1))
                 information = self.set_information(dic)
                 self.insert_user(information)
@@ -134,6 +146,11 @@ class CreatStudentUser(CreatUser):
     def set_information(self, part_information):
         information = {}
         information["user_name"] = part_information["user_name"]
+        if part_information["gender"] == "男":
+            information["gender"] = 1
+        else:
+            information["gender"] = 0 
+
         information['salt'] = MyMd5().create_salt()
         information["img_path"] = self.get_img_path(
             part_information["id_number"])
@@ -148,6 +165,7 @@ class CreatStudentUser(CreatUser):
     def insert_user(self, information):
         Database().insert_user(information["id_number"],
                                information["user_name"],
+                               information["gender"],
                                information["password"],
                                information["img_path"], information["vector"],
                                information["salt"])
