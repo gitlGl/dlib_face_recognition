@@ -1,4 +1,4 @@
-from turtle import clear
+
 from PyQt5.QtWidgets import QWidget, QDialog, QLabel, QLineEdit, QPushButton, \
     QVBoxLayout, QHBoxLayout, QMessageBox
 from PyQt5.QtCore import pyqtSignal
@@ -219,7 +219,7 @@ class SigninPage(QDialog):
             return
         else:
             QMessageBox.critical(self, 'Wrong', '文件不存在人脸或多个人脸')
-            self.signin_vector_line.setText(clear)
+            self.signin_vector_line.clear()
             return
 
         #响应注册请求
@@ -236,9 +236,9 @@ class SigninPage(QDialog):
             self.signin_pwd_line.clear()
             self.signin_pwd2_line.clear()
 
-        if not self.signin_user_line.text().isdigit():
+        if (not self.signin_user_line.text().isdigit()) or (len(self.signin_user_line.text())>15):
 
-            QMessageBox.critical(self, 'Wrong', 'Usernumber is only digit!')
+            QMessageBox.critical(self, 'Wrong', 'Usernumber is only digit or is too long!')
 
             return
         elif self.signin_pwd_line.text() != self.signin_pwd2_line.text():

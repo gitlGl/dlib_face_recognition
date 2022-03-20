@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import numbers
 from src.Database import Database
+from src.SearchData import SearchData
 import sys,math
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import *
@@ -13,7 +14,7 @@ from PyQt5.QtChart import QChartView, QChart, QLineSeries, QLegend, \
 from PyQt5.QtCore import Qt, QPointF, QRectF, QPoint
 from PyQt5.QtGui import QPainter, QPen
 from PyQt5.QtWidgets import QApplication, QGraphicsLineItem, QWidget, \
-        QHBoxLayout, QLabel, QVBoxLayout, QGraphicsProxyWidget
+        QHBoxLayout, QLabel, QVBoxLayout, QGraphicsProxyWidget,QLineEdit
 
 class ToolTipItem(QWidget):
 
@@ -116,6 +117,7 @@ class ChartView(QChartView):
 
     def resizeEvent(self, event):
         super(ChartView, self).resizeEvent(event)
+        
         # 当窗口大小改变时需要重新计算
         # 坐标系中左上角顶点
         self.point_top = self._chart.mapToPosition(
@@ -282,13 +284,25 @@ class Win(QWidget):
 
         self.Hlayout = QHBoxLayout()
         self.Vhlayout = QVBoxLayout()
+        self.linnedit = QLineEdit()
+        #self.linnedit.setFixedSize(400,15)
+        self.linnedit.setMaximumSize(200,20)
+        self.linnedit.setPlaceholderText('Please enter your usernumber')
         self.grou = QGroupBox(self)
         self.qlabel = QLabel()
-        self.btn = QPushButton("分析")
-        self.btn = QPushButton(objectName="GreenButton")
-        self.btn.setText("分析")
-        self.qlabel.setText("时间范围")
-        self.grou.setFixedSize(self.width(), 40)
+        self.label = QLabel()
+        self.label.setText("         ")
+        self.btn1 = QPushButton("分析")
+        self.btn1 = QPushButton(objectName="GreenButton")
+        self.btn1.setIcon(QIcon("./resources/分析.png"))
+        self.btn2 = QPushButton()
+        self.btn2 = QPushButton(objectName="GreenButton")
+        self.btn2.setIcon(QIcon("./resources/搜索.png"))
+       
+        self.btn1.setText("分析")
+        self.btn2.setText("查询")
+        self.qlabel.setText("时间范围：")
+        #self.grou.setFixedSize(self.width(), 40)
         self.grou.move(0,0)
         self.DateEdit1 = QDateEdit(QDate.currentDate(),self)
         self.DateEdit2 =QDateEdit(QDate.currentDate())
@@ -301,15 +315,48 @@ class Win(QWidget):
         self.Hlayout.addWidget(self.qlabel)
         self.Hlayout.addWidget(self.DateEdit1)
         self.Hlayout.addWidget(self.DateEdit2)
-        self.Hlayout.addWidget(self.btn)
+        self.Hlayout.addWidget(self.btn1)
+        self.Hlayout.addWidget(self.label)
+        self.Hlayout.addWidget(self.linnedit)
+        self.Hlayout.addWidget(self.btn2)
         self.grou.setLayout(self.Hlayout)
         self.Vhlayout.addWidget(self.grou)
+        self.grou.setMaximumSize(800,40)
         self.setLayout(self.Vhlayout)
-        self.btn.clicked.connect(self.analyze_data)
+        self.btn1.clicked.connect(self.analyze_data)
+        self.btn2.clicked.connect(self.show_search_result)
         datatabel,data_title ,number=  self.get_data_(0)
         self.view = ChartView(datatabel,data_title,number)
         self.Vhlayout.addWidget(self.view)
-
+  
+    # def resizeEvent(self, event):
+    #     super(ChartView, self).resizeEvent(event)
+    #     self.grou.resize(self.width,40)
+    def show_search_result(self):
+        if not self.linnedit.text(): 
+             QMessageBox.critical(self, 'Wrong', '请输入学号')
+             return 
+        id_number = self.linnedit.text()
+        if not id_number.isdigit():
+            QMessageBox.critical(self, 'Wrong', '学号为数字')
+            return
+            
+        result = Database().c.execute("select id_number,user_name,gender from student where id_number = {}".format(int(id_number))).fetchall()
+        if len(result)!= 0:
+            information = {"id_number":str(result[0][0])}
+            if  result[0][2] == 0:
+                information["gender"] = "女"
+            else:
+                information["gender"] = "男"
+            information ["user_name"]= result[0][1]
+            print(result[0][0])
+            self.result = SearchData()
+            self.result.set_information(information)
+            self.Vhlayout.itemAt(1).widget().deleteLater()
+            self.Vhlayout.addWidget(self.result)
+        else: 
+            QMessageBox.critical(self, 'Wrong', '用户不存在')
+            return
     def analyze_data(self):
         self.Vhlayout.itemAt(1).widget().deleteLater()
         days = abs(self.DateEdit1.date().daysTo(self.DateEdit2.date()) )
