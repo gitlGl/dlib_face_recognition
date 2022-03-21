@@ -373,7 +373,7 @@ class Win(QWidget):
             self.Vhlayout.addWidget(self.view)
 
         elif days >=14 and days< 60:
-            datatabel,data_title ,number=  self.get_data(int( temdays/7),7)
+            datatabel,data_title ,number=  self.get_data(int( temdays/7),7)#计算x轴步长
             self.view = ChartView(datatabel,data_title,number)
             self.Vhlayout.addWidget(self.view)
         elif days >= 60 and days< 365:
