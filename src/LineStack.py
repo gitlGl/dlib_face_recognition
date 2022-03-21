@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import numbers
+from src.Creatuser import CreatStudentUser
 from src.Database import Database
 from src.SearchData import SearchData
 import sys,math
@@ -291,17 +291,23 @@ class Win(QWidget):
         self.grou = QGroupBox(self)
         self.qlabel = QLabel()
         self.label = QLabel()
-        self.label.setText("         ")
+        self.label.setText("  ")
         self.btn1 = QPushButton("分析")
         self.btn1 = QPushButton(objectName="GreenButton")
         self.btn1.setIcon(QIcon("./resources/分析.png"))
         self.btn2 = QPushButton()
         self.btn2 = QPushButton(objectName="GreenButton")
         self.btn2.setIcon(QIcon("./resources/搜索.png"))
-       
+        self.btn3 = QPushButton()
         self.btn1.setText("分析")
         self.btn2.setText("查询")
         self.qlabel.setText("时间范围：")
+        self.btn3 = QPushButton()
+        self.btn3 = QPushButton(objectName="GreenButton")
+        self.btn3.setIcon(QIcon("./resources/文件.png"))
+        self.btn3.setText("批量创建用户")
+        
+        
         #self.grou.setFixedSize(self.width(), 40)
         self.grou.move(0,0)
         self.DateEdit1 = QDateEdit(QDate.currentDate(),self)
@@ -319,12 +325,14 @@ class Win(QWidget):
         self.Hlayout.addWidget(self.label)
         self.Hlayout.addWidget(self.linnedit)
         self.Hlayout.addWidget(self.btn2)
+        self.Hlayout.addWidget(self.btn3)
         self.grou.setLayout(self.Hlayout)
         self.Vhlayout.addWidget(self.grou)
         self.grou.setMaximumSize(800,40)
         self.setLayout(self.Vhlayout)
         self.btn1.clicked.connect(self.analyze_data)
         self.btn2.clicked.connect(self.show_search_result)
+        self.btn3.clicked.connect(self.creat_student_user)
         datatabel,data_title ,number=  self.get_data_(0)
         self.view = ChartView(datatabel,data_title,number)
         self.Vhlayout.addWidget(self.view)
@@ -332,6 +340,23 @@ class Win(QWidget):
     # def resizeEvent(self, event):
     #     super(ChartView, self).resizeEvent(event)
     #     self.grou.resize(self.width,40)
+    def creat_student_user(self):
+        path, _ = QFileDialog.getOpenFileName(self, "选择文件", "c:\\",
+                                              "files(*.xlsx )")
+        if path == '':
+            return
+        list_error = CreatStudentUser().creat_user(path)
+        if len(list_error) == 0:
+            QMessageBox.information(self, 'Information',
+                                    'Register Successfully')
+            return
+        else:
+            error_string = ""
+            for i in list_error:
+                error_string = error_string + i + "\n"
+
+            QMessageBox.information(self, 'Information', error_string)
+
     def show_search_result(self):
         if not self.linnedit.text(): 
              QMessageBox.critical(self, 'Wrong', '请输入学号')

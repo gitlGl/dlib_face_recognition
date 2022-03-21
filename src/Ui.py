@@ -41,24 +41,18 @@ class Ui(QWidget):
         self.btn1.setIcon(QIcon("./resources/摄像头_关闭.png"))
         self.btn2.setText("普通识别")
         self.btn3.setText("活体识别")
-        self.btn4.setIcon(QIcon("./resources/文件.png"))
-        self.btn4.setText("批量创建用户")
+      
         self.btn5.setText("数据")
         self.btn6.setText("帮助")
         self.btn6.clicked.connect(self.help)
         self.btn5.setIcon(QIcon("./resources/数据.png"))
         self.btn6.setIcon(QIcon("./resources/帮助.png"))
         self.btn1.setFlat(True)
-        self.btn4.setFlat(True)
         self.btn6.setFlat(True)
-        self.btn4.clicked.connect(self.creat_student_user)
         self.btn5.clicked.connect(self.analyze_data)
-
         self.btn1.clicked.connect(self.open)
         self.btn2.clicked.connect(self.open_normal)
         self.btn3.clicked.connect(self.open_eye)
-        # self.btn1.setFixedSize(100,20)
-        # self.btn2.setFixedSize(100,20)
         self.qlabel1 = QLabel()
         self.qlabel2 = QLabel()
         self.qlabel3 = QLabel()
@@ -81,7 +75,6 @@ class Ui(QWidget):
         self.Hlayout.addWidget(self.btn1)
         self.Hlayout.addWidget(self.btn2)
         self.Hlayout.addWidget(self.btn3)
-        self.Hlayout.addWidget(self.btn4)
         self.Hlayout.addWidget(self.btn5)
         self.Hlayout.addWidget(self.btn6)
         self.groupbox_1.setLayout(self.Hlayout)
@@ -156,24 +149,6 @@ class Ui(QWidget):
         self.put_img.frame = list_[0]
         self.qlabel4.setPixmap(QPixmap.fromImage(img))
         self.qlabel4.setScaledContents(True)
-
-    #创建用户
-    def creat_student_user(self):
-        path, _ = QFileDialog.getOpenFileName(self, "选择文件", "c:\\",
-                                              "files(*.xlsx )")
-        if path == '':
-            return
-        list_error = CreatStudentUser().creat_user(path)
-        if len(list_error) == 0:
-            QMessageBox.information(self, 'Information',
-                                    'Register Successfully')
-            return
-        else:
-            error_string = ""
-            for i in list_error:
-                error_string = error_string + i + "\n"
-
-            QMessageBox.information(self, 'Information', error_string)
 
     #帮助页面
     def help(self):

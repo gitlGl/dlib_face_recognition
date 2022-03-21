@@ -77,11 +77,11 @@ class UpdateData(QDialog):
         self.vector_button.clicked.connect(self.get_path)
     
     def delete(self,id):
-        path = "img_information/student/{0}/".format(str(id))
+        path = "img_information/student/{0}".format(str(id))
         data = Database()
      
         data.delete(id)
-        if not os.path.exists(path):
+        if  os.path.exists(path):
             shutil.rmtree(path)
 
     def update(self,id):
