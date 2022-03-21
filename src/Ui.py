@@ -15,7 +15,7 @@ from .PutImg import PutImg
 from src.Login import LoginUi
 from .GlobalVariable import  GlobalFlag
 import gc
-from src.LineStack import Win
+from src.Win import Win
 import cv2,time
 class Ui(QWidget):
     def __init__(self):
