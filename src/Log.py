@@ -36,7 +36,7 @@ class  studentlog():
         """
         向数据库插入识时照片
         """
-        path = self.item[3]
+        path = self.item[4]
         if not os.path.exists(path):  # 判断是否存在文件夹如果不存在则创建为文件夹
             os.makedirs(path)
         cv2.imwrite(

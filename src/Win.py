@@ -123,6 +123,7 @@ class Win(QWidget):
             QMessageBox.critical(self, 'Wrong', '用户不存在')
             return
     def analyze_data(self):
+        #根据输入时间范围决定X轴刻度间隔
         self.Vhlayout.itemAt(1).widget().deleteLater()
         days = abs(self.DateEdit1.date().daysTo(self.DateEdit2.date()) )
         temdays = self.DateEdit1.date().daysTo(self.DateEdit2.date())

@@ -38,6 +38,7 @@ class UpdateData(QDialog):
         self.pwd_h_layout = QHBoxLayout()
         self.pwd2_h_layout = QHBoxLayout()
         self.vector_h_layout = QHBoxLayout()
+        self.buttonBox_layout = QHBoxLayout()
         self.all_v_layout = QVBoxLayout()
         self.resize(300, 200)
         if information is not None:
@@ -45,15 +46,18 @@ class UpdateData(QDialog):
             self.user_name_line.setText(information["user_name"])
             self.gender_line.setText(information["gender"])
         
-        self.buttonBox = QDialogButtonBox(self)
+        self.buttonBox1 = QPushButton()
+        self.buttonBox2 = QPushButton()
+        self.buttonBox1 = QPushButton(objectName="GreenButton")
+        self.buttonBox2 = QPushButton(objectName="GreenButton")
+        self.buttonBox1.setText("确定")
+        self.buttonBox2.setText("取消")
         #self.buttonBox.setGeometry(QRect(-20, 340, 341, 32))
-        self.buttonBox.setOrientation(Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
-        self.buttonBox.accepted.connect(self.accept_)
-        self.buttonBox.rejected.connect(self.reject_)
+        self.buttonBox1.clicked.connect(self.accept_)
+        self.buttonBox2.clicked.connect(self.reject_)
         self.layout_init()
     #
-    def accept_(self):
+    def accept_(self):#接受弹出窗口状态
         self.accept()#返回1
     def reject_(self):
         self.reject()#返回0
@@ -71,8 +75,9 @@ class UpdateData(QDialog):
         self.all_v_layout.addLayout(self.pwd_h_layout)
         self.all_v_layout.addLayout(self.pwd2_h_layout)
         self.all_v_layout.addLayout(self.vector_h_layout)
-        self.all_v_layout.addWidget(self.buttonBox)
-
+        self.buttonBox_layout.addWidget(self.buttonBox1)
+        self.buttonBox_layout.addWidget(self.buttonBox2)
+        self.all_v_layout.addLayout(self.buttonBox_layout)
         self.setLayout(self.all_v_layout)
         self.vector_button.clicked.connect(self.get_path)
     
@@ -81,6 +86,7 @@ class UpdateData(QDialog):
         data = Database()
      
         data.delete(id)
+        #删除用户日志信息文件
         if  os.path.exists(path):
             shutil.rmtree(path)
 
@@ -88,24 +94,26 @@ class UpdateData(QDialog):
         user_name = self.user_name_line.text()
         id_number = self.id_number_line.text()
         gender = None
+        #检查输入信息
         if  self.gender_line.text() == "男":
             gender = 1
         elif  self.gender_line.text() =="女":
             gender =0
         else:
             QMessageBox.critical(self, 'Wrong', 'gender is only 男 or 女')
-            return
+            return False
 
         if len(id_number)>20 or (not id_number.isdigit()):
             QMessageBox.critical(self, 'Wrong', 'id_number is only digit or is too long!')
-            return
+            return False
 
 
         elif len (user_name) >13:
              QMessageBox.critical(self, 'Wrong', 'User_number is only digit or is too long!')
+             return False
 
         else :
-            if self.path == None:
+            if self.path == None:#图片可以为不变更
                 data = Database()
                 sql = "UPDATE student SET id_number = {0},user_name = '{1}',gender = {2} WHERE id_number = {3}"\
                 .format(id_number,user_name,gender,id)
@@ -116,6 +124,7 @@ class UpdateData(QDialog):
                 ##更改用户文件信息
                 old_path = "img_information/student/{0}/".format(str(id))
                 new_path = "img_information/student/{0}/".format(str(id_number))
+                #更改后变更用户日志信息文件夹
                 if not os.path.exists(old_path):  #判断是否存在文件夹如果不存在则创建为文件夹
                     os.makedirs(new_path)
                     os.makedirs("img_information/student/{0}/log".format(str(id_number)))
@@ -123,6 +132,7 @@ class UpdateData(QDialog):
                 else :
                     os.rename("img_information/student/{0}/{1}.jpg".format(str(id),str(id)),"img_information/student/{0}/{1}.jpg".format(str(id),str(id_number)))
                     os.rename(old_path,new_path)
+               
             else :
                 data = Database()
                 old_path = "img_information/student/{0}/".format(str(id))
@@ -139,9 +149,9 @@ class UpdateData(QDialog):
                 .format(id),(id_number,user_name,gender,vector))
                 data.conn.commit()
                 data.conn.close()
-                print("sucess")
+            return True
            
-             
+        #获取图片路径  
     def get_path(self):
         path, _ = QFileDialog.getOpenFileName(
             self, "选择文件", "c:\\", "Image files(*.jpg *.gif *.png)")

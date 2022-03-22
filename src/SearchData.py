@@ -77,11 +77,12 @@ class SearchData(QWidget):
                 r = QMessageBox.warning(self, "注意", "确认修改？", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
                 if r == QMessageBox.No:
                             return
-                update_data.update(int(id))
-                QMessageBox.critical(self, 'sucess', '修改成功!')
-                self.tableWidget.item(0, 0).setText(id_number)
-                self.tableWidget.item(0, 1).setText(user_name)
-                self.tableWidget.item(0, 2).setText(gender)
+                result = update_data.update(int(id))
+                if result:
+                    QMessageBox.critical(self, 'sucess', '修改成功!')
+                    self.tableWidget.item(0, 0).setText(id_number)
+                    self.tableWidget.item(0, 1).setText(user_name)
+                    self.tableWidget.item(0, 2).setText(gender)
             elif action == delete_event:
                 r = QMessageBox.warning(self, "注意", "删除可不能恢复了哦！", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
                 if r == QMessageBox.No:

@@ -144,14 +144,14 @@ class LoginUi(QWidget):
 class SigninPage(QDialog):
     def __init__(self):
         super(SigninPage, self).__init__()
-        self.signin_user_label = QLabel('Username:', self)
-        self.signin_pwd_label = QLabel('Password:', self)
-        self.signin_pwd2_label = QLabel('Password:', self)
+        self.signin_user_label = QLabel('用户:', self)
+        self.signin_pwd_label = QLabel('密码:', self)
+        self.signin_pwd2_label = QLabel('密码:', self)
 
         self.signin_user_line = QLineEdit(self)
         self.signin_pwd_line = QLineEdit(self)
         self.signin_pwd2_line = QLineEdit(self)
-        self.signin_vector_button = QPushButton("picture:", self,objectName="GreenButton")
+        self.signin_vector_button = QPushButton("图片:", self,objectName="GreenButton")
         self.signin_vector_button.setFlat(True)
 
         self.signin_vector_button.setIcon(QIcon("./resources/文件.png"))
