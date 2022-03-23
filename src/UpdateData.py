@@ -164,6 +164,9 @@ class UpdateData(QDialog):
             self, "选择文件", "c:\\", "Image files(*.jpg *.gif *.png)")
         if path == '':
             return
+        elif os.path.getsize(path) > 1024000:
+            QMessageBox.critical(self, 'Wrong', '文件应小于10mb')
+            return
         self.vector_line.setText(path)
         rgbImage = PIL.Image.open(path)
         rgbImage  =  rgbImage .convert("RGB")

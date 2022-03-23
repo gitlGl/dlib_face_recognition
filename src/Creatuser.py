@@ -4,7 +4,6 @@ from src.Database import Database
 import os
 from src.GlobalVariable import models
 import xlrd
-from pathlib import Path
 from src.Database import Database
 import PIL.Image
 class CreatUser():
@@ -109,9 +108,9 @@ class CreatStudentUser(CreatUser):
 
                       #判断路径是否存在
                 list1[4] = str(list1[4])
-                path = Path(list1[4])
-              
-                if path.is_file():
+                path = list1[4]
+               
+                if  os.path.isfile(path) and os.path.getsize(path) < 1024000:#文件小于10mb
                     if list1[4][-3:] == "jpg":
                         pass
                     else:
@@ -131,7 +130,7 @@ class CreatStudentUser(CreatUser):
                         continue
 
                 else:
-                    string = "第{0}行第5列，不存在该路径或文件 ".format(i) + str(list1[4])
+                    string = "第{0}行第5列，不存在该路径或文件或文件过大，文件小于10mb ".format(i) + str(list1[4])
                     list_problem.append(string)
                     continue
 

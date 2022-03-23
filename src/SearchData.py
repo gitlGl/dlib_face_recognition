@@ -43,9 +43,11 @@ class SearchData(QWidget):
         user_name = update_data.user_name_line.text()
         id_number = update_data.id_number_line.text()
         gender = update_data.gender_line.text()
+        #变更信息后修改信息
         self.information["id_number"] = id_number
         self.information["user_name"] = user_name
         self.information["gender"] = gender
+
         self.tableWidget.item(row, 0).setText(id_number)
         self.tableWidget.item(row, 1).setText(user_name)
         self.tableWidget.item(row, 2).setText(gender)
@@ -54,11 +56,12 @@ class SearchData(QWidget):
         print("测试",pos)
         update_data = UpdateData(self.information)
         pop_menu = QMenu()
+        #菜单事件信号
         change_new_event = pop_menu.addAction("修改")
         delete_event = pop_menu.addAction("删除")
         item = self.tableWidget.itemAt(pos)
         if item != None:  
-            action = pop_menu.exec_(self.tableWidget.mapToGlobal(pos))#pos为菜单栏坐标位置
+            action = pop_menu.exec_(self.tableWidget.mapToGlobal(pos))#显示菜单列表，pos为菜单栏坐标位置
             if action == change_new_event:
                 user_name = update_data.user_name_line.text()
                 id_number = update_data.id_number_line.text()
@@ -69,9 +72,11 @@ class SearchData(QWidget):
                 user_name = update_data.user_name_line.text()
                 id_number = update_data.id_number_line.text()
                 gender = update_data.gender_line.text()
+            #变更信息后修改信息
                 self.information["id_number"] = id_number
                 self.information["user_name"] = user_name
                 self.information["gender"] = gender
+            #变更表格信息
                 self.tableWidget.item(0, 0).setText(id_number)
                 self.tableWidget.item(0, 1).setText(user_name)
                 self.tableWidget.item(0, 2).setText(gender)

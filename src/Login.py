@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from src.GlobalVariable import models
 from .Creatuser import CreatStudentUser
-import PIL.Image
+import PIL.Image,os
 import numpy as np
 from src.FaceLoginPage import FaceLoginPage
 
@@ -210,6 +210,9 @@ class SigninPage(QDialog):
             self, "选择文件", "c:\\", "Image files(*.jpg *.gif *.png)")
         if path == '':
             return
+        elif os.path.getsize(path) > 1024000:
+            QMessageBox.critical(self, 'Wrong', '文件应小于10mb')
+            return
         self.signin_vector_line.setText(path)
         rgbImage = PIL.Image.open(path)
         rgbImage  =  rgbImage .convert("RGB")
@@ -235,7 +238,7 @@ class SigninPage(QDialog):
             self.signin_user_line.clear()
             self.signin_pwd_line.clear()
             self.signin_pwd2_line.clear()
-
+        #检查输入信息格式
         if (not self.signin_user_line.text().isdigit()) or (len(self.signin_user_line.text())>15):
 
             QMessageBox.critical(self, 'Wrong', 'Usernumber is only digit or is too long!')
