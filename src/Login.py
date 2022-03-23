@@ -109,8 +109,8 @@ class LoginUi(QWidget):
             elif len(user) == 1:
                 item = user[0]
                 password = self.pwd_line.text()
-                pass_word = MyMd5().create_md5(password, item[1])
-                if pass_word == item[2]:
+                pass_word = MyMd5().create_md5(password, item["salt"])
+                if pass_word == item["password"]:
 
                     self.emitsingal.emit()
                     clear()

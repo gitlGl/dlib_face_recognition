@@ -108,13 +108,12 @@ class Win(QWidget):
             
         result = Database().c.execute("select id_number,user_name,gender from student where id_number = {}".format(int(id_number))).fetchall()
         if len(result)!= 0:
-            information = {"id_number":str(result[0][0])}
-            if  result[0][2] == 0:
+            information = {"id_number":str(result[0]["id_number"])}
+            if  result[0]["gender"] == 0:
                 information["gender"] = "女"
             else:
                 information["gender"] = "男"
-            information ["user_name"]= result[0][1]
-            print(result[0][0])
+            information ["user_name"]= result[0]["user_name"]
             self.result = SearchData()
             self.result.set_information(information)
             self.Vhlayout.itemAt(1).widget().deleteLater()
@@ -166,15 +165,16 @@ class Win(QWidget):
         if days >=0:
             for i in timestr:
                 reuslt = self.test.c.execute(sql.format(self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d")+i,self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d")+i)).fetchall()
-                total_data.append(reuslt[0][0])
+                #print(type(result))
+                total_data.append(reuslt[0]['count(id_number)'])
                 reuslt = self.test.c.execute(sql_female.format(self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d")+i,self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d")+i)).fetchall()
-                female_data.append(reuslt[0][0])
+                female_data.append(reuslt[0]['count(id_number)'])
                 reuslt = self.test.c.execute(sql_male.format(self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d")+i,self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d")+i)).fetchall()
-                male_data.append(reuslt[0][0])
+                male_data.append(reuslt[0]['count(id_number)'])
         else: 
              for i in timestr:
                 result = self.test.c.execute(sql.format(self.DateEdit2.date().toPyDate().strftime("%Y-%m-%d")+i,self.DateEdit2.date().toPyDate().strftime("%Y-%m-%d")+i)).fetchall()
-                total_data.append(result[0][0])
+                total_data.append(result[0]['count(id_number)'])
       
         category1 = ["总数"]    
         category2 = ["女性"]  
@@ -212,22 +212,22 @@ class Win(QWidget):
             step_= 0
             for k in range(abs(days)+1):   
                     result = self.test.c.execute(sql.format(self.DateEdit1.date().addDays(step_).toPyDate().strftime("%Y-%m-%d"),self.DateEdit1.date().addDays(step_+step).toPyDate().strftime("%Y-%m-%d"))).fetchall()
-                    total_data .append(result[0][0])
+                    total_data .append(result[0]['count(id_number)'])
                     result = self.test.c.execute(sql_female.format(self.DateEdit1.date().addDays(step_).toPyDate().strftime("%Y-%m-%d"),self.DateEdit1.date().addDays(step_+step).toPyDate().strftime("%Y-%m-%d"))).fetchall()
-                    female_data .append(result[0][0])
+                    female_data .append(result[0]['count(id_number)'])
                     result = self.test.c.execute(sql_male.format(self.DateEdit1.date().addDays(step_).toPyDate().strftime("%Y-%m-%d"),self.DateEdit1.date().addDays(step_+step).toPyDate().strftime("%Y-%m-%d"))).fetchall()
-                    male_data .append(result[0][0])
+                    male_data .append(result[0]['count(id_number)'])
                     step_ = step+step_
 
         else: 
             step_= 0
             for k in range(abs(days)+1):   
                     result = self.test.c.execute(sql.format(self.DateEdit2.date().addDays(step_).toPyDate().strftime("%Y-%m-%d"),self.DateEdit2.date().addDays(step_+step).toPyDate().strftime("%Y-%m-%d"))).fetchall()
-                    total_data .append(result[0][0])
+                    total_data .append(result[0]['count(id_number)'])
                     result = self.test.c.execute(sql_female.format(self.DateEdit2.date().addDays(step_).toPyDate().strftime("%Y-%m-%d"),self.DateEdit2.date().addDays(step_+step).toPyDate().strftime("%Y-%m-%d"))).fetchall()
-                    female_data .append(result[0][0])
+                    female_data .append(result[0]['count(id_number)'])
                     result = self.test.c.execute(sql_male.format(self.DateEdit2.date().addDays(step_).toPyDate().strftime("%Y-%m-%d"),self.DateEdit2.date().addDays(step_+step).toPyDate().strftime("%Y-%m-%d"))).fetchall()
-                    male_data .append(result[0][0])
+                    male_data .append(result[0]['count(id_number)'])
                     step_ = step+step_
   
         category1 = ["总数"]    

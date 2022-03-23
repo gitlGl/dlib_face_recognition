@@ -1,3 +1,4 @@
+from cgitb import text
 from  PyQt5.QtWidgets import QWidget,QTableWidget,QTableWidgetItem,QVBoxLayout,QMenu,QHeaderView,QMessageBox
 from src.UpdateData import UpdateData
 from PyQt5 import QtWidgets
@@ -84,7 +85,7 @@ class SearchData(QWidget):
                 if r == QMessageBox.No:
                    return
                 update_data.delete(int(self.information["id_number"]))
-                self.tableWidget.itemDelegate()
+                self.tableWidget.clear()
                 # self.tableWidget.item(0, 1).setText(user_name)
                 # self.tableWidget.item(0, 2).setText(gender)
 

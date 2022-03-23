@@ -20,7 +20,7 @@ class  studentlog():
         self.database.c.execute(
             "INSERT INTO student_log_time (id_number,gender,log_time ) \
       VALUES (?, ?,?)",
-            (self.item[0], self.item[2],datetime.datetime.now().strftime("%Y-%m-%d-%H")))
+            (self.item["id_number"], self.item["password"],datetime.datetime.now().strftime("%Y-%m-%d-%H")))
 
        
         self.database.conn.commit()
@@ -36,7 +36,7 @@ class  studentlog():
         """
         向数据库插入识时照片
         """
-        path = self.item[4]
+        path = self.item["img_path"]
         if not os.path.exists(path):  # 判断是否存在文件夹如果不存在则创建为文件夹
             os.makedirs(path)
         cv2.imwrite(
@@ -46,16 +46,16 @@ class  studentlog():
         return str(datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S "))
     #记录识别成功次数
     def insert_cout(self):
-        if self.item[7] == None:
+        if self.item["cout"] == None:
             cout = 1
             self.database.c.execute(
-            "UPDATE student SET cout = {0} WHERE id_number = {1}".format(cout,self.item[0]),)
+            "UPDATE student SET cout = {0} WHERE id_number = {1}".format(cout,self.item["id_number"]),)
             self.database.conn.commit()
            
         else:
-            cout = self.item[7] + 1
+            cout = self.item["cout"] + 1
             self.database.c.execute(
-            "UPDATE student SET cout = {0} WHERE id_number = {1}".format(cout,self.item[0]),)
+            "UPDATE student SET cout = {0} WHERE id_number = {1}".format(cout,self.item["id_number"]),)
             self.database.conn.commit()
            
 class  adminlog():
@@ -69,7 +69,7 @@ class  adminlog():
         self.insert_img(img)
     def insert_img(self, img):
     
-        path ="img_information/" +"admin/" +str(self.item[0])+"/log"
+        path ="img_information/" +"admin/" +str(self.item["id_number"])+"/log"
         if not os.path.exists(path):  # 判断是否存在文件夹如果不存在则创建为文件夹
             os.makedirs(path)
         cv2.imwrite(

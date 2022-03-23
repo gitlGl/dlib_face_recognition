@@ -5,6 +5,13 @@ import sqlite3
 class Database():
     def __init__(self):
         self.conn = sqlite3.connect('./resources/company.db')
+        def dict_factory(cursor, row):#查询返回数据类型是字典形式
+            d = {}
+            for idx, col in enumerate(cursor.description):
+                d[col[0]] = row[idx]
+            return d
+        self.conn.row_factory = dict_factory
+
         self.c = self.conn.cursor()
         self.creatble()
 

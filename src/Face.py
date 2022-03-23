@@ -57,8 +57,8 @@ class StudentRgFace(Face):
                 student = Database()
                 log = studentlog(result, img, student)
                 student.conn.close()
-                self.former_result = "验证成功：" + log.item[1]
-                return "验证成功：" + log.item[1]
+                self.former_result = "验证成功：" + log.item["user_name"]
+                return "验证成功：" + log.item["user_name"]
             else:
                 return "验证失败"
 
@@ -67,7 +67,7 @@ class StudentRgFace(Face):
         student = Database()
         list = []
         for i in student.c.execute("SELECT vector from student"):
-            i = np.loads(i[0])
+            i = np.loads(i["vector"])
             list.append(i)
         if len(list) == 0:
             return "请先注册用户"
@@ -91,14 +91,14 @@ class AdminRgFace(Face):
         admin = Database()
         list = []
         for i in admin.c.execute("SELECT vector from admin"):
-            i = np.loads(i[0])
+            i = np.loads(i["vector"])
             list.append(i)
         if len(list) == 0:
             return False
         distances = self.compare_faces(np.array(list), face_data, axis=1)
         min_distance = np.argmin(distances)
         print("距离", distances[min_distance])
-        if distances[min_distance] < 0.3:
+        if distances[min_distance] < 0.4:
             tembyte = np.ndarray.dumps(list[min_distance])
             adminlog(tembyte, img, admin)
             admin.conn.close()
