@@ -1,16 +1,12 @@
 from PyQt5.QtWidgets import QWidget, QDialog, QLabel, QLineEdit, QPushButton, \
-    QVBoxLayout, QHBoxLayout, QMessageBox,QDialogButtonBox
-from PyQt5.QtCore import pyqtSignal,Qt
+    QVBoxLayout, QHBoxLayout, QMessageBox
 from src.Database import Database
-from src.MyMd5 import MyMd5
-from PyQt5.QtCore import pyqtSlot,QRect
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
+from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtGui import QIcon
 from src.GlobalVariable import models
 from .Creatuser import CreatUser
 import PIL.Image,os,shutil
 import numpy as np
-from src.FaceLoginPage import FaceLoginPage
 
 
 class UpdateData(QDialog):
@@ -167,6 +163,10 @@ class UpdateData(QDialog):
         elif os.path.getsize(path) > 1024000:
             QMessageBox.critical(self, 'Wrong', '文件应小于10mb')
             return
+        data = open(path,"rb").read(32) 
+        if not (data[6:10] in (b'JFIF',b'Exif')):
+            QMessageBox.critical(self, 'Wrong', '文件非图片文件')
+            return 
         self.vector_line.setText(path)
         rgbImage = PIL.Image.open(path)
         rgbImage  =  rgbImage .convert("RGB")

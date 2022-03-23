@@ -1,5 +1,4 @@
-from  PyQt5.QtWidgets import QWidget,QTableWidget,QLineEdit,QTableWidgetItem,QVBoxLayout,QMenu,QHeaderView,QMessageBox
-from src.Database import Database
+from  PyQt5.QtWidgets import QWidget,QTableWidget,QTableWidgetItem,QVBoxLayout,QMenu,QHeaderView,QMessageBox
 from src.UpdateData import UpdateData
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QPoint,pyqtSlot,Qt

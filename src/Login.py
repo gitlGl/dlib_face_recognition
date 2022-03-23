@@ -5,8 +5,8 @@ from PyQt5.QtCore import pyqtSignal
 from src.Database import Database
 from src.MyMd5 import MyMd5
 from PyQt5.QtCore import pyqtSlot
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
+from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtGui import QIcon
 from src.GlobalVariable import models
 from .Creatuser import CreatStudentUser
 import PIL.Image,os
@@ -213,12 +213,18 @@ class SigninPage(QDialog):
         elif os.path.getsize(path) > 1024000:
             QMessageBox.critical(self, 'Wrong', '文件应小于10mb')
             return
+        data = open(path,"rb").read(32)
+        if not (data[6:10] in (b'JFIF',b'Exif')):#检查文件类型是否属于 jpg
+            QMessageBox.critical(self, 'Wrong', '文件非图片文件')
+            return 
+
         self.signin_vector_line.setText(path)
         rgbImage = PIL.Image.open(path)
         rgbImage  =  rgbImage .convert("RGB")
         rgbImage =  np.array(rgbImage )
         faces = models.detector(rgbImage)
         if len(faces) == 1:
+            self.path = path 
             return
         else:
             QMessageBox.critical(self, 'Wrong', '文件不存在人脸或多个人脸')
@@ -275,7 +281,7 @@ class SigninPage(QDialog):
                 creat_user = CreatStudentUser()
 
                 vector = creat_user.get_vector(user_name,
-                                               self.signin_vector_line.text(),
+                                               self.path,
                                                "admin")
 
                 admin.c.execute(
