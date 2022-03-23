@@ -85,7 +85,7 @@ class SearchData(QWidget):
                 if r == QMessageBox.No:
                    return
                 update_data.delete(int(self.information["id_number"]))
-                self.tableWidget.clear()
+                self.tableWidget.clear()    
                 # self.tableWidget.item(0, 1).setText(user_name)
                 # self.tableWidget.item(0, 2).setText(gender)
 
