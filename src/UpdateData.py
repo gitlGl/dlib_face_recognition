@@ -58,7 +58,10 @@ class UpdateData(QDialog):
         self.layout_init()
     #
     def accept_(self):#接受弹出窗口状态
-        self.accept()#返回1
+       result = self.update(int(self.information["id_number"]))
+       if result:
+            QMessageBox.critical(self, 'sucess', '修改成功!')
+            self.accept()#返回1
     def reject_(self):
         self.reject()#返回0
     def layout_init(self):
@@ -113,6 +116,9 @@ class UpdateData(QDialog):
              return False
 
         else :
+            r = QMessageBox.warning(self, "注意", "确认修改？", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            if r == QMessageBox.No:
+                return False
             if self.path == None:#图片可以为不变更
                 data = Database()
                 sql = "UPDATE student SET id_number = {0},user_name = '{1}',gender = {2} WHERE id_number = {3}"\
@@ -149,6 +155,7 @@ class UpdateData(QDialog):
                 .format(id),(id_number,user_name,gender,vector))
                 data.conn.commit()
                 data.conn.close()
+           
             return True
            
         #获取图片路径  

@@ -35,28 +35,23 @@ class SearchData(QWidget):
         self.tableWidget.setItem(row, 2, sex_item)
     
     def on_tableWidget_cellDoubleClicked(self, row, column):#双击槽函数 self.tableWidget.cellDoubleClicked.connect()
-        id = self.tableWidget.item(0, 0).text()#表格第一行第一列
-        print(id)
         update_data = UpdateData(self.information)
         ok = update_data.exec_()
         print("是否",ok)
         if not ok:
             return
-        r = QMessageBox.warning(self, "确认修改", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-        if r == QMessageBox.No:
-                   return
         user_name = update_data.user_name_line.text()
         id_number = update_data.id_number_line.text()
         gender = update_data.gender_line.text()
-        update_data.update(int(id))
-        QMessageBox.critical(self, 'sucess', '修改成功!')
+        self.information["id_number"] = id_number
+        self.information["user_name"] = user_name
+        self.information["gender"] = gender
         self.tableWidget.item(row, 0).setText(id_number)
         self.tableWidget.item(row, 1).setText(user_name)
         self.tableWidget.item(row, 2).setText(gender)
     @pyqtSlot(QPoint)
     def context_menu(self,pos):
         print("测试",pos)
-        id = self.tableWidget.item(0, 0).text()#表格第一行第一列
         update_data = UpdateData(self.information)
         pop_menu = QMenu()
         change_new_event = pop_menu.addAction("修改")
@@ -74,20 +69,17 @@ class SearchData(QWidget):
                 user_name = update_data.user_name_line.text()
                 id_number = update_data.id_number_line.text()
                 gender = update_data.gender_line.text()
-                r = QMessageBox.warning(self, "注意", "确认修改？", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-                if r == QMessageBox.No:
-                            return
-                result = update_data.update(int(id))
-                if result:
-                    QMessageBox.critical(self, 'sucess', '修改成功!')
-                    self.tableWidget.item(0, 0).setText(id_number)
-                    self.tableWidget.item(0, 1).setText(user_name)
-                    self.tableWidget.item(0, 2).setText(gender)
+                self.information["id_number"] = id_number
+                self.information["user_name"] = user_name
+                self.information["gender"] = gender
+                self.tableWidget.item(0, 0).setText(id_number)
+                self.tableWidget.item(0, 1).setText(user_name)
+                self.tableWidget.item(0, 2).setText(gender)
             elif action == delete_event:
                 r = QMessageBox.warning(self, "注意", "删除可不能恢复了哦！", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
                 if r == QMessageBox.No:
                    return
-                update_data.delete(int(id))
+                update_data.delete(int(self.information["id_number"]))
                 self.tableWidget.itemDelegate()
                 # self.tableWidget.item(0, 1).setText(user_name)
                 # self.tableWidget.item(0, 2).setText(gender)
