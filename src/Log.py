@@ -20,7 +20,7 @@ class  studentlog():
         self.database.c.execute(
             "INSERT INTO student_log_time (id_number,gender,log_time ) \
       VALUES (?, ?,?)",
-            (self.item["id_number"], self.item["password"],datetime.datetime.now().strftime("%Y-%m-%d-%H")))
+            (self.item["id_number"], self.item["gender"],datetime.datetime.now().strftime("%Y-%m-%d-%H")))
 
        
         self.database.conn.commit()

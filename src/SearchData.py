@@ -1,4 +1,5 @@
-from cgitb import text
+from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import Qt,QSize
 from  PyQt5.QtWidgets import QWidget,QTableWidget,QTableWidgetItem,QVBoxLayout,QMenu,QHeaderView,QMessageBox
 from src.UpdateData import UpdateData
 from PyQt5 import QtWidgets
@@ -29,11 +30,19 @@ class SearchData(QWidget):
         sid_item = QTableWidgetItem(information["id_number"])
         name_item = QTableWidgetItem(information["user_name"])
         sex_item = QTableWidgetItem(information["gender"])
-        self.tableWidget.insertRow(row)
+        img_item =  QTableWidgetItem()
+        self.tableWidget.setIconSize(QSize(60, 100))
+        img_item.setIcon(QIcon("img_information/student/{0}/{1}.jpg".format(information["id_number"],information["id_number"])))
+        sid_item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+        name_item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+        sex_item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+       
         self.tableWidget.setItem(row, 0, sid_item)
         self.tableWidget.setItem(row, 1, name_item)
         self.tableWidget.setItem(row, 2, sex_item)
-    
+        self.tableWidget.setItem(row, 3,img_item)
+      
+           
     def on_tableWidget_cellDoubleClicked(self, row, column):#双击槽函数 self.tableWidget.cellDoubleClicked.connect()
         update_data = UpdateData(self.information)
         ok = update_data.exec_()
@@ -77,9 +86,9 @@ class SearchData(QWidget):
                 self.information["user_name"] = user_name
                 self.information["gender"] = gender
             #变更表格信息
-                self.tableWidget.item(0, 0).setText(id_number)
-                self.tableWidget.item(0, 1).setText(user_name)
-                self.tableWidget.item(0, 2).setText(gender)
+                self.tableWidget.item(item.row(), 0).setText(id_number)
+                self.tableWidget.item(item.row(), 1).setText(user_name)
+                self.tableWidget.item(item.row(), 2).setText(gender)
             elif action == delete_event:
                 r = QMessageBox.warning(self, "注意", "删除可不能恢复了哦！", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
                 if r == QMessageBox.No:

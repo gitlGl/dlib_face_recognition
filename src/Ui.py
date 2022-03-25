@@ -1,6 +1,6 @@
 import psutil
 from .Creatuser import CreatStudentUser
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt,QSize
 from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QHBoxLayout
 from src.Process import process_student_rg
 from PyQt5.QtWidgets import QSlider

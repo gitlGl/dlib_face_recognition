@@ -46,7 +46,6 @@ def convertToQtFormat(frame_show):
     p = convertToQtFormat.scaled(460, 530)
     return p
 
-
 #为图片渲染中文
 # def put_chines_test(frame, chinnes_text):
 #     rgbImage = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)

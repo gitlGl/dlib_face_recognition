@@ -10,7 +10,8 @@
 8.人脸跟踪是耗时操作，去掉绘制框可提高fps。<br>
 9.增加数据可视化功能，分析图书馆人流量变化<br>
 10.识别成功时保存照片到用户文件夹<br>
-11.依赖<br>
+11.模型下载网址：dlib.net<br>
+12.依赖<br>
 dlib                    19.8.1<br>  
 face-recognition        1.3.0<br>  
 face-recognition-models 0.3.0 <br> 
