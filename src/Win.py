@@ -1,18 +1,12 @@
 from src.Creatuser import CreatStudentUser
 from src.Database import Database
 from src.SearchData import SearchData
-import sys,math
-from PyQt5 import QtCore
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
+from PyQt5.QtCore import QDate
 import copy
-from PyQt5.QtChart import QChartView, QChart, QLineSeries, QLegend, \
-        QCategoryAxis
-from PyQt5.QtCore import Qt, QPointF, QRectF, QPoint
-from PyQt5.QtGui import QPainter, QPen
-from PyQt5.QtWidgets import QApplication, QGraphicsLineItem, QWidget, \
-        QHBoxLayout, QLabel, QVBoxLayout, QGraphicsProxyWidget,QLineEdit
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel, QVBoxLayout, QLineEdit,\
+QGroupBox,QPushButton,QFileDialog,QDateEdit,QMessageBox
 from src.LineStack import ChartView
 class Win(QWidget):
     def __init__(self):

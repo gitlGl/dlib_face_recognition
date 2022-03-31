@@ -1,5 +1,3 @@
-from pickle import NONE
-import sys
 from PyQt5.QtWidgets import QWidget, QLabel,QVBoxLayout,QHBoxLayout
 from PyQt5.QtCore import pyqtSignal,Qt
 from src.Capture import Capture

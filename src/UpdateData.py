@@ -1,5 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QDialog, QLabel, QLineEdit, QPushButton, \
-    QVBoxLayout, QHBoxLayout, QMessageBox
+from PyQt5.QtWidgets import QDialog, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QMessageBox
 from src.Database import Database
 from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtGui import QIcon

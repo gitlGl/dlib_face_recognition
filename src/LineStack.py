@@ -1,20 +1,8 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-from src.Creatuser import CreatStudentUser
-from src.Database import Database
-from src.SearchData import SearchData
-import sys,math
-from PyQt5 import QtCore
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-import copy
-from PyQt5.QtChart import QChartView, QChart, QLineSeries, QLegend, \
-        QCategoryAxis
+
+from PyQt5.QtChart import QChartView, QChart, QLineSeries, QLegend,QCategoryAxis
 from PyQt5.QtCore import Qt, QPointF, QRectF, QPoint
 from PyQt5.QtGui import QPainter, QPen
-from PyQt5.QtWidgets import QApplication, QGraphicsLineItem, QWidget, \
-        QHBoxLayout, QLabel, QVBoxLayout, QGraphicsProxyWidget,QLineEdit
+from PyQt5.QtWidgets import QGraphicsLineItem, QWidget,QHBoxLayout, QLabel, QVBoxLayout, QGraphicsProxyWidget
 
 class ToolTipItem(QWidget):
 
@@ -173,10 +161,15 @@ class ChartView(QChartView):
         marker.series().setVisible(visible)
         marker.setVisible(True)  # 要保证marker一直显示
         # 透明度
+
         alpha = 1.0 if visible else 0.4
+        
         # 设置label的透明度
         brush = marker.labelBrush()
+
         color = brush.color()
+        
+        
         color.setAlphaF(alpha)
         brush.setColor(color)
         marker.setLabelBrush(brush)

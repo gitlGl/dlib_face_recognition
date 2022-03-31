@@ -111,7 +111,7 @@ class Ui(QWidget):
         self.p = Process(target=process_student_rg,
                          args=(self.Q1, self.Q2, self.share))
         self.p.daemon = True
-        self.put_img.emit_img.connect(self.set_normal_img)
+        #self.put_img.emit_img.connect(self.set_normal_img)
         self.put_img.emit_result.connect(self.show_result)
         self.put_img.emit_text.connect(self.change_text)
         self.timer = QTimer()
@@ -198,7 +198,7 @@ class Ui(QWidget):
                     self.qlabel1.setText("提示：请张嘴")
 
     def open(self):
-        #self.put_img.emit_img.connect(self.set_normal_img)
+        self.put_img.emit_img.connect(self.set_normal_img)
         self.btn1.clicked.disconnect(self.open)
         self.btn1.clicked.connect(self.close)
         self.btn1.setText("关闭摄像头")
@@ -222,6 +222,7 @@ class Ui(QWidget):
                 self.qlabel1.setText("提示：请张嘴")
 
     def close(self):
+        self.put_img.emit_img.disconnect(self.set_normal_img)
         GlobalFlag.gflag2 = False
 
         self.btn1.clicked.connect(self.open)
