@@ -29,7 +29,7 @@ class FaceLoginPage(QWidget):
         self.groupbox.setFixedSize(480, 35)
         self.groupbox.hide()
         self.resize(480, 600)
-        self.setWindowModality(Qt.ApplicationModal)
+        self.setWindowModality(Qt.ApplicationModal)#
         self.face_rg = AdminRgFace()
         self.capture = Capture()
         self.capture.cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
