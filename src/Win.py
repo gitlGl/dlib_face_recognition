@@ -1,3 +1,4 @@
+from urllib.parse import parse_qs
 from src.Creatuser import CreatStudentUser
 from src.Database import Database
 from src.SearchData import SearchData
@@ -25,21 +26,24 @@ class Win(QWidget):
         self.grou = QGroupBox(self)
         self.qlabel = QLabel()
         self.label = QLabel()
-        self.label.setText("  ")
+        self.label.setText("")
         self.btn1 = QPushButton("分析")
         self.btn1 = QPushButton(objectName="GreenButton")
         self.btn1.setIcon(QIcon("./resources/分析.png"))
         self.btn2 = QPushButton()
         self.btn2 = QPushButton(objectName="GreenButton")
         self.btn2.setIcon(QIcon("./resources/搜索.png"))
-        self.btn3 = QPushButton()
         self.btn1.setText("分析")
         self.btn2.setText("查询")
         self.qlabel.setText("时间范围：")
         self.btn3 = QPushButton()
         self.btn3 = QPushButton(objectName="GreenButton")
-        self.btn3.setIcon(QIcon("./resources/文件.png"))
-        self.btn3.setText("批量创建用户")
+        self.btn3.setText("浏览")
+        self.btn3.setIcon(QIcon("./resources/浏览.png"))
+        self.btn4 = QPushButton()
+        self.btn4 = QPushButton(objectName="GreenButton")
+        self.btn4.setIcon(QIcon("./resources/文件.png"))
+        self.btn4.setText("批量创建用户")
         
         
         #self.grou.setFixedSize(self.width(), 40)
@@ -60,13 +64,15 @@ class Win(QWidget):
         self.Hlayout.addWidget(self.linnedit)
         self.Hlayout.addWidget(self.btn2)
         self.Hlayout.addWidget(self.btn3)
+        self.Hlayout.addWidget(self.btn4)
         self.grou.setLayout(self.Hlayout)
         self.Vhlayout.addWidget(self.grou)
         self.grou.setMaximumSize(800,40)
         self.setLayout(self.Vhlayout)
         self.btn1.clicked.connect(self.analyze_data)
         self.btn2.clicked.connect(self.show_search_result)
-        self.btn3.clicked.connect(self.creat_student_user)
+        self.btn3.clicked.connect(self.browse)
+        self.btn4.clicked.connect(self.creat_student_user)
         datatabel,data_title ,number=  self.get_data_(0)
         self.view = ChartView(datatabel,data_title,number)
         self.Vhlayout.addWidget(self.view)
@@ -102,19 +108,27 @@ class Win(QWidget):
             
         result = Database().c.execute("select id_number,user_name,gender from student where id_number = {}".format(int(id_number))).fetchall()
         if len(result)!= 0:
-            information = {"id_number":str(result[0]["id_number"])}
-            if  result[0]["gender"] == 0:
-                information["gender"] = "女"
-            else:
-                information["gender"] = "男"
-            information ["user_name"]= result[0]["user_name"]
+           
             self.result = SearchData()
-            self.result.set_information(information)
+            self.result.set_information(result)
             self.Vhlayout.itemAt(1).widget().deleteLater()
             self.Vhlayout.addWidget(self.result)
         else: 
             QMessageBox.critical(self, 'Wrong', '用户不存在')
             return
+    def browse(self):
+        result = Database().c.execute("select id_number,user_name,gender from student").fetchall()
+        if len(result)!= 0:
+           
+            self.result = SearchData()
+            self.result.set_information(result)
+            self.Vhlayout.itemAt(1).widget().deleteLater()
+            self.Vhlayout.addWidget(self.result)
+        else: 
+            QMessageBox.critical(self, 'Wrong', '不存在用户')
+            return
+
+            
     def analyze_data(self):
         #根据输入时间范围决定X轴刻度间隔
         self.Vhlayout.itemAt(1).widget().deleteLater()

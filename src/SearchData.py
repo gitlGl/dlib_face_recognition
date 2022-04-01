@@ -1,7 +1,6 @@
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt,QSize
 from  PyQt5.QtWidgets import QWidget,QTableWidget,QTableWidgetItem,QVBoxLayout,QMenu,QHeaderView,QMessageBox, QDialog,QHBoxLayout
-from numpy import imag
 from src.UpdateData import UpdateData
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QPoint,pyqtSlot,Qt
@@ -25,33 +24,41 @@ class SearchData(QWidget):
         self.VBoxLayout.addWidget(self.tableWidget)
         self.setLayout(self.VBoxLayout)
         self.tableWidget.setColumnCount(4)
-        self.tableWidget.setRowCount(0)
+       
         
         self.tableWidget.setHorizontalHeaderLabels([ '学号', '姓名', '性别',"图片" ])
     def set_information(self,information):
-        self.information = information
-        row = self.tableWidget.rowCount()
-        print(self.tableWidget.rowCount())
-        self.tableWidget.insertRow(row)
-        sid_item = QTableWidgetItem(information["id_number"])
-        name_item = QTableWidgetItem(information["user_name"])
-        sex_item = QTableWidgetItem(information["gender"])
-        img_item =  QTableWidgetItem()
-        self.tableWidget.setIconSize(QSize(60, 100))
-        self.imag_path = "img_information/student/{0}/{1}.jpg".format(information["id_number"],information["id_number"])
-        img_item.setIcon(QIcon(self.imag_path))
-        sid_item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-        name_item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-        sex_item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-       
-        self.tableWidget.setItem(row, 0, sid_item)
-        self.tableWidget.setItem(row, 1, name_item)
-        self.tableWidget.setItem(row, 2, sex_item)
-        self.tableWidget.setItem(row, 3,img_item)
+        self.information = information#信息来源
+        row = 0
+        self.tableWidget.setRowCount(0)
+        print(len(self.information))
+        for i in self.information:
+            self.tableWidget.insertRow(row)
+            sid_item = QTableWidgetItem(str(i["id_number"]))
+            name_item = QTableWidgetItem(i["user_name"])
+            if  i["gender"] == 0:
+                i["gender"] = "女"
+            else:
+                i["gender"] = "男"
+            sex_item = QTableWidgetItem(i["gender"])
+            img_item =  QTableWidgetItem()
+            self.tableWidget.setIconSize(QSize(60, 100))
+            imag_path = "img_information/student/{0}/{1}.jpg".format(i["id_number"],i["id_number"])
+            img_item.setIcon(QIcon(imag_path))
+            sid_item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+            name_item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+            sex_item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+            
+            self.tableWidget.setItem(row, 0, sid_item)
+            self.tableWidget.setItem(row, 1, name_item)
+            self.tableWidget.setItem(row, 2, sex_item)
+            self.tableWidget.setItem(row, 3,img_item)
+            row = row + 1
+            self.tableWidget.setRowCount(row)
       
            
     def on_tableWidget_cellDoubleClicked(self, row, column):#双击槽函数 self.tableWidget.cellDoubleClicked.connect()
-        update_data = UpdateData(self.information)
+        update_data = UpdateData(self.information[row])
         ok = update_data.exec_()
         print("是否",ok)
         if not ok:
@@ -60,9 +67,9 @@ class SearchData(QWidget):
         id_number = update_data.id_number_line.text()
         gender = update_data.gender_line.text()
         #变更信息后修改信息
-        self.information["id_number"] = id_number
-        self.information["user_name"] = user_name
-        self.information["gender"] = gender
+        self.information[row]["id_number"] = int(id_number)
+        self.information[row]["user_name"] = user_name
+        self.information[row]["gender"] = gender
 
         self.tableWidget.item(row, 0).setText(id_number)
         self.tableWidget.item(row, 1).setText(user_name)
@@ -70,14 +77,15 @@ class SearchData(QWidget):
     @pyqtSlot(QPoint)
     def context_menu(self,pos):
         print("测试",pos)
-        update_data = UpdateData(self.information)
         pop_menu = QMenu()
         #菜单事件信号
         change_new_event = pop_menu.addAction("修改")
         delete_event = pop_menu.addAction("删除")
         imageView_event = pop_menu.addAction("查看图片")
         item = self.tableWidget.itemAt(pos)
-        if item != None:  
+        if item != None:
+            row = item.row()
+            update_data = UpdateData(self.information[row])
             action = pop_menu.exec_(self.tableWidget.mapToGlobal(pos))#显示菜单列表，pos为菜单栏坐标位置
             if action == change_new_event:
                 user_name = update_data.user_name_line.text()
@@ -90,9 +98,9 @@ class SearchData(QWidget):
                 id_number = update_data.id_number_line.text()
                 gender = update_data.gender_line.text()
             #变更信息后修改信息
-                self.information["id_number"] = id_number
-                self.information["user_name"] = user_name
-                self.information["gender"] = gender
+                self.information[row]["id_number"] = int(id_number)
+                self.information[row]["user_name"] = user_name
+                self.information[row]["gender"] = gender
             #变更表格信息
                 self.tableWidget.item(item.row(), 0).setText(id_number)
                 self.tableWidget.item(item.row(), 1).setText(user_name)
@@ -104,7 +112,8 @@ class SearchData(QWidget):
                 update_data.delete(int(self.information["id_number"]))
                 self.tableWidget.clear()    
             elif action == imageView_event:
-                show_imag = ShowImage(self.imag_path,Qt.WhiteSpaceMode)
+                imag_path = "img_information/student/{0}/{1}.jpg".format(str(self.information[row]["id_number"]),str(self.information[row]["id_number"]))
+                show_imag = ShowImage(imag_path,Qt.WhiteSpaceMode)
                 show_imag.exec_()
 
 

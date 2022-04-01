@@ -37,7 +37,7 @@ class UpdateData(QDialog):
         self.all_v_layout = QVBoxLayout()
         self.resize(300, 200)
         if information is not None:
-            self.id_number_line.setText(self.information["id_number"])
+            self.id_number_line.setText((str(information["id_number"])))
             self.user_name_line.setText(information["user_name"])
             self.gender_line.setText(information["gender"])
         
