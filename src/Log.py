@@ -40,10 +40,10 @@ class  studentlog():
         if not os.path.exists(path):  # 判断是否存在文件夹如果不存在则创建为文件夹
             os.makedirs(path)
         cv2.imwrite(
-            path + "/" + self.get_time().replace(":", "-") + ".jpg",
+            path + "/" + self.get_time()+ ".jpg",
             img)
     def get_time(self):
-        return str(datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S "))
+        return str(datetime.datetime.now().strftime("%Y-%m-%d-%H"))
     #记录识别成功次数
     def insert_cout(self):
         if self.item["cout"] == None:

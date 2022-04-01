@@ -109,8 +109,7 @@ class Win(QWidget):
         result = Database().c.execute("select id_number,user_name,gender from student where id_number = {}".format(int(id_number))).fetchall()
         if len(result)!= 0:
            
-            self.result = SearchData()
-            self.result.set_information(result)
+            self.result = SearchData(result,[ '学号', '姓名', '性别',"图片" ])
             self.Vhlayout.itemAt(1).widget().deleteLater()
             self.Vhlayout.addWidget(self.result)
         else: 
@@ -120,8 +119,7 @@ class Win(QWidget):
         result = Database().c.execute("select id_number,user_name,gender from student").fetchall()
         if len(result)!= 0:
            
-            self.result = SearchData()
-            self.result.set_information(result)
+            self.result = SearchData(result,[ '学号', '姓名', '性别',"图片" ])
             self.Vhlayout.itemAt(1).widget().deleteLater()
             self.Vhlayout.addWidget(self.result)
         else: 
