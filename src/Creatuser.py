@@ -112,7 +112,8 @@ class CreatStudentUser(CreatUser):
                 path = list1[4]
                
                 if  os.path.isfile(path) and os.path.getsize(path) < 1024000:#文件小于10mb
-                    if list1[4][-3:] == "jpg":
+                    if path.endswith('.jpg') :
+                        print("cg")
                         pass
                     else:
                         string = "第{0}行第4列，文件为jpg图片".format(i) + str( list1[4])

@@ -1,4 +1,3 @@
-from src.Database import Database
 StyleSheet = """
 /*这里是通用设置，所有按钮都有效，不过后面的可以覆盖这个*/
 QPushButton {
@@ -68,9 +67,13 @@ QPushButton[text="purple button"] {
     background-color: #9c27b0;
 }
 """
+
+
 # sql2 = "SELECT gender where gender = 1 in (select gender as gender FROM student_log_time where log_time between '2022-03-18'  and '2022-03-19') ;"
 # test = Database()
 # sql = "select count (gender) FROM student_log_time where log_time between '2022-03-18'  and '2022-03-19' and gender =0;"
 
 # print(test.c.execute(sql).fetchall())
 # input() 
+
+

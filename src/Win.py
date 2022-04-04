@@ -193,13 +193,9 @@ class Win(QWidget):
         datatabel.append(category2)
         datatabel.append(category3)
         print(datatabel)
-        data_title = [] 
-        if days >=0 :
-            for i in timestr:
-               data_title.append(i+"时")
-        else:
-            for i in timestr:
-                data_title.append(i+"时")
+        
+        data_title = [i+"时" for i in timestr]
+
         temdata = copy.deepcopy(total_data )
         temdata.sort(reverse=True)    
         return datatabel,data_title ,temdata[0]

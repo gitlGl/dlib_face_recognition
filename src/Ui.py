@@ -1,15 +1,13 @@
 import psutil
-from .Creatuser import CreatStudentUser
-from PyQt5.QtCore import Qt,QSize
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QHBoxLayout
 from src.Process import process_student_rg
 from PyQt5.QtWidgets import QSlider
 from PyQt5.QtCore import pyqtSlot, QTimer, Qt
 from PyQt5.QtGui import QIcon,QFont,QImage,QPixmap
-from PyQt5.QtWidgets import QGroupBox,QCheckBox,QLabel,QMessageBox, QFileDialog
+from PyQt5.QtWidgets import QGroupBox,QCheckBox,QLabel
 import multiprocessing
 from src.Help import Help
-from PyQt5.QtWidgets import QDialog
 from multiprocessing import Process, Queue
 from .PutImg import PutImg
 from src.Login import LoginUi
@@ -123,7 +121,7 @@ class Ui(QWidget):
     def show_result(self, str_result):
         self.qlabel2.clear()
         self.qlabel2.setText(str_result)
-        if not self.timer.isActive():
+        if not self.timer.isActive():#开启清除识别结果
             self.timer.start(3000)
 
     #清除识别结果

@@ -6,6 +6,7 @@ from PyQt5 import QtWidgets
 from PyQt5.QtCore import QPoint,pyqtSlot,Qt
 from .ImageView import ShowImage
 from .Database import Database
+import os
 class ShowStudentLog(QDialog):
     def __init__(self,information,str_list_column ):
         super().__init__()
@@ -66,9 +67,12 @@ class ShowStudentLog(QDialog):
                 database =  Database()
                 print(self.information[row]["rowid"])
                 database.c.execute("delete from student_log_time where rowid  = {0}".format(self.information[row]["rowid"])).fetchall()
+                imag_path = "img_information/student/{0}/log/{1}.jpg".format(str(self.information[row]["id_number"]),str(self.information[row]["log_time"]))
+                os.remove(imag_path)
                 database.conn.commit()
                 database.conn.close()
                 self.tableWidget.removeRow(row) 
+                self.information.remove(self.information[row])
 
             elif action == imageView_event:
                 imag_path = "img_information/student/{0}/log/{1}.jpg".format(str(self.information[row]["id_number"]),str(self.information[row]["log_time"]))

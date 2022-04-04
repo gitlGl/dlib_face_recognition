@@ -1,3 +1,4 @@
+from ast import Pass
 from PyQt5.QtWidgets import QApplication
 from src import Ui
 import sys
@@ -7,13 +8,14 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     app.setStyleSheet(StyleSheet)    
     ui = Ui()
-    
     app.exec_()
+
     
-    """
-    可视化数据格式
+#     """
+#     可视化数据格式
     
-    """
+#     """
+
 
     #   dataTable = [
     #         ["test", [10, 132, 778, 134, 500, 280, 212]],
@@ -24,6 +26,3 @@ if __name__ == '__main__':
     #         ["直接访问", [320, 332, 301, 334, 390, 330, 320]],
     #         ["搜索引擎", [820, 932, 901, 934, 1290, 1330, 1320]]
     #     ]
-
- 
- 
