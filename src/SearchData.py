@@ -111,7 +111,7 @@ class SearchData(QWidget):
                    return
                 update_data.delete(int(self.information[row]["id_number"]))
                 self.tableWidget.removeRow(row) 
-                self.information.remove(self.information[row])
+                self.information.remove(self.information[row])#删除信息列表
             elif action == imageView_event:
                 imag_path = "img_information/student/{0}/{1}.jpg".format(str(self.information[row]["id_number"]),str(self.information[row]["id_number"]))
                 show_imag = ShowImage(imag_path,Qt.WhiteSpaceMode)

@@ -164,23 +164,24 @@ class Win(QWidget):
         total_data = []
         female_data = []
         male_data = []
-        sql_female = "SELECT count(id_number)  FROM student_log_time where log_time between  '{0}'   and '{1}' and gender =0;"
-        sql_male = "SELECT count(id_number)  FROM student_log_time where log_time between  '{0}'   and '{1}' and gender =1;"
+        # sql_female = "SELECT count(id_number)  FROM student_log_time where log_time between  '{0}'   and '{1}' and gender =0;"
+        # sql_male = "SELECT count(id_number)  FROM student_log_time where log_time between  '{0}'   and '{1}' and gender =1;"
+        # sql = "SELECT count(id_number)  FROM student_log_time where log_time \
+        #  between '{0}'  and '{1}';"
+        sql_female = "SELECT count(id_number)  FROM student_log_time where log_time like  '{0}%'    and gender =0;"
+        sql_male = "SELECT count(id_number)  FROM student_log_time where log_time like  '{0}%'    and gender =1;"
         sql = "SELECT count(id_number)  FROM student_log_time where log_time \
-         between '{0}'  and '{1}';"
-        if days >=0:
-            for i in timestr:
-                reuslt = self.test.c.execute(sql.format(self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d")+i,self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d")+i)).fetchall()
-                #print(type(result))
-                total_data.append(reuslt[0]['count(id_number)'])
-                reuslt = self.test.c.execute(sql_female.format(self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d")+i,self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d")+i)).fetchall()
-                female_data.append(reuslt[0]['count(id_number)'])
-                reuslt = self.test.c.execute(sql_male.format(self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d")+i,self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d")+i)).fetchall()
-                male_data.append(reuslt[0]['count(id_number)'])
-        else: 
-             for i in timestr:
-                result = self.test.c.execute(sql.format(self.DateEdit2.date().toPyDate().strftime("%Y-%m-%d")+i,self.DateEdit2.date().toPyDate().strftime("%Y-%m-%d")+i)).fetchall()
-                total_data.append(result[0]['count(id_number)'])
+         like '{0}%';"
+
+        for i in timestr:
+            reuslt = self.test.c.execute(sql.format(self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d")+i,self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d")+i)).fetchall()
+            #print(type(result))
+            total_data.append(reuslt[0]['count(id_number)'])
+            reuslt = self.test.c.execute(sql_female.format(self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d")+i,self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d")+i)).fetchall()
+            female_data.append(reuslt[0]['count(id_number)'])
+            reuslt = self.test.c.execute(sql_male.format(self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d")+i,self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d")+i)).fetchall()
+            male_data.append(reuslt[0]['count(id_number)'])
+    
       
         category1 = ["总数"]    
         category2 = ["女性"]  

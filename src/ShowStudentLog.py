@@ -72,7 +72,7 @@ class ShowStudentLog(QDialog):
                 database.conn.commit()
                 database.conn.close()
                 self.tableWidget.removeRow(row) 
-                self.information.remove(self.information[row])
+                self.information.remove(self.information[row])#删除信息列表
 
             elif action == imageView_event:
                 imag_path = "img_information/student/{0}/log/{1}.jpg".format(str(self.information[row]["id_number"]),str(self.information[row]["log_time"]))
