@@ -51,9 +51,9 @@ class ImageView(QGraphicsView):
         :type pixmap: QPixmap or QImage or str
         :type fitIn: bool
         """
-        if isinstance(pixmap, QPixmap):
+        if isinstance(pixmap, QPixmap):#如果是图片
             self.pixmap = pixmap
-        elif isinstance(pixmap, QImage):
+        elif isinstance(pixmap, QImage):#如果是图片
             self.pixmap = QPixmap.fromImage(pixmap)
         elif isinstance(pixmap, str) and os.path.isfile(pixmap):
             self.pixmap = QPixmap(pixmap)
@@ -124,4 +124,13 @@ class ShowImage(QDialog):
         self.view = ImageView(image,background)
         self.Hlayout = QHBoxLayout()
         self.Hlayout.addWidget(self.view)
+       
+        #self.setMinimumSize(self.view.pixmap.size())
         self.setLayout(self.Hlayout)
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        #print(QRectF(self.view.pixmap.rect()))
+        if(self.view.pixmap):
+            self.view.fitInView(QRectF(self.view.pixmap.rect()), Qt.KeepAspectRatio)#根据窗口大小等比例缩放
+        
+        #self.view.fitInView(QRectF(self.view.pixmap.rect()), Qt.KeepAspectRatio)

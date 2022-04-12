@@ -30,13 +30,13 @@ class StudentRgFace(Face):
         super().__init__()
         self.face_data = np.random.random(128).astype('float32')
         self.former_result = ""
-        self.refreshthread = Timer(10, self.reset)
+        self.refreshthread = Timer(60, self.reset)
         self.refreshthread.setDaemon(True)
         self.refreshthread.start()
 
     def reset(self):
         self.face_data = np.random.random(128).astype('float32')
-        self.refreshthread = Timer(10, self.reset)
+        self.refreshthread = Timer(60, self.reset)
         self.refreshthread.setDaemon(True)
         self.refreshthread.start()
 
