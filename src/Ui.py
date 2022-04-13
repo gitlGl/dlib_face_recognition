@@ -1,6 +1,6 @@
 import psutil
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QHBoxLayout
+from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QHBoxLayout,QMessageBox
 from src.Process import process_student_rg
 from PyQt5.QtWidgets import QSlider
 from PyQt5.QtCore import pyqtSlot, QTimer, Qt
@@ -13,6 +13,7 @@ from .PutImg import PutImg
 from src.Login import LoginUi
 from .GlobalVariable import  GlobalFlag
 import gc
+from PyQt5.QtCore import QPoint
 from src.Win import Win
 import cv2,time
 class Ui(QWidget):
@@ -51,6 +52,10 @@ class Ui(QWidget):
         self.btn1.clicked.connect(self.open)
         self.btn2.clicked.connect(self.open_normal)
         self.btn3.clicked.connect(self.open_eye)
+        self.btn4.clicked.connect(self.exit)
+       
+        
+        self.btn4.setText("退出")
         self.qlabel1 = QLabel()
         self.qlabel2 = QLabel()
         self.qlabel3 = QLabel()
@@ -75,6 +80,7 @@ class Ui(QWidget):
         self.Hlayout.addWidget(self.btn3)
         self.Hlayout.addWidget(self.btn5)
         self.Hlayout.addWidget(self.btn6)
+        self.Hlayout.addWidget(self.btn4)
         self.groupbox_1.setLayout(self.Hlayout)
 
         self.Hlayout2.addWidget(self.qlabel1)
@@ -93,13 +99,26 @@ class Ui(QWidget):
         self.login_ui = LoginUi()
         self.login_ui.emitsingal.connect(self.show_parent)
         self.login_ui.show()
+    #退出登录
+    def exit(self):
+        if self.put_img.cap is not None:
+            if self.put_img.isRunning():
+                QMessageBox.information(self, 'Information', '请先关闭摄像头')
+                return  
+        if self.p.is_alive():
+            self.p.terminate()
+        self.hide()
+        self.login_ui = LoginUi()
+        self.login_ui.emitsingal.connect(self.show_parent)
+        self.login_ui.show()
+       
     def analyze_data(self):
         self.view =Win()
         self.view.show()
         pass
     @pyqtSlot()
     def show_parent(self):
-
+        print("test")
         del self.login_ui
         gc.collect()
         self.Q1 = Queue()  # put_img
@@ -115,6 +134,8 @@ class Ui(QWidget):
         self.timer = QTimer()
         self.timer.timeout.connect(self.clear_qlabel2)
         self.show()
+        #self.login_ui.emitsingal.disconnect(self.show_parent)
+       
 
     #显示识别结果
     @pyqtSlot(str)

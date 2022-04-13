@@ -1,14 +1,16 @@
+from json import load
 from urllib.parse import parse_qs
 from src.Creatuser import CreatStudentUser
 from src.Database import Database
 from src.SearchData import SearchData
 from PyQt5.QtCore import QDate
-import copy
+import copy,os
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel, QVBoxLayout, QLineEdit,\
-QGroupBox,QPushButton,QFileDialog,QDateEdit,QMessageBox
+QGroupBox,QPushButton,QFileDialog,QDateEdit,QMessageBox, QMenu
 from src.LineStack import ChartView
+from src.Plugins import Plugins
 class Win(QWidget):
     def __init__(self):
         super().__init__()
@@ -33,6 +35,7 @@ class Win(QWidget):
         self.btn2 = QPushButton()
         self.btn2 = QPushButton(objectName="GreenButton")
         self.btn2.setIcon(QIcon("./resources/搜索.png"))
+        
         self.btn1.setText("分析")
         self.btn2.setText("查询")
         self.qlabel.setText("时间范围：")
@@ -44,6 +47,10 @@ class Win(QWidget):
         self.btn4 = QPushButton(objectName="GreenButton")
         self.btn4.setIcon(QIcon("./resources/文件.png"))
         self.btn4.setText("批量创建用户")
+        self.btn5 = QPushButton()
+        self.btn5 = QPushButton(objectName="GreenButton")
+        self.btn5.setText("插件")
+        self.btn5.setIcon(QIcon("./resources/插件.png"))
         
         
         #self.grou.setFixedSize(self.width(), 40)
@@ -65,14 +72,16 @@ class Win(QWidget):
         self.Hlayout.addWidget(self.btn2)
         self.Hlayout.addWidget(self.btn3)
         self.Hlayout.addWidget(self.btn4)
+        self.Hlayout.addWidget(self.btn5)
         self.grou.setLayout(self.Hlayout)
         self.Vhlayout.addWidget(self.grou)
-        self.grou.setMaximumSize(800,40)
+        self.grou.setMaximumSize(1000,40)
         self.setLayout(self.Vhlayout)
         self.btn1.clicked.connect(self.analyze_data)
         self.btn2.clicked.connect(self.show_search_result)
         self.btn3.clicked.connect(self.browse)
         self.btn4.clicked.connect(self.creat_student_user)
+        self.btn5.clicked.connect(lambda:self.pos_menu(self.btn5.pos()))
         datatabel,data_title ,number=  self.get_data_(0)
         self.view = ChartView(datatabel,data_title,number)
         self.Vhlayout.addWidget(self.view)
@@ -80,6 +89,22 @@ class Win(QWidget):
     # def resizeEvent(self, event):
     #     super(ChartView, self).resizeEvent(event)
     #     self.grou.resize(self.width,40)
+
+    #插件菜单
+    def pos_menu(self,pos):#pos是按钮坐标
+        path = os.path.abspath("./src/plugins")#获取绝对路径
+        controls_class = Plugins(path).load_plugins()
+        pop_menu = QMenu()
+        for label,clazz in controls_class.items():
+            pop_menu.addAction(label)
+        action = pop_menu.exec_(self.mapToGlobal(pos))
+        if action:
+            self.Vhlayout.itemAt(1).widget().deleteLater()
+            self.Vhlayout.addWidget(controls_class[action.text()](self))
+            print(action.text())
+        
+       
+        
     def creat_student_user(self):
         path, _ = QFileDialog.getOpenFileName(self, "选择文件", "c:\\",
                                               "files(*.xlsx )")

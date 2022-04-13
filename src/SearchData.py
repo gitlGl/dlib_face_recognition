@@ -1,6 +1,6 @@
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt,QSize
-from  PyQt5.QtWidgets import QWidget,QTableWidget,QTableWidgetItem,QVBoxLayout,QMenu,QHeaderView,QMessageBox, QDialog,QHBoxLayout
+from  PyQt5.QtWidgets import QWidget,QTableWidget,QTableWidgetItem,QVBoxLayout,QMenu,QHeaderView,QMessageBox
 from src.UpdateData import UpdateData
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QPoint,pyqtSlot,Qt
