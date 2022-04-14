@@ -1,5 +1,4 @@
-from json import load
-from urllib.parse import parse_qs
+
 from src.Creatuser import CreatStudentUser
 from src.Database import Database
 from src.SearchData import SearchData
@@ -15,7 +14,7 @@ class Win(QWidget):
     def __init__(self):
         super().__init__()
         self.setGeometry(300, 300,400, 380)
-        self.setWindowTitle('数据分析')
+        self.setWindowTitle('数据')
         self.setWindowModality(Qt.ApplicationModal)
         
 
@@ -121,7 +120,7 @@ class Win(QWidget):
                 error_string = error_string + i + "\n"
 
             QMessageBox.information(self, 'Information', error_string)
-
+    #批量创建用户
     def show_search_result(self):
         if not self.linnedit.text(): 
              QMessageBox.critical(self, 'Wrong', '请输入学号')
@@ -140,6 +139,7 @@ class Win(QWidget):
         else: 
             QMessageBox.critical(self, 'Wrong', '用户不存在')
             return
+    #浏览用户
     def browse(self):
         result = Database().c.execute("select id_number,user_name,gender from student").fetchall()
         if len(result)!= 0:

@@ -1,6 +1,6 @@
 import psutil
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QHBoxLayout,QMessageBox
+from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QHBoxLayout,QMessageBox,QMenu
 from src.Process import process_student_rg
 from PyQt5.QtWidgets import QSlider
 from PyQt5.QtCore import pyqtSlot, QTimer, Qt
@@ -8,6 +8,7 @@ from PyQt5.QtGui import QIcon,QFont,QImage,QPixmap
 from PyQt5.QtWidgets import QGroupBox,QCheckBox,QLabel
 import multiprocessing
 from src.Help import Help
+from src.AdminInformation  import AdminInformation
 from multiprocessing import Process, Queue
 from .PutImg import PutImg
 from src.Login import LoginUi
@@ -32,30 +33,30 @@ class Ui(QWidget):
         self.btn1 = QPushButton(objectName="GreenButton")
         self.btn2 = QCheckBox()
         self.btn3 = QCheckBox()
+        self.btn6 = QPushButton(objectName="GreenButton")
         self.btn4 = QPushButton(objectName="GreenButton")
         self.btn5 = QPushButton(objectName="GreenButton")
-        self.btn6 = QPushButton(objectName="GreenButton")
 
         self.btn1.setText("打开摄像头")
         self.btn1.setIcon(QIcon("./resources/摄像头_关闭.png"))
         self.btn2.setText("普通识别")
         self.btn3.setText("活体识别")
       
-        self.btn5.setText("数据")
-        self.btn6.setText("帮助")
-        self.btn6.clicked.connect(self.help)
-        self.btn5.setIcon(QIcon("./resources/数据.png"))
-        self.btn6.setIcon(QIcon("./resources/帮助.png"))
+        self.btn4.setText("数据")
+        self.btn5.setText("帮助")
+        self.btn5.clicked.connect(self.help)
+        self.btn4.setIcon(QIcon("./resources/数据.png"))
+        self.btn5.setIcon(QIcon("./resources/帮助.png"))
         self.btn1.setFlat(True)
-        self.btn6.setFlat(True)
-        self.btn5.clicked.connect(self.analyze_data)
+        self.btn5.setFlat(True)
+        self.btn4.clicked.connect(self.analyze_data)
         self.btn1.clicked.connect(self.open)
         self.btn2.clicked.connect(self.open_normal)
         self.btn3.clicked.connect(self.open_eye)
-        self.btn4.clicked.connect(self.exit)
-       
-        
-        self.btn4.setText("退出")
+        self.btn6.clicked.connect(lambda:self.pos_menu(self.btn6.pos()))
+
+        self.btn6.setIcon(QIcon("./resources/用户.png"))
+        self.btn6.setText("用户")
         self.qlabel1 = QLabel()
         self.qlabel2 = QLabel()
         self.qlabel3 = QLabel()
@@ -78,9 +79,9 @@ class Ui(QWidget):
         self.Hlayout.addWidget(self.btn1)
         self.Hlayout.addWidget(self.btn2)
         self.Hlayout.addWidget(self.btn3)
+        self.Hlayout.addWidget(self.btn4)
         self.Hlayout.addWidget(self.btn5)
         self.Hlayout.addWidget(self.btn6)
-        self.Hlayout.addWidget(self.btn4)
         self.groupbox_1.setLayout(self.Hlayout)
 
         self.Hlayout2.addWidget(self.qlabel1)
@@ -100,24 +101,34 @@ class Ui(QWidget):
         self.login_ui.emitsingal.connect(self.show_parent)
         self.login_ui.show()
     #退出登录
-    def exit(self):
-        if self.put_img.cap is not None:
-            if self.put_img.isRunning():
-                QMessageBox.information(self, 'Information', '请先关闭摄像头')
-                return  
-        if self.p.is_alive():
-            self.p.terminate()
-        self.hide()
-        self.login_ui = LoginUi()
-        self.login_ui.emitsingal.connect(self.show_parent)
-        self.login_ui.show()
+    def pos_menu(self,pos):
+        pop_menu = QMenu()
+        pop_menu.addAction("用户信息")
+        pop_menu.addAction("退出登录")
+        action = pop_menu.exec_(self.mapToGlobal(pos))
+        if action == pop_menu.actions()[0]:
+            self.admin_information = AdminInformation(self.id_number)
+            self.admin_information.show()
+        elif action == pop_menu.actions()[1]:
+            if self.put_img.cap is not None:#判断摄像头状态
+                if self.put_img.isRunning():
+                    QMessageBox.information(self, 'Information', '请先关闭摄像头')
+                    return  
+            if self.p.is_alive():
+                self.p.terminate()
+            self.hide()
+            self.login_ui = LoginUi()
+            self.login_ui.emitsingal.connect(self.show_parent)
+            self.login_ui.show()
        
     def analyze_data(self):
         self.view =Win()
         self.view.show()
         pass
-    @pyqtSlot()
-    def show_parent(self):
+    @pyqtSlot(int)
+    def show_parent(self,id_number):
+        self.id_number = id_number
+        print(self.id_number)
         print("test")
         del self.login_ui
         gc.collect()

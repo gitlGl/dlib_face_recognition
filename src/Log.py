@@ -67,6 +67,18 @@ class  adminlog():
                 "SELECT  * from admin where vector = ?",
                 (vector, )).fetchall()[0] # 取出返回所有数据，fetchall返回类型是[()]
         self.insert_img(img)
+        self.insert_time()
+
+    def insert_time(self):
+        
+        self.database.c.execute(
+            "INSERT INTO admin_log_time (id_number,log_time ) \
+      VALUES (?,?)",
+            (self.item["id_number"], datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
+
+       
+        self.database.conn.commit()
+
     def insert_img(self, img):
     
         path ="img_information/" +"admin/" +str(self.item["id_number"])+"/log"

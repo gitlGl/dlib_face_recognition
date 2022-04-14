@@ -11,7 +11,7 @@ from PyQt5.QtWidgets import QGroupBox
 from .LivenessDetection import LivenessDetection
 
 class FaceLoginPage(QWidget):
-    emit_show_parent = pyqtSignal()
+    emit_show_parent = pyqtSignal(int)
 
     def __init__(self) -> None:
         super().__init__()
@@ -55,7 +55,7 @@ class FaceLoginPage(QWidget):
                                           raw_face)
             if result:
                 self.capture.close()
-                self.emit_show_parent.emit()
+                self.emit_show_parent.emit(result)
                 self.close
             else:
                 self.groupbox.show()

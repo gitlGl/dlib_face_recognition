@@ -23,7 +23,7 @@ class Database():
         user_name       CHAR(50)    NOT NULL,
         gender           bool,
         password        char(20)    NOT NULL,
-        img_path        char(40),
+        img_path        char(60),
         vector          blob        ,
            
         salt            char(10)  NOT NULL ,
@@ -51,6 +51,14 @@ class Database():
         vector          blob        ,
         PRIMARY KEY (id_number )
                  )without rowid;''')
+        self.c.execute('''CREATE TABLE IF NOT EXISTS admin_log_time 
+       ( 
+        id_number            INT   NOT NULL ,
+      
+        log_time datetime NOT NULL 
+       
+      
+        );''')
 
         self.conn.commit()
 

@@ -15,7 +15,7 @@ from src.FaceLoginPage import FaceLoginPage
 
 
 class LoginUi(QWidget):
-    emitsingal = pyqtSignal()
+    emitsingal = pyqtSignal(int)
     emit_close = pyqtSignal()
 
     def __init__(self):
@@ -112,7 +112,7 @@ class LoginUi(QWidget):
                 pass_word = MyMd5().create_md5(password, item["salt"])
                 if pass_word == item["password"]:
 
-                    self.emitsingal.emit()
+                    self.emitsingal.emit(item["id_number"])
                     clear()
                 else:
                     QMessageBox.critical(self, 'Wrong',
@@ -127,9 +127,9 @@ class LoginUi(QWidget):
         self.face_login_page = FaceLoginPage()
         self.face_login_page.emit_show_parent.connect(self.rev)
 
-    @pyqtSlot()
-    def rev(self):
-        self.emitsingal.emit()
+    @pyqtSlot(int)
+    def rev(self,id_number):
+        self.emitsingal.emit(id_number)
 
     def closeEvent(self, Event):
         pass

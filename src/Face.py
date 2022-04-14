@@ -65,17 +65,17 @@ class StudentRgFace(Face):
     def rg_face(self, face_data, share):
 
         student = Database()
-        list = []
+        list_vector = []
         for i in student.c.execute("SELECT vector from student"):
             i = np.loads(i["vector"])
-            list.append(i)
-        if len(list) == 0:
+            list_vector.append(i)
+        if len(list_vector) == 0:
             return "请先注册用户"
-        distances = self.compare_faces(np.array(list), face_data, axis=1)
+        distances = self.compare_faces(np.array(list_vector), face_data, axis=1)
         min_distance = np.argmin(distances)
         print("距离", distances[min_distance])
         if distances[min_distance] < share:
-            tembyte = np.ndarray.dumps(list[min_distance])
+            tembyte = np.ndarray.dumps(list_vector[min_distance])
             student.conn.close()
             return tembyte
         else:
@@ -89,20 +89,22 @@ class AdminRgFace(Face):
     def rg_face(self, img, rgbImage, raw_face):
         face_data = self.encodeface(rgbImage, raw_face)
         admin = Database()
-        list = []
-        for i in admin.c.execute("SELECT vector from admin"):
-            i = np.loads(i["vector"])
-            list.append(i)
-        if len(list) == 0:
+        list_vector = []
+        list_user = admin.c.execute("SELECT vector,id_number from admin").fetchall ()# 查询数据库中的数据:
+        for i in list_user:
+            vector = np.loads(i["vector"])
+            list_vector.append(vector)
+        if len(list_vector) == 0:
             return False
-        distances = self.compare_faces(np.array(list), face_data, axis=1)
+        distances = self.compare_faces(np.array(list_vector), face_data, axis=1)
         min_distance = np.argmin(distances)
         print("距离", distances[min_distance])
         if distances[min_distance] < 0.4:
-            tembyte = np.ndarray.dumps(list[min_distance])
+            tembyte = np.ndarray.dumps(list_vector[min_distance])
             adminlog(tembyte, img, admin)
-            admin.conn.close()
-            return True
+            id_number = list_user[min_distance]["id_number"]#返回管理员的id_number
+            admin.conn.close()  #关闭数据库连接
+            return id_number
         else:
             return False
 
@@ -120,19 +122,19 @@ class AdminRgFace(Face):
 #         if flag < 0.6:return ""
 #         else:
 #             admin = Database()
-#             list = []
+#             list_vector = []
 #             for i in admin.c.execute("SELECT vector from admin"):
 #                 i = np.loads(i[0])
-#                 list.append(i)
-#             if len(list) == 0:
+#                 list_vector.append(i)
+#             if len(list_vector) == 0:
 #                 return False
-#             distances = self.compare_faces(np.array(list), face_data, axis=1)
+#             distances = self.compare_faces(np.array(list_vector), face_data, axis=1)
 #             min_distance = np.argmin(distances)
 #             print("距离",distances[min_distance])
 #             if distances[min_distance] < 0.4:
 #                 share.value = True
 #                 self.face_data = face_data
-#                 tembyte = np.ndarray.dumps(list[min_distance])
+#                 tembyte = np.ndarray.dumps(list_vector[min_distance])
 #                 adminlog(tembyte,img,admin)
 #                 admin.conn.close()
 #                 return "验证成功"

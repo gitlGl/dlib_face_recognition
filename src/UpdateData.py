@@ -142,9 +142,8 @@ class UpdateData(QDialog):
                     if not os.path.exists("img_information/student/{0}/log".format(str(id_number))):
                         os.makedirs("img_information/student/{0}/log".format(str(id_number)))
                 else:
-                    shutil.rmtree("img_information/student/{0}".format(str(id)))#递归删除整个文件夹
-                    os.makedirs("img_information/student/{0}/log".format(str(id_number)))
-
+                     os.rename("img_information/student/{0}/{1}.jpg".format(str(id),str(id)),"img_information/student/{0}/{1}.jpg".format(str(id),str(id_number)))
+                     os.rename(old_path,new_path)
                 vector = CreatUser().get_vector(id_number,self.path,"student")
                 data.c.execute("update student set id_number= ?,user_name = ?,gender = ? ,vector = ? where id_number = {0}"
                 .format(id),(id_number,user_name,gender,vector))
