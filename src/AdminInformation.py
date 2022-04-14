@@ -4,11 +4,13 @@ from .Database import Database
 from .ImageView import ShowImage
 from .Creatuser import CreatUser
 from .GlobalVariable import models
+from .MyMd5 import MyMd5
 import os,sys
 from PyQt5.QtCore import Qt
 import numpy as np
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel, QVBoxLayout, QGroupBox,QPushButton,QFileDialog,QMessageBox, QMenu,QApplication
+from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel, QVBoxLayout, QGroupBox,QPushButton,\
+QFileDialog,QMessageBox, QMenu,QApplication,QLineEdit,QDialog
 from test import StyleSheet
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt,QSize
@@ -117,6 +119,7 @@ class AdminInformation(QWidget):
         self.btn1.setText("人脸照片")
         self.btn1.clicked.connect(lambda:self.img_event(self.btn1.pos()))
         self.btn2.setText("修改密码")
+        self.btn2.clicked.connect(self.update_pwd)
         self.btn3 = QPushButton()
         self.btn3 = QPushButton(objectName="GreenButton")
         self.btn3.clicked.connect(self.browse)
@@ -130,6 +133,9 @@ class AdminInformation(QWidget):
         self.Vhlayout.addWidget(self.img)
         self.grou.setMaximumSize(600,40)
         self.setLayout(self.Vhlayout)
+    def update_pwd(self):
+        self.pwd_dialog = updtae_pwd(self.id_number)
+        self.pwd_dialog.exec_()
     def browse(self):
         print("测试登录日志")
         result = Database().c.execute("select rowid,id_number,log_time from admin_log_time").fetchall()
@@ -181,6 +187,82 @@ class AdminInformation(QWidget):
         else:
             QMessageBox.critical(self, 'Wrong', '文件不存在人脸或多个人脸')
             return
+
+class updtae_pwd(QDialog):
+    def __init__(self,id_number):
+        super().__init__()
+        self.setWindowTitle('修改密码')
+        self.id_number = id_number
+        self.old_pwd_label = QLabel('旧密码:', self)
+        self.new_pwd2_label = QLabel('新密码:', self)
+        self.new_pwd3_label = QLabel('确认密码:', self)
+        self.old_pwd_line = QLineEdit(self)
+        self.new_pwd2_line = QLineEdit(self)
+        self.new_pwd3_line = QLineEdit(self)
+
+        self.pwd_h_layout = QHBoxLayout()
+        self.pwd2_h_layout = QHBoxLayout()
+        self.pwd3_h_layout = QHBoxLayout()
+        self.ensure_or = QHBoxLayout()
+        self.pwd_h_layout.addWidget(self.old_pwd_label)
+        self.pwd_h_layout.addWidget(self.old_pwd_line)
+
+        self.pwd2_h_layout.addWidget(self.new_pwd2_label)
+        self.pwd2_h_layout.addWidget(self.new_pwd2_line)
+
+        self.pwd3_h_layout.addWidget(self.new_pwd3_label)
+        self.pwd3_h_layout.addWidget(self.new_pwd3_line)
+
+        self.pwd_v_layout = QVBoxLayout()
+        self.pwd_v_layout.addLayout(self.pwd_h_layout)
+        self.pwd_v_layout.addLayout(self.pwd2_h_layout)
+        self.pwd_v_layout.addLayout(self.pwd3_h_layout)
+        self.btn1_event = QPushButton()
+        self.btn1 = QPushButton(objectName="GreenButton")
+        self.btn1.setText("确认修改")
+        self.btn2 = QPushButton()
+        self.btn2 = QPushButton(objectName="GreenButton")
+        self.btn2.setText("取消修改")
+        self.ensure_or.addWidget(self.btn1)
+        self.ensure_or.addWidget(self.btn2)
+        self.pwd_v_layout.addLayout(self.ensure_or)
+        self.btn1.clicked.connect(self.btn1_update_pwd)
+        self.btn2.clicked.connect(self.btn2_event)
+      
+        self.setLayout(self.pwd_v_layout)
+
+
+        
+    def btn1_update_pwd(self):
+        old_pwd =  self.old_pwd_line.text()
+        new_pwd = self.new_pwd2_line.text()
+        new_pwd_2 = self.new_pwd3_line.text()
+        if new_pwd != new_pwd_2:
+            QMessageBox.critical(self, 'Wrong', '两次密码不一致')
+        
+        elif len(new_pwd) < 6 and len(new_pwd) > 16 :
+            QMessageBox.critical(self, 'Wrong', '密码长度不能小于6位或大于16位')
+            return
+        elif old_pwd == new_pwd:
+            QMessageBox.critical(self, 'Wrong', '新旧密码不能一致')
+            return
+        else:
+            database = Database()
+            item = database.c.execute("select password ,salt from admin where id_number = {0}".format(self.id_number)).fetchone()
+            old_pass_word = MyMd5().create_md5(old_pwd, item["salt"])
+            if old_pass_word == item["password"]:
+                new_pass_word = MyMd5().create_md5(new_pwd, item["salt"])
+                database.c.execute("update admin set password = ? where id_number = {0}".format(self.id_number),(new_pass_word,))
+                database.conn.commit()
+                database.conn.close()
+                QMessageBox.information(self, 'Success', '修改成功')
+                self.close()
+            else:
+                QMessageBox.critical(self, 'Wrong', '旧密码错误')
+    def btn2_event(self):
+        self.close()
+
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     app.setStyleSheet(StyleSheet)    

@@ -121,6 +121,7 @@ class ImageView(QGraphicsView):
 class ShowImage(QDialog):
     def __init__(self,image ,background) :
         super().__init__()
+        self.setWindowTitle("图片查看")
         self.view = ImageView(image,background)
         self.Hlayout = QHBoxLayout()
         self.Hlayout.addWidget(self.view)

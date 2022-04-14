@@ -15,6 +15,7 @@ class FaceLoginPage(QWidget):
 
     def __init__(self) -> None:
         super().__init__()
+        self.setWindowTitle("人脸识别登录")
         self.Hlayout = QHBoxLayout()
         self.Vlayout = QVBoxLayout(self)
         self.groupbox = QGroupBox(self)

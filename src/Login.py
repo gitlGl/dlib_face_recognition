@@ -20,6 +20,7 @@ class LoginUi(QWidget):
 
     def __init__(self):
         super().__init__()
+        self.setWindowTitle('登录')
         self.resize(400, 300)
 
         self.user_label = QLabel('Username:', self)
@@ -144,6 +145,7 @@ class LoginUi(QWidget):
 class SigninPage(QDialog):
     def __init__(self):
         super(SigninPage, self).__init__()
+        self.setWindowTitle('注册')
         self.signin_user_label = QLabel('用户:', self)
         self.signin_pwd_label = QLabel('密码:', self)
         self.signin_pwd2_label = QLabel('密码:', self)

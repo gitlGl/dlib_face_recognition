@@ -20,6 +20,7 @@ import cv2,time
 class Ui(QWidget):
     def __init__(self):
         super().__init__()
+        self.setWindowTitle("图书馆人脸识别系统")
         #self.setStyleSheet ("border:2px groove gray;border-radius:10px;padding:2px 2px;")
         self.groupbox_1 = QGroupBox()  # 1
         self.groupbox_2 = QGroupBox()
