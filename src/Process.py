@@ -9,6 +9,7 @@ def process_student_rg(Q1, Q2, share):
     face_rg = StudentRgFace()
     while True:
         while not Q1.empty():
+            print("Q1.get()")
             img = Q1.get()
             rgbImage = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             gray = cv2.cvtColor(rgbImage, cv2.COLOR_RGB2GRAY)
@@ -18,7 +19,7 @@ def process_student_rg(Q1, Q2, share):
                 result = face_rg.rg(img, rgbImage, raw_face, share)
                 Q2.put(result)
 
-        time.sleep(1)
+        #time.sleep(1)
 
 
 # def process_admin_rg(Q1, share):

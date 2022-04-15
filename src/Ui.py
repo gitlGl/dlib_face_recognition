@@ -242,9 +242,18 @@ class Ui(QWidget):
         self.put_img.start()
         if not self.p.is_alive():
             self.p.start()
+            self.flag = True#子进程状态标志，True表示子进程已经启动
+            
+        # print(psutil.Process(self.p.pid).status())子进程状态不准确，不能用做恢复子进程的标志，
+        # 因为子进程挂一段时间后状态会从“stopped”变为“running”，实质子进程状态仍然是“stopped”
+        # print(self.p.is_alive())
+        # print(psutil.Process(self.p.pid).is_running())
+       
 
-        if psutil.Process(self.p.pid).status() == "stopped":
+        if  self.flag == False:
+            
             psutil.Process(self.p.pid).resume()
+            self.flag = True##子进程状态标志，True表示子进程启动
 
         if self.btn2.isChecked():
 
@@ -257,6 +266,8 @@ class Ui(QWidget):
                 self.qlabel1.setText("提示：请张嘴")
 
     def close(self):
+        print("open")
+       
         self.put_img.emit_img.disconnect(self.set_normal_img)
         GlobalFlag.gflag2 = False
 
@@ -278,14 +289,17 @@ class Ui(QWidget):
 
         while self.put_img.timer3.isActive():
             self.put_img.timer3.stop()
+        print("测试队列")
         while self.Q1.qsize() != 0:  # 清空队列
             pass
         while self.Q2.qsize() != 0:
+            print("get")
             self.Q2.get()
         self.qlabel1.clear()
         self.qlabel4.clear()
-        if psutil.Process(self.p.pid).status() == "running":
+        if self.flag == True:
             psutil.Process(self.p.pid).suspend()  # 挂起进程
+            self.flag = False#子进程状态标志，False表示子进程已经暂停
         time.sleep(0.3)
         self.qlabel4.clear()
 

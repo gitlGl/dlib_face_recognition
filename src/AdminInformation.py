@@ -92,9 +92,10 @@ class SearchData(QWidget):
 
 
 
-class AdminInformation(QWidget):
+class AdminInformation(QDialog):
     def __init__(self,id_number):
         super().__init__()
+        self.setWindowFlags(Qt.WindowMinMaxButtonsHint | Qt.WindowCloseButtonHint)
         self.id_number = id_number
         self.setGeometry(300, 300,400, 380)
         self.setWindowTitle('用户信息')
@@ -194,6 +195,7 @@ class AdminInformation(QWidget):
 class updtae_pwd(QDialog):
     def __init__(self,id_number):
         super().__init__()
+        self.setWindowFlags(Qt.WindowMinMaxButtonsHint | Qt.WindowCloseButtonHint)
         self.setWindowTitle('修改密码')
         self.setWindowIcon(QIcon('resources/修改密码.png'))
         self.id_number = id_number
