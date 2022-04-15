@@ -1,7 +1,7 @@
 
 from PyQt5.QtWidgets import QWidget, QDialog, QLabel, QLineEdit, QPushButton, \
     QVBoxLayout, QHBoxLayout, QMessageBox
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import pyqtSignal, Qt
 from src.Database import Database
 from src.MyMd5 import MyMd5
 from PyQt5.QtCore import pyqtSlot
@@ -21,6 +21,7 @@ class LoginUi(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('登录')
+        self.setWindowIcon(QIcon('resources/登录.png'))
         self.resize(400, 300)
 
         self.user_label = QLabel('Username:', self)
@@ -82,7 +83,7 @@ class LoginUi(QWidget):
         #切换注册页面
     def show_signin_page_func(self):
 
-        self.signin_page.exec_()
+        self.signin_page.show()
 
     #响应登录请求
     def check_login_func(self):
@@ -142,10 +143,13 @@ class LoginUi(QWidget):
         # print("KILL")
 
 
-class SigninPage(QDialog):
+class SigninPage(QWidget):
     def __init__(self):
         super(SigninPage, self).__init__()
+        #self.setWindowFlags(Qt.WindowMinMaxButtonsHint | Qt.WindowCloseButtonHint)
+        self.setWindowModality(Qt.ApplicationModal)
         self.setWindowTitle('注册')
+        self.setWindowIcon(QIcon('resources/注册.png'))
         self.signin_user_label = QLabel('用户:', self)
         self.signin_pwd_label = QLabel('密码:', self)
         self.signin_pwd2_label = QLabel('密码:', self)
@@ -233,19 +237,15 @@ class SigninPage(QDialog):
             self.signin_vector_line.clear()
             return
 
-        #响应注册请求
+       
 
     def pushbutton_init(self):
         self.signin_button.setEnabled(False)
         self.signin_button.clicked.connect(self.check_signin_func)
-
+ #响应注册请求
     def check_signin_func(self):
         admin = Database()
 
-        def clear():
-            self.signin_user_line.clear()
-            self.signin_pwd_line.clear()
-            self.signin_pwd2_line.clear()
         #检查输入信息格式
         if (not self.signin_user_line.text().isdigit()) or (len(self.signin_user_line.text())>15):
 
@@ -293,4 +293,6 @@ class SigninPage(QDialog):
                                         'Register Successfully')
                 admin.conn.commit()
                 admin.conn.close()
-                clear()
+               
+                self.close()
+               

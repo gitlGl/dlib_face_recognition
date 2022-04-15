@@ -15,6 +15,7 @@ class Win(QWidget):
         super().__init__()
         self.setGeometry(300, 300,400, 380)
         self.setWindowTitle('数据')
+        self.setWindowIcon(QIcon('resources/数据.png'))
         self.setWindowModality(Qt.ApplicationModal)
         
 
@@ -104,7 +105,7 @@ class Win(QWidget):
         
        
         
-    def creat_student_user(self):
+    def creat_student_user(self):#批量创建用户
         path, _ = QFileDialog.getOpenFileName(self, "选择文件", "c:\\",
                                               "files(*.xlsx )")
         if path == '':
@@ -120,7 +121,7 @@ class Win(QWidget):
                 error_string = error_string + i + "\n"
 
             QMessageBox.information(self, 'Information', error_string)
-    #批量创建用户
+    #显示搜索结果
     def show_search_result(self):
         if not self.linnedit.text(): 
              QMessageBox.critical(self, 'Wrong', '请输入学号')
@@ -139,7 +140,7 @@ class Win(QWidget):
         else: 
             QMessageBox.critical(self, 'Wrong', '用户不存在')
             return
-    #浏览用户
+    #浏览所有用户
     def browse(self):
         result = Database().c.execute("select id_number,user_name,gender from student").fetchall()
         if len(result)!= 0:

@@ -3,7 +3,7 @@ from PyQt5.QtCore import pyqtSignal,Qt
 from src.Capture import Capture
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtCore import pyqtSlot, QTimer, Qt
-from PyQt5.QtGui import QImage,QPixmap
+from PyQt5.QtGui import QImage,QPixmap,QIcon
 from .Face import AdminRgFace
 import cv2,copy
 from .GlobalVariable import GlobalFlag,models
@@ -16,6 +16,8 @@ class FaceLoginPage(QWidget):
     def __init__(self) -> None:
         super().__init__()
         self.setWindowTitle("人脸识别登录")
+        self.setWindowIcon(QIcon("resources/人脸识别.png"))
+
         self.Hlayout = QHBoxLayout()
         self.Vlayout = QVBoxLayout(self)
         self.groupbox = QGroupBox(self)

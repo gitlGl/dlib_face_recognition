@@ -9,6 +9,9 @@ import os
 class ShowStudentLog(QDialog):
     def __init__(self,information,str_list_column ):
         super().__init__()
+        self.setWindowFlags(Qt.WindowMinMaxButtonsHint | Qt.WindowCloseButtonHint)
+        self.setWindowTitle("学生日志")
+        self.setWindowIcon(QIcon("resources/人脸识别.png"))
         self.resize(300,400)
         self.information = information
         self.tableWidget = QTableWidget(self)

@@ -1,3 +1,4 @@
+import os
 import psutil
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QHBoxLayout,QMessageBox,QMenu
@@ -21,6 +22,7 @@ class Ui(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("图书馆人脸识别系统")
+        self.setWindowIcon(QIcon("resources/图书馆.png"))
         #self.setStyleSheet ("border:2px groove gray;border-radius:10px;padding:2px 2px;")
         self.groupbox_1 = QGroupBox()  # 1
         self.groupbox_2 = QGroupBox()
@@ -126,6 +128,8 @@ class Ui(QWidget):
         self.view =Win()
         self.view.show()
         pass
+    
+    #登录成功后显示主界面
     @pyqtSlot(int)
     def show_parent(self,id_number):
         self.id_number = id_number

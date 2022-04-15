@@ -42,7 +42,7 @@ class SearchData(QWidget):
             sex_item = QTableWidgetItem(i["gender"])
             img_item =  QTableWidgetItem()
             self.tableWidget.setIconSize(QSize(60, 100))
-            imag_path = "img_information/student/{0}/{1}.jpg".format(i["id_number"],i["id_number"])
+            imag_path = "img_information/student/{0}/{1}.jpg".format(i["id_number"],i["id_number"])#获取图片路径
             img_item.setIcon(QIcon(imag_path))
             sid_item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
             name_item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)

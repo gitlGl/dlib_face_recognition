@@ -98,6 +98,7 @@ class AdminInformation(QWidget):
         self.id_number = id_number
         self.setGeometry(300, 300,400, 380)
         self.setWindowTitle('用户信息')
+        self.setWindowIcon(QIcon('resources/用户信息.png'))
         self.setWindowModality(Qt.ApplicationModal)
         
 
@@ -138,9 +139,9 @@ class AdminInformation(QWidget):
         self.pwd_dialog.exec_()
     def browse(self):
         print("测试登录日志")
-        result = Database().c.execute("select rowid,id_number,log_time from admin_log_time").fetchall()
+        result = Database().c.execute("select rowid,id_number,log_time from admin_log_time where id_number = {0}".format(self.id_number)).fetchall()
         if len(result)!= 0:
-           
+            
             self.result = SearchData(result,[ '用户ID', '登录时间',"图片" ])
             self.Vhlayout.itemAt(1).widget().deleteLater()
             self.Vhlayout.addWidget(self.result)
@@ -188,10 +189,13 @@ class AdminInformation(QWidget):
             QMessageBox.critical(self, 'Wrong', '文件不存在人脸或多个人脸')
             return
 
+
+#密码修改窗口
 class updtae_pwd(QDialog):
     def __init__(self,id_number):
         super().__init__()
         self.setWindowTitle('修改密码')
+        self.setWindowIcon(QIcon('resources/修改密码.png'))
         self.id_number = id_number
         self.old_pwd_label = QLabel('旧密码:', self)
         self.new_pwd2_label = QLabel('新密码:', self)
@@ -259,6 +263,7 @@ class updtae_pwd(QDialog):
                 self.close()
             else:
                 QMessageBox.critical(self, 'Wrong', '旧密码错误')
+    #取消修改
     def btn2_event(self):
         self.close()
 

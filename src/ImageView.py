@@ -1,5 +1,5 @@
 from PyQt5.QtCore import QPointF, Qt, QRectF, QSizeF
-from PyQt5.QtGui import QPainter, QColor, QImage, QPixmap
+from PyQt5.QtGui import QPainter, QColor, QImage, QPixmap,QIcon
 from PyQt5.QtWidgets import QApplication, QGraphicsView, QGraphicsPixmapItem, QGraphicsScene,QHBoxLayout,QDialog
 import os
 class ImageView(QGraphicsView):
@@ -122,6 +122,9 @@ class ShowImage(QDialog):
     def __init__(self,image ,background) :
         super().__init__()
         self.setWindowTitle("图片查看")
+        self.setWindowIcon(QIcon("resources/浏览.png"))
+        self.setWindowFlags(Qt.WindowMinMaxButtonsHint | Qt.WindowCloseButtonHint)
+        
         self.view = ImageView(image,background)
         self.Hlayout = QHBoxLayout()
         self.Hlayout.addWidget(self.view)
