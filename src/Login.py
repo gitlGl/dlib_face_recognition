@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtGui import QIcon
 from src.GlobalVariable import models
 from .Creatuser import CreatStudentUser
-import PIL.Image,os
+import PIL.Image,os,datetime
 import numpy as np
 from src.FaceLoginPage import FaceLoginPage
 
@@ -113,9 +113,12 @@ class LoginUi(QWidget):
                 password = self.pwd_line.text()
                 pass_word = MyMd5().create_md5(password, item["salt"])
                 if pass_word == item["password"]:
-
+                    admin.c.execute("INSERT INTO admin_log_time (id_number,log_time ) \
+      VALUES (?,?)", (item["id_number"], datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
+                    admin.conn.commit()
+                    admin.conn.close()
                     self.emitsingal.emit(item["id_number"])
-                    clear()
+                    self.close()
                 else:
                     QMessageBox.critical(self, 'Wrong',
                                          'Wrong Username or Password!')

@@ -117,7 +117,7 @@ class SearchData(QWidget):
                 show_imag = ShowImage(imag_path,Qt.WhiteSpaceMode)
                 show_imag.exec_()
             elif action == log_event:
-                result = Database().c.execute("select rowid,id_number,log_time from student_log_time where id_number ={0}".format(self.information[row]["id_number"])).fetchall()
+                result = Database().c.execute("select rowid,id_number,log_time from student_log_time where id_number ={0} order by log_time desc".format(self.information[row]["id_number"])).fetchall()
                 self.result = ShowStudentLog(result,[ '时间',"图片" ])
                 self.result.exec()
 

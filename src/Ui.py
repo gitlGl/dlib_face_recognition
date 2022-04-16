@@ -181,7 +181,7 @@ class Ui(QWidget):
     #帧显示视频流
     @pyqtSlot(list,QImage)
     def set_normal_img(self, list_,img):
-        self.put_img.frame = list_[0]
+        self.put_img.frame = list_[0]#待识别帧
         self.qlabel4.setPixmap(QPixmap.fromImage(img))
         self.qlabel4.setScaledContents(True)
 

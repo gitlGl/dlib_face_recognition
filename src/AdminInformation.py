@@ -78,7 +78,8 @@ class SearchData(QWidget):
                 print(self.information[row]["rowid"])
                 database.c.execute("delete from admin_log_time where rowid  = {0}".format(self.information[row]["rowid"])).fetchall()
                 imag_path = "img_information/admin/{0}/log/{1}.jpg".format(str(self.information[row]["id_number"]),str(self.information[row]["log_time"]))
-                os.remove(imag_path)
+                if(os.path.exists(imag_path)):
+                    os.remove(imag_path)
                 database.conn.commit()
                 database.conn.close()
                 self.tableWidget.removeRow(row) 
@@ -140,7 +141,7 @@ class AdminInformation(QDialog):
         self.pwd_dialog.exec_()
     def browse(self):
         print("测试登录日志")
-        result = Database().c.execute("select rowid,id_number,log_time from admin_log_time where id_number = {0}".format(self.id_number)).fetchall()
+        result = Database().c.execute("select rowid,id_number,log_time from admin_log_time where id_number = {0}  order by log_time desc".format(self.id_number)).fetchall()
         if len(result)!= 0:
             
             self.result = SearchData(result,[ '用户ID', '登录时间',"图片" ])
@@ -161,6 +162,7 @@ class AdminInformation(QDialog):
            show_imag = ShowImage(img_path,Qt.WhiteSpaceMode)
            self.Vhlayout.addWidget(show_imag)
        elif action == pop_menu.actions()[1]:
+
            path = self.get_path()
            if path:
               vector = CreatUser().get_vector(self.id_number,path,"admin")
@@ -168,6 +170,7 @@ class AdminInformation(QDialog):
               database.c.execute("update admin set vector = ? where id_number = {0}".format(self.id_number),(vector,))
               database.conn.commit()
               database.conn.close()
+              QMessageBox.information(self, 'Success', '修改成功')
     def get_path(self):
         path, _ = QFileDialog.getOpenFileName(
             self, "选择文件", "c:\\", "Image files(*.jpg *.gif *.png)")

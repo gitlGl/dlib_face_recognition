@@ -28,7 +28,7 @@ class Face():  #基类，包含人脸编码，人脸识别
 class StudentRgFace(Face):
     def __init__(self):
         super().__init__()
-        self.face_data = np.random.random(128).astype('float32')
+        self.face_data = np.random.random(128).astype('float32')#初始化人脸编码，这个变量保存上一个人脸编码
         self.former_result = ""
         self.refreshthread = Timer(60, self.reset)
         self.refreshthread.setDaemon(True)
@@ -52,7 +52,7 @@ class StudentRgFace(Face):
             if result == "请先注册用户":
                 return "请先注册用户"
             elif result:
-                self.face_data = face_data
+                self.face_data = face_data#保存这次识别人脸编码，下次识别时比较是否是同一人
 
                 student = Database()
                 log = studentlog(result, img, student)
