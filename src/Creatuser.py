@@ -25,7 +25,8 @@ class CreatUser():
         path = "img_information/" + fuck + "/" + str(id_number)     
         if not os.path.exists(path):  # 判断是否存在文件夹如果不存在则创建为文件夹
             os.makedirs(path)
-
+            
+            ##opencv 不支持中文路径,用python图片库读取图片
         rgbImage = PIL.Image.open(file_path)
         rgbImage.save( "img_information/" + fuck + "/" + str(id_number) + "/" +
             str(id_number) + ".jpg")
@@ -124,7 +125,7 @@ class CreatStudentUser(CreatUser):
                         list_problem.append(string)
                         continue
     
-            
+                        ##opencv 不支持中文路径,用python图片库读取图片
                     rgbImage = PIL.Image.open(list1[4])
                     rgbImage  =  rgbImage .convert("RGB")
                     rgbImage =  np.array(rgbImage )

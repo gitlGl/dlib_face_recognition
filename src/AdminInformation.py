@@ -183,6 +183,7 @@ class AdminInformation(QDialog):
         if not (data[6:10] in (b'JFIF',b'Exif')):
             QMessageBox.critical(self, 'Wrong', '文件非图片文件')
             return 
+            ##opencv 不支持中文路径,用python图片库读取图片
         rgbImage = PIL.Image.open(path)
         rgbImage  =  rgbImage .convert("RGB")
         rgbImage =  np.array(rgbImage )
