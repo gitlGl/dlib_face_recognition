@@ -64,6 +64,8 @@ class Ui(QWidget):
         self.qlabel2 = QLabel()
         self.qlabel3 = QLabel()
         self.qlabel4 = QLabel()
+        self.qlabel5 = QLabel()#用于修复无法清理（qlable.claer()）图片
+        self.qlabel5.hide()
         self.qlabel3.setFixedSize(30, 20)
         self.qlabel3.setFont(QFont("Arial", 10))
         self.qlabel3.setAlignment(Qt.AlignCenter)
@@ -96,7 +98,7 @@ class Ui(QWidget):
         self.Vlayout.addWidget(self.groupbox_1)
         self.Vlayout.addWidget(self.groupbox_2)
         self.Vlayout.addWidget(self.qlabel4)
-
+        self.Vlayout.addWidget(self.qlabel5)
         self.allvlaout.addLayout(self.Vlayout)
         self.resize(480, 600)
         self.setLayout(self.allvlaout)
@@ -148,7 +150,7 @@ class Ui(QWidget):
         self.put_img.emit_result.connect(self.show_result)
         self.put_img.emit_text.connect(self.change_text)
         self.timer = QTimer()
-        self.timer.timeout.connect(self.clear_qlabel2)
+        self.timer.timeout.connect(self.clear_qlabel2)#清除识别结果
         self.show()
         #self.login_ui.emitsingal.disconnect(self.show_parent)
        
@@ -158,13 +160,17 @@ class Ui(QWidget):
     def show_result(self, str_result):
         self.qlabel2.clear()
         self.qlabel2.setText(str_result)
+        self.qlabel1.clear()#清除提示
         if not self.timer.isActive():#开启清除识别结果
-            self.timer.start(3000)
+            self.timer.start(1500)
 
     #清除识别结果
     def clear_qlabel2(self):
         self.timer.stop()
         self.qlabel2.clear()
+        if self.btn3.isChecked():
+            self.qlabel1.setText("提示：请张嘴")
+
 
     #刻度值槽函数
     def valueChange(self):
@@ -231,8 +237,11 @@ class Ui(QWidget):
                 if not self.put_img.timer1.isActive():
                     self.put_img.timer1.start(200)
                     self.qlabel1.setText("提示：请张嘴")
+                  
 
     def open(self):
+        self.qlabel4.show()
+        self.qlabel5.show()##用于修复无法清理（qlable.claer()）图片
         self.put_img.emit_img.connect(self.set_normal_img)
         self.btn1.clicked.disconnect(self.open)
         self.btn1.clicked.connect(self.close)
@@ -264,11 +273,14 @@ class Ui(QWidget):
             if not self.put_img.timer1.isActive():
                 self.put_img.timer1.start(200)
                 self.qlabel1.setText("提示：请张嘴")
+               
 
     def close(self):
         print("open")
+        
        
         self.put_img.emit_img.disconnect(self.set_normal_img)
+       
         GlobalFlag.gflag2 = False
 
         self.btn1.clicked.connect(self.open)
@@ -276,6 +288,7 @@ class Ui(QWidget):
         self.btn1.setText("打开摄像头")
         self.btn1.setIcon(QIcon("./resources/摄像头_关闭.png"))
         self.put_img.close()  # 关闭摄像头
+        self.qlabel4.setPixmap(QPixmap("./resources/摄像头.png"))
 
         while self.put_img.timer3.isActive():
             self.put_img.timer3.stop()
@@ -295,13 +308,13 @@ class Ui(QWidget):
         while self.Q2.qsize() != 0:
             print("get")
             self.Q2.get()
-        self.qlabel1.clear()
-        self.qlabel4.clear()
+        self.qlabel1.clear()#清除提示信息
         if self.flag == True:
             psutil.Process(self.p.pid).suspend()  # 挂起进程
             self.flag = False#子进程状态标志，False表示子进程已经暂停
-        time.sleep(0.3)
         self.qlabel4.clear()
+        self.qlabel4.hide()#用于修复无法清理（qlable.claer()）图片
+        self.qlabel5.show()
 
     def closeEvent(self, Event):
         if hasattr(self, "put_img"):

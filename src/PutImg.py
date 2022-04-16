@@ -72,7 +72,7 @@ class PutImg(Capture):
         if self.Q2.qsize() != 0:
             self.emit_result.emit(self.Q2.get())
             GlobalFlag.gflag2 = False
-            self.emit_text.emit("提示：请张嘴")
+            #self.emit_text.emit("提示：请张嘴")
             self.timer1.start(200)
         else:
             self.timer2.start(1000)
