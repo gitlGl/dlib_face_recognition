@@ -241,7 +241,7 @@ class Ui(QWidget):
 
     def open(self):
         self.qlabel4.show()
-        self.qlabel5.show()##用于修复无法清理（qlable.claer()）图片
+        self.qlabel5.hide()##用于修复无法清理（qlable.claer()）图片
         self.put_img.emit_img.connect(self.set_normal_img)
         self.btn1.clicked.disconnect(self.open)
         self.btn1.clicked.connect(self.close)
