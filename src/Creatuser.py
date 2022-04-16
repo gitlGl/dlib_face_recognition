@@ -157,7 +157,7 @@ class CreatStudentUser(CreatUser):
             information["gender"] = 0 
 
         information['salt'] = MyMd5().create_salt()
-        information["img_path"] = self.get_img_path(
+        information["img_path"] = self.get_img_log_path(
             part_information["id_number"])
         information["id_number"] = part_information["id_number"]
         information["password"] = self.get_pass_word(
@@ -175,7 +175,7 @@ class CreatStudentUser(CreatUser):
                                information["img_path"], information["vector"],
                                information["salt"])
 
-    def get_img_path(self, id_number=123456):
+    def get_img_log_path(self, id_number=123456):
         path = "img_information/student/{0}/log".format(str(id_number))
         if not os.path.exists(path):  #判断是否存在文件夹如果不存在则创建为文件夹
             os.makedirs(path)

@@ -32,7 +32,6 @@ class ShowStudentLog(QDialog):
     def set_information(self):
         row = 0
         self.tableWidget.setRowCount(0)
-        print(len(self.information))
         for i in self.information:
             self.tableWidget.insertRow(row)
             log_time = QTableWidgetItem(i["log_time"])
@@ -52,7 +51,6 @@ class ShowStudentLog(QDialog):
 
     @pyqtSlot(QPoint)
     def context_menu(self,pos):
-        print("测试",pos)
         pop_menu = QMenu()
         #菜单事件信号
         delete_event = pop_menu.addAction("删除")
@@ -66,7 +64,6 @@ class ShowStudentLog(QDialog):
                 if r == QMessageBox.No:
                    return
                 database =  Database()
-                print(self.information[row]["rowid"])
                 database.c.execute("delete from student_log_time where rowid  = {0}".format(self.information[row]["rowid"])).fetchall()
                 imag_path = "img_information/student/{0}/log/{1}.jpg".format(str(self.information[row]["id_number"]),str(self.information[row]["log_time"]))
                 os.remove(imag_path)
@@ -77,7 +74,7 @@ class ShowStudentLog(QDialog):
 
             elif action == imageView_event:
                 imag_path = "img_information/student/{0}/log/{1}.jpg".format(str(self.information[row]["id_number"]),str(self.information[row]["log_time"]))
-                print(imag_path)
+               
                 show_imag = ShowImage(imag_path,Qt.WhiteSpaceMode)
                 show_imag.exec_()
 

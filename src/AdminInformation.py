@@ -12,6 +12,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel, QVBoxLayout, QGroupBox,QPushButton,\
 QFileDialog,QMessageBox, QMenu,QLineEdit,QDialog,QTableWidget,QTableWidgetItem,QHeaderView,QAbstractItemView
 import PIL.Image
+from .ImgPath import get_img_path
 class SearchData(QWidget):
     def __init__(self,information,str_list_column ):
         super().__init__()
@@ -33,7 +34,6 @@ class SearchData(QWidget):
     def set_information(self):
         row = 0
         self.tableWidget.setRowCount(0)
-        print(len(self.information))
         for i in self.information:
             self.tableWidget.insertRow(row)
             sid_item = QTableWidgetItem(str(i["id_number"]))
@@ -55,7 +55,6 @@ class SearchData(QWidget):
         show_imag.exec_()
     @pyqtSlot(QPoint)
     def context_menu(self,pos):
-        print("测试",pos)
         pop_menu = QMenu()
         #菜单事件信号
         delete_event = pop_menu.addAction("删除")
@@ -69,7 +68,6 @@ class SearchData(QWidget):
                 if r == QMessageBox.No:
                    return
                 database =  Database()
-                print(self.information[row]["rowid"])
                 database.c.execute("delete from admin_log_time where rowid  = {0}".format(self.information[row]["rowid"])).fetchall()
                 imag_path = "img_information/admin/{0}/log/{1}.jpg".format(str(self.information[row]["id_number"]),str(self.information[row]["log_time"]))
                 if(os.path.exists(imag_path)):
@@ -81,7 +79,6 @@ class SearchData(QWidget):
 
             elif action == imageView_event:
                 imag_path = "img_information/admin/{0}/log/{1}.jpg".format(str(self.information[row]["id_number"]),str(self.information[row]["log_time"]))
-                print(imag_path)
                 show_imag = ShowImage(imag_path,Qt.WhiteSpaceMode)
                 show_imag.exec_()
 
@@ -134,7 +131,6 @@ class AdminInformation(QDialog):
         self.pwd_dialog = updtae_pwd(self.id_number)
         self.pwd_dialog.exec_()
     def browse(self):
-        print("测试登录日志")
         result = Database().c.execute("select rowid,id_number,log_time from admin_log_time where id_number = {0}  order by log_time desc".format(self.id_number)).fetchall()
         if len(result)!= 0:
             
@@ -145,7 +141,6 @@ class AdminInformation(QDialog):
             QMessageBox.critical(self, 'Wrong', '不存在用户')
             return
     def img_event(self,pos):
-       print("测试",pos)
        pop_menu = QMenu() 
        pop_menu.addAction("查看图片")
        pop_menu.addAction("修改图片")
@@ -157,7 +152,7 @@ class AdminInformation(QDialog):
            self.Vhlayout.addWidget(show_imag)
        elif action == pop_menu.actions()[1]:
 
-           path = self.get_path()
+           path = get_img_path(self)
            if path:
               vector = CreatUser().get_vector(self.id_number,path,"admin")
               database = Database()
@@ -165,29 +160,7 @@ class AdminInformation(QDialog):
               database.conn.commit()
               database.conn.close()
               QMessageBox.information(self, 'Success', '修改成功')
-    def get_path(self):
-        path, _ = QFileDialog.getOpenFileName(
-            self, "选择文件", "c:\\", "Image files(*.jpg *.gif *.png)")
-        if path == '':
-            return
-        elif os.path.getsize(path) > 1024000:
-            QMessageBox.critical(self, 'Wrong', '文件应小于10mb')
-            return
-        data = open(path,"rb").read(32) 
-        if not (data[6:10] in (b'JFIF',b'Exif')):
-            QMessageBox.critical(self, 'Wrong', '文件非图片文件')
-            return 
-            ##opencv 不支持中文路径,用python图片库读取图片
-        rgbImage = PIL.Image.open(path)
-        rgbImage  =  rgbImage .convert("RGB")
-        rgbImage =  np.array(rgbImage )
-        faces = models.detector(rgbImage)
-        if len(faces) == 1:
-            return path
-        else:
-            QMessageBox.critical(self, 'Wrong', '文件不存在人脸或多个人脸')
-            return
-
+   
 
 #密码修改窗口
 class updtae_pwd(QDialog):

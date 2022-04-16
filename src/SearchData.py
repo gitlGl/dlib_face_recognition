@@ -28,7 +28,7 @@ class SearchData(QWidget):
     def set_information(self):
         row = 0
         self.tableWidget.setRowCount(0)
-        print(len(self.information))
+    
         for i in self.information:
             self.tableWidget.insertRow(row)
             sid_item = QTableWidgetItem(str(i["id_number"]))
@@ -57,7 +57,6 @@ class SearchData(QWidget):
     def on_tableWidget_cellDoubleClicked(self, row, column):#双击槽函数 self.tableWidget.cellDoubleClicked.connect()
         update_data = UpdateData(self.information[row])
         ok = update_data.exec_()
-        print("是否",ok)
         if not ok:
             return
         user_name = update_data.user_name_line.text()
@@ -73,7 +72,6 @@ class SearchData(QWidget):
         self.tableWidget.item(row, 2).setText(gender)
     @pyqtSlot(QPoint)
     def context_menu(self,pos):
-        print("测试",pos)
         pop_menu = QMenu()
         #菜单事件信号
         change_new_event = pop_menu.addAction("修改")

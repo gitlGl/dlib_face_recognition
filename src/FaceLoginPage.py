@@ -84,9 +84,7 @@ class FaceLoginPage(QWidget):
                 
                 list_img = copy.deepcopy(self.list_img)
                 flag = self.livecheck.compare2faces(list_img)
-                print(flag)
-                if flag:
-                    print('检测到眨眼')  
+                if flag: 
                     GlobalFlag.gflag2 = False
                     rgbImage = cv2.cvtColor(self.capture.frame, cv2.COLOR_BGR2RGB)
                     gray = cv2.cvtColor(rgbImage, cv2.COLOR_RGB2GRAY)
@@ -109,10 +107,8 @@ class FaceLoginPage(QWidget):
 
     def closeEvent(self, event):
         if self.timer1.isActive():
-            print("tingzhi")
             self.timer1.stop()
         if self.timer2.isActive():
-            print("tingzhi")
             self.timer2.stop()    
         self.capture.close()
         super().closeEvent(event)

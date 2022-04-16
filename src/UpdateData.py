@@ -3,8 +3,8 @@ from src.Database import Database
 from PyQt5.QtGui import QIcon
 from src.GlobalVariable import models
 from .Creatuser import CreatUser
-import PIL.Image,os,shutil
-import numpy as np
+import os,shutil
+from .ImgPath import get_img_path
 
 
 class UpdateData(QDialog):
@@ -117,7 +117,6 @@ class UpdateData(QDialog):
                 data = Database()
                 sql = "UPDATE student SET id_number = {0},user_name = '{1}',gender = {2} WHERE id_number = {3}"\
                 .format(id_number,user_name,gender,id)
-                print(sql)
                 data.c.execute(sql)
                 data.conn.commit()
                 data.conn.close()
@@ -153,26 +152,9 @@ class UpdateData(QDialog):
            
         #获取图片路径  
     def get_path(self):
-        path, _ = QFileDialog.getOpenFileName(
-            self, "选择文件", "c:\\", "Image files(*.jpg *.gif *.png)")
-        if path == '':
-            return
-        elif os.path.getsize(path) > 1024000:
-            QMessageBox.critical(self, 'Wrong', '文件应小于10mb')
-            return
-        data = open(path,"rb").read(32) 
-        if not (data[6:10] in (b'JFIF',b'Exif')):
-            QMessageBox.critical(self, 'Wrong', '文件非图片文件')
-            return 
-        self.vector_line.setText(path)
-        rgbImage = PIL.Image.open(path)
-        rgbImage  =  rgbImage .convert("RGB")
-        rgbImage =  np.array(rgbImage )
-        faces = models.detector(rgbImage)
-        if len(faces) == 1:
+        path = get_img_path(self)
+        if path :
             self.path = path
-            return
-        else:
-            QMessageBox.critical(self, 'Wrong', '文件不存在人脸或多个人脸')
-            self.vector_line.clear()
-            return
+            self.vector_line.setText(path) 
+            print(path)
+            return 

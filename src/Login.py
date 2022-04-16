@@ -11,7 +11,8 @@ from .Creatuser import CreatStudentUser
 import PIL.Image,os,datetime
 import numpy as np
 from src.FaceLoginPage import FaceLoginPage
-
+from .ImgPath import get_img_path
+from .Check import check_user_id, check_user_pwd,verifye_pwd
 
 class LoginUi(QWidget):
     emitsingal = pyqtSignal(int)
@@ -86,51 +87,32 @@ class LoginUi(QWidget):
 
     #响应登录请求
     def check_login_func(self):
-        admin = Database()
-
         def clear():
             self.pwd_line.clear()
             self.user_line.clear()
 
-        if not self.user_line.text().isdigit():
-            QMessageBox.critical(self, 'Wrong', 'Wrong Username or Password!')
+        uesr_id = self.user_line.text()
+        user_pwd = self.pwd_line.text()
 
-        elif len(self.pwd_line.text()) < 6 or len(self.pwd_line.text()) > 13:
-            QMessageBox.critical(self, 'Wrong', 'Wrong Username or Password!')
-
+        if not check_user_id(uesr_id):
+           QMessageBox.critical(self, '警告', '用户名只能为数字，且不能超过100位')
+           return
+        elif not check_user_pwd(user_pwd):
+            QMessageBox.critical(self,'警告', '密码长度大于6位小于13位')
+            return
         else:
-            user_name = int(self.user_line.text())
-            user = admin.c.execute(
-                "select id_number,salt, password  from admin where id_number = {} "
-                .format(user_name)).fetchall()
-
-            if len(user) == 0:
-                QMessageBox.information(self, 'Information', 'user not  exit')
-
-            elif len(user) == 1:
-                item = user[0]
-                password = self.pwd_line.text()
-                pass_word = MyMd5().create_md5(password, item["salt"])
-                if pass_word == item["password"]:
-                    admin.c.execute("INSERT INTO admin_log_time (id_number,log_time ) \
-      VALUES (?,?)", (item["id_number"], datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
-                    admin.conn.commit()
-                    admin.conn.close()
-                    self.emitsingal.emit(item["id_number"])
-                    self.close()
-                else:
-                    QMessageBox.critical(self, 'Wrong',
-                                         'Wrong Username or Password!')
-                    clear()
-
+            result = verifye_pwd(uesr_id,user_pwd)
+            if result:
+                self.emitsingal.emit(result)
+                self.close()
             else:
-                QMessageBox.critical(self, 'Wrong', 'This User not exits')
-
+                QMessageBox.warning(self, '警告', '账号或密码错误，请重新输入', QMessageBox.Yes)
+                clear()
+ #self.emitsingal.emit(item["id_number"])
     def face_login(self):
-
         self.face_login_page = FaceLoginPage()
         self.face_login_page.emit_show_parent.connect(self.rev)
-
+#接受人脸识别登录成功信号，接收发送给主页面
     @pyqtSlot(int)
     def rev(self,id_number):
         self.emitsingal.emit(id_number)
@@ -213,31 +195,16 @@ class SigninPage(QWidget):
         else:
             self.signin_button.setEnabled(False)
 
+        #self.signin_vector_line.setText(path)
+        #self.signin_vector_line.clear()
     def get_path(self):
-        path, _ = QFileDialog.getOpenFileName(
-            self, "选择文件", "c:\\", "Image files(*.jpg *.gif *.png)")
-        if path == '':
-            return
-        elif os.path.getsize(path) > 1024000:
-            QMessageBox.critical(self, 'Wrong', '文件应小于10mb')
-            return
-        data = open(path,"rb").read(32)
-        if not (data[6:10] in (b'JFIF',b'Exif')):#检查文件类型是否属于 jpg
-            QMessageBox.critical(self, 'Wrong', '文件非图片文件')
+        path = get_img_path(self)
+        if path :
+            self.path = path
+            self.signin_vector_line.setText(path)
+            print(path)
             return 
-
-        self.signin_vector_line.setText(path)
-        rgbImage = PIL.Image.open(path)
-        rgbImage  =  rgbImage .convert("RGB")
-        rgbImage =  np.array(rgbImage )
-        faces = models.detector(rgbImage)
-        if len(faces) == 1:
-            self.path = path 
-            return
-        else:
-            QMessageBox.critical(self, 'Wrong', '文件不存在人脸或多个人脸')
-            self.signin_vector_line.clear()
-            return
+       
 
        
 

@@ -100,7 +100,6 @@ class Win(QWidget):
         if action:
             self.Vhlayout.itemAt(1).widget().deleteLater()
             self.Vhlayout.addWidget(controls_class[action.text()](self))
-            print(action.text())
         
        
         
@@ -218,7 +217,7 @@ class Win(QWidget):
         datatabel.append(category1)
         datatabel.append(category2)
         datatabel.append(category3)
-        print(datatabel)
+       
         
         data_title = [i+"时" for i in timestr]
 
@@ -281,8 +280,7 @@ class Win(QWidget):
             for i in range(abs(days)):
                data_title.append(self.DateEdit2.date().addDays(step_).toPyDate().strftime("%Y-%m-%d"))
                step_ = step_+step
-        print(total_data )
-        print(data_title)
+        
         temdata = copy.deepcopy(total_data)
         temdata.sort(reverse=True)    
         return datatabel,data_title ,temdata[0]

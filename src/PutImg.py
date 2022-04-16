@@ -34,7 +34,6 @@ class PutImg(Capture):
         self.timer3.stop()
         #控制队列数量为1
         if self.Q1.empty()  and self.Q2.empty() :
-            print("put")
             self.Q1.put(self.frame)
         if not self.Q2.empty():
             self.emit_result.emit(self.Q2.get())

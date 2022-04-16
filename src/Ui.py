@@ -129,8 +129,6 @@ class Ui(QWidget):
     @pyqtSlot(int)
     def show_parent(self,id_number):
         self.id_number = id_number
-        print(self.id_number)
-        print("test")
         del self.login_ui
         gc.collect()
         self.Q1 = Queue()  # put_img
@@ -270,9 +268,6 @@ class Ui(QWidget):
                
 
     def close(self):
-        print("open")
-        
-       
         self.put_img.emit_img.disconnect(self.set_normal_img)
        
         GlobalFlag.gflag2 = False
@@ -296,11 +291,9 @@ class Ui(QWidget):
 
         while self.put_img.timer3.isActive():
             self.put_img.timer3.stop()
-        print("测试队列")
         while self.Q1.qsize() != 0:  # 清空队列
             pass
         while self.Q2.qsize() != 0:
-            print("get")
             self.Q2.get()
         self.qlabel1.clear()#清除提示信息
         if self.flag == True:
