@@ -1,7 +1,6 @@
-from ast import Pass
 from PyQt5.QtWidgets import QApplication
 from src import Ui
-import sys, os
+import sys
 from test import StyleSheet
 
 if __name__ == '__main__':
@@ -10,17 +9,6 @@ if __name__ == '__main__':
     ui = Ui()
     app.exec_()
 
-#递归删除文件夹以及删除文件夹下所有文件
-def del_file(path):
-    if os.path.isfile(path):
-        os.remove(path)
-        
-    elif os.path.isdir(path):
-        for i in os.listdir(path):
-            del_file(path+'\\'+i)
-        os.rmdir(path)
-
- 
 #     """
 #     可视化数据格式
     

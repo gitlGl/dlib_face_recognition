@@ -1,7 +1,5 @@
 
-import datetime
-import cv2
-import os
+import datetime,cv2,os
 class  studentlog():
     def __init__(self, vector,img,database):
       

@@ -1,12 +1,9 @@
 from src.MyMd5 import MyMd5
 import numpy as np
 from src.Database import Database
-import os
 from src.GlobalVariable import models
-import xlrd
+import xlrd ,os,PIL.Image
 from src.Database import Database
-import PIL.Image
-from PyQt5.QtWidgets import QFileDialog,QMessageBox
 class CreatUser():
     def __init__(self):
         pass

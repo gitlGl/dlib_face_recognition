@@ -5,18 +5,12 @@ from .ImageView import ShowImage
 from .Creatuser import CreatUser
 from .GlobalVariable import models
 from .MyMd5 import MyMd5
-import os,sys
-from PyQt5.QtCore import Qt
+import os
+from PyQt5.QtCore import Qt,QSize,QPoint,pyqtSlot
 import numpy as np
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel, QVBoxLayout, QGroupBox,QPushButton,\
-QFileDialog,QMessageBox, QMenu,QApplication,QLineEdit,QDialog
-from test import StyleSheet
-from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import Qt,QSize
-from  PyQt5.QtWidgets import QWidget,QTableWidget,QTableWidgetItem,QVBoxLayout,QMenu,QHeaderView,QMessageBox
-from PyQt5 import QtWidgets
-from PyQt5.QtCore import QPoint,pyqtSlot,Qt
+QFileDialog,QMessageBox, QMenu,QLineEdit,QDialog,QTableWidget,QTableWidgetItem,QHeaderView,QAbstractItemView
 import PIL.Image
 class SearchData(QWidget):
     def __init__(self,information,str_list_column ):
@@ -24,7 +18,7 @@ class SearchData(QWidget):
         self.information = information
         self.tableWidget = QTableWidget(self)
         self.tableWidget.setContextMenuPolicy(Qt.CustomContextMenu)#允许右键显示上菜单
-        self.tableWidget.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)#禁止用户编辑单元格
+        self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)#禁止用户编辑单元格
         self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)#表示均匀拉直表头
         self.tableWidget.customContextMenuRequested[QPoint].connect(self.context_menu)#菜单右键槽函数
         self.tableWidget.cellDoubleClicked.connect(self.on_tableWidget_cellDoubleClicked)
@@ -274,10 +268,4 @@ class updtae_pwd(QDialog):
         self.close()
 
 
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    app.setStyleSheet(StyleSheet)    
-    ui = AdminInformation()
-    ui.show()
-    app.exec_()
 

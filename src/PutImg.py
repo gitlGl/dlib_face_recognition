@@ -1,9 +1,7 @@
 import copy
 from PyQt5.QtCore import QTimer
 import numpy as np
-#from src.Process import *
 from PyQt5.QtCore import pyqtSignal
-#from PIL import Image, ImageDraw, ImageFont
 from .LivenessDetection import LivenessDetection
 from .GlobalVariable import GlobalFlag
 from .Capture import Capture

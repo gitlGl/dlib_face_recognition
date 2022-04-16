@@ -1,11 +1,10 @@
 
-from PyQt5.QtWidgets import QWidget, QDialog, QLabel, QLineEdit, QPushButton, \
-    QVBoxLayout, QHBoxLayout, QMessageBox
+from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, \
+    QVBoxLayout, QHBoxLayout, QMessageBox, QFileDialog
 from PyQt5.QtCore import pyqtSignal, Qt
 from src.Database import Database
 from src.MyMd5 import MyMd5
 from PyQt5.QtCore import pyqtSlot
-from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtGui import QIcon
 from src.GlobalVariable import models
 from .Creatuser import CreatStudentUser

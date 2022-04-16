@@ -1,5 +1,4 @@
 import cv2
-import time
 from src.GlobalVariable import models
 from src.Face import StudentRgFace
 

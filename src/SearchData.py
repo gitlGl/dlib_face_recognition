@@ -1,10 +1,8 @@
 from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import Qt,QSize
-from  PyQt5.QtWidgets import QWidget,QTableWidget,QTableWidgetItem,QVBoxLayout,QMenu,QHeaderView,QMessageBox
-from src.UpdateData import UpdateData
-from PyQt5 import QtWidgets
-from PyQt5.QtCore import QPoint,pyqtSlot,Qt
+from PyQt5.QtCore import Qt,QSize, QPoint,pyqtSlot
 from .ImageView import ShowImage
+from  PyQt5.QtWidgets import QWidget,QTableWidget,QTableWidgetItem,QVBoxLayout,QMenu,QHeaderView,QMessageBox,QAbstractItemView
+from src.UpdateData import UpdateData
 from .Database import Database
 from .ShowStudentLog import ShowStudentLog
 class SearchData(QWidget):
@@ -13,7 +11,7 @@ class SearchData(QWidget):
         self.information = information
         self.tableWidget = QTableWidget(self)
         self.tableWidget.setContextMenuPolicy(Qt.CustomContextMenu)#允许右键显示上菜单
-        self.tableWidget.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)#禁止用户编辑单元格
+        self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)#禁止用户编辑单元格
         self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)#表示均匀拉直表头
         # self.qlineedit = QLineEdit()
         # self.qlineedit.setPlaceholderText('Please enter your usernumber')

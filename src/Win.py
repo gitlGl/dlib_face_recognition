@@ -2,9 +2,8 @@
 from src.Creatuser import CreatStudentUser
 from src.Database import Database
 from src.SearchData import SearchData
-from PyQt5.QtCore import QDate
-import copy,os
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import QDate,Qt
+import copy,os 
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel, QVBoxLayout, QLineEdit,\
 QGroupBox,QPushButton,QFileDialog,QDateEdit,QMessageBox, QMenu

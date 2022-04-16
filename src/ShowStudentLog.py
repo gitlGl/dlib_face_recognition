@@ -1,8 +1,7 @@
 from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt,QPoint,pyqtSlot
 from  PyQt5.QtWidgets import QTableWidget,QTableWidgetItem,QVBoxLayout,QMenu,QHeaderView,QMessageBox, QDialog
 from PyQt5 import QtWidgets
-from PyQt5.QtCore import QPoint,pyqtSlot,Qt
 from .ImageView import ShowImage
 from .Database import Database
 import os

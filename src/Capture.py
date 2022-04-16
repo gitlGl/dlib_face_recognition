@@ -1,9 +1,8 @@
 import cv2
-from PyQt5.QtCore import QThread
+from PyQt5.QtCore import QThread,pyqtSignal
 import numpy as np
 from PyQt5.QtGui import QImage
-from src.Process import *
-from PyQt5.QtCore import pyqtSignal
+from src.GlobalVariable import models
 #from PIL import Image, ImageDraw, ImageFont
 class Capture(QThread):
   

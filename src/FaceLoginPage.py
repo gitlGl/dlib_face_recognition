@@ -1,8 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QLabel,QVBoxLayout,QHBoxLayout
-from PyQt5.QtCore import pyqtSignal,Qt
+from PyQt5.QtCore import pyqtSignal,Qt,pyqtSlot,QTimer, Qt
 from src.Capture import Capture
-from PyQt5.QtCore import pyqtSlot
-from PyQt5.QtCore import pyqtSlot, QTimer, Qt
 from PyQt5.QtGui import QImage,QPixmap,QIcon
 from .Face import AdminRgFace
 import cv2,copy

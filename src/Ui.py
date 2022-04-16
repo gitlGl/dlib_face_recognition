@@ -1,23 +1,17 @@
-import os
-import psutil
+import cv2,gc,multiprocessing,psutil
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QHBoxLayout,QMessageBox,QMenu
-from src.Process import process_student_rg
-from PyQt5.QtWidgets import QSlider
+from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QHBoxLayout,QMessageBox,QMenu, \
+QGroupBox,QCheckBox,QLabel,QSlider
+from src.Process import process_student_rg 
 from PyQt5.QtCore import pyqtSlot, QTimer, Qt
 from PyQt5.QtGui import QIcon,QFont,QImage,QPixmap
-from PyQt5.QtWidgets import QGroupBox,QCheckBox,QLabel
-import multiprocessing
 from src.Help import Help
 from src.AdminInformation  import AdminInformation
 from multiprocessing import Process, Queue
 from .PutImg import PutImg
 from src.Login import LoginUi
 from .GlobalVariable import  GlobalFlag
-import gc
-from PyQt5.QtCore import QPoint
 from src.Win import Win
-import cv2,time
 class Ui(QWidget):
     def __init__(self):
         super().__init__()

@@ -1,10 +1,8 @@
 import cv2, numpy as np
-from PyQt6.QtCore import QThread
+from PyQt6.QtCore import QThread,pyqtSignal
 from scipy.spatial import distance as dist
 from imutils import face_utils
-from PyQt6.QtCore import pyqtSignal
 from src.GlobalVariable import models
-from src.GlobalVariable import GlobalFlag
 
 
 class LivenessDetection(QThread):

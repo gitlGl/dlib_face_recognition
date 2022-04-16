@@ -1,4 +1,3 @@
-from  PyQt5.QtWidgets import QMenu
 import os,sys
 class Plugins():
     def __init__(self,path):
