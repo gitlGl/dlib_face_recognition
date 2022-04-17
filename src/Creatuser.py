@@ -55,22 +55,18 @@ class CreatStudentUser(CreatUser):
             for i in range(1, rows):
                 list1 = sheet.row_values(rowx=i)
                 #判断用户名是否符合格式要求
-                if type(list1[0]) is str:
-                    if list1[0].isdigit() and len(list1[0]) == 13:
-                        user = student.c.execute(
-                            "select id_number from student where id_number = {} "
-                            .format(int(list1[0]))).fetchall()
-                        if len(user) == 1:
-                            list_problem.append("第{0}行第1列,用户已存在: ".format(i) +
-                                                str(list1[0]))
-                            continue
-                        else:
-                            list1[0] = int(list1[0])
-                    else:
-                        list_problem.append(
-                            "第{0}行第1列,用户名为文本格式13位数字 ".format(i) +
-                            str(list1[0]))
+              
+                if list1[0].isdigit() and len(list1[0]) == 13:
+                    user = student.c.execute(
+                        "select id_number from student where id_number = {} "
+                        .format(list1[0])).fetchall()
+                    if len(user) == 1:
+                        list_problem.append("第{0}行第1列,用户已存在: ".format(i) +
+                                            str(list1[0]))
                         continue
+                    else:
+                        list1[0] = list1[0]
+                   
                 else:
                     list_problem.append("第{0}行第1列，用户名为文本格式13位数字 ".format(i) +
                                         str(list1[0]))

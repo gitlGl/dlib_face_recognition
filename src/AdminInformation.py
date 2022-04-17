@@ -3,91 +3,17 @@ from .ImageView import ImageView
 from .Database import Database
 from .ImageView import ShowImage
 from .Creatuser import CreatUser
-from .GlobalVariable import models
-from .MyMd5 import MyMd5
-import os
-from PyQt5.QtCore import Qt,QSize,QPoint,pyqtSlot
-import numpy as np
+from PyQt5.QtCore import Qt,pyqtSlot
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel, QVBoxLayout, QGroupBox,QPushButton,\
-QFileDialog,QMessageBox, QMenu,QLineEdit,QDialog,QTableWidget,QTableWidgetItem,QHeaderView,QAbstractItemView
-import PIL.Image
+from PyQt5.QtWidgets import QHBoxLayout, QLabel, QVBoxLayout, QGroupBox,QPushButton,\
+QMessageBox, QMenu,QWidget
 from .ImgPath import get_img_path
-class SearchData(QWidget):
-    def __init__(self,information,str_list_column ):
-        super().__init__()
-        self.information = information
-        self.tableWidget = QTableWidget(self)
-        self.tableWidget.setContextMenuPolicy(Qt.CustomContextMenu)#允许右键显示上菜单
-        self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)#禁止用户编辑单元格
-        self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)#表示均匀拉直表头
-        self.tableWidget.customContextMenuRequested[QPoint].connect(self.context_menu)#菜单右键槽函数
-        self.tableWidget.cellDoubleClicked.connect(self.on_tableWidget_cellDoubleClicked)
-        self.VBoxLayout = QVBoxLayout()
-        self.VBoxLayout.addWidget(self.tableWidget)
-        self.setLayout(self.VBoxLayout)
-        columncout = len(str_list_column)
-        self.tableWidget.setColumnCount(columncout)#根据数据量确定列数
-        self.tableWidget.setHorizontalHeaderLabels(str_list_column)
-        self.set_information()
-
-    def set_information(self):
-        row = 0
-        self.tableWidget.setRowCount(0)
-        for i in self.information:
-            self.tableWidget.insertRow(row)
-            sid_item = QTableWidgetItem(str(i["id_number"]))
-            log_time = QTableWidgetItem(i["log_time"])
-            
-            img_item =  QTableWidgetItem()
-            self.tableWidget.setIconSize(QSize(60, 100))
-            imag_path = "img_information/admin/{0}/log/{1}.jpg".format(i["id_number"],i["log_time"])
-            img_item.setIcon(QIcon(imag_path))
-            sid_item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-            self.tableWidget.setItem(row, 0, sid_item)
-            self.tableWidget.setItem(row, 1, log_time)
-            self.tableWidget.setItem(row, 2,img_item)
-            row = row + 1
-            self.tableWidget.setRowCount(row)
-    def on_tableWidget_cellDoubleClicked(self, row, column):#双击槽函数 self.tableWidget.cellDoubleClicked.connect()
-        imag_path = "img_information/admin/{0}/log/{1}.jpg".format(str(self.information[row]["id_number"]),str(self.information[row]["log_time"]))
-        show_imag = ShowImage(imag_path,Qt.WhiteSpaceMode)
-        show_imag.exec_()
-    @pyqtSlot(QPoint)
-    def context_menu(self,pos):
-        pop_menu = QMenu()
-        #菜单事件信号
-        delete_event = pop_menu.addAction("删除")
-        imageView_event = pop_menu.addAction("查看图片")
-        item = self.tableWidget.itemAt(pos)
-        if item != None:
-            row = item.row()
-            action = pop_menu.exec_(self.tableWidget.mapToGlobal(pos))#显示菜单列表，pos为菜单栏坐标位置
-            if action == delete_event:
-                r = QMessageBox.warning(self, "注意", "删除可不能恢复了哦！", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-                if r == QMessageBox.No:
-                   return
-                database =  Database()
-                database.c.execute("delete from admin_log_time where rowid  = {0}".format(self.information[row]["rowid"])).fetchall()
-                imag_path = "img_information/admin/{0}/log/{1}.jpg".format(str(self.information[row]["id_number"]),str(self.information[row]["log_time"]))
-                if(os.path.exists(imag_path)):
-                    os.remove(imag_path)
-                database.conn.commit()
-                database.conn.close()
-                self.tableWidget.removeRow(row) 
-                self.information.remove(self.information[row])#删除信息列表
-
-            elif action == imageView_event:
-                imag_path = "img_information/admin/{0}/log/{1}.jpg".format(str(self.information[row]["id_number"]),str(self.information[row]["log_time"]))
-                show_imag = ShowImage(imag_path,Qt.WhiteSpaceMode)
-                show_imag.exec_()
-
-
-
-class AdminInformation(QDialog):
+from .ShowAdminLog import ShowAdminLog
+from .UpdatePwd import UpdatePwd
+from .ShowAdminUser import ShowAdminUser
+class AdminInformation(QWidget):
     def __init__(self,id_number):
         super().__init__()
-        self.setWindowFlags(Qt.WindowMinMaxButtonsHint | Qt.WindowCloseButtonHint)
         self.id_number = id_number
         self.setGeometry(300, 300,400, 380)
         self.setWindowTitle('用户信息')
@@ -122,19 +48,25 @@ class AdminInformation(QDialog):
         self.Hlayout.addWidget(self.btn1)
         self.Hlayout.addWidget(self.btn2)
         self.Hlayout.addWidget(self.btn3)
+        if self.id_number == "12345678910" :
+           self.btn4 = QPushButton()
+           self.btn4 = QPushButton(objectName="GreenButton")
+           self.btn4.setText("用户管理")
+           self.btn4.clicked.connect(self.root)
+           self.Hlayout.addWidget(self.btn4)
         self.grou.setLayout(self.Hlayout)
         self.Vhlayout.addWidget(self.grou)
         self.Vhlayout.addWidget(self.img)
         self.grou.setMaximumSize(600,40)
         self.setLayout(self.Vhlayout)
     def update_pwd(self):
-        self.pwd_dialog = updtae_pwd(self.id_number)
+        self.pwd_dialog = UpdatePwd(self.id_number)
         self.pwd_dialog.exec_()
     def browse(self):
         result = Database().c.execute("select rowid,id_number,log_time from admin_log_time where id_number = {0}  order by log_time desc".format(self.id_number)).fetchall()
         if len(result)!= 0:
             
-            self.result = SearchData(result,[ '用户ID', '登录时间',"图片" ])
+            self.result = ShowAdminLog(result,[ '用户ID', '登录时间',"图片" ])
             self.Vhlayout.itemAt(1).widget().deleteLater()
             self.Vhlayout.addWidget(self.result)
         else: 
@@ -161,84 +93,11 @@ class AdminInformation(QDialog):
               database.conn.close()
               QMessageBox.information(self, 'Success', '修改成功')
    
-
+    def root(self):
+        result = Database().c.execute("select id_number,password    from admin ").fetchall()
+        self.result = ShowAdminUser(result,[ '用户ID', '密码',"图片" ])
+        self.Vhlayout.itemAt(1).widget().deleteLater()
+        self.Vhlayout.addWidget(self.result)
+        pass
 #密码修改窗口
-class updtae_pwd(QDialog):
-    def __init__(self,id_number):
-        super().__init__()
-        self.setWindowFlags(Qt.WindowMinMaxButtonsHint | Qt.WindowCloseButtonHint)
-        self.setWindowTitle('修改密码')
-        self.setWindowIcon(QIcon('resources/修改密码.png'))
-        self.id_number = id_number
-        self.old_pwd_label = QLabel('旧密码:', self)
-        self.new_pwd2_label = QLabel('新密码:', self)
-        self.new_pwd3_label = QLabel('确认密码:', self)
-        self.old_pwd_line = QLineEdit(self)
-        self.new_pwd2_line = QLineEdit(self)
-        self.new_pwd3_line = QLineEdit(self)
-
-        self.pwd_h_layout = QHBoxLayout()
-        self.pwd2_h_layout = QHBoxLayout()
-        self.pwd3_h_layout = QHBoxLayout()
-        self.ensure_or = QHBoxLayout()
-        self.pwd_h_layout.addWidget(self.old_pwd_label)
-        self.pwd_h_layout.addWidget(self.old_pwd_line)
-
-        self.pwd2_h_layout.addWidget(self.new_pwd2_label)
-        self.pwd2_h_layout.addWidget(self.new_pwd2_line)
-
-        self.pwd3_h_layout.addWidget(self.new_pwd3_label)
-        self.pwd3_h_layout.addWidget(self.new_pwd3_line)
-
-        self.pwd_v_layout = QVBoxLayout()
-        self.pwd_v_layout.addLayout(self.pwd_h_layout)
-        self.pwd_v_layout.addLayout(self.pwd2_h_layout)
-        self.pwd_v_layout.addLayout(self.pwd3_h_layout)
-        self.btn1_event = QPushButton()
-        self.btn1 = QPushButton(objectName="GreenButton")
-        self.btn1.setText("确认修改")
-        self.btn2 = QPushButton()
-        self.btn2 = QPushButton(objectName="GreenButton")
-        self.btn2.setText("取消修改")
-        self.ensure_or.addWidget(self.btn1)
-        self.ensure_or.addWidget(self.btn2)
-        self.pwd_v_layout.addLayout(self.ensure_or)
-        self.btn1.clicked.connect(self.btn1_update_pwd)
-        self.btn2.clicked.connect(self.btn2_event)
-      
-        self.setLayout(self.pwd_v_layout)
-
-
-        
-    def btn1_update_pwd(self):
-        old_pwd =  self.old_pwd_line.text()
-        new_pwd = self.new_pwd2_line.text()
-        new_pwd_2 = self.new_pwd3_line.text()
-        if new_pwd != new_pwd_2:
-            QMessageBox.critical(self, 'Wrong', '两次密码不一致')
-        
-        elif len(new_pwd) < 6 and len(new_pwd) > 16 :
-            QMessageBox.critical(self, 'Wrong', '密码长度不能小于6位或大于16位')
-            return
-        elif old_pwd == new_pwd:
-            QMessageBox.critical(self, 'Wrong', '新旧密码不能一致')
-            return
-        else:
-            database = Database()
-            item = database.c.execute("select password ,salt from admin where id_number = {0}".format(self.id_number)).fetchone()
-            old_pass_word = MyMd5().create_md5(old_pwd, item["salt"])
-            if old_pass_word == item["password"]:
-                new_pass_word = MyMd5().create_md5(new_pwd, item["salt"])
-                database.c.execute("update admin set password = ? where id_number = {0}".format(self.id_number),(new_pass_word,))
-                database.conn.commit()
-                database.conn.close()
-                QMessageBox.information(self, 'Success', '修改成功')
-                self.close()
-            else:
-                QMessageBox.critical(self, 'Wrong', '旧密码错误')
-    #取消修改
-    def btn2_event(self):
-        self.close()
-
-
 

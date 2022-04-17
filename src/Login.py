@@ -2,6 +2,7 @@
 from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, \
     QVBoxLayout, QHBoxLayout, QMessageBox, QFileDialog
 from PyQt5.QtCore import pyqtSignal, Qt
+from click import password_option
 from src.Database import Database
 from src.MyMd5 import MyMd5
 from PyQt5.QtCore import pyqtSlot
@@ -15,7 +16,7 @@ from .ImgPath import get_img_path
 from .Check import check_user_id, check_user_pwd,verifye_pwd
 
 class LoginUi(QWidget):
-    emitsingal = pyqtSignal(int)
+    emitsingal = pyqtSignal(str)
     emit_close = pyqtSignal()
 
     def __init__(self):
@@ -113,8 +114,9 @@ class LoginUi(QWidget):
         self.face_login_page = FaceLoginPage()
         self.face_login_page.emit_show_parent.connect(self.rev)
 #接受人脸识别登录成功信号，接收发送给主页面
-    @pyqtSlot(int)
+    @pyqtSlot(str)
     def rev(self,id_number):
+       
         self.emitsingal.emit(id_number)
 
     def closeEvent(self, Event):
@@ -244,7 +246,7 @@ class SigninPage(QWidget):
                 return
             else:
 
-                user_name = int(self.signin_user_line.text())
+                user_name = self.signin_user_line.text()
                 pass_word = self.signin_pwd_line.text()
                 salt = MyMd5().create_salt()
                 pass_word = MyMd5().create_md5(pass_word, salt)

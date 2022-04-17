@@ -126,7 +126,7 @@ class Ui(QWidget):
         pass
     
     #登录成功后显示主界面
-    @pyqtSlot(int)
+    @pyqtSlot(str)
     def show_parent(self,id_number):
         self.id_number = id_number
         del self.login_ui

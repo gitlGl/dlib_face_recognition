@@ -5,6 +5,6 @@ from .Login import LoginUi
 from .Help import Help
 from .ImageView import ImageView
 from .Database import Database
-from .SearchData import SearchData
+from .ShowStudentUser import ShowStudentUser
 from .ImageView import ImageView,ShowImage
 from .GlobalVariable import models

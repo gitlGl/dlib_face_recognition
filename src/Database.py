@@ -15,7 +15,7 @@ class Database():
     def creatble(self):
         self.c.execute('''CREATE TABLE IF NOT EXISTS student
        ( 
-        id_number       INT   NOT NULL ,
+        id_number        CHAR(50)    NOT NULL ,
    
         user_name       CHAR(50)    NOT NULL,
         gender           bool,
@@ -30,7 +30,7 @@ class Database():
 
         self.c.execute('''CREATE TABLE IF NOT EXISTS student_log_time 
        ( 
-        id_number            INT   NOT NULL ,
+        id_number              CHAR(50)    NOT NULL ,
         gender           bool,
  
         log_time datetime NOT NULL 
@@ -40,7 +40,7 @@ class Database():
 
         self.c.execute('''CREATE TABLE IF NOT EXISTS admin
        ( 
-        id_number            INT   NOT NULL ,
+        id_number            CHAR(50)    NOT NULL ,
 
        
         password        char(20)    NOT NULL,
@@ -50,7 +50,7 @@ class Database():
                  )without rowid;''')
         self.c.execute('''CREATE TABLE IF NOT EXISTS admin_log_time 
        ( 
-        id_number            INT   NOT NULL ,
+        id_number             CHAR(50)    NOT NULL ,
       
         log_time datetime NOT NULL 
        

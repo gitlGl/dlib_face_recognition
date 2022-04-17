@@ -1,7 +1,7 @@
 
 from src.Creatuser import CreatStudentUser
 from src.Database import Database
-from src.SearchData import SearchData
+from src.ShowStudentUser import ShowStudentUser
 from PyQt5.QtCore import QDate,Qt
 import copy,os 
 from PyQt5.QtGui import QIcon
@@ -129,10 +129,10 @@ class Win(QWidget):
             QMessageBox.critical(self, 'Wrong', '学号为数字')
             return
             
-        result = Database().c.execute("select id_number,user_name,gender from student where id_number = {}".format(int(id_number))).fetchall()
+        result = Database().c.execute("select id_number,user_name,gender from student where id_number = {}".format(id_number)).fetchall()
         if len(result)!= 0:
            
-            self.result = SearchData(result,[ '学号', '姓名', '性别',"图片" ])
+            self.result = ShowStudentUser(result,[ '学号', '姓名', '性别',"图片" ])
             self.Vhlayout.itemAt(1).widget().deleteLater()
             self.Vhlayout.addWidget(self.result)
         else: 
@@ -143,7 +143,7 @@ class Win(QWidget):
         result = Database().c.execute("select id_number,user_name,gender from student").fetchall()
         if len(result)!= 0:
            
-            self.result = SearchData(result,[ '学号', '姓名', '性别',"图片" ])
+            self.result = ShowStudentUser(result,[ '学号', '姓名', '性别',"图片" ])
             self.Vhlayout.itemAt(1).widget().deleteLater()
             self.Vhlayout.addWidget(self.result)
         else: 

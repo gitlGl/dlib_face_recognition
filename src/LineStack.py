@@ -236,7 +236,7 @@ class ChartView(QChartView):
                 axisY.setRange(0,10)#刻度范围
         else:
             for i in tick:
-                if int(self.number/i) <= 20:#刻度个数不大于20
+                if self.number/i <= 20:#刻度个数不大于20
                     k = i-self.number%i
                     axisY.setTickCount((self.number+k)/i+1)#刻度个数
                     axisY.setRange(0,self.number+k)#刻度范围

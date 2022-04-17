@@ -5,11 +5,9 @@ from src.GlobalVariable import models
 from .Creatuser import CreatUser
 import os,shutil
 from .ImgPath import get_img_path
-
-
-class UpdateData(QDialog):
+class UpdateUserData(QDialog):
     def __init__(self,information= None):
-        super(UpdateData, self).__init__()
+        super(UpdateUserData, self).__init__()
         self.path = None
         self.information =information
       
@@ -52,7 +50,7 @@ class UpdateData(QDialog):
         self.layout_init()
     #
     def accept_(self):#接受弹出窗口状态
-       result = self.update(int(self.information["id_number"]))
+       result = self.update(self.information["id_number"])
        if result:
             QMessageBox.critical(self, 'sucess', '修改成功!')
             self.accept()#返回1

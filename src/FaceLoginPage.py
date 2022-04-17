@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import QGroupBox
 from .LivenessDetection import LivenessDetection
 
 class FaceLoginPage(QWidget):
-    emit_show_parent = pyqtSignal(int)
+    emit_show_parent = pyqtSignal(str)
 
     def __init__(self) -> None:
         super().__init__()
@@ -96,7 +96,7 @@ class FaceLoginPage(QWidget):
                                      
                     if result:                      
                         self.capture.close()
-                        self.emit_show_parent.emit()
+                        self.emit_show_parent.emit(result)
                         self.close
                         return
                     else:
