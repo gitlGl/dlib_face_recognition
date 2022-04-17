@@ -96,6 +96,16 @@ class Ui(QWidget):
         self.allvlaout.addLayout(self.Vlayout)
         self.resize(480, 600)
         self.setLayout(self.allvlaout)
+
+        self.Q1 = Queue()  # put_img
+        self.Q2 = Queue()
+        self.share = multiprocessing.Value("f", 0.4)
+        self.put_img = PutImg(self.Q1, self.Q2)
+        self.put_img.emit_result.connect(self.show_result)
+        self.put_img.emit_text.connect(self.change_text)
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.clear_qlabel2)#清除识别结果
+
         self.login_ui = LoginUi()
         self.login_ui.emitsingal.connect(self.show_parent)
         self.login_ui.show()
@@ -131,20 +141,12 @@ class Ui(QWidget):
         self.id_number = id_number
         del self.login_ui
         gc.collect()
-        self.Q1 = Queue()  # put_img
-        self.Q2 = Queue()
-        self.share = multiprocessing.Value("f", 0.4)
-        self.put_img = PutImg(self.Q1, self.Q2)
+       
         self.p = Process(target=process_student_rg,
                          args=(self.Q1, self.Q2, self.share))
         self.p.daemon = True
-        #self.put_img.emit_img.connect(self.set_normal_img)
-        self.put_img.emit_result.connect(self.show_result)
-        self.put_img.emit_text.connect(self.change_text)
-        self.timer = QTimer()
-        self.timer.timeout.connect(self.clear_qlabel2)#清除识别结果
         self.show()
-        #self.login_ui.emitsingal.disconnect(self.show_parent)
+     
        
 
     #显示识别结果
@@ -160,7 +162,7 @@ class Ui(QWidget):
     def clear_qlabel2(self):
         self.timer.stop()
         self.qlabel2.clear()
-        if self.btn3.isChecked():
+        if self.btn3.isChecked() and self.put_img.isRunning(): #and self.put_img.isRunning()
             self.qlabel1.setText("提示：请张嘴")
 
 
