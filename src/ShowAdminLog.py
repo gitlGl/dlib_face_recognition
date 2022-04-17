@@ -38,7 +38,6 @@ class ShowAdminLog(QDialog):
             self.tableWidget.setIconSize(QSize(60, 100))
            
             imag_path = "img_information/admin/{0}/log/{1}.jpg".format(i["id_number"],i["log_time"])
-            print(imag_path)
             img_item.setIcon(QIcon(imag_path))
             sid_item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
             self.tableWidget.setItem(row, 0, sid_item)
