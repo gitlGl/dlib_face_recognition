@@ -1,13 +1,16 @@
 from PyQt5.QtWidgets import QDialog, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QMessageBox, QFileDialog
 from src.Database import Database
-from PyQt5.QtGui import QIcon
-from src.GlobalVariable import models
+from PyQt5.QtGui import QIcon 
+from PyQt5.QtCore import Qt
 from .Creatuser import CreatUser
 import os,shutil
 from .ImgPath import get_img_path
 class UpdateUserData(QDialog):
     def __init__(self,information= None):
         super(UpdateUserData, self).__init__()
+        self.setWindowFlags(Qt.WindowMinMaxButtonsHint | Qt.WindowCloseButtonHint)
+        self.setWindowTitle("修改用户信息")
+        self.setWindowIcon(QIcon("resources/修改.png"))
         self.path = None
         self.information =information
       

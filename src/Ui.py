@@ -1,4 +1,4 @@
-import cv2,gc,multiprocessing,psutil
+import cv2,gc,multiprocessing,psutil,os
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QHBoxLayout,QMessageBox,QMenu, \
 QGroupBox,QCheckBox,QLabel,QSlider
@@ -12,6 +12,7 @@ from .PutImg import PutImg
 from src.Login import LoginUi
 from .GlobalVariable import  GlobalFlag
 from src.Win import Win
+from .Plugins import Plugins
 class Ui(QWidget):
     def __init__(self):
         super().__init__()
@@ -30,9 +31,14 @@ class Ui(QWidget):
         self.btn1 = QPushButton(objectName="GreenButton")
         self.btn2 = QCheckBox()
         self.btn3 = QCheckBox()
-        self.btn6 = QPushButton(objectName="GreenButton")
         self.btn4 = QPushButton(objectName="GreenButton")
         self.btn5 = QPushButton(objectName="GreenButton")
+        self.btn6 = QPushButton(objectName="GreenButton")
+        self.btn7 = QPushButton()
+        self.btn7 = QPushButton(objectName="GreenButton")
+        self.btn7.setText("插件")
+        self.btn7.setIcon(QIcon("./resources/插件.png"))
+        self.btn7.clicked.connect(lambda:self.pos_menu_plugins(self.btn7.pos()))
 
         self.btn1.setText("打开摄像头")
         self.btn1.setIcon(QIcon("./resources/摄像头_关闭.png"))
@@ -79,8 +85,10 @@ class Ui(QWidget):
         self.Hlayout.addWidget(self.btn2)
         self.Hlayout.addWidget(self.btn3)
         self.Hlayout.addWidget(self.btn4)
+        #self.Hlayout.addWidget(self.btn7)
         self.Hlayout.addWidget(self.btn5)
         self.Hlayout.addWidget(self.btn6)
+       
         self.groupbox_1.setLayout(self.Hlayout)
 
         self.Hlayout2.addWidget(self.qlabel1)
@@ -134,6 +142,20 @@ class Ui(QWidget):
         self.view =Win()
         self.view.show()
         pass
+
+       #插件菜单
+    def pos_menu_plugins(self,pos):#pos是按钮坐标
+        path = os.path.abspath("./src/plugins")#获取绝对路径
+        controls_class = Plugins(path).load_plugins()
+        pop_menu = QMenu()
+        for label,clazz in controls_class.items():
+            pop_menu.addAction(label)
+        action = pop_menu.exec_(self.mapToGlobal(pos))
+        if action:
+
+            self.win = (controls_class[action.text()]())
+            self.win.show()
+        
     
     #登录成功后显示主界面
     @pyqtSlot(str)
@@ -141,7 +163,6 @@ class Ui(QWidget):
         self.id_number = id_number
         del self.login_ui
         gc.collect()
-       
         self.p = Process(target=process_student_rg,
                          args=(self.Q1, self.Q2, self.share))
         self.p.daemon = True
