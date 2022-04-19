@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel, QVBoxLayout, QLineEdit
 QGroupBox,QPushButton,QFileDialog,QDateEdit,QMessageBox, QMenu
 from src.LineStack import ChartView
 from src.Plugins import Plugins
-class Win(QWidget):
+class ShowData(QWidget):
     def __init__(self):
         super().__init__()
         self.setGeometry(300, 300,400, 380)
@@ -81,7 +81,7 @@ class Win(QWidget):
         self.btn3.clicked.connect(self.browse)
         self.btn4.clicked.connect(self.creat_student_user)
         self.btn5.clicked.connect(lambda:self.pos_menu(self.btn5.pos()))
-        datatabel,data_title ,number=  self.get_data_(0)
+        datatabel,data_title ,number=  self.get_data_()
         self.view = ChartView(datatabel,data_title,number)
         self.Vhlayout.addWidget(self.view)
   
@@ -157,7 +157,7 @@ class Win(QWidget):
         days = abs(self.DateEdit1.date().daysTo(self.DateEdit2.date()) )
         temdays = self.DateEdit1.date().daysTo(self.DateEdit2.date())
         if days < 1:
-            datatabel,data_title,number = self.get_data_( temdays)
+            datatabel,data_title,number = self.get_data_()
            
             self.view = ChartView(datatabel,data_title,number)
             self.Vhlayout.addWidget(self.view)
@@ -180,9 +180,8 @@ class Win(QWidget):
             self.view = ChartView(datatabel,data_title,number)
             self.Vhlayout.addWidget(self.view)  
             pass
-    def get_data_(self,days):
+    def get_data_(self):
     
-        self.DateEdit1.date()
         self.test = Database()
         timestr = ["-07","-08","-09","-10","-11","-12","-13","-14","-15","-16","-17","-18","-19","-20","-21","-22","-23"]
         total_data = []

@@ -116,8 +116,9 @@ class FaceLoginPage(QWidget):
     @pyqtSlot(list,QImage)
     def set_normal_img(self, list_,img):
         self.capture.frame = list_[0]#待识别帧
-        self.label2.setPixmap(QPixmap.fromImage(img))
-        self.label2.setScaledContents(True)
+        self.label2.setPixmap(QPixmap.fromImage(img))#设置图片
+        #QPixmap.fromImage(img).scaled(self.label2.size(), Qt.KeepAspectRatio))#图片跟随qlabel大小缩放
+        self.label2.setScaledContents(True)#qlabel2自适应图片大小
 
 
 

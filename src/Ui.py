@@ -11,7 +11,7 @@ from multiprocessing import Process, Queue
 from .PutImg import PutImg
 from src.Login import LoginUi
 from .GlobalVariable import  GlobalFlag
-from src.Win import Win
+from src.ShowData import ShowData
 from .Plugins import Plugins
 class Ui(QWidget):
     def __init__(self):
@@ -52,7 +52,7 @@ class Ui(QWidget):
         self.btn5.setIcon(QIcon("./resources/帮助.png"))
         self.btn1.setFlat(True)
         self.btn5.setFlat(True)
-        self.btn4.clicked.connect(self.analyze_data)
+        self.btn4.clicked.connect(self.show_data)
         self.btn1.clicked.connect(self.open)
         self.btn2.clicked.connect(self.open_normal)
         self.btn3.clicked.connect(self.open_eye)
@@ -138,8 +138,8 @@ class Ui(QWidget):
             self.login_ui.emitsingal.connect(self.show_parent)
             self.login_ui.show()
        
-    def analyze_data(self):
-        self.view =Win()
+    def show_data(self):
+        self.view =ShowData()
         self.view.show()
         pass
 
@@ -201,10 +201,12 @@ class Ui(QWidget):
 
     #帧显示视频流
     @pyqtSlot(list,QImage)
-    def set_normal_img(self, list_,img):
+    def set_normal_img(self, list_,img):    
         self.put_img.frame = list_[0]#待识别帧
+        #设置图片，图片跟随qlabel大小缩放
         self.qlabel4.setPixmap(QPixmap.fromImage(img))
-        self.qlabel4.setScaledContents(True)
+        #QPixmap.fromImage(img).scaled(self.qlabel4.size(),Qt.KeepAspectRatio)图片跟随qlabel大小缩放
+        self.qlabel4.setScaledContents(True)#qlabel4自适应图片大小
 
     #帮助页面
     def help(self):

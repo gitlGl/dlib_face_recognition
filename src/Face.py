@@ -30,13 +30,13 @@ class StudentRgFace(Face):
         super().__init__()
         self.face_data = np.random.random(128).astype('float32')#初始化人脸编码，这个变量保存上一个人脸编码
         self.former_result = ""
-        self.refreshthread = Timer(60, self.reset)
+        self.refreshthread = Timer(3, self.reset)
         self.refreshthread.setDaemon(True)
         self.refreshthread.start()
 
     def reset(self):
         self.face_data = np.random.random(128).astype('float32')
-        self.refreshthread = Timer(60, self.reset)
+        self.refreshthread = Timer(3, self.reset)
         self.refreshthread.setDaemon(True)
         self.refreshthread.start()
 
@@ -45,7 +45,6 @@ class StudentRgFace(Face):
         face_data = self.encodeface(rgbImage, raw_face)
         flag = self.compare_faces(face_data, self.face_data, axis=0)#计算欧式距离
         if flag < share.value:
-            print("距离")
             return self.former_result
         else:
             result = self.rg_face(face_data, share.value)
