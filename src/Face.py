@@ -33,7 +33,13 @@ class StudentRgFace(Face):
         self.refreshthread = Timer(3, self.reset)
         self.refreshthread.setDaemon(True)
         self.refreshthread.start()
-
+        student = Database()
+        self.list_vector = []
+        for i in student.c.execute("SELECT vector from student"):#查询数据库中所有人脸编码
+            i = np.loads(i["vector"])
+            self.list_vector.append(i)
+      
+        student.conn.close()
     def reset(self):
         self.face_data = np.random.random(128).astype('float32')
         self.refreshthread = Timer(3, self.reset)
@@ -52,7 +58,6 @@ class StudentRgFace(Face):
                 return "请先注册用户"
             elif result:
                 self.face_data = face_data#保存这次识别人脸编码，下次识别时比较是否是同一人
-
                 student = Database()
                 log = studentlog(result, img, student)
                 student.conn.close()
@@ -62,20 +67,13 @@ class StudentRgFace(Face):
                 return "验证失败"
 
     def rg_face(self, face_data, share):
-
-        student = Database()
-        list_vector = []
-        for i in student.c.execute("SELECT vector from student"):#查询数据库中所有人脸编码
-            i = np.loads(i["vector"])
-            list_vector.append(i)
-        if len(list_vector) == 0:
+        if len(self.list_vector) == 0:
             return "请先注册用户"
-        distances = self.compare_faces(np.array(list_vector), face_data, axis=1)#计算欧式距离
+        distances = self.compare_faces(np.array(self.list_vector), face_data, axis=1)#计算欧式距离
         min_distance = np.argmin(distances)
         print("距离", distances[min_distance])
         if distances[min_distance] < share:
-            tembyte = np.ndarray.dumps(list_vector[min_distance])
-            student.conn.close()
+            tembyte = np.ndarray.dumps(self.list_vector[min_distance])
             return tembyte
         else:
             return False

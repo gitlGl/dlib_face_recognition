@@ -6,14 +6,11 @@ from src.GlobalVariable import models
 
 
 class LivenessDetection(QThread):
-    singal = pyqtSignal(list)
-
     def __init__(self):
         super().__init__()
         self.img1 = np.random.randint(255, size=(900, 800, 3), dtype=np.uint8)
         self.img2 = np.random.randint(255, size=(900, 800, 3), dtype=np.uint8)
-        self.singal.connect(self.compare2faces)
-
+      
         self.EYE_AR_THRESH = 0.3  #小于0.3时认为是闭眼状态
         self.MAR_THRESH = 0.5  #大于于0.5时认为是张嘴状态
 
@@ -65,6 +62,7 @@ class LivenessDetection(QThread):
     #判断是否眨眼
     def comput_eye(self, gray, rect):
         shape = models.predictor(gray, rect[0])
+        
         shape = face_utils.shape_to_np(shape)  #68个人脸特征坐标
         leftEye = shape[self.lStart:self.lEnd]
         rightEye = shape[self.rStart:self.rEnd]
