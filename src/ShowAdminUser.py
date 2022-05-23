@@ -1,6 +1,6 @@
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt,QSize, QPoint,pyqtSlot
-from click import password_option
+
 from .ImageView import ShowImage
 from  PyQt5.QtWidgets import QWidget,QTableWidget,QTableWidgetItem,QVBoxLayout,QMenu,QHeaderView,QMessageBox,QAbstractItemView
 from .UpdateAdminData import UpdateAdminData

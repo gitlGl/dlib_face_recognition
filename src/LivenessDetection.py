@@ -1,5 +1,5 @@
 import cv2, numpy as np
-from PyQt6.QtCore import QThread,pyqtSignal
+from PyQt6.QtCore import QThread
 from scipy.spatial import distance as dist
 from imutils import face_utils
 from src.GlobalVariable import models
