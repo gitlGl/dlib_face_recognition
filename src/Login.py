@@ -2,7 +2,6 @@
 from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, \
     QVBoxLayout, QHBoxLayout, QMessageBox, QFileDialog
 from PyQt5.QtCore import pyqtSignal, Qt
-from click import password_option
 from src.Database import Database
 from src.MyMd5 import MyMd5
 from PyQt5.QtCore import pyqtSlot
