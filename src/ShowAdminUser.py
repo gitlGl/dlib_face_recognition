@@ -1,9 +1,5 @@
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt,QSize, QPoint,pyqtSlot
-<<<<<<< HEAD
-
-=======
->>>>>>> 737394556e0a059a46423e5f39780ed2a21ecc10
 from .ImageView import ShowImage
 from  PyQt5.QtWidgets import QWidget,QTableWidget,QTableWidgetItem,QVBoxLayout,QMenu,QHeaderView,QMessageBox,QAbstractItemView
 from .UpdateAdminData import UpdateAdminData
