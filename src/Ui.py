@@ -13,6 +13,7 @@ from src.Login import LoginUi
 from .GlobalVariable import  GlobalFlag
 from src.ShowData import ShowData
 from .Plugins import Plugins
+from .Login import LoginUi
 class Ui(QWidget):
     def __init__(self):
         super().__init__()
