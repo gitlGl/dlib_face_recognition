@@ -2,8 +2,12 @@ from PyQt5.QtWidgets import QApplication
 from src import Ui
 import sys
 from test import StyleSheet
+from PyQt5.QtCore import QCoreApplication
+from PyQt5 import QtCore
 
 if __name__ == '__main__':
+    QCoreApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
+
     app = QApplication(sys.argv)
     app.setStyleSheet(StyleSheet)    
     ui = Ui()
