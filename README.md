@@ -21,6 +21,5 @@ numpy                   1.15.4 <br>
 opencv-python           4.5.5.62<br>  
 psutil                  5.9.0 <br> 
 PyQt5                   5.15.6<br>               
-scipy                   1.5.4 <br> 
 xlrd                    1.2.0 <br> 
 PyQtChart               5.15.5<br>
