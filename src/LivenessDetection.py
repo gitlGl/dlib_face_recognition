@@ -1,6 +1,5 @@
 import cv2, numpy as np
 from PyQt5.QtCore import QThread
-from scipy.spatial import distance as dist
 from imutils import face_utils
 from src.GlobalVariable import models
 
@@ -25,18 +24,18 @@ class LivenessDetection(QThread):
         """
         计算眼睛大小
         """
-        A = dist.euclidean(eye[1], eye[5])
-        B = dist.euclidean(eye[2], eye[4])
-        C = dist.euclidean(eye[0], eye[3])
+        A = np.linalg.norm(eye[1]- eye[5])
+        B = np.linalg.norm(eye[2]-eye[4])
+        C = np.linalg.norm(eye[0]- eye[3])
 
         ear = (A + B) / (2.0 * C)  #眼睛大小值
         return ear
 
     #计算嘴巴张开大小
     def mouth__aspect_ratio(self, mouth):
-        A = dist.euclidean(mouth[2], mouth[9])  # 51, 59
-        B = dist.euclidean(mouth[4], mouth[7])  # 53, 57
-        C = dist.euclidean(mouth[0], mouth[6])  # 49, 55
+        A = np.linalg.norm(mouth[2]-mouth[9])  # 51, 59
+        B = np.linalg.norm(mouth[4]-mouth[7])  # 53, 57
+        C = np.linalg.norm(mouth[0]-mouth[6])  # 49, 55
         mar = (A + B) / (2.0 * C)  #嘴巴大小值
 
         return mar
