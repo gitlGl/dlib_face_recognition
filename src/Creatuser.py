@@ -56,19 +56,19 @@ class CreatStudentUser(CreatUser):
                 list1 = sheet.row_values(rowx=i)
                 #判断用户名是否符合格式要求
               
-                if list1[0].isdigit() and len(list1[0]) == 13:
+                if str(list1[0]).isdigit() and len(str(list1[0])) == 13:
                     user = student.c.execute(
                         "select id_number from student where id_number = {} "
-                        .format(list1[0])).fetchall()
+                        .format(str(list1[0]))).fetchall()
                     if len(user) == 1:
                         list_problem.append("第{0}行第1列,用户已存在: ".format(i) +
                                             str(list1[0]))
                         continue
                     else:
-                        list1[0] = list1[0]
+                        list1[0] = str(list1[0])
                    
                 else:
-                    list_problem.append("第{0}行第1列，用户名为文本格式13位数字 ".format(i) +
+                    list_problem.append("第{0}行第1列，用户名为13位数字 ".format(i) +
                                         str(list1[0]))
                     continue
 
@@ -86,6 +86,8 @@ class CreatStudentUser(CreatUser):
                 if str(list1[2]) == "男" or str(list1[2]) == "女":
                     list1[2] = str(list1[2])
                 else:
+                    list_problem.append("第{0}行第3列,性别为男或女: ".format(i) +
+                                        str(list1[2]))
                     continue
 
                 #判断密码是否符合格式要求
