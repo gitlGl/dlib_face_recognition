@@ -51,7 +51,7 @@ class LivenessDetection(QThread):
             list.append(self.comput_eye(gray1, rect1))
             list.append(self.comput_eye(gray2, rect2))
             result = abs(list[0] - list[1])
-            if result >= 0.075:
+            if result >= 0.05:
 
                 return True
         else:

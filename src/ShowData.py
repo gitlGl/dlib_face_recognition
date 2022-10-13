@@ -123,10 +123,12 @@ class ShowData(QWidget):
     def show_search_result(self):
         if not self.linnedit.text(): 
              QMessageBox.critical(self, 'Wrong', '请输入学号')
+             self.linnedit.clear()
              return 
         id_number = self.linnedit.text()
         if not id_number.isdigit():
             QMessageBox.critical(self, 'Wrong', '学号为数字')
+            self.linnedit.clear()
             return
             
         result = Database().c.execute("select id_number,user_name,gender from student where id_number = {}".format(id_number)).fetchall()
