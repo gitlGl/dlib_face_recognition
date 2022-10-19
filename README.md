@@ -1,6 +1,10 @@
 
 
+<<<<<<< HEAD
 # egitlGl-dlib_face_recognition
+=======
+# gitlGl-dlib_face_recognition
+>>>>>>> 638708901facbf0881ecf2fd5ae937e409349beb
 
 
 
