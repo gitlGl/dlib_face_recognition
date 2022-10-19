@@ -113,7 +113,7 @@ class FaceLoginPage(QWidget):
         self.capture.close()
         super().closeEvent(event)
 
-    @pyqtSlot(list,QImage)
+    #@pyqtSlot(list,QImage)
     def set_normal_img(self, list_,img):
         self.capture.frame = list_[0]#待识别帧
         self.label2.setPixmap(QPixmap.fromImage(img))#设置图片

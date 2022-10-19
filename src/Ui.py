@@ -159,7 +159,7 @@ class Ui(QWidget):
         
     
     #登录成功后显示主界面
-    @pyqtSlot(str)
+   # @pyqtSlot(str)
     def show_parent(self,id_number):
         self.id_number = id_number
         del self.login_ui
@@ -201,7 +201,7 @@ class Ui(QWidget):
         self.qlabel1.setText(str)
 
     #帧显示视频流
-    @pyqtSlot(list,QImage)
+    #@pyqtSlot(list,QImage)
     def set_normal_img(self, list_,img):    
         self.put_img.frame = list_[0]#待识别帧
         #设置图片，图片跟随qlabel大小缩放
