@@ -1,6 +1,6 @@
 
 
-# eegitlGl-dlib_face_recognition
+# gitlGl-dlib_face_recognition
 
 
 
