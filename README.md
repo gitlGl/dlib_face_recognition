@@ -1,4 +1,4 @@
-# tetgitlGl-dlib_face_recognition
+# gitlGl-dlib_face_recognition
 # 基于dib图书馆人脸识别应用<br> 
 1.人脸识别，活体识别（张嘴，眨眼 ）<br> 
 2.人脸识别登录（登录失败三次后开启活体识别），注册，修改用户信息，退出登录。<br> 
