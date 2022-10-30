@@ -37,6 +37,7 @@ class CreatUser():
         face_data = np.array(
             models.encoder.compute_face_descriptor(rgbImage, frame))
         face_data = np.ndarray.dumps(face_data)
+        print(type(face_data))
         return face_data
 
 

@@ -6,7 +6,7 @@ from src.GlobalVariable import models
 #from PIL import Image, ImageDraw, ImageFont
 class Capture(QThread):
   
-    emit_img = pyqtSignal(list,QImage)
+    emit_img = pyqtSignal(QImage)
     def __init__(self):
         super().__init__()
         self.frame = np.random.randint(255, size=(900, 800, 3),#颜色为0-255的随机数，size为图片大小，3为RGB， dtype=np.uint8数据类型，8个bit
@@ -16,9 +16,9 @@ class Capture(QThread):
         while True:
             ret, frame = self.cap.read()
             if ret:
-                
+                self.frame = frame
                 p = convertToQtFormat(frame)
-                self.emit_img.emit([frame],p)
+                self.emit_img.emit(p)
     
 
     def close(self): #关闭线程

@@ -120,6 +120,8 @@ class Ui(QWidget):
         self.login_ui.show()
     #退出登录
     def pos_menu(self,pos):
+        if(self.show_error()):
+             return
         pop_menu = QMenu()
         pop_menu.addAction("用户信息")
         pop_menu.addAction("退出登录")
@@ -138,8 +140,14 @@ class Ui(QWidget):
             self.login_ui = LoginUi()
             self.login_ui.emitsingal.connect(self.show_parent)
             self.login_ui.show()
-       
+    def show_error(self):
+        if(self.put_img.isRunning()):
+             QMessageBox.critical(self, 'Wrong', '请先关闭摄像头')
+             return True
+             
     def show_data(self):
+        if(self.show_error()):
+             return
         self.view =ShowData()
         self.view.show()
         pass
@@ -202,8 +210,8 @@ class Ui(QWidget):
 
     #帧显示视频流
     #@pyqtSlot(list,QImage)
-    def set_normal_img(self, list_,img):    
-        self.put_img.frame = list_[0]#待识别帧
+    def set_normal_img(self, img):    
+        #self.put_img.frame = list_[0]#待识别帧
         #设置图片，图片跟随qlabel大小缩放
         self.qlabel4.setPixmap(QPixmap.fromImage(img))
         #QPixmap.fromImage(img).scaled(self.qlabel4.size(),Qt.KeepAspectRatio)图片跟随qlabel大小缩放
@@ -211,6 +219,8 @@ class Ui(QWidget):
 
     #帮助页面
     def help(self):
+        if(self.show_error()):
+             return
         self.help_qlabe = Help()
         self.help_qlabe.exec_()
 

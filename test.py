@@ -91,7 +91,7 @@ QPushButton[text="purple button"] {
 # # 向量维度  
 # vec_dim =   128
 # # 搜索topk  
-# topk = 1  
+# topk = 5
 
 # # 随机生成一批向量数据  
 # vectors = np.random.rand(num_vec, vec_dim).astype('float32')
@@ -105,7 +105,7 @@ QPushButton[text="purple button"] {
 # faiss_index.add(vectors)  
 
 # # 查询向量 假设有5个  
-# query_vectors = np.random.rand(1, vec_dim).astype('float32')
+# query_vectors = np.random.rand(5, vec_dim).astype('float32')
 # print(type(query_vectors))
 # print(query_vectors)
 
@@ -117,15 +117,43 @@ QPushButton[text="purple button"] {
 # print("距离:",res_distance)
 # print(vectors[res_index[0]])
 
-# def creat_faiss(self):
-#         student = Database()
-#         self.list_vector = []
-#         for i in student.c.execute("SELECT vector from student"):#查询数据库中所有人脸编码
-#             i = np.loads(i["vector"])
-#             self.list_vector.append(i)
+# # def creat_faiss(self):
+# #         student = Database()
+# #         self.list_vector = []
+# #         for i in student.c.execute("SELECT vector from student"):#查询数据库中所有人脸编码
+# #             i = np.loads(i["vector"])
+# #             self.list_vector.append(i)
        
-#         if len(self.list_vector) == 0:
-#             return "请先注册用户"
-#         vec_dim = 128
-#         self.faiss_index = faiss.IndexFlatL2(vec_dim)  # 使用欧式距离作为度量  
-#         self.faiss_index.add(np.array(self.list_vector).astype('float32'))
+# #         if len(self.list_vector) == 0:
+# #             return "请先注册用户"
+# #         vec_dim = 128
+# #         self.faiss_index = faiss.IndexFlatL2(vec_dim)  # 使用欧式距离作为度量  
+# #         self.faiss_index.add(np.array(self.list_vector).astype('float32'))
+
+# import csv
+# car = ['car 11',1]
+# finish = ['Landhaus , Nord']
+# time = ["['05:36']", "['06:06']", "['06:36']", "['07:06']", "['07:36']"]
+# try:
+#     with open('Informationen.csv', 'w') as myfile:
+#         writer = csv.writer(myfile, dialect='excel')
+#         bla = [car, finish]
+#         for each_time in time:
+#             bla.append(each_time)
+#         #print(bla)
+#         writer.writerow(bla)
+# except IOError as ioe:
+#     print('Error: ' + str(ioe))
+
+
+# import csv
+ 
+# filename='Informationen.csv'
+# data = []
+# with open(filename) as csvfile:
+#     csv_reader = csv.reader(csvfile)  # 使用csv.reader读取csvfile中的文件
+#     #header = next(csv_reader)        # 读取第一行每一列的标题
+#     for row in csv_reader:            # 将csv 文件中的数据保存到data中
+#         data.append(row)
+#         print(row,"\n")           # 选择某一列加入到data数组中
+#     print(data)
