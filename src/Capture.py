@@ -9,6 +9,7 @@ class Capture(QThread):
     emit_img = pyqtSignal(QImage)
     def __init__(self):
         super().__init__()
+        self.Priority = QThread.HighestPriority
         self.frame = np.random.randint(255, size=(900, 800, 3),#颜色为0-255的随机数，size为图片大小，3为RGB， dtype=np.uint8数据类型，8个bit
                                        dtype=np.uint8)  #待识别帧初始化
         self.cap = None

@@ -1,7 +1,7 @@
 import cv2, numpy as np
 from PyQt5.QtCore import QThread
-from imutils import face_utils
 from src.GlobalVariable import models
+from imutils import face_utils
 
 
 class LivenessDetection(QThread):
@@ -15,10 +15,23 @@ class LivenessDetection(QThread):
 
         #68个人脸特征中眼睛的位置
 
-        self.lStart, self.lEnd = face_utils.FACIAL_LANDMARKS_IDXS["left_eye"]
-        self.rStart, self.rEnd = face_utils.FACIAL_LANDMARKS_IDXS["right_eye"]
+        self.FACIAL_LANDMARKS_IDXS = {
+	"mouth": (48, 68),
+	"inner_mouth": (60, 68),
+	"right_eyebrow": (17, 22),
+	"left_eyebrow": (22, 27),
+	"right_eye" : (36, 42),
+	"left_eye" : (42, 48),
+	"nose" : (27, 36),
+	"jaw": (0, 17)
+}
+
+
+        self.lStart, self.lEnd = self.FACIAL_LANDMARKS_IDXS["left_eye"]
+        print("类型:",type(self.lStart))
+        self.rStart, self.rEnd = self.FACIAL_LANDMARKS_IDXS["right_eye"]
         #68个人脸特征中嘴巴的位置
-        self.mStart, self.mEnd = face_utils.FACIAL_LANDMARKS_IDXS["mouth"]
+        self.mStart, self.mEnd = self.FACIAL_LANDMARKS_IDXS["mouth"]
 
     def eye_aspect_ratio(self, eye):
         """
@@ -57,12 +70,22 @@ class LivenessDetection(QThread):
         else:
             return False
         return False
+    def shape_to_np(self,shape, dtype="int"):
+        # initialize the list of (x, y)-coordinates
+        coords = np.zeros((shape.num_parts, 2), dtype=dtype)
 
+        # loop over all facial landmarks and convert them
+        # to a 2-tuple of (x, y)-coordinates
+        for i in range(0, shape.num_parts):
+            coords[i] = (shape.part(i).x, shape.part(i).y)
+
+        # return the list of (x, y)-coordinates
+        return coords
     #判断是否眨眼
     def comput_eye(self, gray, rect):
         shape = models.predictor(gray, rect[0])
         
-        shape = face_utils.shape_to_np(shape)  #68个人脸特征坐标
+        shape = self.shape_to_np(shape)  #68个人脸特征坐标
         leftEye = shape[self.lStart:self.lEnd]
         rightEye = shape[self.rStart:self.rEnd]
         leftEAR = self.eye_aspect_ratio(leftEye)
@@ -76,7 +99,7 @@ class LivenessDetection(QThread):
         rect = models.detector(gray, 0)
         if (len(rect) == 1):
             shape = models.predictor(gray, rect[0])
-            shape = face_utils.shape_to_np(shape)  #68个人脸特征坐标
+            shape = self.shape_to_np(shape)  #68个人脸特征坐标
             mouth = shape[self.mStart:self.mEnd]
             mouth = self.mouth__aspect_ratio(mouth)
             if mouth > 0.5:
