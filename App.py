@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QApplication
-from src import Ui
+from src import main
 import sys
 from qss import StyleSheet
 from PyQt5.QtCore import QCoreApplication
@@ -9,7 +9,7 @@ if __name__ == '__main__':
     QCoreApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
     app = QApplication(sys.argv)
     app.setStyleSheet(StyleSheet)    
-    ui = Ui()
+    ui = main()
     app.exec_()
 
 #     """

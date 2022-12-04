@@ -1,4 +1,4 @@
-from .Ui import Ui
+from .main import main
 from .Process import *
 from .Creatuser import CreatUser
 from .Login import LoginUi
