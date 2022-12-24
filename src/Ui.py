@@ -18,7 +18,7 @@ class Ui(QObject):
         self.Hlayout2 = QHBoxLayout()
         self.allvlaout = QVBoxLayout()
 
-        self.btn1 = QPushButton(objectName="GreenButton")
+        self.btn1 = QPushButton()
         self.btn2 = QCheckBox()
         self.btn3 = QCheckBox()
         self.btn4 = QPushButton(objectName="GreenButton")

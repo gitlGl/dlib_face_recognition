@@ -4,11 +4,17 @@ import sys
 from qss import StyleSheet
 from PyQt5.QtCore import QCoreApplication
 from PyQt5 import QtCore
+import qdarkstyle
 
 if __name__ == '__main__':
     QCoreApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
+    
     app = QApplication(sys.argv)
-    app.setStyleSheet(StyleSheet)    
+    app.setStyleSheet(StyleSheet)   
+    # # setup stylesheet
+    # app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
+    # # or in new API
+    #app.setStyleSheet(qdarkstyle.load_stylesheet(qt_api='pyqt5')) 
     ui = main()
     app.exec_()
 

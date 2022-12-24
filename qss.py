@@ -1,4 +1,127 @@
 StyleSheet = """
+QWidget {
+        background: rgb(232, 241, 252);
+       
+}
+QTableWidget
+{
+    background: #303033;
+}
+QTableWidget::item
+{
+    color:rgba(255,255,255,150);
+    background: #303033;
+    text-align:center;
+}
+QTableWidget::item:hover
+{
+    color:#FFFFFF;
+    background: #4B4B4D;
+}
+QTableWidget::item:selected
+{
+    color:#FFFFFF;
+    background: #4B4B4D;
+}
+QHeaderView::section,QTableCornerButton:section
+{ 
+    text-align:center;
+    padding:3px; 
+    margin:0px; 
+    color:#DCDCDC; 
+    border:1px solid #242424; 
+    border-left-width:0px; 
+    border-right-width:1px; 
+    border-top-width:0px;
+     border-bottom-width:1px; 
+    background:qlineargradient(spread:pad,x1:0,y1:0,x2:0,y2:1,stop:0 #646464,stop:1 #525252);
+ }
+QHeaderView::section:selected
+{ 
+    color:#FFFFFF; 
+    border:1px solid #242424; 
+ }
+QScrollBar:vertical{ 
+    width:8px;  
+    border-style:flat;
+    border-radius: 4px;
+    border:0px;
+     background: #19191A;
+} 
+QScrollBar::handle:vertical{ 
+    background: rgba(255,255,255,0.50);
+    border-radius: 4px;
+    width:8px; 
+    min-height:91px; 
+    border-style:flat;
+}
+QScrollBar::handle:vertical::hover{ 
+    background: rgba(255,255,255,0.90);
+    border-radius: 4px;
+    width:8px; 
+}
+QScrollBar::handle:vertical::pressed{ 
+    background: rgba(255,255,255,0.90);
+    border-radius:4px;
+    width:8px; 
+}
+QScrollBar::sub-page:vertical {
+    background: #19191A;
+border-style:flat;
+}
+QScrollBar::add-page:vertical {
+   background: #19191A;
+border-style:flat;
+}
+QScrollBar::add-line:vertical{
+   background: #19191A;
+}
+QScrollBar::sub-line:vertical {
+   background: #19191A;
+}
+QScrollBar:horizontal{ 
+    height:8px;  
+    border-style:flat;
+    border-radius: 4px;
+    border:0px;
+background: #19191A;
+} 
+QScrollBar::handle:horizontal{ 
+    background: rgba(255,255,255,0.50);
+    border-radius: 4px;
+    height:8px; 
+    min-width:91px; 
+    border-style:flat;
+}
+QScrollBar::handle:horizontal::hover{ 
+    background: rgba(255,255,255,0.90);
+    border-radius: 4px;
+    height:8px; 
+}
+QScrollBar::handle:horizontal::pressed{ 
+    background: rgba(255,255,255,0.90);
+    border-radius:4px;
+    height:8px; 
+}
+QScrollBar::sub-page:horizontal {
+    background: #19191A;
+    border-style:flat;
+}
+QScrollBar::add-page:horizontal {
+   background: #19191A;
+    border-style:flat;
+}
+QScrollBar::sub-line:horizontal {
+   background: #19191A;
+}
+QScrollBar::add-line:horizontal{
+   background: #19191A;
+}
+
+
+
+
+
 /*这里是通用设置，所有按钮都有效，不过后面的可以覆盖这个*/
 QPushButton {
     border: none; /*去掉边框*/
@@ -157,3 +280,5 @@ QPushButton[text="purple button"] {
 #         data.append(row)
 #         print(row,"\n")           # 选择某一列加入到data数组中
 #     print(data)
+
+
