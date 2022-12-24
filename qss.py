@@ -11,54 +11,54 @@ QCalendarWidget QToolButton {
     color: rgb(111, 156, 207);
     
 }
-/*美化表格*/
+
 QTableWidget
 {
-    background: #303033;
+    background: rgb(224, 238, 255);
 }
 QTableWidget::item
 {
-    color:rgba(255,255,255,150);
-    background: #303033;
+    color:rgb(111, 156, 207);
+    background: rgb(224, 238, 255);
     text-align:center;
 }
 QTableWidget::item:hover
 {
     color:#FFFFFF;
-    background: #4B4B4D;
+    background: rgb(111, 156, 207);
 }
 QTableWidget::item:selected
 {
     color:#FFFFFF;
-    background: #4B4B4D;
+    background: rgb(111, 156, 207);
 }
 QHeaderView::section,QTableCornerButton:section
 { 
     text-align:center;
     padding:3px; 
     margin:0px; 
-    color:#DCDCDC; 
-    border:1px solid #242424; 
+    color:rgb(51, 51, 51);
+    border:1px solid rgb(51, 51, 51);
     border-left-width:0px; 
     border-right-width:1px; 
     border-top-width:0px;
-     border-bottom-width:1px; 
-    background:qlineargradient(spread:pad,x1:0,y1:0,x2:0,y2:1,stop:0 #646464,stop:1 #525252);
+    border-bottom-width:1px; 
+    background:qlineargradient(spread:pad,x1:0,y1:0,x2:0,y2:1,stop:0 rgb(111, 156, 207),stop:1 rgb(111, 156, 207));
  }
 QHeaderView::section:selected
 { 
     color:#FFFFFF; 
-    border:1px solid #242424; 
+    border:1px solid rgb(111, 156, 207);
  }
 QScrollBar:vertical{ 
     width:8px;  
     border-style:flat;
     border-radius: 4px;
     border:0px;
-     background: #19191A;
+     background: rgb(111, 156, 207);
 } 
 QScrollBar::handle:vertical{ 
-    background: rgba(255,255,255,0.50);
+    background: rgb(111, 156, 207);
     border-radius: 4px;
     width:8px; 
     min-height:91px; 
@@ -75,57 +75,60 @@ QScrollBar::handle:vertical::pressed{
     width:8px; 
 }
 QScrollBar::sub-page:vertical {
-    background: #19191A;
+    background: rgb(111, 156, 207);
 border-style:flat;
 }
 QScrollBar::add-page:vertical {
-   background: #19191A;
+   background: rgb(111, 156, 207);
 border-style:flat;
 }
 QScrollBar::add-line:vertical{
-   background: #19191A;
+   background: rgb(111, 156, 207);
 }
 QScrollBar::sub-line:vertical {
-   background: #19191A;
+   background: rgb(111, 156, 207);
 }
 QScrollBar:horizontal{ 
     height:8px;  
     border-style:flat;
     border-radius: 4px;
     border:0px;
-background: #19191A;
+background: rgb(111, 156, 207);
 } 
 QScrollBar::handle:horizontal{ 
-    background: rgba(255,255,255,0.50);
+    background: rgb(111, 156, 207);
     border-radius: 4px;
     height:8px; 
     min-width:91px; 
     border-style:flat;
 }
 QScrollBar::handle:horizontal::hover{ 
-    background: rgba(255,255,255,0.90);
+    background: rgb(111, 156, 207);
     border-radius: 4px;
     height:8px; 
 }
 QScrollBar::handle:horizontal::pressed{ 
-    background: rgba(255,255,255,0.90);
+    background: rgb(111, 156, 207);
     border-radius:4px;
     height:8px; 
 }
 QScrollBar::sub-page:horizontal {
-    background: #19191A;
+    background: rgb(111, 156, 207);
     border-style:flat;
 }
 QScrollBar::add-page:horizontal {
-   background: #19191A;
+   background: rgb(111, 156, 207);
     border-style:flat;
 }
 QScrollBar::sub-line:horizontal {
-   background: #19191A;
+   background: rgb(111, 156, 207);
 }
 QScrollBar::add-line:horizontal{
-   background: #19191A;
+   background: rgb(111, 156, 207);
 }
+
+
+
 
 
 
