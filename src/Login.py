@@ -203,7 +203,6 @@ class SigninPage(QWidget):
         if path :
             self.path = path
             self.signin_vector_line.setText(path)
-            print(path)
             return 
        
 

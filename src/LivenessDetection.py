@@ -28,7 +28,6 @@ class LivenessDetection(QThread):
 
 
         self.lStart, self.lEnd = self.FACIAL_LANDMARKS_IDXS["left_eye"]
-        print("类型:",type(self.lStart))
         self.rStart, self.rEnd = self.FACIAL_LANDMARKS_IDXS["right_eye"]
         #68个人脸特征中嘴巴的位置
         self.mStart, self.mEnd = self.FACIAL_LANDMARKS_IDXS["mouth"]

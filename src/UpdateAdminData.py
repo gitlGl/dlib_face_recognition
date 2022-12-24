@@ -151,5 +151,4 @@ class UpdateAdminData(QDialog):
         if path :
             self.path = path
             self.vector_line.setText(path) 
-            print(path)
             return 

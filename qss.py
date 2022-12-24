@@ -3,6 +3,15 @@ QWidget {
         background: rgb(232, 241, 252);
        
 }
+ QMenu::item:selected { 
+                     background-color:rgb(111, 156, 207);/*选中的样式*/
+}
+
+QCalendarWidget QToolButton {
+    color: rgb(111, 156, 207);
+    
+}
+/*美化表格*/
 QTableWidget
 {
     background: #303033;

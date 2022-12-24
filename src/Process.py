@@ -10,7 +10,6 @@ def process_student_rg(Q1, Q2, share):
         while not Q1.empty():
             img = Q1.get()
             rgbImage = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-            print(type(rgbImage))
             gray = cv2.cvtColor(rgbImage, cv2.COLOR_RGB2GRAY)
             location_faces = models.detector(gray)
             if len(location_faces) == 1:
