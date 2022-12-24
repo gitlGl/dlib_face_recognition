@@ -4,7 +4,7 @@ import sys
 from qss import StyleSheet
 from PyQt5.QtCore import QCoreApplication
 from PyQt5 import QtCore
-import qdarkstyle
+#import qdarkstyle
 
 if __name__ == '__main__':
     QCoreApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)

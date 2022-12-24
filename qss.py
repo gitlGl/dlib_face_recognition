@@ -11,6 +11,7 @@ QCalendarWidget QToolButton {
     color: rgb(111, 156, 207);
     
 }
+/*表格样式*/
 
 QTableWidget
 {
@@ -74,20 +75,7 @@ QScrollBar::handle:vertical::pressed{
     border-radius:4px;
     width:8px; 
 }
-QScrollBar::sub-page:vertical {
-    background: rgb(111, 156, 207);
-border-style:flat;
-}
-QScrollBar::add-page:vertical {
-   background: rgb(111, 156, 207);
-border-style:flat;
-}
-QScrollBar::add-line:vertical{
-   background: rgb(111, 156, 207);
-}
-QScrollBar::sub-line:vertical {
-   background: rgb(111, 156, 207);
-}
+
 QScrollBar:horizontal{ 
     height:8px;  
     border-style:flat;
@@ -112,25 +100,6 @@ QScrollBar::handle:horizontal::pressed{
     border-radius:4px;
     height:8px; 
 }
-QScrollBar::sub-page:horizontal {
-    background: rgb(111, 156, 207);
-    border-style:flat;
-}
-QScrollBar::add-page:horizontal {
-   background: rgb(111, 156, 207);
-    border-style:flat;
-}
-QScrollBar::sub-line:horizontal {
-   background: rgb(111, 156, 207);
-}
-QScrollBar::add-line:horizontal{
-   background: rgb(111, 156, 207);
-}
-
-
-
-
-
 
 
 
@@ -167,34 +136,7 @@ QPushButton#RedButton {
     background-color: #c8e6c9;
 }
 
-#BlueButton {
-    background-color: #2196f3;
-    /*限制最小最大尺寸*/
-    min-width: 96px;
-    max-width: 96px;
-    min-height: 96px;
-    max-height: 96px;
-    border-radius: 48px; /*圆形*/
-}
-#BlueButton:hover {
-    background-color: #64b5f6;
-}
-#BlueButton:pressed {
-    background-color: #bbdefb;
-}
 
-#OrangeButton {
-    max-height: 48px;
-    border-top-right-radius: 20px; /*右上角圆角*/
-    border-bottom-left-radius: 20px; /*左下角圆角*/
-    background-color: #ff9800;
-}
-#OrangeButton:hover {
-    background-color: #ffb74d;
-}
-#OrangeButton:pressed {
-    background-color: #ffe0b2;
-}
 
 /*根据文字内容来区分按钮,同理还可以根据其它属性来区分*/
 QPushButton[text="purple button"] {
