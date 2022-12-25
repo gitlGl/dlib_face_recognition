@@ -44,7 +44,7 @@ QHeaderView::section,QTableCornerButton:section
     border-right-width:1px; 
     border-top-width:0px;
     border-bottom-width:1px; 
-    background:qlineargradient(spread:pad,x1:0,y1:0,x2:0,y2:1,stop:0 rgb(111, 156, 207),stop:1 rgb(111, 156, 207));
+    background:qlineargradient(spread:pad,x1:0,y1:0,x2:0,y2:1,stop:0 rgb(220, 230, 240),stop:1 rgb(220, 230, 240));
  }
 QHeaderView::section:selected
 { 
@@ -56,22 +56,22 @@ QScrollBar:vertical{
     border-style:flat;
     border-radius: 4px;
     border:0px;
-     background: rgb(111, 156, 207);
+     background: rgb(232, 241, 252);
 } 
 QScrollBar::handle:vertical{ 
-    background: rgb(111, 156, 207);
+    background: rgb(232, 241, 252);
     border-radius: 4px;
     width:8px; 
     min-height:91px; 
     border-style:flat;
 }
 QScrollBar::handle:vertical::hover{ 
-    background: rgba(255,255,255,0.90);
+    background: rgb(111, 156, 207);
     border-radius: 4px;
     width:8px; 
 }
 QScrollBar::handle:vertical::pressed{ 
-    background: rgba(255,255,255,0.90);
+    background: rgb(111, 156, 207);
     border-radius:4px;
     width:8px; 
 }
@@ -81,10 +81,10 @@ QScrollBar:horizontal{
     border-style:flat;
     border-radius: 4px;
     border:0px;
-background: rgb(111, 156, 207);
+background: rgb(232, 241, 252);
 } 
 QScrollBar::handle:horizontal{ 
-    background: rgb(111, 156, 207);
+    background: rgb(232, 241, 252);
     border-radius: 4px;
     height:8px; 
     min-width:91px; 
