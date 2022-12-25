@@ -136,12 +136,41 @@ QPushButton#RedButton {
     background-color: #c8e6c9;
 }
 
+#GreenButton2 {
+    /*background-color: #4caf50;*/
+    height:15px; 
+    width: 30px;
+    border-radius: 5px; /*圆角*/
+}
+#GreenButton2:hover {
+    background-color: #81c784;
+}
+#GreenButton2:pressed {
+    background-color: #c8e6c9;
+}
 
 
 /*根据文字内容来区分按钮,同理还可以根据其它属性来区分*/
 QPushButton[text="purple button"] {
     color: white; /*文字颜色*/
     background-color: #9c27b0;
+}
+
+/**********输入框**********/
+QLineEdit {
+        border-radius: 4px;
+        height: 25px;
+        border: 1px solid rgb(111, 156, 207);
+        background: white;
+}
+QLineEdit:enabled {
+        color: rgb(84, 84, 84);
+}
+QLineEdit:enabled:hover, QLineEdit:enabled:focus {
+        color: rgb(51, 51, 51);
+}
+QLineEdit:!enabled {
+        color: rgb(80, 80, 80);
 }
 """
 

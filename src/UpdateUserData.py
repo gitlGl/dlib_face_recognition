@@ -21,7 +21,7 @@ class UpdateUserData(QDialog):
         self.id_number_line = QLineEdit(self)
         self.user_name_line = QLineEdit(self)
         self.gender_line = QLineEdit(self)
-        self.vector_button = QPushButton("照片:", self,objectName="GreenButton")
+        self.vector_button = QPushButton(":", self,objectName="GreenButton2")
         self.vector_button.setFlat(True)
 
         self.vector_button.setIcon(QIcon("./resources/文件.png"))
