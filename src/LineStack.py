@@ -16,7 +16,7 @@ class ToolTipItem(QWidget):
         clabel.setStyleSheet("border-radius:6px;background: rgba(%s,%s,%s,%s);" % (
             color.red(), color.green(), color.blue(), color.alpha()))
         layout.addWidget(clabel)
-        self.textLabel = QLabel(text, self, styleSheet="color:white;")
+        self.textLabel = QLabel(text, self, styleSheet="color:white;background: none;")
         layout.addWidget(self.textLabel)
 
     def setText(self, text):
@@ -32,7 +32,7 @@ class ToolTipWidget(QWidget):
         self.setStyleSheet(
             "ToolTipWidget{background: rgba(50, 50, 50, 100);}")
         layout = QVBoxLayout(self)
-        self.titleLabel = QLabel(self, styleSheet="color:white;")
+        self.titleLabel = QLabel(self, styleSheet="color:white;background: none;")
         layout.addWidget(self.titleLabel)
 
     def updateUi(self, title, points):
