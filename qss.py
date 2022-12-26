@@ -44,7 +44,7 @@ QHeaderView::section,QTableCornerButton:section
     border-right-width:1px; 
     border-top-width:0px;
     border-bottom-width:1px; 
-    background:qlineargradient(spread:pad,x1:0,y1:0,x2:0,y2:1,stop:0 rgb(220, 230, 240),stop:1 rgb(220, 230, 240));
+    background:qlineargradient(spread:pad,x1:0,y1:0,x2:0,y2:1,stop:0 rgb(222, 231, 242),stop:1 rgb(222, 231, 242));
  }
 QHeaderView::section:selected
 { 
