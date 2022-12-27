@@ -5,6 +5,7 @@ from PyQt5.QtCore import Qt
 from .Creatuser import CreatUser
 import os,shutil
 from .ImgPath import get_img_path
+from .MyMd5 import MyMd5
 class UpdateUserData(QDialog):
     def __init__(self,information= None):
         super(UpdateUserData, self).__init__()
@@ -17,10 +18,12 @@ class UpdateUserData(QDialog):
         self.id_label = QLabel('学号:', self)
         self.user_label = QLabel('姓名:', self)
         self.gender_label = QLabel('性别:', self)
+        self.password_label = QLabel('密码:', self)
 
         self.id_number_line = QLineEdit(self)
         self.user_name_line = QLineEdit(self)
         self.gender_line = QLineEdit(self)
+        self.password_line = QLineEdit(self)
         self.vector_button = QPushButton(":", self,objectName="GreenButton2")
         self.vector_button.setFlat(True)
 
@@ -33,6 +36,7 @@ class UpdateUserData(QDialog):
         self.pwd_h_layout = QHBoxLayout()
         self.pwd2_h_layout = QHBoxLayout()
         self.vector_h_layout = QHBoxLayout()
+        self.password_h_layout = QHBoxLayout()
         self.buttonBox_layout = QHBoxLayout()
         self.all_v_layout = QVBoxLayout()
         self.resize(300, 200)
@@ -40,6 +44,7 @@ class UpdateUserData(QDialog):
             self.id_number_line.setText((str(information["id_number"])))
             self.user_name_line.setText(information["user_name"])
             self.gender_line.setText(information["gender"])
+            self.password_line.setText(information["password"])
         
         self.buttonBox1 = QPushButton()
         self.buttonBox2 = QPushButton()
@@ -66,12 +71,15 @@ class UpdateUserData(QDialog):
         self.pwd_h_layout.addWidget(self.user_name_line)
         self.pwd2_h_layout.addWidget(self.gender_label)
         self.pwd2_h_layout.addWidget(self.gender_line)
+        self.password_h_layout.addWidget(self.password_label)
+        self.password_h_layout.addWidget(self.password_line)
         self.vector_h_layout.addWidget(self.vector_button)
         self.vector_h_layout.addWidget(self.vector_line)
 
         self.all_v_layout.addLayout(self.user_h_layout)
         self.all_v_layout.addLayout(self.pwd_h_layout)
         self.all_v_layout.addLayout(self.pwd2_h_layout)
+        self.all_v_layout.addLayout(self.password_h_layout)
         self.all_v_layout.addLayout(self.vector_h_layout)
         self.buttonBox_layout.addWidget(self.buttonBox1)
         self.buttonBox_layout.addWidget(self.buttonBox2)
@@ -89,10 +97,12 @@ class UpdateUserData(QDialog):
         #删除用户日志信息文件
         if  os.path.exists(path):
             shutil.rmtree(path)
+            print("删除用户文件夹")
 
     def update(self,id):
         user_name = self.user_name_line.text()
         id_number = self.id_number_line.text()
+        password = self.password_line.text()
         gender = None
         #检查输入信息
         
@@ -112,9 +122,12 @@ class UpdateUserData(QDialog):
         elif len (user_name) >13:
              QMessageBox.critical(self, 'Wrong', 'User_number is only digit or is too long!')
              return False
+        elif len(password) < 6 or len(password) > 13:
+            QMessageBox.critical(self, 'Wrong', ' Passwords is too short or too long!')
+            return False
 
         elif  len(Database().c.execute("select id_number from student where id_number = {} "
-        .format(id_number)).fetchall()) == 1:
+        .format(id_number)).fetchall()) == 1 and id != id_number:
             QMessageBox.critical(self, 'Wrong',
                                      ' 这个学号已经存在')
             return False
@@ -125,9 +138,11 @@ class UpdateUserData(QDialog):
                 return False
             if self.path == None:#图片可以为不变更
                 data = Database()
-                sql = "UPDATE student SET id_number = {0},user_name = '{1}',gender = {2} WHERE id_number = {3}"\
-                .format(id_number,user_name,gender,id)
-                data.c.execute(sql)
+                salt = MyMd5().create_salt()
+                password = MyMd5().create_md5(password,salt)
+                
+                data.c.execute("UPDATE student SET id_number = {0},user_name = '{1}',gender = {2},password = ?,salt = ? WHERE id_number = {3}"\
+                .format(id_number,user_name,gender,id),(password,salt))
                 data.c.execute("update student_log_time set id_number= {0} where id_number = {1}".format(id_number,id))
                 data.conn.commit()
                 data.conn.close()
@@ -145,6 +160,8 @@ class UpdateUserData(QDialog):
                
             else :
                 data = Database()
+                salt = MyMd5().create_salt()
+                password = MyMd5().create_md5(password,salt)
                 old_path = "img_information/student/{0}/".format(str(id))
                 new_path = "img_information/student/{0}/".format(str(id_number))
                 if not os.path.exists(old_path):  #判断是否存在文件夹如果不存在则创建为文件夹
@@ -154,8 +171,8 @@ class UpdateUserData(QDialog):
                      os.rename("img_information/student/{0}/{1}.jpg".format(str(id),str(id)),"img_information/student/{0}/{1}.jpg".format(str(id),str(id_number)))
                      os.rename(old_path,new_path)
                 vector = CreatUser().get_vector(id_number,self.path,"student")
-                data.c.execute("update student set id_number= ?,user_name = ?,gender = ? ,vector = ? where id_number = {0}"
-                .format(id),(id_number,user_name,gender,vector))
+                data.c.execute("update student set id_number= ?,user_name = ?,gender = ? ,vector = ?,password = ?,salt = ? where id_number = {0}"
+                .format(id),(id_number,user_name,gender,vector,password,salt))
                 data.c.execute("update student_log_time set id_number= {0} where id_number = {1}".format(id_number,id))
                 data.conn.commit()
                 data.conn.close()

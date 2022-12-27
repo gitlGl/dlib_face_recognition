@@ -229,7 +229,7 @@ class SigninPage(QWidget):
 
         elif len(self.signin_pwd_line.text()) < 6 or len(
                 self.signin_pwd_line.text()) > 13:
-            QMessageBox.critical(self, 'Wrong', ' Passwords is too short!')
+            QMessageBox.critical(self, 'Wrong', ' Passwords is too short or too long!')
 
             return
         else:

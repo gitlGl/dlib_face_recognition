@@ -103,7 +103,7 @@ class UpdateAdminData(QDialog):
              QMessageBox.critical(self, 'Wrong', 'User_number is only digit or is too long!')
              return False
         elif  len(Database().c.execute("select id_number from admin where id_number = {} "
-        .format(id_number)).fetchall()) == 1:
+        .format(id_number)).fetchall()) == 1 and id != id_number:
             QMessageBox.critical(self, 'Wrong',
                                      ' 这个用户已存在')
 
@@ -115,10 +115,9 @@ class UpdateAdminData(QDialog):
                 data = Database()
                 salt = MyMd5().create_salt()
                 password = MyMd5().create_md5(password,salt)
-                sql = "UPDATE admin SET id_number = {0},password = '{1}'  WHERE id_number = {2}"\
-                .format(id_number,password,id)
+                data.c.execute("update admin set id_number= ?,password = ?,salt = ? where id_number = {0}"
+                .format(id),(id_number,password,salt))
                 data.c.execute("update admin_log_time set id_number= {0} where id_number = {1}".format(id_number,id))
-                data.c.execute(sql)
                 data.conn.commit()
                 data.conn.close()
                 ##更改用户文件信息
@@ -135,6 +134,8 @@ class UpdateAdminData(QDialog):
                
             else :
                 data = Database()
+                salt = MyMd5().create_salt()
+                password = MyMd5().create_md5(password,salt)
                 old_path = "img_information/admin/{0}/".format(str(id))
                 new_path = "img_information/admin/{0}/".format(str(id_number))
                 if not os.path.exists(old_path):  #判断是否存在文件夹如果不存在则创建为文件夹
@@ -144,8 +145,8 @@ class UpdateAdminData(QDialog):
                      os.rename("img_information/admin/{0}/{1}.jpg".format(str(id),str(id)),"img_information/admin/{0}/{1}.jpg".format(str(id),str(id_number)))
                      os.rename(old_path,new_path)
                 vector = CreatUser().get_vector(id_number,self.path,"admin")
-                data.c.execute("update admin set id_number= ?,password = ?,vector = ? where id_number = {0}"
-                .format(id),(id_number,password,vector))
+                data.c.execute("update admin set id_number= ?,password = ?,salt = ? ,vector = ? where id_number = {0}"
+                .format(id),(id_number,password,salt,vector))
                 data.c.execute("update admin_log_time set id_number= {0} where id_number = {1}".format(id_number,id))
                 data.conn.commit()
                 data.conn.close()
