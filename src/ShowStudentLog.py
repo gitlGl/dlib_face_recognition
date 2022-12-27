@@ -65,8 +65,15 @@ class ShowStudentLog(QDialog):
                    return
                 database =  Database()
                 database.c.execute("delete from student_log_time where rowid  = {0}".format(self.information[row]["rowid"])).fetchall()
+                item = database.c.execute(
+                "SELECT  cout,id_number from student where id_number = {}".format(str(self.information[row]["id_number"]))).fetchall()[0] # 取出返回所有数据，fetchall返回类型是[()]
+                if item["cout"] is not None:
+                    database.c.execute(
+            "UPDATE student SET cout = {0} WHERE id_number = {1}".format(item["cout"]-1,item["id_number"]))
+                    pass
                 imag_path = "img_information/student/{0}/log/{1}.jpg".format(str(self.information[row]["id_number"]),str(self.information[row]["log_time"]))
-                os.remove(imag_path)
+                if os.path.isfile(imag_path):
+                    os.remove(imag_path)
                 database.conn.commit()
                 database.conn.close()
                 self.tableWidget.removeRow(row) 

@@ -66,7 +66,7 @@ class ShowAdminLog(QDialog):
                 database =  Database()
                 database.c.execute("delete from admin_log_time where rowid  = {0}".format(self.information[row]["rowid"])).fetchall()
                 imag_path = "img_information/admin/{0}/log/{1}.jpg".format(str(self.information[row]["id_number"]),str(self.information[row]["log_time"]))
-                if(os.path.exists(imag_path)):
+                if os.path.isfile(imag_path):
                     os.remove(imag_path)
                 database.conn.commit()
                 database.conn.close()
