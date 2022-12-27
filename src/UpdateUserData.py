@@ -82,8 +82,10 @@ class UpdateUserData(QDialog):
     def delete(self,id):
         path = "img_information/student/{0}".format(str(id))
         data = Database()
-     
         data.delete(id)
+        data.c.execute("delete from student_log_time where id_number = {0}".format(id))
+        data.conn.commit()
+        data.conn.close()
         #删除用户日志信息文件
         if  os.path.exists(path):
             shutil.rmtree(path)
@@ -93,6 +95,7 @@ class UpdateUserData(QDialog):
         id_number = self.id_number_line.text()
         gender = None
         #检查输入信息
+        
         if  self.gender_line.text() == "男":
             gender = 1
         elif  self.gender_line.text() =="女":
@@ -110,6 +113,12 @@ class UpdateUserData(QDialog):
              QMessageBox.critical(self, 'Wrong', 'User_number is only digit or is too long!')
              return False
 
+        elif  len(Database().c.execute("select id_number from student where id_number = {} "
+        .format(id_number)).fetchall()) == 1:
+            QMessageBox.critical(self, 'Wrong',
+                                     ' 这个学号已经存在')
+            return False
+
         else :
             r = QMessageBox.warning(self, "注意", "确认修改？", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
             if r == QMessageBox.No:
@@ -119,6 +128,7 @@ class UpdateUserData(QDialog):
                 sql = "UPDATE student SET id_number = {0},user_name = '{1}',gender = {2} WHERE id_number = {3}"\
                 .format(id_number,user_name,gender,id)
                 data.c.execute(sql)
+                data.c.execute("update student_log_time set id_number= {0} where id_number = {1}".format(id_number,id))
                 data.conn.commit()
                 data.conn.close()
                 ##更改用户文件信息
@@ -146,6 +156,7 @@ class UpdateUserData(QDialog):
                 vector = CreatUser().get_vector(id_number,self.path,"student")
                 data.c.execute("update student set id_number= ?,user_name = ?,gender = ? ,vector = ? where id_number = {0}"
                 .format(id),(id_number,user_name,gender,vector))
+                data.c.execute("update student_log_time set id_number= {0} where id_number = {1}".format(id_number,id))
                 data.conn.commit()
                 data.conn.close()
            
@@ -157,5 +168,4 @@ class UpdateUserData(QDialog):
         if path :
             self.path = path
             self.vector_line.setText(path) 
-            print(path)
             return 

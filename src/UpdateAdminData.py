@@ -82,6 +82,7 @@ class UpdateAdminData(QDialog):
         path = "img_information/admin/{0}".format(str(id))
         data = Database()
         data.c.execute("delete from admin where id_number = {0}".format(id))
+        data.c.execute("delete from admin_log_time where id_number = {0}".format(id))
         data.conn.commit()
         data.c.close()
 
@@ -101,6 +102,10 @@ class UpdateAdminData(QDialog):
         elif len (password) >13:
              QMessageBox.critical(self, 'Wrong', 'User_number is only digit or is too long!')
              return False
+        elif  len(Database().c.execute("select id_number from admin where id_number = {} "
+        .format(id_number)).fetchall()) == 1:
+            QMessageBox.critical(self, 'Wrong',
+                                     ' 这个用户已存在')
 
         else :
             r = QMessageBox.warning(self, "注意", "确认修改？", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
@@ -112,6 +117,7 @@ class UpdateAdminData(QDialog):
                 password = MyMd5().create_md5(password,salt)
                 sql = "UPDATE admin SET id_number = {0},password = '{1}'  WHERE id_number = {2}"\
                 .format(id_number,password,id)
+                data.c.execute("update admin_log_time set id_number= {0} where id_number = {1}".format(id_number,id))
                 data.c.execute(sql)
                 data.conn.commit()
                 data.conn.close()
@@ -140,6 +146,7 @@ class UpdateAdminData(QDialog):
                 vector = CreatUser().get_vector(id_number,self.path,"admin")
                 data.c.execute("update admin set id_number= ?,password = ?,vector = ? where id_number = {0}"
                 .format(id),(id_number,password,vector))
+                data.c.execute("update admin_log_time set id_number= {0} where id_number = {1}".format(id_number,id))
                 data.conn.commit()
                 data.conn.close()
            

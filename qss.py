@@ -263,3 +263,4 @@ QLineEdit:!enabled {
 #         data.append(row)
 #         print(row,"\n")           # 选择某一列加入到data数组中
 #     print(data)
+
