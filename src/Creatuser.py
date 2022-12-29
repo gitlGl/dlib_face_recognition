@@ -4,7 +4,7 @@ from src.Database import Database
 from src.GlobalVariable import models
 import xlrd ,os
 from src.Database import Database
-import cv2
+import cv2,dlib
 class CreatUser():
     def __init__(self):
         pass
@@ -29,7 +29,13 @@ class CreatUser():
         rgbImage = cv2.imdecode(raw_data, cv2.IMREAD_COLOR)  #从内存数据读入图片
         cv2.imwrite("img_information/" + fuck + "/" + str(id_number) + "/" +
             str(id_number)+".jpg" ,rgbImage)
-  
+        
+        faces = models.detector(rgbImage)
+        dets = models.detector(rgbImage, 0)
+        faces = dlib.full_object_detections()
+        for detection in dets:
+            faces.append(models.predictor(rgbImage, detection))
+        rgbImage = dlib.get_face_chip(rgbImage, faces[0])
         #rgbImage  =  rgbImage.convert("RGB")
         #rgbImage =  np.array(rgbImage )
         face = models.detector(rgbImage)[0]

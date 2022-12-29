@@ -264,7 +264,21 @@ QLineEdit:!enabled {
 #         print(row,"\n")           # 选择某一列加入到data数组中
 #     print(data)
 import dlib,cv2,numpy as np
-
+from src import models
 # raw_data = np.fromfile("./3.jpg", dtype=np.uint8)  #先用numpy把图片文件存入内存：raw_data，把图片数据看做是纯字节数据
 # img = cv2.imdecode(raw_data, cv2.IMREAD_COLOR)  #从内存数据读入图片
 # cv2.imwrite( "5.jpg",img)
+                               
+# raw_data = np.fromfile("./6.jpg", dtype=np.uint8)  #先用numpy把图片文件存入内存：raw_data，把图片数据看做是纯字节数据
+# rgbImage = cv2.imdecode(raw_data, cv2.IMREAD_COLOR)  #从内存数据读入图片
+# faces = models.detector(rgbImage)
+# dets = models.detector(rgbImage, 0)
+# faces = dlib.full_object_detections()
+# for detection in dets:
+#     faces.append(models.predictor(rgbImage, detection))
+# window = dlib.image_window()
+# image = dlib.get_face_chip(rgbImage, faces[0])
+# cv2.imwrite("./2.jpg" ,image)
+  
+# window.set_image(image)
+# dlib.hit_enter_to_continue()
