@@ -5,13 +5,17 @@ class  studentlog():
       
         self.database = database
         #用户信息
-        self.item = self.database.c.execute(
+        item = self.database.c.execute(
                 "SELECT  * from student where vector = ?",
-                (vector, )).fetchall()[0] # 取出返回所有数据，fetchall返回类型是[()]
-        self.insert_time()
-        self.insert_img(img)
-        self.insert_cout()
-        self.database.conn.close()      
+                (vector, )).fetchall() # 取出返回所有数据，fetchall返回类型是[()]
+        if(len(item) == 1):
+            self.item = item
+            self.insert_time()
+            self.insert_img(img)
+            self.insert_cout()
+            self.database.conn.close()
+        else:
+            pass #应该输出异常日志
     #记录识别成功时间
     def insert_time(self):
         
@@ -61,11 +65,15 @@ class  adminlog():
       
         self.database = database
         #用户信息
-        self.item = self.database.c.execute(
-                "SELECT  * from admin where vector = ?",
-                (vector, )).fetchall()[0] # 取出返回所有数据，fetchall返回类型是[()]
-        self.insert_img(img)
-        self.insert_time()
+        item = self.database.c.execute(
+                "SELECT  * from student where vector = ?",
+                (vector, )).fetchall() # 取出返回所有数据，fetchall返回类型是[()]
+        if(len(item) == 1):
+            self.item = item
+            self.insert_img(img)
+            self.insert_time()
+        else:
+            pass #应该输出异常日志
 
     def insert_time(self):
         
