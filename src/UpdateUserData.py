@@ -141,8 +141,8 @@ class UpdateUserData(QDialog):
                 salt = MyMd5().create_salt()
                 password = MyMd5().create_md5(password,salt)
                 
-                data.c.execute("UPDATE student SET id_number = {0},user_name = '{1}',gender = {2},password = ?,salt = ? WHERE id_number = {3}"\
-                .format(id_number,user_name,gender,id),(password,salt))
+                data.c.execute("UPDATE student SET id_number = {0},user_name = '{1}',gender = {2},password = ?,img_path =? ,salt = ? WHERE id_number = {3}"\
+                .format(id_number,user_name,gender,id),(password,"img_information/student/{0}/log".format(id_number),salt))
                 data.c.execute("update student_log_time set id_number= {0} where id_number = {1}".format(id_number,id))
                 data.conn.commit()
                 data.conn.close()
@@ -171,9 +171,9 @@ class UpdateUserData(QDialog):
                      os.rename("img_information/student/{0}/{1}.jpg".format(str(id),str(id)),"img_information/student/{0}/{1}.jpg".format(str(id),str(id_number)))
                      os.rename(old_path,new_path)
                 vector = CreatUser().get_vector(id_number,self.path,"student")
-                data.c.execute("update student set id_number= ?,user_name = ?,gender = ? ,vector = ?,password = ?,salt = ? where id_number = {0}"
-                .format(id),(id_number,user_name,gender,vector,password,salt))
                 data.c.execute("update student_log_time set id_number= {0} where id_number = {1}".format(id_number,id))
+                data.c.execute("update student set id_number= ?,user_name = ?,gender = ? ,vector = ?,password = ?,img_path = ? ,salt = ? where id_number = {0}"
+                .format(id),(id_number,user_name,gender,vector,password,"img_information/student/{0}/log".format(id_number),salt))
                 data.conn.commit()
                 data.conn.close()
            

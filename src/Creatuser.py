@@ -30,7 +30,6 @@ class CreatUser():
         cv2.imwrite("img_information/" + fuck + "/" + str(id_number) + "/" +
             str(id_number)+".jpg" ,rgbImage)
         
-        faces = models.detector(rgbImage)
         dets = models.detector(rgbImage, 0)
         faces = dlib.full_object_detections()
         for detection in dets:
