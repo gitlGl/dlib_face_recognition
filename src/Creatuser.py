@@ -2,8 +2,9 @@ from src.MyMd5 import MyMd5
 import numpy as np
 from src.Database import Database
 from src.GlobalVariable import models
-import xlrd ,os,PIL.Image
+import xlrd ,os
 from src.Database import Database
+import cv2
 class CreatUser():
     def __init__(self):
         pass
@@ -24,11 +25,10 @@ class CreatUser():
             os.makedirs(path)
             
             ##opencv 不支持中文路径,用python图片库读取图片
-        rgbImage = PIL.Image.open(file_path)
-        rgbImage.save( "img_information/" + fuck + "/" + str(id_number) + "/" +
-            str(id_number) + ".jpg")
-        rgbImage  =  rgbImage .convert("RGB")
-        rgbImage =  np.array(rgbImage )
+        raw_data = np.fromfile(file_path, dtype=np.uint8)  #先用numpy把图片文件存入内存：raw_data，把图片数据看做是纯字节数据
+        rgbImage = cv2.imdecode(raw_data, cv2.IMREAD_COLOR)  #从内存数据读入图片
+        cv2.imwrite("img_information/" + fuck + "/" + str(id_number) + "/" +
+            str(id_number)+".jpg" ,rgbImage)
   
         #rgbImage  =  rgbImage.convert("RGB")
         #rgbImage =  np.array(rgbImage )
@@ -121,9 +121,9 @@ class CreatStudentUser(CreatUser):
                         continue
     
                         ##opencv 不支持中文路径,用python图片库读取图片
-                    rgbImage = PIL.Image.open(list1[4])
-                    rgbImage  =  rgbImage .convert("RGB")
-                    rgbImage =  np.array(rgbImage )
+                                
+                    raw_data = np.fromfile(list1[4], dtype=np.uint8)  #先用numpy把图片文件存入内存：raw_data，把图片数据看做是纯字节数据
+                    rgbImage = cv2.imdecode(raw_data, cv2.IMREAD_COLOR)  #从内存数据读入图片
                     faces = models.detector(rgbImage)
                     if len(faces) == 1:
                         pass

@@ -8,7 +8,7 @@ from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtGui import QIcon
 from src.GlobalVariable import models
 from .Creatuser import CreatStudentUser
-import PIL.Image,os,datetime
+import os,datetime
 import numpy as np
 from src.FaceLoginPage import FaceLoginPage
 from .ImgPath import get_img_path

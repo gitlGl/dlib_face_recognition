@@ -20,8 +20,6 @@
 13.插件功能<br>
 14.依赖<br>
 dlib                    19.8.1<br>  
-Pillow                  8.4.0<br>
-
 numpy                   1.15.4 <br> 
 opencv-python           4.5.5.62<br>  
 psutil                  5.9.0 <br> 
