@@ -135,14 +135,14 @@ class SigninPage(QWidget):
         self.setWindowModality(Qt.ApplicationModal)
         self.setWindowTitle('注册')
         self.setWindowIcon(QIcon('resources/注册.png'))
-        self.signin_user_label = QLabel('用户:', self)
-        self.signin_pwd_label = QLabel('密码:', self)
-        self.signin_pwd2_label = QLabel('密码:', self)
+        self.signin_user_label = QLabel('输入用户:', self)
+        self.signin_pwd_label = QLabel('输入密码:', self)
+        self.signin_pwd2_label = QLabel('确认密码:', self)
 
         self.signin_user_line = QLineEdit(self)
         self.signin_pwd_line = QLineEdit(self)
         self.signin_pwd2_line = QLineEdit(self)
-        self.signin_vector_button = QPushButton(":", self,objectName="GreenButton2")
+        self.signin_vector_button = QPushButton(" 图片:",self,objectName="GreenButton")
         self.signin_vector_button.setFlat(True)
 
         self.signin_vector_button.setIcon(QIcon("./resources/文件.png"))
