@@ -57,12 +57,16 @@ class StudentRgFace(Face):
             if result == "请先注册用户":
                 return "请先注册用户"
             elif result:
-                self.face_data = face_data#保存这次识别人脸编码，下次识别时比较是否是同一人
                 student = Database()
                 log = studentlog(result, img, student)
                 student.conn.close()
-                self.former_result = "验证成功：" + log.item["user_name"]
-                return "验证成功：" + log.item["user_name"]
+                if hasattr(log, "item"):
+                    self.face_data = face_data#保存这次识别人脸编码，下次识别时比较是否是同一人
+                    self.former_result = "验证成功：" + log.item["user_name"]
+                    return "验证成功：" + log.item["user_name"]
+                else:
+                    return "验证失败"
+
             else:
                 return "验证失败"
 
@@ -98,10 +102,13 @@ class AdminRgFace(Face):
         print("距离", distances[min_distance])
         if distances[min_distance] < 0.4:
             tembyte = np.ndarray.dumps(list_vector[min_distance])
-            adminlog(tembyte, img, admin)
-            id_number = list_user[min_distance]["id_number"]#返回管理员的id_number
+            log = adminlog(tembyte, img, admin)
             admin.conn.close()  #关闭数据库连接
-            return id_number
+            if hasattr(log, "item"):
+                id_number = list_user[min_distance]["id_number"]#返回管理员的id_number
+                return id_number
+            else:
+                return False
         else:
             return False
 

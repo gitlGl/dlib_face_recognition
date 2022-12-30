@@ -30,15 +30,13 @@ class CreatUser():
         cv2.imwrite("img_information/" + fuck + "/" + str(id_number) + "/" +
             str(id_number)+".jpg" ,rgbImage)
         
-        dets = models.detector(rgbImage, 0)
-        faces = dlib.full_object_detections()
-        for detection in dets:
-            faces.append(models.predictor(rgbImage, detection))
-        rgbImage = dlib.get_face_chip(rgbImage, faces[0])
-        #rgbImage  =  rgbImage.convert("RGB")
-        #rgbImage =  np.array(rgbImage )
+        rgbImage = cv2.cvtColor(rgbImage, cv2.COLOR_BGR2RGB)
+
         face = models.detector(rgbImage)[0]
         frame = models.predictor(rgbImage, face)
+        # rgbImage = dlib.get_face_chip(rgbImage, frame)
+        # face = models.detector(rgbImage)[0]
+        # frame = models.predictor(rgbImage, face)
         face_data = np.array(
             models.encoder.compute_face_descriptor(rgbImage, frame))
         face_data = np.ndarray.dumps(face_data)
@@ -129,6 +127,7 @@ class CreatStudentUser(CreatUser):
                                 
                     raw_data = np.fromfile(list1[4], dtype=np.uint8)  #先用numpy把图片文件存入内存：raw_data，把图片数据看做是纯字节数据
                     rgbImage = cv2.imdecode(raw_data, cv2.IMREAD_COLOR)  #从内存数据读入图片
+                    rgbImage = cv2.cvtColor(rgbImage, cv2.COLOR_BGR2RGB)
                     faces = models.detector(rgbImage)
                     if len(faces) == 1:
                         pass

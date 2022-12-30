@@ -9,22 +9,15 @@ def process_student_rg(Q1, Q2, share):
     while True:
         while not Q1.empty():
             rgbImage = Q1.get()
+            img = rgbImage
+            rgbImage = cv2.cvtColor(rgbImage, cv2.COLOR_BGR2RGB)
             location_faces = models.detector(rgbImage)
             if len(location_faces) == 1:
-                img = rgbImage
-                faces = models.detector(rgbImage)
-                dets = models.detector(rgbImage, 0)
-                faces = dlib.full_object_detections()
-                for detection in dets:
-                    faces.append(models.predictor(rgbImage, detection))
-                rgbImage = dlib.get_face_chip(rgbImage, faces[0])
-                rgbImage = cv2.cvtColor(rgbImage, cv2.COLOR_BGR2RGB)
-                gray = cv2.cvtColor(rgbImage, cv2.COLOR_RGB2GRAY)
-                location_faces = models.detector(rgbImage)
-                if len(location_faces) == 1:
-                    raw_face = models.predictor(gray, location_faces[0])
-                    result = face_rg.rg(img, rgbImage, raw_face, share)
-                    Q2.put(result)
+                raw_face = models.predictor(rgbImage, location_faces[0])
+                #rgbImage = dlib.get_face_chip(rgbImage, face)
+            
+                result = face_rg.rg(img, rgbImage, raw_face, share)
+                Q2.put(result)
 
         time.sleep(0.5)
 

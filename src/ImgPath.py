@@ -17,6 +17,8 @@ def get_img_path(parent=None):
         return False
     raw_data = np.fromfile(path, dtype=np.uint8)  #先用numpy把图片文件存入内存：raw_data，把图片数据看做是纯字节数据
     rgbImage = cv2.imdecode(raw_data, cv2.IMREAD_COLOR)  #从内存数据读入图片
+    rgbImage = cv2.cvtColor(rgbImage, cv2.COLOR_BGR2RGB)
+    
     faces = models.detector(rgbImage)
     if len(faces) == 1:
         return path

@@ -263,8 +263,8 @@ QLineEdit:!enabled {
 #         data.append(row)
 #         print(row,"\n")           # 选择某一列加入到data数组中
 #     print(data)
-import dlib,cv2,numpy as np
-from src import models
+# import dlib,cv2,numpy as np
+# from src import models
 # raw_data = np.fromfile("./3.jpg", dtype=np.uint8)  #先用numpy把图片文件存入内存：raw_data，把图片数据看做是纯字节数据
 # img = cv2.imdecode(raw_data, cv2.IMREAD_COLOR)  #从内存数据读入图片
 # cv2.imwrite( "5.jpg",img)
@@ -282,3 +282,15 @@ from src import models
   
 # window.set_image(image)
 # dlib.hit_enter_to_continue()
+#   img = rgbImage
+#                 location_faces = models.predictor(rgbImage, location_faces[0])
+#                 rgbImage = dlib.get_face_chip(rgbImage, location_faces)
+#                 rgbImage = cv2.cvtColor(rgbImage, cv2.COLOR_BGR2RGB)
+#                 result = face_rg.rg(img, rgbImage,  location_faces,share)
+# class test():
+#     def __init__(self) -> None:
+#         self.test = 0
+#     pass
+# t = test()
+# if hasattr(t, "test"):
+#     print("ces")

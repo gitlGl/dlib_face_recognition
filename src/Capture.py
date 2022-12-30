@@ -33,8 +33,7 @@ class Capture(QThread):
 #转换位qt图像格式
 def convertToQtFormat(frame_show):
     rgbImage = cv2.cvtColor(frame_show, cv2.COLOR_BGR2RGB)
-    gray = cv2.cvtColor(rgbImage,cv2.COLOR_RGB2GRAY)
-    faces = models.detector(gray)
+    faces = models.detector(rgbImage)
     if len(faces) == 1:
         face = faces[0]
         cv2.rectangle(rgbImage, (face.left(), face.top()), (face.right(), face.bottom()), (255,0,0), 4)

@@ -48,10 +48,9 @@ class FaceLoginPage(QWidget):
     def get_result(self):
         self.timer1.stop()
         rgbImage = cv2.cvtColor(self.capture.frame, cv2.COLOR_BGR2RGB)
-        gray = cv2.cvtColor(rgbImage, cv2.COLOR_RGB2GRAY)
-        location_faces = models.detector(gray)
+        location_faces = models.detector(rgbImage)
         if len(location_faces) == 1:
-            raw_face = models.predictor(gray, location_faces[0])
+            raw_face = models.predictor(rgbImage, location_faces[0])
             result = self.face_rg.rg_face(self.capture.frame, rgbImage,
                                           raw_face)
             if result:
@@ -87,10 +86,10 @@ class FaceLoginPage(QWidget):
                 if flag: 
                     GlobalFlag.gflag2 = False
                     rgbImage = cv2.cvtColor(self.capture.frame, cv2.COLOR_BGR2RGB)
-                    gray = cv2.cvtColor(rgbImage, cv2.COLOR_RGB2GRAY)
-                    location_faces = models.detector(gray)
+                    
+                    location_faces = models.detector(rgbImage)
                     if len(location_faces) == 1:
-                        raw_face = models.predictor(gray, location_faces[0])
+                        raw_face = models.predictor(rgbImage, location_faces[0])
                         result = self.face_rg.rg_face(self.capture.frame, rgbImage,
                                             raw_face)
                                      

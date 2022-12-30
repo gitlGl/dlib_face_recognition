@@ -54,14 +54,14 @@ class LivenessDetection(QThread):
 
     def compare2faces(self, list_img):  #对比两张人脸照片对比是否发生眨眼。两张照片眼睛距离大于0.1时认为发生眨眼
 
-        gray1 = cv2.cvtColor(list_img[0], cv2.COLOR_RGB2GRAY)
-        gray2 = cv2.cvtColor(list_img[1], cv2.COLOR_RGB2GRAY)
-        rect1 = models.detector(gray1, 0)
-        rect2 = models.detector(gray2, 0)
+        rgbImage1 = cv2.cvtColor(list_img[0], cv2.COLOR_BGR2RGB)
+        rgbImage2 = cv2.cvtColor(list_img[1], cv2.COLOR_BGR2RGB)
+        rect1 = models.detector(rgbImage1, 0)
+        rect2 = models.detector(rgbImage2, 0)
         list = []
         if (len(rect1) == 1) and (len(rect2)) == 1:
-            list.append(self.comput_eye(gray1, rect1))
-            list.append(self.comput_eye(gray2, rect2))
+            list.append(self.comput_eye(rgbImage1, rect1))
+            list.append(self.comput_eye(rgbImage2, rect2))
             result = abs(list[0] - list[1])
             if result >= 0.05:
 
@@ -81,8 +81,8 @@ class LivenessDetection(QThread):
         # return the list of (x, y)-coordinates
         return coords
     #判断是否眨眼
-    def comput_eye(self, gray, rect):
-        shape = models.predictor(gray, rect[0])
+    def comput_eye(self, rgbImage, rect):
+        shape = models.predictor(rgbImage, rect[0])
         
         shape = self.shape_to_np(shape)  #68个人脸特征坐标
         leftEye = shape[self.lStart:self.lEnd]
@@ -94,10 +94,10 @@ class LivenessDetection(QThread):
 
     #判断是否张开嘴巴
     def comput_mouth(self, img):
-        gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-        rect = models.detector(gray, 0)
+        rgbImage = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        rect = models.detector(rgbImage, 0)
         if (len(rect) == 1):
-            shape = models.predictor(gray, rect[0])
+            shape = models.predictor(rgbImage, rect[0])
             shape = self.shape_to_np(shape)  #68个人脸特征坐标
             mouth = shape[self.mStart:self.mEnd]
             mouth = self.mouth__aspect_ratio(mouth)

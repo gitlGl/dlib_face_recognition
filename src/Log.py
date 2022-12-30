@@ -6,10 +6,11 @@ class  studentlog():
         self.database = database
         #用户信息
         item = self.database.c.execute(
-                "SELECT  * from student where vector = ?",
+                "SELECT  id_number,gender,img_path,cout,user_name from student where vector = ?",
                 (vector, )).fetchall() # 取出返回所有数据，fetchall返回类型是[()]
+        print(len(item))
         if(len(item) == 1):
-            self.item = item
+            self.item = item[0]
             self.insert_time()
             self.insert_img(img)
             self.insert_cout()
@@ -66,10 +67,11 @@ class  adminlog():
         self.database = database
         #用户信息
         item = self.database.c.execute(
-                "SELECT  * from student where vector = ?",
+                "SELECT  id_number from student where vector = ?",
                 (vector, )).fetchall() # 取出返回所有数据，fetchall返回类型是[()]
+        print(len(item))
         if(len(item) == 1):
-            self.item = item
+            self.item = item[0]
             self.insert_img(img)
             self.insert_time()
         else:
