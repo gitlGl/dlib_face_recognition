@@ -9,6 +9,8 @@ class  studentlog():
                 "SELECT  id_number,gender,img_path,cout,user_name from student where vector = ?",
                 (vector, )).fetchall() # 取出返回所有数据，fetchall返回类型是[()]
         print(len(item))
+        
+                
         if(len(item) == 1):
             self.item = item[0]
             self.insert_time()
@@ -70,6 +72,13 @@ class  adminlog():
                 "SELECT  id_number from student where vector = ?",
                 (vector, )).fetchall() # 取出返回所有数据，fetchall返回类型是[()]
         print(len(item))
+        print(item)
+        # while(True):
+        #     item = self.database.c.execute(
+        #         "SELECT  id_number,gender,img_path,cout,user_name from student where vector = ?",
+        #         (vector, )).fetchall()
+        #     if(len(item) == 1):
+                # break
         if(len(item) == 1):
             self.item = item[0]
             self.insert_img(img)
