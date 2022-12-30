@@ -93,11 +93,11 @@ class FaceLoginPage(QWidget):
                         result = self.face_rg.rg_face(self.capture.frame, rgbImage,
                                             raw_face)
                                      
-                    if result:                      
-                        self.capture.close()
-                        self.emit_show_parent.emit(result)
-                        self.close
-                        return
+                        if result:                      
+                            self.capture.close()
+                            self.emit_show_parent.emit(result)
+                            self.close
+                            return
                     else:
                         self.label1.setText("提示：请张嘴")
                 self.list_img.clear()

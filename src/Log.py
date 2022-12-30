@@ -69,7 +69,7 @@ class  adminlog():
         self.database = database
         #用户信息
         item = self.database.c.execute(
-                "SELECT  id_number from student where vector = ?",
+                "SELECT  id_number from admin where vector = ?",
                 (vector, )).fetchall() # 取出返回所有数据，fetchall返回类型是[()]
         print(len(item))
         print(item)

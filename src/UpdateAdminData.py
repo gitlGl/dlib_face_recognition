@@ -111,11 +111,20 @@ class UpdateAdminData(QDialog):
                 QMessageBox.critical(self, 'Wrong', ' Passwords is too short or too long!')
                 return False
             
-
-        
         r = QMessageBox.warning(self, "注意", "确认修改？", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if r == QMessageBox.No:
             return False
+          ##更改用户文件信息
+        old_path = "img_information/admin/{0}/".format(str(id))
+        new_path = "img_information/admin/{0}/".format(str(id_number))
+        #更改后变更用户日志信息文件夹
+        if not os.path.exists(old_path):  #判断是否存在文件夹如果不存在则创建为文件夹
+            os.makedirs(new_path)
+            os.makedirs("img_information/admin/{0}/log".format(str(id_number)))
+            #shutil.rmtree("img_information/admin/{0}".format(str(id)))
+        else :
+            os.rename("img_information/admin/{0}/{1}.jpg".format(str(id),str(id)),"img_information/admin/{0}/{1}.jpg".format(str(id),str(id_number)))
+            os.rename(old_path,new_path)
         if self.path == None:#图片可以为不变更
             data = Database()
             if(password != self.information["password"]):
@@ -126,41 +135,22 @@ class UpdateAdminData(QDialog):
             else:
                     data.c.execute("update admin set id_number = {0} where id_number = {1}"
                 .format(id_number,id))
-
-            data.c.execute("update admin_log_time set id_number= {0} where id_number = {1}".format(id_number,id))
-            data.conn.commit()
-            data.conn.close()
-            ##更改用户文件信息
-            old_path = "img_information/admin/{0}/".format(str(id))
-            new_path = "img_information/admin/{0}/".format(str(id_number))
-            #更改后变更用户日志信息文件夹
-            if not os.path.exists(old_path):  #判断是否存在文件夹如果不存在则创建为文件夹
-                os.makedirs(new_path)
-                os.makedirs("img_information/admin/{0}/log".format(str(id_number)))
-                #shutil.rmtree("img_information/admin/{0}".format(str(id)))
-            else :
-                os.rename("img_information/admin/{0}/{1}.jpg".format(str(id),str(id)),"img_information/admin/{0}/{1}.jpg".format(str(id),str(id_number)))
-                os.rename(old_path,new_path)
             
         else :
             data = Database()
-            salt = MyMd5().create_salt()
-            password = MyMd5().create_md5(password,salt)
-            old_path = "img_information/admin/{0}/".format(str(id))
-            new_path = "img_information/admin/{0}/".format(str(id_number))
-            if not os.path.exists(old_path):  #判断是否存在文件夹如果不存在则创建为文件夹
-                if not os.path.exists("img_information/admin/{0}/log".format(str(id_number))):
-                    os.makedirs("img_information/admin/{0}/log".format(str(id_number)))
-            else:
-                    os.rename("img_information/admin/{0}/{1}.jpg".format(str(id),str(id)),"img_information/admin/{0}/{1}.jpg".format(str(id),str(id_number)))
-                    os.rename(old_path,new_path)
             vector = CreatUser().get_vector(id_number,self.path,"admin")
-            data.c.execute("update admin set id_number= ?,password = ?,salt = ? ,vector = ? where id_number = {0}"
-            .format(id),(id_number,password,salt,vector))
-            data.c.execute("update admin_log_time set id_number= {0} where id_number = {1}".format(id_number,id))
-            data.conn.commit()
-            data.conn.close()
-        
+            if(password != self.information["password"]):
+                salt = MyMd5().create_salt()
+                password = MyMd5().create_md5(password,salt)
+                
+                data.c.execute("update admin set id_number= ?,password = ?,salt = ? ,vector = ? where id_number = {0}"
+                .format(id),(id_number,password,salt,vector))
+            else:
+                data.c.execute("update admin set id_number= ? ,vector = ? where id_number = {0}"
+                .format(id),(id_number,vector))
+        data.c.execute("update admin_log_time set id_number= {0} where id_number = {1}".format(id_number,id))
+        data.conn.commit()
+        data.conn.close()
         return True
            
         #获取图片路径  
