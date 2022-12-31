@@ -1,8 +1,6 @@
 import cv2, numpy as np
 from PyQt5.QtCore import QThread
 from src.GlobalVariable import models
-from imutils import face_utils
-
 
 class LivenessDetection(QThread):
     def __init__(self):
