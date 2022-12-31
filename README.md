@@ -26,7 +26,7 @@ psutil                  5.9.0 <br>
 PyQt5                   5.15.6<br>               
 xlrd                    1.2.0 <br> 
 PyQtChart               5.15.5<br>
-![](./Screenshot/登录.png)
+![](./Screenshot/登录.png) <br>
 ![](./Screenshot/注册.png)
 ![](./Screenshot/页面.png)
 ![](./Screenshot/数据.png)
