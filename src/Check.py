@@ -19,9 +19,6 @@ def verifye_pwd(user_id,user_pwd):
                 "select id_number,salt, password  from admin where id_number = {} "
                 .format(user_id)).fetchall()
 
-    if len(user) == 0:
-      return False
-
     if len(user) != 1:
         return False              
 

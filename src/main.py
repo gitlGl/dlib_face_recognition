@@ -189,7 +189,6 @@ class main(QWidget,Ui):
         self.btn1.setIcon(QIcon("./resources/摄像头.png"))
         self.put_img.cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
         self.put_img.start()
-        self.put_img.priority
         if not self.p.is_alive():
             self.p.start()
             self.flag = True#子进程状态标志，True表示子进程已经启动
