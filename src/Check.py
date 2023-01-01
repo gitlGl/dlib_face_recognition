@@ -5,7 +5,6 @@ import datetime
 def check_user_id(user_id):
 
     if not user_id.isdigit() or len(user_id) > 100:
-     
         return False
     return True
 
@@ -23,16 +22,17 @@ def verifye_pwd(user_id,user_pwd):
     if len(user) == 0:
       return False
 
-    elif len(user) == 1:
-        item = user[0]
-        pass_word = MyMd5().create_md5(user_pwd, item["salt"])
-        if pass_word == item["password"]:
-            admin.c.execute("INSERT INTO admin_log_time (id_number,log_time ) \
+    if len(user) != 1:
+        return False              
+
+    item = user[0]
+    pass_word = MyMd5().create_md5(user_pwd, item["salt"])
+    if pass_word == item["password"]:
+        admin.c.execute("INSERT INTO admin_log_time (id_number,log_time ) \
 VALUES (?,?)", (item["id_number"], datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
-            admin.conn.commit()
-            admin.conn.close()
-            return item["id_number"]
-        else:return False
-    else: return False              
-   
+        admin.conn.commit()
+        admin.conn.close()
+        return item["id_number"]
+    
+    return False
 # QMessageBox.information(parent, 'Information', '警告 username or Password')

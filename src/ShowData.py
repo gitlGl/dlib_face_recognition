@@ -113,12 +113,12 @@ class ShowData(QWidget):
             QMessageBox.information(self, 'Information',
                                     'Register Successfully')
             return
-        else:
-            error_string = ""
-            for i in list_error:
-                error_string = error_string + i + "\n"
+    
+        error_string = ""
+        for i in list_error:
+            error_string = error_string + i + "\n"
 
-            QMessageBox.information(self, 'Information', error_string)
+        QMessageBox.information(self, 'Information', error_string)
     #显示搜索结果
     def show_search_result(self):
         if not self.linnedit.text(): 

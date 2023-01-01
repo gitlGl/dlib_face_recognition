@@ -49,36 +49,39 @@ class UpdatePwd(QDialog):
         self.btn2.clicked.connect(self.btn2_event)
       
         self.setLayout(self.pwd_v_layout)
-
-
-    def pwd(self):
-        return self.new_pwd2_line.text() 
+ 
     def btn1_update_pwd(self):
         old_pwd =  self.old_pwd_line.text()
         new_pwd = self.new_pwd2_line.text()
         new_pwd_2 = self.new_pwd3_line.text()
         if new_pwd != new_pwd_2:
             QMessageBox.critical(self, 'Wrong', '两次密码不一致')
+            return
         
-        elif len(new_pwd) < 6 and len(new_pwd) > 16 :
+        if len(new_pwd) < 6 and len(new_pwd) > 16 :
             QMessageBox.critical(self, 'Wrong', '密码长度不能小于6位或大于16位')
             return
-        elif old_pwd == new_pwd:
+
+        if old_pwd == new_pwd:
             QMessageBox.critical(self, 'Wrong', '新旧密码不能一致')
             return
-        else:
-            database = Database()
-            item = database.c.execute("select password ,salt from admin where id_number = {0}".format(self.id_number)).fetchone()
-            old_pass_word = MyMd5().create_md5(old_pwd, item["salt"])
-            if old_pass_word == item["password"]:
-                new_pass_word = MyMd5().create_md5(new_pwd, item["salt"])
-                database.c.execute("update admin set password = ? where id_number = {0}".format(self.id_number),(new_pass_word,))
-                database.conn.commit()
-                database.conn.close()
-                QMessageBox.information(self, 'Success', '修改成功')
-                self.close()
-            else:
-                QMessageBox.critical(self, 'Wrong', '旧密码错误')
+
+    
+        database = Database()
+        item = database.c.execute("select password ,salt from admin where id_number = {0}".format(self.id_number)).fetchone()
+        old_pass_word = MyMd5().create_md5(old_pwd, item["salt"])
+        if old_pass_word == item["password"]:
+            new_pass_word = MyMd5().create_md5(new_pwd, item["salt"])
+            database.c.execute("update admin set password = ? where id_number = {0}".format(self.id_number),(new_pass_word,))
+            database.conn.commit()
+            database.conn.close()
+            QMessageBox.information(self, 'Success', '修改成功')
+            self.close()
+            return
+    
+        QMessageBox.critical(self, 'Wrong', '旧密码错误')
+        return
+        
     #取消修改
     def btn2_event(self):
         self.close()

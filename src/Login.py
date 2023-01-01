@@ -97,17 +97,18 @@ class LoginUi(QWidget):
         if not check_user_id(uesr_id):
            QMessageBox.critical(self, '警告', '用户名只能为数字，且不能超过100位')
            return
-        elif not check_user_pwd(user_pwd):
+        if not check_user_pwd(user_pwd):
             QMessageBox.critical(self,'警告', '密码长度大于6位小于13位')
             return
+    
+        result = verifye_pwd(uesr_id,user_pwd)
+        if result:
+            self.emitsingal.emit(result)
+            self.close()
         else:
-            result = verifye_pwd(uesr_id,user_pwd)
-            if result:
-                self.emitsingal.emit(result)
-                self.close()
-            else:
-                QMessageBox.warning(self, '警告', '账号或密码错误，请重新输入', QMessageBox.Yes)
-                clear()
+            QMessageBox.warning(self, '警告', '账号或密码错误，请重新输入', QMessageBox.Yes)
+            clear()
+            return
  #self.emitsingal.emit(item["id_number"])
     def face_login(self):
         self.face_login_page = FaceLoginPage()
@@ -221,47 +222,47 @@ class SigninPage(QWidget):
             QMessageBox.critical(self, 'Wrong', 'Usernumber is only digit or is too long!')
 
             return
-        elif self.signin_pwd_line.text() != self.signin_pwd2_line.text():
+        if self.signin_pwd_line.text() != self.signin_pwd2_line.text():
             QMessageBox.critical(self, 'Wrong',
                                  'Two Passwords Typed Are Not Same!')
 
             return
 
-        elif len(self.signin_pwd_line.text()) < 6 or len(
+        if len(self.signin_pwd_line.text()) < 6 or len(
                 self.signin_pwd_line.text()) > 13:
             QMessageBox.critical(self, 'Wrong', ' Passwords is too short or too long!')
 
             return
-        else:
-            user_name = self.signin_user_line.text()
-            user = admin.c.execute(
-                "select id_number from admin where id_number = {} ".format(
-                    user_name)).fetchall()
-            if len(user) == 1:
-                QMessageBox.critical(self, 'Wrong',
-                                     'This Username Has Been Registered!')
+    
+        user_name = self.signin_user_line.text()
+        user = admin.c.execute(
+            "select id_number from admin where id_number = {} ".format(
+                user_name)).fetchall()
+        if len(user) == 1:
+            QMessageBox.critical(self, 'Wrong',
+                                    'This Username Has Been Registered!')
 
-                return
-            else:
+            return
+    
 
-                user_name = self.signin_user_line.text()
-                pass_word = self.signin_pwd_line.text()
-                salt = MyMd5().create_salt()
-                pass_word = MyMd5().create_md5(pass_word, salt)
+        user_name = self.signin_user_line.text()
+        pass_word = self.signin_pwd_line.text()
+        salt = MyMd5().create_salt()
+        pass_word = MyMd5().create_md5(pass_word, salt)
 
-                creat_user = CreatStudentUser()
+        creat_user = CreatStudentUser()
 
-                vector = creat_user.get_vector(user_name,
-                                               self.path,
-                                               "admin")
+        vector = creat_user.get_vector(user_name,
+                                        self.path,
+                                        "admin")
 
-                admin.c.execute(
-                    "INSERT INTO admin (id_number,password,salt,vector) \
-      VALUES (?, ?,?,?)", (user_name, pass_word, salt, vector))
-                QMessageBox.information(self, 'Information',
-                                        'Register Successfully')
-                admin.conn.commit()
-                admin.conn.close()
-               
-                self.close()
-               
+        admin.c.execute(
+            "INSERT INTO admin (id_number,password,salt,vector) \
+VALUES (?, ?,?,?)", (user_name, pass_word, salt, vector))
+        QMessageBox.information(self, 'Information',
+                                'Register Successfully')
+        admin.conn.commit()
+        admin.conn.close()
+        self.close()
+        return
+            

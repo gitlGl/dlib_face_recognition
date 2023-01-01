@@ -101,7 +101,7 @@ class UpdateAdminData(QDialog):
 
         
 
-        elif  len(Database().c.execute("select id_number from admin where id_number = {} "
+        if  len(Database().c.execute("select id_number from admin where id_number = {} "
         .format(id_number)).fetchall()) == 1 and id != id_number:
             QMessageBox.critical(self, 'Wrong',
                                      ' 这个用户已存在')
@@ -114,6 +114,7 @@ class UpdateAdminData(QDialog):
         r = QMessageBox.warning(self, "注意", "确认修改？", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if r == QMessageBox.No:
             return False
+
           ##更改用户文件信息
         old_path = "img_information/admin/{0}/".format(str(id))
         new_path = "img_information/admin/{0}/".format(str(id_number))
@@ -125,8 +126,8 @@ class UpdateAdminData(QDialog):
         else :
             os.rename("img_information/admin/{0}/{1}.jpg".format(str(id),str(id)),"img_information/admin/{0}/{1}.jpg".format(str(id),str(id_number)))
             os.rename(old_path,new_path)
+        data = Database()
         if self.path == None:#图片可以为不变更
-            data = Database()
             if(password != self.information["password"]):
                 salt = MyMd5().create_salt()
                 password = MyMd5().create_md5(password,salt)
@@ -137,7 +138,6 @@ class UpdateAdminData(QDialog):
                 .format(id_number,id))
             
         else :
-            data = Database()
             vector = CreatUser().get_vector(id_number,self.path,"admin")
             if(password != self.information["password"]):
                 salt = MyMd5().create_salt()
