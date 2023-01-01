@@ -138,7 +138,9 @@ class UpdateAdminData(QDialog):
                 .format(id_number,id))
             
         else :
-            vector = CreatUser().get_vector(id_number,self.path,"admin")
+            creatuser = CreatUser()
+            vector = creatuser.get_vector(self.path)
+            creatuser.insert_img(id_number,self.path,"admin")
             if(password != self.information["password"]):
                 salt = MyMd5().create_salt()
                 password = MyMd5().create_md5(password,salt)

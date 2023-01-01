@@ -7,7 +7,7 @@ from src.MyMd5 import MyMd5
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtGui import QIcon
 from src.GlobalVariable import models
-from .Creatuser import CreatStudentUser
+from .Creatuser import CreatStudentUser,CreatUser
 import os,datetime
 import numpy as np
 from src.FaceLoginPage import FaceLoginPage
@@ -249,12 +249,9 @@ class SigninPage(QWidget):
         pass_word = self.signin_pwd_line.text()
         salt = MyMd5().create_salt()
         pass_word = MyMd5().create_md5(pass_word, salt)
-
-        creat_user = CreatStudentUser()
-
-        vector = creat_user.get_vector(user_name,
-                                        self.path,
-                                        "admin")
+        creatuser = CreatUser()
+        vector = creatuser.get_vector(self.path)
+        creatuser.insert_img(user_name,self.path,"admin")
 
         admin.c.execute(
             "INSERT INTO admin (id_number,password,salt,vector) \

@@ -12,26 +12,28 @@ class CreatUser():
     def get_pass_word(self, salt, password="12345"):
         return MyMd5().create_md5(password, salt)
 
-    def get_vector(self, id_number, img_path, fuck):
+    def  get_img(self,img_path):
+        raw_data = np.fromfile(img_path, dtype=np.uint8)  #先用numpy把图片文件存入内存：raw_data，把图片数据看做是纯字节数据
+        rgbImage = cv2.imdecode(raw_data, cv2.IMREAD_COLOR)  #从内存数据读入图片   
+        
+        #rgbImage = cv2.cvtColor(rgbImage, cv2.COLOR_BGR2RGB)
+        return rgbImage        
+
+        
+    def insert_img(self,id_number, img_path, fuck):
+        path = "img_information/" + fuck + "/" + str(id_number)     
+        if not os.path.exists(path):  # 判断是否存在文件夹如果不存在则创建为文件夹
+            os.makedirs(path)
+        rgbImage = self.get_img(img_path)
+        cv2.imwrite("img_information/" + fuck + "/" + str(id_number) + "/" +
+            str(id_number)+".jpg" ,rgbImage)
+
+    def get_vector(self, img_path):
         """
         读取照片，获取人脸编码信息，把照片存储起来
         返回128维人脸编码信息
         """
-        file_path = img_path
-    
-  
-        path = "img_information/" + fuck + "/" + str(id_number)     
-        if not os.path.exists(path):  # 判断是否存在文件夹如果不存在则创建为文件夹
-            os.makedirs(path)
-            
-            ##opencv 不支持中文路径,用python图片库读取图片
-        raw_data = np.fromfile(file_path, dtype=np.uint8)  #先用numpy把图片文件存入内存：raw_data，把图片数据看做是纯字节数据
-        rgbImage = cv2.imdecode(raw_data, cv2.IMREAD_COLOR)  #从内存数据读入图片
-        cv2.imwrite("img_information/" + fuck + "/" + str(id_number) + "/" +
-            str(id_number)+".jpg" ,rgbImage)
-        
-        rgbImage = cv2.cvtColor(rgbImage, cv2.COLOR_BGR2RGB)
-
+        rgbImage = self.get_img(img_path)
         face = models.detector(rgbImage)[0]
         frame = models.predictor(rgbImage, face)
         # rgbImage = dlib.get_face_chip(rgbImage, frame)
@@ -127,7 +129,7 @@ class CreatStudentUser(CreatUser):
                                 
                     raw_data = np.fromfile(list1[4], dtype=np.uint8)  #先用numpy把图片文件存入内存：raw_data，把图片数据看做是纯字节数据
                     rgbImage = cv2.imdecode(raw_data, cv2.IMREAD_COLOR)  #从内存数据读入图片
-                    rgbImage = cv2.cvtColor(rgbImage, cv2.COLOR_BGR2RGB)
+                    #rgbImage = cv2.cvtColor(rgbImage, cv2.COLOR_BGR2RGB)
                     faces = models.detector(rgbImage)
                     if len(faces) == 1:
                         pass
@@ -164,9 +166,8 @@ class CreatStudentUser(CreatUser):
         information["id_number"] = part_information["id_number"]
         information["password"] = self.get_pass_word(
             part_information["password"], information["salt"])
-        information["vector"] = self.get_vector(part_information["id_number"],
-                                                part_information["img_path"],
-                                                "student")
+        information["vector"] = self.get_vector(part_information["img_path"])
+        self.insert_img(part_information["id_number"],part_information["img_path"],"student")
         return information
 
     def insert_user(self, information):

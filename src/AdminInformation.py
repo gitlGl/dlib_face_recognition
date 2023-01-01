@@ -86,7 +86,9 @@ class AdminInformation(QWidget):
 
            path = get_img_path(self)
            if path:
-              vector = CreatUser().get_vector(self.id_number,path,"admin")
+              creatuser = CreatUser()
+              vector = creatuser.get_vector(path)
+              creatuser.insert_img(self.id_number,path,"admin")
               database = Database()
               database.c.execute("update admin set vector = ? where id_number = {0}".format(self.id_number),(vector,))
               database.conn.commit()
