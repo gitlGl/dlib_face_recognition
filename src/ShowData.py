@@ -132,25 +132,26 @@ class ShowData(QWidget):
             return
             
         result = Database().c.execute("select id_number,user_name,gender from student where id_number = {}".format(id_number)).fetchall()
-        if len(result)!= 0:
-           
-            self.result = ShowStudentUser(result,[ '学号', '姓名', '性别',"图片" ])
-            self.Vhlayout.itemAt(1).widget().deleteLater()
-            self.Vhlayout.addWidget(self.result)
-        else: 
+        if len(result) == 0:
             QMessageBox.critical(self, 'Wrong', '用户不存在')
             return
+           
+        self.result = ShowStudentUser(result,[ '学号', '姓名', '性别',"图片" ])
+        self.Vhlayout.itemAt(1).widget().deleteLater()
+        self.Vhlayout.addWidget(self.result)
+        return
+        
     #浏览所有用户
     def browse(self):
         result = Database().c.execute("select id_number,user_name,gender,password from student").fetchall()
-        if len(result)!= 0:
-           
-            self.result = ShowStudentUser(result,[ '学号', '姓名', '性别',"图片" ])
-            self.Vhlayout.itemAt(1).widget().deleteLater()
-            self.Vhlayout.addWidget(self.result)
-        else: 
+        if len(result) == 0:
             QMessageBox.critical(self, 'Wrong', '不存在用户')
             return
+           
+        self.result = ShowStudentUser(result,[ '学号', '姓名', '性别',"图片" ])
+        self.Vhlayout.itemAt(1).widget().deleteLater()
+        self.Vhlayout.addWidget(self.result)
+        return
 
             
     def analyze_data(self):

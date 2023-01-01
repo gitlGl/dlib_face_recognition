@@ -56,12 +56,14 @@ class  studentlog():
             self.database.c.execute(
             "UPDATE student SET cout = {0} WHERE id_number = {1}".format(cout,self.item["id_number"]),)
             self.database.conn.commit()
+            return
            
-        else:
-            cout = self.item["cout"] + 1
-            self.database.c.execute(
-            "UPDATE student SET cout = {0} WHERE id_number = {1}".format(cout,self.item["id_number"]),)
-            self.database.conn.commit()
+    
+        cout = self.item["cout"] + 1
+        self.database.c.execute(
+        "UPDATE student SET cout = {0} WHERE id_number = {1}".format(cout,self.item["id_number"]),)
+        self.database.conn.commit()
+        return
            
 class  adminlog():
     def __init__(self, vector,img,database):

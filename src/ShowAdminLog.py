@@ -56,25 +56,27 @@ class ShowAdminLog(QDialog):
         delete_event = pop_menu.addAction("删除")
         imageView_event = pop_menu.addAction("查看图片")
         item = self.tableWidget.itemAt(pos)
-        if item != None:
-            row = item.row()
-            action = pop_menu.exec_(self.tableWidget.mapToGlobal(pos))#显示菜单列表，pos为菜单栏坐标位置
-            if action == delete_event:
-                r = QMessageBox.warning(self, "注意", "删除可不能恢复了哦！", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-                if r == QMessageBox.No:
-                   return
-                database =  Database()
-                database.c.execute("delete from admin_log_time where rowid  = {0}".format(self.information[row]["rowid"])).fetchall()
-                imag_path = "img_information/admin/{0}/log/{1}.jpg".format(str(self.information[row]["id_number"]),str(self.information[row]["log_time"]))
-                if os.path.isfile(imag_path):
-                    os.remove(imag_path)
-                database.conn.commit()
-                database.conn.close()
-                self.tableWidget.removeRow(row) 
-                self.information.remove(self.information[row])#删除信息列表
+        if item == None:
+            return
+        row = item.row()
+        action = pop_menu.exec_(self.tableWidget.mapToGlobal(pos))#显示菜单列表，pos为菜单栏坐标位置
+        if action == delete_event:
+            r = QMessageBox.warning(self, "注意", "删除可不能恢复了哦！", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            if r == QMessageBox.No:
+                return
+            database =  Database()
+            database.c.execute("delete from admin_log_time where rowid  = {0}".format(self.information[row]["rowid"])).fetchall()
+            imag_path = "img_information/admin/{0}/log/{1}.jpg".format(str(self.information[row]["id_number"]),str(self.information[row]["log_time"]))
+            if os.path.isfile(imag_path):
+                os.remove(imag_path)
+            database.conn.commit()
+            database.conn.close()
+            self.tableWidget.removeRow(row) 
+            self.information.remove(self.information[row])#删除信息列表
+            return
 
-            elif action == imageView_event:
-                imag_path = "img_information/admin/{0}/log/{1}.jpg".format(str(self.information[row]["id_number"]),str(self.information[row]["log_time"]))
-                show_imag = ShowImage(imag_path,Qt.WhiteSpaceMode)
-                show_imag.exec_()
+        if action == imageView_event:
+            imag_path = "img_information/admin/{0}/log/{1}.jpg".format(str(self.information[row]["id_number"]),str(self.information[row]["log_time"]))
+            show_imag = ShowImage(imag_path,Qt.WhiteSpaceMode)
+            show_imag.exec_()
 

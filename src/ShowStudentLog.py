@@ -56,33 +56,35 @@ class ShowStudentLog(QDialog):
         delete_event = pop_menu.addAction("删除")
         imageView_event = pop_menu.addAction("查看图片")
         item = self.tableWidget.itemAt(pos)
-        if item != None:
-            row = item.row()
-            action = pop_menu.exec_(self.tableWidget.mapToGlobal(pos))#显示菜单列表，pos为菜单栏坐标位置
-            if action == delete_event:
-                r = QMessageBox.warning(self, "注意", "删除可不能恢复了哦！", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-                if r == QMessageBox.No:
-                   return
-                database =  Database()
-                database.c.execute("delete from student_log_time where rowid  = {0}".format(self.information[row]["rowid"])).fetchall()
-                item = database.c.execute(
-                "SELECT  cout,id_number from student where id_number = {}".format(str(self.information[row]["id_number"]))).fetchall()[0] # 取出返回所有数据，fetchall返回类型是[()]
-                if item["cout"] is not None:
-                    database.c.execute(
-            "UPDATE student SET cout = {0} WHERE id_number = {1}".format(item["cout"]-1,item["id_number"]))
-                    pass
-                imag_path = "img_information/student/{0}/log/{1}.jpg".format(str(self.information[row]["id_number"]),str(self.information[row]["log_time"]))
-                if os.path.isfile(imag_path):
-                    os.remove(imag_path)
-                database.conn.commit()
-                database.conn.close()
-                self.tableWidget.removeRow(row) 
-                self.information.remove(self.information[row])#删除信息列表
+        if item == None:
+            return
+        row = item.row()
+        action = pop_menu.exec_(self.tableWidget.mapToGlobal(pos))#显示菜单列表，pos为菜单栏坐标位置
+        if action == delete_event:
+            r = QMessageBox.warning(self, "注意", "删除可不能恢复了哦！", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            if r == QMessageBox.No:
+                return
+            database =  Database()
+            database.c.execute("delete from student_log_time where rowid  = {0}".format(self.information[row]["rowid"])).fetchall()
+            item = database.c.execute(
+            "SELECT  cout,id_number from student where id_number = {}".format(str(self.information[row]["id_number"]))).fetchall()[0] # 取出返回所有数据，fetchall返回类型是[()]
+            if item["cout"] is not None:
+                database.c.execute(
+        "UPDATE student SET cout = {0} WHERE id_number = {1}".format(item["cout"]-1,item["id_number"]))
+                pass
+            imag_path = "img_information/student/{0}/log/{1}.jpg".format(str(self.information[row]["id_number"]),str(self.information[row]["log_time"]))
+            if os.path.isfile(imag_path):
+                os.remove(imag_path)
+            database.conn.commit()
+            database.conn.close()
+            self.tableWidget.removeRow(row) 
+            self.information.remove(self.information[row])#删除信息列表
+            return
 
-            elif action == imageView_event:
-                imag_path = "img_information/student/{0}/log/{1}.jpg".format(str(self.information[row]["id_number"]),str(self.information[row]["log_time"]))
-               
-                show_imag = ShowImage(imag_path,Qt.WhiteSpaceMode)
-                show_imag.exec_()
+        if action == imageView_event:
+            imag_path = "img_information/student/{0}/log/{1}.jpg".format(str(self.information[row]["id_number"]),str(self.information[row]["log_time"]))
+            
+            show_imag = ShowImage(imag_path,Qt.WhiteSpaceMode)
+            show_imag.exec_()
 
 

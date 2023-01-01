@@ -74,42 +74,45 @@ class ShowAdminUser(QWidget):
         imageView_event = pop_menu.addAction("查看图片")
         log_event = pop_menu.addAction("查看日志")
         item = self.tableWidget.itemAt(pos)
-        if item != None:
-            row = item.row()
-            update_data =UpdateAdminData(self.information[row])
-            action = pop_menu.exec_(self.tableWidget.mapToGlobal(pos))#显示菜单列表，pos为菜单栏坐标位置
-            if action == change_new_event:
-                id_number = update_data.id_number_line.text()
-                password = update_data.password_line.text()
-                ok = update_data.exec_()
-                if not ok:
-                    return
-                password = update_data.password_line.text()
-                id_number = update_data.id_number_line.text()
-            
-            #变更信息后修改信息
-                self.information[row]["id_number"] = id_number
-                self.information[row]["password"] = password
-    
-            #变更表格信息
-                self.tableWidget.item(item.row(), 0).setText(id_number)
-                self.tableWidget.item(item.row(), 1).setText(password)
-                self.tableWidget.item(row,2).setIcon(QIcon("img_information/admin/{0}/{1}.jpg"
-        .format(self.information[row]["id_number"],self.information[row]["id_number"])))#获取图片路径)
+        if item == None:
+            return
+        row = item.row()
+        update_data =UpdateAdminData(self.information[row])
+        action = pop_menu.exec_(self.tableWidget.mapToGlobal(pos))#显示菜单列表，pos为菜单栏坐标位置
+        if action == change_new_event:
+            id_number = update_data.id_number_line.text()
+            password = update_data.password_line.text()
+            ok = update_data.exec_()
+            if not ok:
+                return
+            password = update_data.password_line.text()
+            id_number = update_data.id_number_line.text()
+        
+        #变更信息后修改信息
+            self.information[row]["id_number"] = id_number
+            self.information[row]["password"] = password
 
-            elif action == delete_event:
-                r = QMessageBox.warning(self, "注意", "删除可不能恢复了哦！", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-                if r == QMessageBox.No:
-                   return
-                update_data.delete(self.information[row]["id_number"])
-                self.tableWidget.removeRow(row) 
-                self.information.remove(self.information[row])#删除信息列表
-            elif action == imageView_event:
-                imag_path = "img_information/admin/{0}/{1}.jpg".format(str(self.information[row]["id_number"]),str(self.information[row]["id_number"]))
-                show_imag = ShowImage(imag_path,Qt.WhiteSpaceMode)
-                show_imag.exec_()
-            elif action == log_event:
-                result = Database().c.execute("select rowid,id_number,log_time from admin_log_time where id_number ={0} order by log_time desc".format(self.information[row]["id_number"])).fetchall()
-                self.result = ShowAdminLog(result,['用户ID','时间',"图片" ])
-                self.result.exec_()
+        #变更表格信息
+            self.tableWidget.item(item.row(), 0).setText(id_number)
+            self.tableWidget.item(item.row(), 1).setText(password)
+            self.tableWidget.item(row,2).setIcon(QIcon("img_information/admin/{0}/{1}.jpg"
+    .format(self.information[row]["id_number"],self.information[row]["id_number"])))#获取图片路径)
+
+        if action == delete_event:
+            r = QMessageBox.warning(self, "注意", "删除可不能恢复了哦！", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            if r == QMessageBox.No:
+                return
+            update_data.delete(self.information[row]["id_number"])
+            self.tableWidget.removeRow(row) 
+            self.information.remove(self.information[row])#删除信息列表
+        if action == imageView_event:
+            imag_path = "img_information/admin/{0}/{1}.jpg".format(str(self.information[row]["id_number"]),str(self.information[row]["id_number"]))
+            show_imag = ShowImage(imag_path,Qt.WhiteSpaceMode)
+            show_imag.exec_()
+            return
+        if action == log_event:
+            result = Database().c.execute("select rowid,id_number,log_time from admin_log_time where id_number ={0} order by log_time desc".format(self.information[row]["id_number"])).fetchall()
+            self.result = ShowAdminLog(result,['用户ID','时间',"图片" ])
+            self.result.exec_()
+            return
 

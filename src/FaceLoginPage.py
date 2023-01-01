@@ -57,15 +57,16 @@ class FaceLoginPage(QWidget):
                 self.capture.close()
                 self.emit_show_parent.emit(result)
                 self.close
-            else:
-                self.groupbox.show()
-                if self.cout> 2:
-                    self.timer2.start(200)
-                    self.livecheck  = LivenessDetection()
-                    self.label1.setText("提示：请张嘴")
-                    return
-                self.cout = self.cout +1
-                self.label1.setText("验证失败{0}".format(self.cout))
+                return
+        
+            self.groupbox.show()
+            if self.cout> 2:
+                self.timer2.start(200)
+                self.livecheck  = LivenessDetection()
+                self.label1.setText("提示：请张嘴")
+                return
+            self.cout = self.cout +1
+            self.label1.setText("验证失败{0}".format(self.cout))
         self.timer1.start(500)
         
     def collect_frame(self):

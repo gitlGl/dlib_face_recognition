@@ -52,23 +52,21 @@ class StudentRgFace(Face):
         flag = self.compare_faces(face_data, self.face_data, axis=0)#计算欧式距离
         if flag < share.value:
             return self.former_result
-        else:
-            result = self.rg_face(face_data, share.value)
-            if result == "请先注册用户":
-                return "请先注册用户"
-            elif result:
-                student = Database()
-                log = studentlog(result, img, student)
-                student.conn.close()
-                if hasattr(log, "item"):
-                    self.face_data = face_data#保存这次识别人脸编码，下次识别时比较是否是同一人
-                    self.former_result = "验证成功：" + log.item["user_name"]
-                    return "验证成功：" + log.item["user_name"]
-                else:
-                    return "验证失败"
+        
+        result = self.rg_face(face_data, share.value)
+        if result == "请先注册用户":
+            return "请先注册用户"
+        if result:
+            student = Database()
+            log = studentlog(result, img, student)
+            student.conn.close()
+            if hasattr(log, "item"):
+                self.face_data = face_data#保存这次识别人脸编码，下次识别时比较是否是同一人
+                self.former_result = "验证成功：" + log.item["user_name"]
+                return "验证成功：" + log.item["user_name"]
+           
 
-            else:
-                return "验证失败"
+        return "验证失败"
 
     def rg_face(self, face_data, share):
         if len(self.list_vector) == 0:
@@ -79,8 +77,8 @@ class StudentRgFace(Face):
         if distances[min_distance] < share:
             tembyte = np.ndarray.dumps(self.list_vector[min_distance])
             return tembyte
-        else:
-            return False
+        
+        return False
 
 
 class AdminRgFace(Face):
@@ -107,10 +105,8 @@ class AdminRgFace(Face):
             if hasattr(log, "item"):
                 id_number = list_user[min_distance]["id_number"]#返回管理员的id_number
                 return id_number
-            else:
-                return False
-        else:
-            return False
+            
+        return False
 
 
 # class AdminRgFace(Face):

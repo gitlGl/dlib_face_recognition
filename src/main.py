@@ -40,7 +40,8 @@ class main(QWidget,Ui):
         if action == pop_menu.actions()[0]:
             self.admin_information = AdminInformation(self.id_number)
             self.admin_information.show()
-        elif action == pop_menu.actions()[1]:
+            return
+        if action == pop_menu.actions()[1]:
             if self.put_img.cap is not None:#判断摄像头状态
                 if self.put_img.isRunning():
                     QMessageBox.information(self, 'Information', '请先关闭摄像头')
@@ -205,14 +206,15 @@ class main(QWidget,Ui):
             self.flag = True##子进程状态标志，True表示子进程启动
 
         if self.btn2.isChecked():
-
             if not self.put_img.timer3.isActive():
                 self.put_img.timer3.start(1000)
+            return
 
-        elif self.btn3.isChecked():
+        if self.btn3.isChecked():
             if not self.put_img.timer1.isActive():
                 self.put_img.timer1.start(200)
                 self.qlabel1.setText("提示：请张嘴")
+            return
                
 
     def close(self):

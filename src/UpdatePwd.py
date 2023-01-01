@@ -70,18 +70,17 @@ class UpdatePwd(QDialog):
         database = Database()
         item = database.c.execute("select password ,salt from admin where id_number = {0}".format(self.id_number)).fetchone()
         old_pass_word = MyMd5().create_md5(old_pwd, item["salt"])
-        if old_pass_word == item["password"]:
-            new_pass_word = MyMd5().create_md5(new_pwd, item["salt"])
-            database.c.execute("update admin set password = ? where id_number = {0}".format(self.id_number),(new_pass_word,))
-            database.conn.commit()
-            database.conn.close()
-            QMessageBox.information(self, 'Success', '修改成功')
-            self.close()
-            return
-    
-        QMessageBox.critical(self, 'Wrong', '旧密码错误')
+        if old_pass_word != item["password"]:
+             QMessageBox.critical(self, 'Wrong', '旧密码错误')
+             return
+        new_pass_word = MyMd5().create_md5(new_pwd, item["salt"])
+        database.c.execute("update admin set password = ? where id_number = {0}".format(self.id_number),(new_pass_word,))
+        database.conn.commit()
+        database.conn.close()
+        QMessageBox.information(self, 'Success', '修改成功')
+        self.close()
         return
-        
+    
     #取消修改
     def btn2_event(self):
         self.close()

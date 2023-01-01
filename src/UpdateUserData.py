@@ -118,7 +118,7 @@ class UpdateUserData(QDialog):
             QMessageBox.critical(self, 'Wrong', 'id_number is only digit or is too long!')
             return False
 
-        elif  len(Database().c.execute("select id_number from student where id_number = {} "
+        if  len(Database().c.execute("select id_number from student where id_number = {} "
         .format(id_number)).fetchall()) == 1 and id != id_number:
             QMessageBox.critical(self, 'Wrong',
                                      ' 这个学号已经存在')

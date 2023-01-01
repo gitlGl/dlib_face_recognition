@@ -64,8 +64,6 @@ class LivenessDetection(QThread):
             if result >= 0.05:
 
                 return True
-        else:
-            return False
         return False
     def shape_to_np(self,shape, dtype="int"):
         # initialize the list of (x, y)-coordinates
@@ -100,7 +98,5 @@ class LivenessDetection(QThread):
             mouth = shape[self.mStart:self.mEnd]
             mouth = self.mouth__aspect_ratio(mouth)
             if mouth > 0.5:
-        
                 return True
-            return False
         return False
