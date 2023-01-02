@@ -1,9 +1,10 @@
 from .Database import Database
 from .MyMd5 import MyMd5
-from PyQt5.QtCore import Qt,pyqtSlot
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QHBoxLayout, QLabel, QVBoxLayout, QPushButton,\
 QMessageBox, QLineEdit,QDialog
+from .Check import verifye_pwd
 class UpdatePwd(QDialog):
     def __init__(self,id_number):
         super().__init__()
@@ -68,9 +69,9 @@ class UpdatePwd(QDialog):
 
     
         database = Database()
-        item = database.c.execute("select password ,salt from admin where id_number = {0}".format(self.id_number)).fetchone()
-        old_pass_word = MyMd5().create_md5(old_pwd, item["salt"])
-        if old_pass_word != item["password"]:
+        item = database.c.execute("select salt from admin where id_number = {0}".format(self.id_number)).fetchone()
+        result = verifye_pwd(self.id_number,old_pwd,"admin")
+        if not result:
              QMessageBox.critical(self, 'Wrong', '旧密码错误')
              return
         new_pass_word = MyMd5().create_md5(new_pwd, item["salt"])

@@ -101,14 +101,19 @@ class LoginUi(QWidget):
             QMessageBox.critical(self,'警告', '密码长度大于6位小于13位')
             return
     
-        result = verifye_pwd(uesr_id,user_pwd)
-        if result:
-            self.emitsingal.emit(result)
-            self.close()
-        else:
+        result = verifye_pwd(uesr_id,user_pwd,"admin")
+        if not result:
             QMessageBox.warning(self, '警告', '账号或密码错误，请重新输入', QMessageBox.Yes)
             clear()
             return
+        admin = Database()
+        admin.c.execute("INSERT INTO admin_log_time (id_number,log_time ) \
+VALUES (?,?)", (uesr_id, datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
+        admin.conn.commit()
+        admin.conn.close()
+        self.emitsingal.emit(uesr_id)
+        self.close()
+           
  #self.emitsingal.emit(item["id_number"])
     def face_login(self):
         self.face_login_page = FaceLoginPage()
