@@ -127,8 +127,7 @@ class CreatStudentUser(CreatUser):
     
                         ##opencv 不支持中文路径,用python图片库读取图片
                                 
-                    raw_data = np.fromfile(list1[4], dtype=np.uint8)  #先用numpy把图片文件存入内存：raw_data，把图片数据看做是纯字节数据
-                    rgbImage = cv2.imdecode(raw_data, cv2.IMREAD_COLOR)  #从内存数据读入图片
+                    rgbImage = self.get_img(list1[4])
                     #rgbImage = cv2.cvtColor(rgbImage, cv2.COLOR_BGR2RGB)
                     faces = models.detector(rgbImage)
                     if len(faces) == 1:

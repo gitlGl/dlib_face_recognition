@@ -1,7 +1,7 @@
-import os,cv2
-import numpy as np
+import os
 from PyQt5.QtWidgets import QFileDialog,QMessageBox
 from .GlobalVariable import models
+from .Creatuser import CreatUser
 def get_img_path(parent=None):
     path, _ = QFileDialog.getOpenFileName(
         parent, "选择文件", "c:\\", "Image files(*.jpg *.gif *.png)")
@@ -17,9 +17,8 @@ def get_img_path(parent=None):
         QMessageBox.critical(parent, 'Wrong', '文件非图片文件')
         return False
 
-    raw_data = np.fromfile(path, dtype=np.uint8)  #先用numpy把图片文件存入内存：raw_data，把图片数据看做是纯字节数据
-    rgbImage = cv2.imdecode(raw_data, cv2.IMREAD_COLOR)  #从内存数据读入图片
-    rgbImage = cv2.cvtColor(rgbImage, cv2.COLOR_BGR2RGB)
+  
+    rgbImage = CreatUser().get_img(path)
     
     faces = models.detector(rgbImage)
     if len(faces) != 1:
