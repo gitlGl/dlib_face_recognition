@@ -29,6 +29,7 @@ class ShowAdminUser(QWidget):
         row = 0
         for i in self.information:
             if i["id_number"] == "12345678910":
+                self.information.remove(self.information[row])
                 continue
             self.tableWidget.setRowCount(row)
             self.tableWidget.insertRow(row)
@@ -76,7 +77,9 @@ class ShowAdminUser(QWidget):
         item = self.tableWidget.itemAt(pos)
         if item == None:
             return
+        
         row = item.row()
+        print(row)
         update_data =UpdateAdminData(self.information[row])
         action = pop_menu.exec_(self.tableWidget.mapToGlobal(pos))#显示菜单列表，pos为菜单栏坐标位置
         if action == change_new_event:

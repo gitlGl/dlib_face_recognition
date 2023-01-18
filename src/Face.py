@@ -98,7 +98,7 @@ class AdminRgFace(Face):
         distances = self.compare_faces(np.array(list_vector), face_data, axis=1)
         min_distance = np.argmin(distances)
         print("距离", distances[min_distance])
-        if distances[min_distance] < 0.4:
+        if distances[min_distance] < 0.5:
             tembyte = np.ndarray.dumps(list_vector[min_distance])
             log = adminlog(tembyte, img, admin)
             admin.conn.close()  #关闭数据库连接
