@@ -8,7 +8,6 @@ from PyQt5 import QtCore
 
 if __name__ == '__main__':
     QCoreApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
-    
     app = QApplication(sys.argv)
     app.setStyleSheet(StyleSheet)   
     # # setup stylesheet
