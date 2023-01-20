@@ -3,11 +3,13 @@ from src import main
 import sys
 from qss import StyleSheet
 from PyQt5.QtCore import QCoreApplication
-from PyQt5 import QtCore
+from PyQt5 import QtCore,Qt
 #import qdarkstyle
 
 if __name__ == '__main__':
-    QCoreApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
+    QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
+    QApplication.setHighDpiScaleFactorRoundingPolicy(QtCore.Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
+
     app = QApplication(sys.argv)
     app.setStyleSheet(StyleSheet)   
     # # setup stylesheet

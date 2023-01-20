@@ -56,7 +56,9 @@ class AdminInformation(QWidget):
            self.Hlayout.addWidget(self.btn4)
         self.grou.setLayout(self.Hlayout)
         self.Vhlayout.addWidget(self.grou)
-        self.Vhlayout.addWidget(self.img)
+        self.qlabel_ = QLabel(self)
+        self.Vhlayout.addWidget(self.qlabel_)
+        #self.Vhlayout.addWidget(self.img)
         self.grou.setMaximumSize(600,40)
         self.setLayout(self.Vhlayout)
     def update_pwd(self):

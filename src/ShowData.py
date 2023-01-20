@@ -82,8 +82,10 @@ class ShowData(QWidget):
         self.btn4.clicked.connect(self.creat_student_user)
         self.btn5.clicked.connect(lambda:self.pos_menu(self.btn5.pos()))
         datatabel,data_title ,number=  self.get_data_()
+        self.qlabel_ = QLabel(self)
         self.view = ChartView(datatabel,data_title,number)
-        self.Vhlayout.addWidget(self.view)
+        #self.Vhlayout.addWidget(self.view)
+        self.Vhlayout.addWidget(self.qlabel_)
   
     # def resizeEvent(self, event):
     #     super(ChartView, self).resizeEvent(event)
