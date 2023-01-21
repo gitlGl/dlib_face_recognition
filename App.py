@@ -3,14 +3,17 @@ from src import main
 import sys
 from qss import StyleSheet
 from PyQt5.QtCore import QCoreApplication
-from PyQt5 import QtCore,Qt
+from PyQt5.QtGui import QIcon,QFont
+from PyQt5 import QtCore
 #import qdarkstyle
 
 if __name__ == '__main__':
     QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
     QApplication.setHighDpiScaleFactorRoundingPolicy(QtCore.Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
-
     app = QApplication(sys.argv)
+    f = QFont("宋体",10)
+    app.setFont(f)
+
     app.setStyleSheet(StyleSheet)   
     # # setup stylesheet
     # app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())

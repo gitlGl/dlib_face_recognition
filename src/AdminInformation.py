@@ -15,7 +15,7 @@ class AdminInformation(QWidget):
     def __init__(self,id_number):
         super().__init__()
         self.id_number = id_number
-        self.setGeometry(300, 300,400, 380)
+        self.setGeometry(400, 400,500, 480)
         self.setWindowTitle('用户信息')
         self.setWindowIcon(QIcon('resources/用户信息.png'))
         self.setWindowModality(Qt.ApplicationModal)

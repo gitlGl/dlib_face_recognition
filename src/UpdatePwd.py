@@ -15,7 +15,7 @@ class UpdatePwd(QDialog):
         self.old_pwd_label = QLabel('旧密码:', self)
         self.new_pwd2_label = QLabel('新密码:', self)
         self.new_pwd3_label = QLabel('确认密码:', self)
-        self.new_pwd3_label.setStyleSheet("font-size:9pt;font-weight:35;")
+        #self.new_pwd3_label.setStyleSheet("font-size:9pt;font-weight:35;")
         self.old_pwd_line = QLineEdit(self)
         self.new_pwd2_line = QLineEdit(self)
         self.new_pwd3_line = QLineEdit(self)
