@@ -7,7 +7,7 @@ from .Database import Database
 from .ShowStudentLog import ShowStudentLog
 from .Paging import Page
 class ShowStudentUser(QWidget):
-    def __init__(self,str_list_column ):
+    def __init__(self,str_list_column,information=None ):
         super().__init__()
         self.tableWidget = QTableWidget(self)
         self.tableWidget.setContextMenuPolicy(Qt.CustomContextMenu)#允许右键显示上菜单
@@ -25,9 +25,11 @@ class ShowStudentUser(QWidget):
         cloumn = ["id_number","user_name","gender","password"]
         self.page = Page("student",cloumn,page_count=self.page_count)
         self.page.information_signal.connect(self.set_information)
-
-        self.VBoxLayout.addWidget(self.page)
-
+        if not information:
+            self.VBoxLayout.addWidget(self.page)
+        else:
+            self.page.information = information
+            self.page.hide()
         self.setLayout(self.VBoxLayout)
         columncout = len(str_list_column)
         self.tableWidget.setColumnCount(columncout)#根据数据量确定列数

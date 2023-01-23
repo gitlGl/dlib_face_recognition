@@ -162,7 +162,7 @@ QLineEdit:!enabled {
 
 /**********分页样式**********/
 
-           Paging {
+           Page {
                 border: none;
                  background: rgb(232, 241, 252);
             }

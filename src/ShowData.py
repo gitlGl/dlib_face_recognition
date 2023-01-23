@@ -133,12 +133,12 @@ class ShowData(QWidget):
             self.linnedit.clear()
             return
             
-        result = Database().c.execute("select id_number,user_name,gender from student where id_number = {}".format(id_number)).fetchall()
+        result = Database().c.execute("select id_number,user_name,gender,password from student where id_number = {}".format(id_number)).fetchall()
         if len(result) == 0:
             QMessageBox.critical(self, 'Wrong', '用户不存在')
             return
            
-        self.result = ShowStudentUser(result,[ '学号', '姓名', '性别',"图片" ])
+        self.result = ShowStudentUser([ '学号', '姓名', '性别',"图片" ],result)
         self.Vhlayout.itemAt(1).widget().deleteLater()
         self.Vhlayout.addWidget(self.result)
         return
