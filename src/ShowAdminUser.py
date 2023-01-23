@@ -114,8 +114,7 @@ class ShowAdminUser(QWidget):
             show_imag.exec_()
             return
         if action == log_event:
-            result = Database().c.execute("select rowid,id_number,log_time from admin_log_time where id_number ={0} order by log_time desc".format(self.information[row]["id_number"])).fetchall()
-            self.result = ShowAdminLog(result,['用户ID','时间',"图片" ])
+            self.result = ShowAdminLog([ '用户ID', '登录时间',"图片" ],self.information[row]["id_number"])
             self.result.exec_()
             return
 

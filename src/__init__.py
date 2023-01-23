@@ -1,4 +1,4 @@
-from .main import main
+from .Main import main
 from .Process import *
 from .Creatuser import CreatUser
 from .Login import LoginUi
@@ -8,3 +8,4 @@ from .Database import Database
 from .ShowStudentUser import ShowStudentUser
 from .ImageView import ImageView,ShowImage
 from .GlobalVariable import models
+from .Database import Database

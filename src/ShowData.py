@@ -145,12 +145,8 @@ class ShowData(QWidget):
         
     #浏览所有用户
     def browse(self):
-        result = Database().c.execute("select id_number,user_name,gender,password from student").fetchall()
-        if len(result) == 0:
-            QMessageBox.critical(self, 'Wrong', '不存在用户')
-            return
            
-        self.result = ShowStudentUser(result,[ '学号', '姓名', '性别',"图片" ])
+        self.result = ShowStudentUser([ '学号', '姓名', '性别',"图片" ])
         self.Vhlayout.itemAt(1).widget().deleteLater()
         self.Vhlayout.addWidget(self.result)
         return

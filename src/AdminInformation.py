@@ -65,15 +65,10 @@ class AdminInformation(QWidget):
         self.pwd_dialog = UpdatePwd(self.id_number)
         self.pwd_dialog.exec_()
     def browse(self):
-        result = Database().c.execute("select rowid,id_number,log_time from admin_log_time where id_number = {0}  order by log_time desc".format(self.id_number)).fetchall()
-        if len(result)!= 0:
-            
-            self.result = ShowAdminLog(result,[ '用户ID', '登录时间',"图片" ])
-            self.Vhlayout.itemAt(1).widget().deleteLater()
-            self.Vhlayout.addWidget(self.result)
-        else: 
-            QMessageBox.critical(self, 'Wrong', '不存在用户')
-            return
+        self.result = ShowAdminLog([ '用户ID', '登录时间',"图片" ],self.id_number)
+        self.Vhlayout.itemAt(1).widget().deleteLater()
+        self.Vhlayout.addWidget(self.result)
+
     def img_event(self,pos):
        pop_menu = QMenu() 
        pop_menu.addAction("查看图片")

@@ -16,6 +16,7 @@ QCalendarWidget QToolButton {
 QTableWidget
 {
     background: rgb(224, 238, 255);
+   border:none
 }
 QTableWidget::item
 {
@@ -41,9 +42,10 @@ QHeaderView::section,QTableCornerButton:section
     color:rgb(51, 51, 51);
     border:1px solid rgb(51, 51, 51);
     border-left-width:0px; 
+    border-bottom-width:1px; 
     border-right-width:1px; 
     border-top-width:0px;
-    border-bottom-width:1px; 
+  
     background:qlineargradient(spread:pad,x1:0,y1:0,x2:0,y2:1,stop:0 rgb(222, 231, 242),stop:1 rgb(222, 231, 242));
  }
 QHeaderView::section:selected
@@ -114,16 +116,6 @@ QPushButton#xxx
 #xx
 都表示通过设置的objectName来指定
 */
-QPushButton#RedButton {
-    background-color: #f44336; /*背景颜色*/
-}
-#RedButton:hover {
-    background-color: #e57373; /*鼠标悬停时背景颜色*/
-}
-/*注意pressed一定要放在hover的后面，否则没有效果*/
-#RedButton:pressed {
-    background-color: #ffcdd2; /*鼠标按下不放时背景颜色*/
-}
 
 #GreenButton {
     /*background-color: #4caf50;*/
@@ -150,11 +142,6 @@ QPushButton#RedButton {
 }
 
 
-/*根据文字内容来区分按钮,同理还可以根据其它属性来区分*/
-QPushButton[text="purple button"] {
-    color: white; /*文字颜色*/
-    background-color: #9c27b0;
-}
 
 /**********输入框**********/
 QLineEdit {
@@ -172,7 +159,24 @@ QLineEdit:enabled:hover, QLineEdit:enabled:focus {
 QLineEdit:!enabled {
         color: rgb(80, 80, 80);
 }
+
+/**********分页样式**********/
+
+           Paging {
+                border: none;
+                 background: rgb(232, 241, 252);
+            }
+
+            
+            #QLineEdit2{
+                width: 15px
+               
+               
+
+               
+            }
 """
+
 
 
 
