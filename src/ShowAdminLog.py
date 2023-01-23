@@ -19,7 +19,7 @@ class ShowAdminLog(QDialog):
         self.tableWidget.cellDoubleClicked.connect(self.on_tableWidget_cellDoubleClicked)
         self.VBoxLayout = QVBoxLayout()
 
-        self.page_count = 5
+        self.page_count = 30
         cloumn = ["rowid","id_number","log_time"]
         self.page = Page("admin_log_time",cloumn,page_count=self.page_count,id_number = id_number)
         self.page.information_signal.connect(self.set_information)

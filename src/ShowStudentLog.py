@@ -10,7 +10,7 @@ class ShowStudentLog(QDialog):
     def __init__(self,id_number,str_list_column ):
         super().__init__()
         self.id_number = id_number
-        self.page_count = 5
+        self.page_count = 30
         self.setWindowFlags(Qt.WindowMinMaxButtonsHint | Qt.WindowCloseButtonHint)
         self.setWindowTitle("学生日志")
         self.setWindowIcon(QIcon("resources/日志.png"))

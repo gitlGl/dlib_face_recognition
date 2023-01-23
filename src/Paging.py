@@ -3,14 +3,11 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import pyqtSignal
 from .Database import Database
 class Paging(QWidget):
-    control_signal = pyqtSignal(str)
     page_number = pyqtSignal(int)
-    
-
     def __init__(self,total_page=20):
         super(Paging, self).__init__()
         self.total_page = total_page
-        self.control_signal.connect(self.page_controller)
+        
         self.__layout = QVBoxLayout()
         self.setLayout(self.__layout)
         self.setPageController()
@@ -49,71 +46,56 @@ class Paging(QWidget):
 
     def __home_total_page(self):
         """点击首页信号"""
-        self.control_signal.emit("home")
+        self.curPage.setText("1")
+
+        self.page_number.emit(1)
+        return
+        
 
     def __pre_total_page(self):
-        """点击上一页信号"""
-        self.control_signal.emit("pre")
+        """跳转上一页"""
+        if 1 == int(self.curPage.text()):
+            QMessageBox.information(self, "提示", "已经是第一页了", QMessageBox.Yes)
+            return
+        self.page_number.emit(int(self.curPage.text())-1)
+        self.curPage.setText(str(int(self.curPage.text())-1))
+        return
+        
+       
 
     def __next_total_page(self):
-        """点击下一页信号"""
-        self.control_signal.emit("next")
+        """跳转下一页"""
+        if self.total_page == int(self.curPage.text()):
+            QMessageBox.information(self, "提示", "已经是最后一页了", QMessageBox.Yes)
+            return
+        self.page_number.emit(int(self.curPage.text())+1)
+        self.curPage.setText(str(int(self.curPage.text())+1))
+        return
+       
 
     def __final_total_page(self):
-        """尾页点击信号"""
-        self.control_signal.emit("final")
+        """跳转尾页"""
+        self.page_number.emit(int(self.total_page))
+        self.curPage.setText(str(self.total_page))
+        return
+       
 
     def __confirm_skip(self):
-        """跳转页码确定"""
+        """跳转指定页"""
         if not self.skipPage.text() :
             QMessageBox.information(self, "提示", "请输入页码", QMessageBox.Yes)
             return
         if not self.skipPage.text().isdigit():
             QMessageBox.information(self, "提示", "页码为数字", QMessageBox.Yes)
             return
-        self.control_signal.emit("confirm")
 
-
-
-    def page_controller(self, signal):
-        if "home" == signal:
-            self.curPage.setText("1")
-
-            self.page_number.emit(1)
+        if self.total_page < int(self.skipPage.text()) or int(self.skipPage.text()) < 0:
+            QMessageBox.information(self, "提示", "跳转页码超出范围", QMessageBox.Yes)
             return
-
-        if "pre" == signal:
-            if 1 == int(self.curPage.text()):
-                QMessageBox.information(self, "提示", "已经是第一页了", QMessageBox.Yes)
-                return
-            self.page_number.emit(int(self.curPage.text())-1)
-            self.curPage.setText(str(int(self.curPage.text())-1))
-            return
-
-        if "next" == signal:
-            if self.total_page == int(self.curPage.text()):
-                QMessageBox.information(self, "提示", "已经是最后一页了", QMessageBox.Yes)
-                return
-            self.page_number.emit(int(self.curPage.text())+1)
-            self.curPage.setText(str(int(self.curPage.text())+1))
-            return
-        if "final" == signal:
-            self.page_number.emit(int(self.total_page))
-            self.curPage.setText(str(self.total_page))
-            return
+        self.curPage.setText(self.skipPage.text())
+        self.page_number.emit(int(self.skipPage.text()))
+        return
         
-        if "confirm" == signal:
-            if self.total_page < int(self.skipPage.text()) or int(self.skipPage.text()) < 0:
-                QMessageBox.information(self, "提示", "跳转页码超出范围", QMessageBox.Yes)
-                return
-            self.curPage.setText(self.skipPage.text())
-            self.page_number.emit(int(self.skipPage.text()))
-            return
-        
-
-
-       
-          
 
 
 class Page(Paging):

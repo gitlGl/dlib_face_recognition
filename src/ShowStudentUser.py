@@ -21,7 +21,7 @@ class ShowStudentUser(QWidget):
         self.VBoxLayout = QVBoxLayout()
         self.VBoxLayout.addWidget(self.tableWidget)
 
-        self.page_count = 5
+        self.page_count = 30
         cloumn = ["id_number","user_name","gender","password"]
         self.page = Page("student",cloumn,page_count=self.page_count)
         self.page.information_signal.connect(self.set_information)
