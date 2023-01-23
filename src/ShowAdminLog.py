@@ -34,9 +34,10 @@ class ShowAdminLog(QDialog):
         self.set_information()
 
     def set_information(self):
+        self.information = self.page.information
         row = 0
         self.tableWidget.setRowCount(0)
-        for i in self.page.information:
+        for i in self.information:
             self.tableWidget.insertRow(row)
             log_time = QTableWidgetItem((i["log_time"]))
             sid_item = QTableWidgetItem(i["id_number"])
@@ -53,8 +54,8 @@ class ShowAdminLog(QDialog):
             row = row + 1
             self.tableWidget.setRowCount(row)
     def on_tableWidget_cellDoubleClicked(self, row):#双击槽函数 self.tableWidget.cellDoubleClicked.connect()
-        imag_path = "img_information/admin/{0}/log/{1}.jpg".format(str(self.page.information[row]["id_number"]),str(
-            self.page.information[row]["log_time"]))
+        imag_path = "img_information/admin/{0}/log/{1}.jpg".format(str(self.information[row]["id_number"]),str(
+            self.information[row]["log_time"]))
         show_imag = ShowImage(imag_path,Qt.WhiteSpaceMode)
         show_imag.exec_()
     @pyqtSlot(QPoint)
@@ -73,20 +74,20 @@ class ShowAdminLog(QDialog):
             if r == QMessageBox.No:
                 return
             database =  Database()
-            database.c.execute("delete from admin_log_time where rowid  = {0}".format(self.page.information[row]["rowid"])).fetchall()
-            imag_path = "img_information/admin/{0}/log/{1}.jpg".format(str(self.page.information[row]["id_number"]),str(
-                self.page.information[row]["log_time"]))
+            database.c.execute("delete from admin_log_time where rowid  = {0}".format(self.information[row]["rowid"])).fetchall()
+            imag_path = "img_information/admin/{0}/log/{1}.jpg".format(str(self.information[row]["id_number"]),str(
+                self.information[row]["log_time"]))
             if os.path.isfile(imag_path):
                 os.remove(imag_path)
             database.conn.commit()
             database.conn.close()
             self.tableWidget.removeRow(row) 
-            self.page.information.remove(self.page.information[row])#删除信息列表
+            self.information.remove(self.information[row])#删除信息列表
             return
 
         if action == imageView_event:
             imag_path = "img_information/admin/{0}/log/{1}.jpg".format(str(
-                self.page.information[row]["id_number"]),str(self.page.information[row]["log_time"]))
+                self.information[row]["id_number"]),str(self.information[row]["log_time"]))
             show_imag = ShowImage(imag_path,Qt.WhiteSpaceMode)
             show_imag.exec_()
 
