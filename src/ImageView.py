@@ -128,6 +128,7 @@ class ShowImage(QDialog):
         self.view = ImageView(image,background)
         self.Hlayout = QHBoxLayout()
         self.Hlayout.addWidget(self.view)
+        self.resize(480,600)
        
         #self.setMinimumSize(self.view.pixmap.size())
         self.setLayout(self.Hlayout)

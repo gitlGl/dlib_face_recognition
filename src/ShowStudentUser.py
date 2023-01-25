@@ -23,8 +23,8 @@ class ShowStudentUser(QWidget):
         self.VBoxLayout.addWidget(self.tableWidget)
 
         self.page_count = 30
-        cloumn = ["id_number","user_name","gender","password"]
-        self.page = Page("student",cloumn,page_count=self.page_count)
+        self.list_cloumn = ["id_number","user_name","gender","password"]
+        self.page = Page("student",self.list_cloumn,page_count=self.page_count)
         self.page.information_signal.connect(self.set_information)
         if not information:
             
@@ -39,30 +39,37 @@ class ShowStudentUser(QWidget):
         self.set_information()
     def set_information(self):
         self.information = self.page.information
-        row = 0
+        self.row = 0
+        self.tableWidget.setRowCount(0)
         for i in self.information:
-            self.tableWidget.setRowCount(row)
-            self.tableWidget.insertRow(row)
-            sid_item = QTableWidgetItem(str(i["id_number"]))
-            name_item = QTableWidgetItem(i["user_name"])
-            if  i["gender"] == 0:
-                i["gender"] = "女"
-            else:
-                i["gender"] = "男"
-            sex_item = QTableWidgetItem(i["gender"])
+            self.tableWidget.insertRow(self.row)
+            self.row2 = 0
+            for cloumn in self.list_cloumn:
+                if cloumn == 'password':
+                    continue
+                if cloumn != "gender":
+                    item  = QTableWidgetItem((i[cloumn]))
+                    self.tableWidget.setItem(self.row, self.row2, item)
+                    item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+                   
+                else:
+                    if  i["gender"] == 0:
+                        i["gender"] = "女"
+                    else:
+                        i["gender"] = "男"
+                    sex_item = QTableWidgetItem(i["gender"])
+                    sex_item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+                    self.tableWidget.setItem(self.row, self.row2, sex_item)
+                self.row2 = self.row2 +1
+
+
             img_item =  QTableWidgetItem()
             self.tableWidget.setIconSize(QSize(60, 100))
             imag_path = "img_information/student/{0}/{1}.jpg".format(i["id_number"],i["id_number"])#获取图片路径
             img_item.setIcon(QIcon(imag_path))
-            sid_item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-            name_item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-            sex_item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-            
-            self.tableWidget.setItem(row, 0, sid_item)
-            self.tableWidget.setItem(row, 1, name_item)
-            self.tableWidget.setItem(row, 2, sex_item)
-            self.tableWidget.setItem(row, 3,img_item)
-            row = row + 1
+            img_item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+            self.tableWidget.setItem(self.row, self.row2,img_item)
+            self.row = self.row + 1
            
     def on_tableWidget_cellDoubleClicked(self, row):#双击槽函数 self.tableWidget.cellDoubleClicked.connect()
         print(row)
@@ -136,7 +143,7 @@ class ShowStudentUser(QWidget):
             return
         if action == log_event:
             #result = Database().c.execute("select rowid,id_number,log_time from student_log_time where id_number ={0} order by log_time desc".format(self.information[row]["id_number"])).fetchall()
-            self.result = ShowStudentLog(self.information[row]["id_number"],[ '时间',"图片" ])
+            self.result = ShowStudentLog(self.information[row]["id_number"],[ '学号','时间',"图片" ])
             self.result.exec()
             return
 

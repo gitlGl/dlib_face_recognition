@@ -1,11 +1,12 @@
 from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import Qt,QPoint,pyqtSlot
+from PyQt5.QtCore import Qt,QPoint,pyqtSlot,QSize
 from  PyQt5.QtWidgets import QTableWidget,QTableWidgetItem,QVBoxLayout,QMenu,QHeaderView,QMessageBox, QDialog
 from PyQt5 import QtWidgets
 from .ImageView import ShowImage
 from .Database import Database
 from .Paging import Page
 import os
+from PyQt5.QtGui import QIcon
 class ShowStudentLog(QDialog):
     def __init__(self,id_number,str_list_column ):
         super().__init__()
@@ -16,8 +17,8 @@ class ShowStudentLog(QDialog):
         self.setWindowIcon(QIcon("resources/日志.png"))
         self.resize(300,400)
         self.tableWidget = QTableWidget(self)
-        cloumn = ["rowid","id_number","log_time"]
-        self.page = Page("student_log_time",cloumn,page_count=self.page_count,id_number = self.id_number)
+        self.list_cloumn = ["id_number","log_time"]
+        self.page = Page("student_log_time",self.list_cloumn,page_count=self.page_count,id_number = self.id_number)
         self.page.information_signal.connect(self.set_information)
         
         self.tableWidget.setContextMenuPolicy(Qt.CustomContextMenu)#允许右键显示上菜单
@@ -32,6 +33,7 @@ class ShowStudentLog(QDialog):
         self.VBoxLayout.addWidget(self.tableWidget)
         self.VBoxLayout.addWidget(self.page)
         self.setLayout(self.VBoxLayout)
+        self.resize(480, 600)
         columncout = len(str_list_column)
         self.tableWidget.setColumnCount(columncout)#根据数据量确定列数
         self.tableWidget.setHorizontalHeaderLabels(str_list_column)
@@ -41,18 +43,24 @@ class ShowStudentLog(QDialog):
         
     def set_information(self):
         self.information = self.page.information
-        row = 0
+        self.row = 0
         self.tableWidget.setRowCount(0)
         for i in self.information:
-            self.tableWidget.insertRow(row)
-            log_time = QTableWidgetItem(i["log_time"])
+            self.tableWidget.insertRow(self.row)
+            self.row2 = 0
+            for cloumn in self.list_cloumn:
+                item  = QTableWidgetItem((i[cloumn]))
+                self.tableWidget.setItem(self.row, self.row2, item)
+                item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+                self.row2 = self.row2 +1
+            
             imag_path = "img_information/student/{0}/log/{1}.jpg".format(i["id_number"],i["log_time"])
             img_item =  QTableWidgetItem()
             img_item.setIcon(QIcon(imag_path))
-            self.tableWidget.setItem(row, 0,log_time)
-            self.tableWidget.setItem(row, 1,img_item)
-            row = row + 1
-            self.tableWidget.setRowCount(row)
+            self.tableWidget.setItem(self.row, self.row2,img_item)
+            self.tableWidget.setIconSize(QSize(60, 100))
+            self.row = self.row + 1
+            self.tableWidget.setRowCount(self.row)
       
            
     def on_tableWidget_cellDoubleClicked(self, row, column):#双击槽函数 self.tableWidget.cellDoubleClicked.connect()
