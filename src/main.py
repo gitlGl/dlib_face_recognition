@@ -42,8 +42,8 @@ class main(QWidget,Ui):
             self.admin_information.show()
             return
         if action == pop_menu.actions()[1]:
-            if self.put_img.cap is not None:#判断摄像头状态
-                if self.put_img.isRunning():
+            if self.put_img.work.cap is not None:#判断摄像头状态
+                if self.put_img.work_thread.isRunning():
                     QMessageBox.information(self, 'Information', '请先关闭摄像头')
                     return  
             if self.p.is_alive():
@@ -53,7 +53,7 @@ class main(QWidget,Ui):
             self.login_ui.emitsingal.connect(self.show_parent)
             self.login_ui.show()
     def show_error(self):
-        if(self.put_img.isRunning()):
+        if(self.put_img.work_thread.isRunning()):
              QMessageBox.critical(self, 'Wrong', '请先关闭摄像头')
              return True
              
@@ -104,7 +104,7 @@ class main(QWidget,Ui):
     def clear_qlabel2(self):
         self.timer.stop()
         self.qlabel2.clear()
-        if self.btn3.isChecked() and self.put_img.isRunning(): #and self.put_img.isRunning()
+        if self.btn3.isChecked() and self.put_img.work_thread.isRunning(): #and self.put_img.isRunning()
             self.qlabel1.setText("提示：请张嘴")
 
 
@@ -122,10 +122,11 @@ class main(QWidget,Ui):
 
     #帧显示视频流
     #@pyqtSlot(list,QImage)
-    def set_normal_img(self, img):    
-        #self.put_img.frame = list_[0]#待识别帧
-        #设置图片，图片跟随ui.qlabel大小缩放
-        self.qlabel4.setPixmap(QPixmap.fromImage(img))
+    def set_normal_img(self, list):   
+        self.qlabel4.setPixmap(QPixmap.fromImage(list[0])) #设置图片，图片跟随ui.qlabel大小缩放
+        self.put_img.frame = list[1]#待识别帧
+        
+        
         #QPixmap.fromImage(img).scaled(self.qlabel4.size(),Qt.KeepAspectRatio)图片跟随ui.qlabel大小缩放
         self.qlabel4.setScaledContents(True)#ui.qlabel4自适应图片大小
 
@@ -154,7 +155,7 @@ class main(QWidget,Ui):
             while self.Q2.qsize() != 0:
                 self.Q2.get()
             self.qlabel1.clear()
-            if self.put_img.isRunning():
+            if self.put_img.work_thread.isRunning():
                 if not self.put_img.timer3.isActive():
                     self.put_img.timer3.start(1000)
 
@@ -166,14 +167,14 @@ class main(QWidget,Ui):
             self.btn3.setEnabled(False)
             self.btn2.setEnabled(True)
             GlobalFlag.gflag2 = False
-            if self.put_img.isRunning():
+            if self.put_img.work_thread.isRunning():
                 if self.put_img.timer3.isActive():
                     self.put_img.timer3.stop()
                     while self.Q1.qsize() != 0:  # 清空队列
                         pass
                     while self.Q2.qsize() != 0:
                         self.Q2.get()
-            if self.put_img.isRunning():
+            if self.put_img.work_thread.isRunning():
                 if not self.put_img.timer1.isActive():
                     self.put_img.timer1.start(200)
                     self.qlabel1.setText("提示：请张嘴")
@@ -182,13 +183,13 @@ class main(QWidget,Ui):
     def open(self):
         self.qlabel4.show()
         self.qlabel5.hide()##用于修复无法清理（qlable.claer()）图片
-        self.put_img.emit_img.connect(self.set_normal_img)
+        self.put_img.work.emit_img.connect(self.set_normal_img)
         self.btn1.clicked.disconnect(self.open)
         self.btn1.clicked.connect(self.close)
         self.btn1.setText("关闭摄像头")
         self.btn1.setIcon(QIcon("./resources/摄像头.png"))
-        self.put_img.cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
-        self.put_img.start()
+        self.put_img.SetCap()
+        self.put_img.work_thread.start()
         if not self.p.is_alive():
             self.p.start()
             self.flag = True#子进程状态标志，True表示子进程已经启动
@@ -217,7 +218,7 @@ class main(QWidget,Ui):
                
 
     def close(self):
-        self.put_img.emit_img.disconnect(self.set_normal_img)
+        self.put_img.work.emit_img.disconnect(self.set_normal_img)
        
         GlobalFlag.gflag2 = False
 
@@ -226,7 +227,7 @@ class main(QWidget,Ui):
         self.btn1.setText("打开摄像头")
         self.btn1.setIcon(QIcon("./resources/摄像头_关闭.png"))
         self.put_img.close()  # 关闭摄像头
-        self.qlabel4.setPixmap(QPixmap("./resources/摄像头.png"))
+        #self.qlabel4.setPixmap(QPixmap("./resources/摄像头.png"))
 
         while self.put_img.timer3.isActive():
             self.put_img.timer3.stop()

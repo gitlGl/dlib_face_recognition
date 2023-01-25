@@ -33,9 +33,9 @@ class FaceLoginPage(QWidget):
         self.setWindowModality(Qt.ApplicationModal)#
         self.face_rg = AdminRgFace()
         self.capture = Capture()
-        self.capture.cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
-        self.capture.emit_img.connect(self.set_normal_img)
-        self.capture.start()
+        self.capture.SetCap()
+        self.capture.work.emit_img.connect(self.set_normal_img)
+        self.capture.work_thread.start()
         self.timer1 = QTimer()
         self.timer2 =QTimer()
         self.timer2.timeout.connect(self.collect_frame)
@@ -114,9 +114,9 @@ class FaceLoginPage(QWidget):
         super().closeEvent(event)
 
     #@pyqtSlot(list,QImage)
-    def set_normal_img(self, img):
-        #self.capture.frame = list_[0]#待识别帧
-        self.label2.setPixmap(QPixmap.fromImage(img))#设置图片
+    def set_normal_img(self, list):
+        self.label2.setPixmap(QPixmap.fromImage(list[0]))#设置图片
+        self.capture.frame = list[1]#待识别帧
         #QPixmap.fromImage(img).scaled(self.label2.size(), Qt.KeepAspectRatio))#图片跟随qlabel大小缩放
         self.label2.setScaledContents(True)#qlabel2自适应图片大小
 
