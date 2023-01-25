@@ -20,12 +20,14 @@ class ShowAdminLog(QDialog):
         self.VBoxLayout = QVBoxLayout()
 
         self.page_count = 30
-        cloumn = ["rowid","id_number","log_time"]
-        self.page = Page("admin_log_time",cloumn,page_count=self.page_count,id_number = id_number)
+        self.list_cloumn = ["id_number","log_time"]
+        self.page = Page("admin_log_time",self.list_cloumn,page_count=self.page_count,id_number = id_number)
         self.page.information_signal.connect(self.set_information)
         self.VBoxLayout.addWidget(self.tableWidget)
         self.VBoxLayout.addWidget(self.page)
+        self.resize(480, 600)
         self.setLayout(self.VBoxLayout)
+        
         
 
         columncout = len(str_list_column)
@@ -35,24 +37,26 @@ class ShowAdminLog(QDialog):
 
     def set_information(self):
         self.information = self.page.information
-        row = 0
+        self.row = 0
         self.tableWidget.setRowCount(0)
         for i in self.information:
-            self.tableWidget.insertRow(row)
-            log_time = QTableWidgetItem((i["log_time"]))
-            sid_item = QTableWidgetItem(i["id_number"])
+            self.tableWidget.insertRow(self.row)
+            self.row2 = 0
+            for cloumn in self.list_cloumn:
+                item  = QTableWidgetItem((i[cloumn]))
+                self.tableWidget.setItem(self.row, self.row2, item)
+                item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+                self.row2 = self.row2 +1
+            
         
             img_item =  QTableWidgetItem()
             self.tableWidget.setIconSize(QSize(60, 100))
-           
             imag_path = "img_information/admin/{0}/log/{1}.jpg".format(i["id_number"],i["log_time"])
             img_item.setIcon(QIcon(imag_path))
-            sid_item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-            self.tableWidget.setItem(row, 0, sid_item)
-            self.tableWidget.setItem(row, 1, log_time)
-            self.tableWidget.setItem(row, 2,img_item)
-            row = row + 1
-            self.tableWidget.setRowCount(row)
+            self.tableWidget.setItem(self.row, self.row2,img_item)
+            self.row = self.row + 1
+            self.tableWidget.setRowCount(self.row)
+
     def on_tableWidget_cellDoubleClicked(self, row):#双击槽函数 self.tableWidget.cellDoubleClicked.connect()
         imag_path = "img_information/admin/{0}/log/{1}.jpg".format(str(self.information[row]["id_number"]),str(
             self.information[row]["log_time"]))

@@ -12,7 +12,7 @@ from src.Plugins import Plugins
 class ShowData(QWidget):
     def __init__(self):
         super().__init__()
-        self.setGeometry(300, 300,400, 380)
+        #self.setGeometry(300, 300,480, 600)
         self.setWindowTitle('数据')
         self.setWindowIcon(QIcon('resources/数据.png'))
         self.setWindowModality(Qt.ApplicationModal)
@@ -53,7 +53,7 @@ class ShowData(QWidget):
         
         
         #self.grou.setFixedSize(self.width(), 40)
-        self.grou.move(0,0)
+        #self.grou.move(0,0)
         self.DateEdit1 = QDateEdit(QDate.currentDate(),self)
         self.DateEdit2 =QDateEdit(QDate.currentDate())
         self.DateEdit1.setDisplayFormat("yyyy-MM-dd")#设置格式
@@ -75,6 +75,7 @@ class ShowData(QWidget):
         self.grou.setLayout(self.Hlayout)
         self.Vhlayout.addWidget(self.grou)
         self.grou.setMaximumSize(1000,40)
+        
         self.setLayout(self.Vhlayout)
         self.btn1.clicked.connect(self.analyze_data)
         self.btn2.clicked.connect(self.show_search_result)
@@ -85,7 +86,11 @@ class ShowData(QWidget):
         self.qlabel_ = QLabel(self)
         self.view = ChartView(datatabel,data_title,number)
         #self.Vhlayout.addWidget(self.view)
+        self.resize(480, 600)
+       
+      
         self.Vhlayout.addWidget(self.qlabel_)
+       
   
     # def resizeEvent(self, event):
     #     super(ChartView, self).resizeEvent(event)

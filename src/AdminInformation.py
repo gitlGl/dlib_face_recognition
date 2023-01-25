@@ -15,7 +15,7 @@ class AdminInformation(QWidget):
     def __init__(self,id_number):
         super().__init__()
         self.id_number = id_number
-        self.setGeometry(400, 400,500, 480)
+        #self.setGeometry(400, 400,500, 480)
         self.setWindowTitle('用户信息')
         self.setWindowIcon(QIcon('resources/用户信息.png'))
         self.setWindowModality(Qt.ApplicationModal)
@@ -60,6 +60,7 @@ class AdminInformation(QWidget):
         self.Vhlayout.addWidget(self.qlabel_)
         #self.Vhlayout.addWidget(self.img)
         self.grou.setMaximumSize(600,40)
+        self.resize(480, 600)
         self.setLayout(self.Vhlayout)
     def update_pwd(self):
         self.pwd_dialog = UpdatePwd(self.id_number)
