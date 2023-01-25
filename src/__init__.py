@@ -1,4 +1,4 @@
-from .Main import main
+from .Main import Main
 from .Process import *
 from .Creatuser import CreatUser
 from .Login import LoginUi

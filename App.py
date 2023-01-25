@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QApplication
-from src import main
+from src import Main
 import sys
 from qss import StyleSheet
 from PyQt5.QtCore import QCoreApplication
@@ -19,7 +19,7 @@ if __name__ == '__main__':
     # app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
     # # or in new API
     #app.setStyleSheet(qdarkstyle.load_stylesheet(qt_api='pyqt5')) 
-    ui = main()
+    ui = Main()
     app.exec_()
 
 #     """

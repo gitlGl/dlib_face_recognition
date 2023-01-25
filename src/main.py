@@ -13,7 +13,7 @@ from src.ShowData import ShowData
 from .Plugins import Plugins
 from .Login import LoginUi
 from  .Ui import Ui
-class main(QWidget,Ui):
+class Main(QWidget,Ui):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
