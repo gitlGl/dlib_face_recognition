@@ -1,7 +1,7 @@
 
 from src.Creatuser import CreatStudentUser
 from src.Database import Database
-from src.ShowStudentUser import ShowStudentUser
+from src.ShowUser import ShowStudentUser
 from PyQt5.QtCore import QDate,Qt
 import copy,os 
 from PyQt5.QtGui import QIcon
@@ -143,17 +143,19 @@ class ShowData(QWidget):
             QMessageBox.critical(self, 'Wrong', '用户不存在')
             return
            
-        self.result = ShowStudentUser([ '学号', '姓名', '性别',"图片" ],result)
+        result = ShowStudentUser([ '学号', '姓名', '性别','性别',"图片" ],
+        "student",["id_number","user_name","gender","password"],result)
         self.Vhlayout.itemAt(1).widget().deleteLater()
-        self.Vhlayout.addWidget(self.result)
+        self.Vhlayout.addWidget(result)
         return
         
     #浏览所有用户
     def browse(self):
            
-        self.result = ShowStudentUser([ '学号', '姓名', '性别',"图片" ])
+        result = ShowStudentUser([ '学号', '姓名', '性别','密码',"图片" ],
+        "student",["id_number","user_name","gender","password"])
         self.Vhlayout.itemAt(1).widget().deleteLater()
-        self.Vhlayout.addWidget(self.result)
+        self.Vhlayout.addWidget(result)
         return
 
             

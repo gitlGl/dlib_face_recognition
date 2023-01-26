@@ -154,11 +154,7 @@ class CreatStudentUser(CreatUser):
     def set_information(self, part_information):
         information = {}
         information["user_name"] = part_information["user_name"]
-        if part_information["gender"] == "男":
-            information["gender"] = 1
-        else:
-            information["gender"] = 0 
-
+        information["gender"] =  part_information["gender"]
         information['salt'] = MyMd5().create_salt()
         information["img_path"] = self.get_img_log_path(
             part_information["id_number"])

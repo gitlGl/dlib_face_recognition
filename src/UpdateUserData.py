@@ -60,7 +60,10 @@ class UpdateUserData(QDialog):
     def accept_(self):#接受弹出窗口状态
        result = self.update(self.information["id_number"])
        if result:
-            QMessageBox.critical(self, 'sucess', '修改成功!')
+            
+            QMessageBox.information(self, "sucess", "修改成功",
+                                QMessageBox.Yes) #最后的Yes表示弹框的按钮显示为Yes，默认按钮显示为OK,不填QMessageBox.Yes即为默认
+           
             self.accept()#返回1
     def reject_(self):
         self.reject()#返回0
@@ -103,13 +106,11 @@ class UpdateUserData(QDialog):
         user_name = self.user_name_line.text()
         id_number = self.id_number_line.text()
         password = self.password_line.text()
-        gender = None
+        gender = self.gender_line.text()
         #检查输入信息
         
-        if  self.gender_line.text() == "男":
-            gender = 1
-        elif  self.gender_line.text() =="女":
-            gender =0
+        if  gender == "男" or gender == "女":
+            pass
         else:
             QMessageBox.critical(self, 'Wrong', 'gender is only 男 or 女')
             return False
@@ -147,10 +148,10 @@ class UpdateUserData(QDialog):
             if(password != self.information["password"]):
                 salt = MyMd5().create_salt()
                 password = MyMd5().create_md5(password,salt)
-                data.c.execute("UPDATE student SET id_number = {0},user_name = '{1}',gender = {2},password = ?,img_path =? ,salt = ? WHERE id_number = {3}"\
+                data.c.execute("UPDATE student SET id_number = '{0}',user_name = '{1}',gender = '{2}',password = ?,img_path =? ,salt = ? WHERE id_number = {3}"\
             .format(id_number,user_name,gender,id),(password,"img_information/student/{0}/log".format(id_number),salt))
             else:
-                data.c.execute("UPDATE student SET id_number = {0},user_name = '{1}',gender = {2},img_path = ?  WHERE id_number = {3}"\
+                data.c.execute("UPDATE student SET id_number = '{0}',user_name = '{1}',gender = '{2}',img_path = ?  WHERE id_number = '{3}'"\
             .format(id_number,user_name,gender,id),("img_information/student/{0}/log".format(id_number),))
             
         else :

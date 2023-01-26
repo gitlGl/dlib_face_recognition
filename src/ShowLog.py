@@ -21,6 +21,8 @@ class ShowLog(QDialog):
         self.list_cloumn = list_cloumn
         self.page = Page(self.table+"_log_time",self.list_cloumn,
         page_count=self.page_count,id_number = self.id_number)
+        if  not self.page.information:
+            return
         self.page.information_signal.connect(self.set_information)
         
         self.tableWidget.setContextMenuPolicy(Qt.CustomContextMenu)#允许右键显示上菜单
@@ -94,7 +96,7 @@ class ShowLog(QDialog):
                 log_table,self.information[row]["rowid"])).fetchall()
             if self.table == "student":
                 item = database.c.execute(
-                "SELECT  cout,id_number from {0} where id_number = {1}".format(
+                "SELECT  cout,id_number from {0} where id_number = '{1}'".format(
                     self.table,str(self.information[row]["id_number"]))).fetchall()[0] # 取出返回所有数据，fetchall返回类型是[()]
                 if item["cout"] is not None:
                     database.c.execute(
@@ -108,7 +110,7 @@ class ShowLog(QDialog):
             database.conn.commit()
             database.conn.close()
             self.tableWidget.removeRow(row) 
-            self.information.remove(self.information[row])#删除信息列表
+            self.information.pop(row)#删除信息列表
             
             return
 

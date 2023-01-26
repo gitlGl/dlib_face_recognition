@@ -65,7 +65,7 @@ class Paging(QWidget):
 
     def __next_total_page(self):
         """跳转下一页"""
-        if self.total_page == int(self.curPage.text()):
+        if int(self.curPage.text()) >= self.total_page:
             QMessageBox.information(self, "提示", "已经是最后一页了", QMessageBox.Yes)
             return
         self.page_number.emit(int(self.curPage.text())+1)
@@ -130,7 +130,7 @@ class Page(Paging):
             sql = self.sql.format(self.string,self.table,self.page_count,0)
             self.information = Database().c.execute(sql).fetchall()
         if not self.information:
-                QMessageBox.critical(self, 'Wrong', '不存在用户记录')
+                QMessageBox.critical(self, 'Wrong', '不存在用户或记录')
                 return
             
             

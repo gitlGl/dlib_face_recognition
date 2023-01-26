@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import QHBoxLayout, QLabel, QVBoxLayout, QGroupBox,QPushBut
 QMessageBox, QMenu,QWidget
 from .ImgPath import get_img_path
 from .UpdatePwd import UpdatePwd
-from .ShowAdminUser import ShowAdminUser
+from .ShowUser import ShowAdminUser
 class AdminInformation(QWidget):
     def __init__(self,id_number):
         super().__init__()
@@ -94,8 +94,8 @@ class AdminInformation(QWidget):
               QMessageBox.information(self, 'Success', '修改成功')
    
     def root(self):
-        result = Database().c.execute("select id_number,password    from admin ").fetchall()
-        self.result = ShowAdminUser(result,[ '用户ID', '密码',"图片" ])
+        result = Database().c.execute("select id_number,password from admin ").fetchall()
+        self.result = ShowAdminUser([ '用户ID', '密码',"图片" ],'admin',["id_number",'password'],result)
         self.Vhlayout.itemAt(1).widget().deleteLater()
         self.Vhlayout.addWidget(self.result)
         pass

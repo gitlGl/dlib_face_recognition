@@ -12,13 +12,13 @@ class Database():
         self.c = self.conn.cursor()
         self.creatble()
 
-    def creatble(self):
+    def creatble(self):#528 李回复 2018035144217
         self.c.execute('''CREATE TABLE IF NOT EXISTS student
        ( 
         id_number        CHAR(50)    NOT NULL ,
    
         user_name       CHAR(50)    NOT NULL,
-        gender           bool,
+        gender           char(2)    NOT NULL, 
         password        char(20)    NOT NULL,
         img_path        char(60),
         vector          blob        ,
