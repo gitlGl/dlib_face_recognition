@@ -1,14 +1,13 @@
-
+from .ShowLog import ShowLog
 from .ImageView import ImageView
 from .Database import Database
 from .ImageView import ShowImage
 from .Creatuser import CreatUser
-from PyQt5.QtCore import Qt,pyqtSlot
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QHBoxLayout, QLabel, QVBoxLayout, QGroupBox,QPushButton,\
 QMessageBox, QMenu,QWidget
 from .ImgPath import get_img_path
-from .ShowAdminLog import ShowAdminLog
 from .UpdatePwd import UpdatePwd
 from .ShowAdminUser import ShowAdminUser
 class AdminInformation(QWidget):
@@ -66,7 +65,8 @@ class AdminInformation(QWidget):
         self.pwd_dialog = UpdatePwd(self.id_number)
         self.pwd_dialog.exec_()
     def browse(self):
-        self.result = ShowAdminLog([ '用户ID', '登录时间',"图片" ],self.id_number)
+        self.result = ShowLog(self.id_number,[ '用户ID', '登录时间',"图片" ],
+        "admin",['rowid','id_number','log_time'])
         self.Vhlayout.itemAt(1).widget().deleteLater()
         self.Vhlayout.addWidget(self.result)
 

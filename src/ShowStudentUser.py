@@ -3,8 +3,7 @@ from PyQt5.QtCore import Qt,QSize, QPoint,pyqtSlot
 from .ImageView import ShowImage
 from  PyQt5.QtWidgets import QWidget,QTableWidget,QTableWidgetItem,QVBoxLayout,QMenu,QHeaderView,QMessageBox,QAbstractItemView
 from src.UpdateUserData import UpdateUserData
-from .Database import Database
-from .ShowStudentLog import ShowStudentLog
+from .ShowLog import ShowLog
 from .Paging import Page
 class ShowStudentUser(QWidget):
     def __init__(self,str_list_column,information=None ):
@@ -39,17 +38,17 @@ class ShowStudentUser(QWidget):
         self.set_information()
     def set_information(self):
         self.information = self.page.information
-        self.row = 0
+        row = 0
         self.tableWidget.setRowCount(0)
         for i in self.information:
-            self.tableWidget.insertRow(self.row)
-            self.row2 = 0
+            self.tableWidget.insertRow(row)
+            row2 = 0
             for cloumn in self.list_cloumn:
                 if cloumn == 'password':
                     continue
                 if cloumn != "gender":
                     item  = QTableWidgetItem((i[cloumn]))
-                    self.tableWidget.setItem(self.row, self.row2, item)
+                    self.tableWidget.setItem(row, row2, item)
                     item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
                    
                 else:
@@ -59,8 +58,8 @@ class ShowStudentUser(QWidget):
                         i["gender"] = "男"
                     sex_item = QTableWidgetItem(i["gender"])
                     sex_item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-                    self.tableWidget.setItem(self.row, self.row2, sex_item)
-                self.row2 = self.row2 +1
+                    self.tableWidget.setItem(row, row2, sex_item)
+                row2 +=1
 
 
             img_item =  QTableWidgetItem()
@@ -68,8 +67,8 @@ class ShowStudentUser(QWidget):
             imag_path = "img_information/student/{0}/{1}.jpg".format(i["id_number"],i["id_number"])#获取图片路径
             img_item.setIcon(QIcon(imag_path))
             img_item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-            self.tableWidget.setItem(self.row, self.row2,img_item)
-            self.row = self.row + 1
+            self.tableWidget.setItem(row, len(self.list_cloumn)-1,img_item)
+            row = row + 1
            
     def on_tableWidget_cellDoubleClicked(self, row):#双击槽函数 self.tableWidget.cellDoubleClicked.connect()
         print(row)
@@ -143,7 +142,8 @@ class ShowStudentUser(QWidget):
             return
         if action == log_event:
             #result = Database().c.execute("select rowid,id_number,log_time from student_log_time where id_number ={0} order by log_time desc".format(self.information[row]["id_number"])).fetchall()
-            self.result = ShowStudentLog(self.information[row]["id_number"],[ '学号','时间',"图片" ])
+            self.result = ShowLog(self.information[row]["id_number"],
+            [ '学号','时间',"图片" ], "student",['rowid','id_number','log_time'])
             self.result.exec()
             return
 

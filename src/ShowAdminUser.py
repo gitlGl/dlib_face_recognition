@@ -3,8 +3,7 @@ from PyQt5.QtCore import Qt,QSize, QPoint,pyqtSlot
 from .ImageView import ShowImage
 from  PyQt5.QtWidgets import QWidget,QTableWidget,QTableWidgetItem,QVBoxLayout,QMenu,QHeaderView,QMessageBox,QAbstractItemView
 from .UpdateAdminData import UpdateAdminData
-from .Database import Database
-from .ShowAdminLog import ShowAdminLog
+from .ShowLog import ShowLog
 class ShowAdminUser(QWidget):
     def __init__(self,information,str_list_column ):
         super().__init__()
@@ -114,7 +113,8 @@ class ShowAdminUser(QWidget):
             show_imag.exec_()
             return
         if action == log_event:
-            self.result = ShowAdminLog([ '用户ID', '登录时间',"图片" ],self.information[row]["id_number"])
+            self.result = ShowLog(self.information[row]["id_number"],[ '用户ID', '登录时间',"图片" ],
+            "admin",['rowid','id_number','log_time'])
             self.result.exec_()
             return
 
