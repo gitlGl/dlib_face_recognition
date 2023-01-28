@@ -19,8 +19,7 @@
 12.模型下载网址：dlib.net<br>
 13.插件功能<br>
 14.依赖<br>
-__python版本为3.6，需要自己编译dlib__
-dlib                    19.8.1<br>  
+dlib 19.8.1  python3.6下可以直接pip安装dlib，__若使用其他python版本时需要自己编译dlib,dlib文件夹下有编译好的python3.9版本dlib，没有经过条件编译裁剪，功能多，貌似因此使用起来占用内存高？，推荐直接使用python3.6，pip直接安装使用__<br>  
 numpy                   1.15.4 <br> 
 opencv-python           4.5.5.62<br>  
 psutil                  5.9.0 <br> 
