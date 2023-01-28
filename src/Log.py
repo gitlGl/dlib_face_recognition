@@ -28,7 +28,7 @@ class  studentlog():
             (self.item["id_number"], self.item["gender"],datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
 
        
-        self.database.conn.commit()
+        
 
         # test = self.database.c.execute(
         #     "SELECT database. user_name , database_log_time.log_time  FROM database \
@@ -55,14 +55,14 @@ class  studentlog():
             cout = 1
             self.database.c.execute(
             "UPDATE student SET cout = {0} WHERE id_number = {1}".format(cout,self.item["id_number"]),)
-            self.database.conn.commit()
+            
             return
            
     
         cout = self.item["cout"] + 1
         self.database.c.execute(
         "UPDATE student SET cout = {0} WHERE id_number = {1}".format(cout,self.item["id_number"]),)
-        self.database.conn.commit()
+       
         return
            
 class  adminlog():
@@ -96,7 +96,7 @@ class  adminlog():
             (self.item["id_number"], datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
 
        
-        self.database.conn.commit()
+       
 
     def insert_img(self, img):
     

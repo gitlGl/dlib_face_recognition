@@ -89,7 +89,6 @@ class UpdateAdminData(QDialog):
         data.c.execute("delete from admin where id_number = {0}".format(id))
         data.c.execute(
             "delete from admin_log_time where id_number = {0}".format(id))
-        data.conn.commit()
         data.c.close()
 
         #删除用户日志信息文件
@@ -169,7 +168,7 @@ class UpdateAdminData(QDialog):
         data.c.execute(
             "update admin_log_time set id_number= {0} where id_number = {1}".
             format(id_number, id))
-        data.conn.commit()
+        
         data.conn.close()
         return True
 

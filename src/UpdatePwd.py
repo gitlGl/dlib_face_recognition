@@ -76,7 +76,6 @@ class UpdatePwd(QDialog):
              return
         new_pass_word = MyMd5().create_md5(new_pwd, item["salt"])
         database.c.execute("update admin set password = ? where id_number = {0}".format(self.id_number),(new_pass_word,))
-        database.conn.commit()
         database.conn.close()
         QMessageBox.information(self, 'Success', '修改成功')
         self.close()

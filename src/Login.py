@@ -104,7 +104,6 @@ class LoginUi(QWidget):
         admin = Database()
         admin.c.execute("INSERT INTO admin_log_time (id_number,log_time ) \
 VALUES (?,?)", (uesr_id, datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
-        admin.conn.commit()
         admin.conn.close()
         self.emitsingal.emit(uesr_id)
         self.close()

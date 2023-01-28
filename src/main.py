@@ -1,4 +1,4 @@
-import cv2,gc,multiprocessing,psutil,os
+import gc,multiprocessing,psutil,os
 from PyQt5.QtWidgets import QWidget, QMessageBox,QMenu
 from src.Process import process_student_rg 
 from PyQt5.QtCore import pyqtSlot, QTimer

@@ -107,7 +107,7 @@ class ShowLog(QDialog):
                 self.table,str(self.information[row]["id_number"]),str(self.information[row]["log_time"]))
             if os.path.isfile(imag_path):
                 os.remove(imag_path)
-            database.conn.commit()
+           
             database.conn.close()
             self.tableWidget.removeRow(row) 
             self.information.pop(row)#删除信息列表

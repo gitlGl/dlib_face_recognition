@@ -95,7 +95,7 @@ class UpdateUserData(QDialog):
         data = Database()
         data.delete(id)
         data.c.execute("delete from student_log_time where id_number = {0}".format(id))
-        data.conn.commit()
+        
         data.conn.close()
         #删除用户日志信息文件
         if  os.path.exists(path):
@@ -168,7 +168,6 @@ class UpdateUserData(QDialog):
                 data.c.execute("update student set id_number= ?,user_name = ?,gender = ? ,vector = ?,img_path = ?  where id_number = {0}"
                 .format(id),(id_number,user_name,gender,vector,"img_information/student/{0}/log".format(id_number)))
         data.c.execute("update student_log_time set id_number= {0} where id_number = {1}".format(id_number,id))
-        data.conn.commit()
         data.conn.close()
         return True
            
