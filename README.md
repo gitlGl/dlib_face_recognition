@@ -19,7 +19,7 @@
 12.模型下载网址：dlib.net<br>
 13.插件功能<br>
 14.依赖<br>
-__numpy==1.15.4，python版本为3.6，若要使用更高版本python，需要自己编译numpy==1.5.14.否则报错.__<br> 
+__python版本为3.6，需要自己编译dlib__
 dlib                    19.8.1<br>  
 numpy                   1.15.4 <br> 
 opencv-python           4.5.5.62<br>  
