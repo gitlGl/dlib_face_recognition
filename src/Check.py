@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QMessageBox
-from .Database import Database
+from .Database import database
 from .MyMd5 import MyMd5
 import datetime
 def check_user_id(user_id):
@@ -14,8 +14,8 @@ def check_user_pwd(user_pwd):
             return False
     return True
 def verifye_pwd(user_id,user_pwd,tabel_name):
-    admin = Database()
-    user = admin.c.execute(
+   
+    user = database.c.execute(
                 "select id_number,salt, password  from {0} where id_number = {1} "
                 .format(tabel_name,user_id)).fetchall()
 

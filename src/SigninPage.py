@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, \
     QVBoxLayout, QHBoxLayout, QMessageBox
 from PyQt5.QtCore import Qt
-from src.Database import Database
+from src.Database import database
 from src.MyMd5 import MyMd5
 from PyQt5.QtGui import QIcon
 from .Creatuser import CreatUser
@@ -92,7 +92,7 @@ class SigninPage(QWidget):
         self.signin_button.clicked.connect(self.check_signin_func)
  #响应注册请求
     def check_signin_func(self):
-        admin = Database()
+        
 
         #检查输入信息格式
         if (not self.signin_user_line.text().isdigit()) or (len(self.signin_user_line.text())>15):
@@ -113,7 +113,7 @@ class SigninPage(QWidget):
             return
     
         user_name = self.signin_user_line.text()
-        user = admin.c.execute(
+        user = database.c.execute(
             "select id_number from admin where id_number = {} ".format(
                 user_name)).fetchall()
         if len(user) == 1:
@@ -131,13 +131,12 @@ class SigninPage(QWidget):
         vector = creatuser.get_vector(self.path)
         creatuser.insert_img(user_name,self.path,"admin")
 
-        admin.c.execute(
+        database.c.execute(
             "INSERT INTO admin (id_number,password,salt,vector) \
 VALUES (?, ?,?,?)", (user_name, pass_word, salt, vector))
         QMessageBox.information(self, 'Information',
                                 'Register Successfully')
         
-        admin.conn.close()
         self.close()
         return
             

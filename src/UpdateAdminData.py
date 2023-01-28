@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QDialog, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QMessageBox
-from src.Database import Database
+from src.Database import database
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
 from src.GlobalVariable import models
@@ -85,11 +85,10 @@ class UpdateAdminData(QDialog):
 
     def delete(self, id):
         path = "img_information/admin/{0}".format(str(id))
-        data = Database()
-        data.c.execute("delete from admin where id_number = {0}".format(id))
-        data.c.execute(
+       
+        database.c.execute("delete from admin where id_number = {0}".format(id))
+        database.c.execute(
             "delete from admin_log_time where id_number = {0}".format(id))
-        data.c.close()
 
         #删除用户日志信息文件
         if os.path.exists(path):
@@ -105,7 +104,7 @@ class UpdateAdminData(QDialog):
                                  'id_number is only digit or is too long!')
             return False
 
-        if len(Database().c.execute(
+        if len(database.c.execute(
                 "select id_number from admin where id_number = {} ".format(
                     id_number)).fetchall()) == 1 and id != id_number:
             QMessageBox.critical(self, 'Wrong', ' 这个用户已存在')
@@ -137,16 +136,16 @@ class UpdateAdminData(QDialog):
                     str(id), str(id_number)))
             os.rename(old_path, new_path)
 
-        data = Database()
+        
         if self.path == None:  #图片可以为不变更
             if (password != self.information["password"]):
                 salt = MyMd5().create_salt()
                 password = MyMd5().create_md5(password, salt)
-                data.c.execute(
+                database.c.execute(
                     "update admin set id_number = ?,password = ?,salt = ? where id_number = {0}"
                     .format(id), (id_number, password, salt))
             else:
-                data.c.execute(
+                database.c.execute(
                     "update admin set id_number = {0} where id_number = {1}".
                     format(id_number, id))
 
@@ -158,18 +157,17 @@ class UpdateAdminData(QDialog):
                 salt = MyMd5().create_salt()
                 password = MyMd5().create_md5(password, salt)
 
-                data.c.execute(
+                database.c.execute(
                     "update admin set id_number= ?,password = ?,salt = ? ,vector = ? where id_number = {0}"
                     .format(id), (id_number, password, salt, vector))
             else:
-                data.c.execute(
+                database.c.execute(
                     "update admin set id_number= ? ,vector = ? where id_number = {0}"
                     .format(id), (id_number, vector))
-        data.c.execute(
+        database.c.execute(
             "update admin_log_time set id_number= {0} where id_number = {1}".
             format(id_number, id))
         
-        data.conn.close()
         return True
 
         #获取图片路径

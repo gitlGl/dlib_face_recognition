@@ -13,6 +13,7 @@ from src.ShowData import ShowData
 from .Plugins import Plugins
 from .Login import LoginUi
 from  .Ui import Ui
+from src.Database import database
 class Main(QWidget,Ui):
     def __init__(self):
         super().__init__()
@@ -257,6 +258,7 @@ class Main(QWidget,Ui):
         if hasattr(self, "put_img"):
             self.put_img.close()
         super().closeEvent(Event)
+        database.c.close()
 
         # p = psutil.Process(os.getpid())
         # print(p.children())

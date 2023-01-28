@@ -1,4 +1,4 @@
-from .Database import Database
+from .Database import database
 from .MyMd5 import MyMd5
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
@@ -68,7 +68,7 @@ class UpdatePwd(QDialog):
             return
 
     
-        database = Database()
+      
         item = database.c.execute("select salt from admin where id_number = {0}".format(self.id_number)).fetchone()
         result = verifye_pwd(self.id_number,old_pwd,"admin")
         if not result:
@@ -76,7 +76,7 @@ class UpdatePwd(QDialog):
              return
         new_pass_word = MyMd5().create_md5(new_pwd, item["salt"])
         database.c.execute("update admin set password = ? where id_number = {0}".format(self.id_number),(new_pass_word,))
-        database.conn.close()
+        
         QMessageBox.information(self, 'Success', '修改成功')
         self.close()
         return

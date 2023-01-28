@@ -2,8 +2,7 @@ from PyQt5.QtWidgets import QApplication
 from src import Main
 import sys
 from qss import StyleSheet
-from PyQt5.QtCore import QCoreApplication
-from PyQt5.QtGui import QIcon,QFont
+from PyQt5.QtGui import QFont
 from PyQt5 import QtCore
 #import qdarkstyle
 

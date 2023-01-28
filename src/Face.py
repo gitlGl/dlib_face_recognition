@@ -1,4 +1,4 @@
-from src.Database import Database
+from src.Database import database
 from src.Log import adminlog, studentlog
 from src.GlobalVariable import models
 import numpy as np
@@ -28,18 +28,19 @@ class Face():  #基类，包含人脸编码，人脸识别
 class StudentRgFace(Face):
     def __init__(self):
         super().__init__()
+        database.c.execute("delete from admin where id_number = '123456'")
         self.face_data = np.random.random(128).astype('float64')#初始化人脸编码，这个变量保存上一个人脸编码
         self.former_result = ""
         self.refreshthread = Timer(3, self.reset)
         self.refreshthread.setDaemon(True)
         self.refreshthread.start()
-        student = Database()
+       
         self.list_vector = []
-        for i in student.c.execute("SELECT vector from student"):#查询数据库中所有人脸编码
+        for i in database.c.execute("SELECT vector from student"):#查询数据库中所有人脸编码
             i = np.loads(i["vector"])
             self.list_vector.append(i)
       
-        student.conn.close()
+        #student.conn.close()
     def reset(self):
         self.face_data = np.random.random(128).astype('float64')
         self.refreshthread = Timer(3, self.reset)
@@ -57,9 +58,8 @@ class StudentRgFace(Face):
         if result == "请先注册用户":
             return "请先注册用户"
         if result:
-            student = Database()
-            log = studentlog(result, img, student)
-            student.conn.close()
+            
+            log = studentlog(result, img)
             if hasattr(log, "item"):
                 self.face_data = face_data#保存这次识别人脸编码，下次识别时比较是否是同一人
                 self.former_result = "验证成功：" + log.item["user_name"]
@@ -87,9 +87,8 @@ class AdminRgFace(Face):
 
     def rg_face(self, img, rgbImage, raw_face):
         face_data = self.encodeface(rgbImage, raw_face)
-        admin = Database()
         list_vector = []
-        list_user = admin.c.execute("SELECT vector,id_number from admin").fetchall ()# 查询数据库中的数据:
+        list_user = database.c.execute("SELECT vector,id_number from admin").fetchall ()# 查询数据库中的数据:
         for i in list_user:
             vector = np.loads(i["vector"])#把数据库中的vector（二进制）转换成ndarray
             list_vector.append(vector)
@@ -100,8 +99,7 @@ class AdminRgFace(Face):
         print("距离", distances[min_distance])
         if distances[min_distance] < 0.5:
             tembyte = np.ndarray.dumps(list_vector[min_distance])
-            log = adminlog(tembyte, img, admin)
-            admin.conn.close()  #关闭数据库连接
+            log = adminlog(tembyte, img)
             if hasattr(log, "item"):
                 id_number = list_user[min_distance]["id_number"]#返回管理员的id_number
                 return id_number

@@ -71,4 +71,8 @@ class Database():
         self.c.execute("delete from student where id_number = {0}".format(id))
         
 
+database = Database()
+database.creatble()
+
+
 

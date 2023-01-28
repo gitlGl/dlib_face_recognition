@@ -2,7 +2,7 @@
 from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, \
     QVBoxLayout, QHBoxLayout, QMessageBox
 from PyQt5.QtCore import pyqtSignal
-from src.Database import Database
+from src.Database import database
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtGui import QIcon
 import datetime
@@ -101,10 +101,10 @@ class LoginUi(QWidget):
             QMessageBox.warning(self, '警告', '账号或密码错误，请重新输入', QMessageBox.Yes)
             clear()
             return
-        admin = Database()
-        admin.c.execute("INSERT INTO admin_log_time (id_number,log_time ) \
+        
+        database.c.execute("INSERT INTO admin_log_time (id_number,log_time ) \
 VALUES (?,?)", (uesr_id, datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
-        admin.conn.close()
+       
         self.emitsingal.emit(uesr_id)
         self.close()
            

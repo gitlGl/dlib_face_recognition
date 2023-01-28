@@ -1,11 +1,10 @@
-
+from src.Database import database
 import datetime,cv2,os
 class  studentlog():
-    def __init__(self, vector,img,database):
+    def __init__(self, vector,img):
       
-        self.database = database
         #用户信息
-        item = self.database.c.execute(
+        item = database.c.execute(
                 "SELECT  id_number,gender,img_path,cout,user_name from student where vector = ?",
                 (vector, )).fetchall() # 取出返回所有数据，fetchall返回类型是[()]
         print(len(item))
@@ -16,13 +15,13 @@ class  studentlog():
             self.insert_time()
             self.insert_img(img)
             self.insert_cout()
-            self.database.conn.close()
+           
         else:
             pass #应该输出异常日志
     #记录识别成功时间
     def insert_time(self):
         
-        self.database.c.execute(
+        database.c.execute(
             "INSERT INTO student_log_time (id_number,gender,log_time ) \
       VALUES (?, ?,?)",
             (self.item["id_number"], self.item["gender"],datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
@@ -53,24 +52,24 @@ class  studentlog():
     def insert_cout(self):
         if self.item["cout"] == None:
             cout = 1
-            self.database.c.execute(
+            database.c.execute(
             "UPDATE student SET cout = {0} WHERE id_number = {1}".format(cout,self.item["id_number"]),)
             
             return
            
     
         cout = self.item["cout"] + 1
-        self.database.c.execute(
+        database.c.execute(
         "UPDATE student SET cout = {0} WHERE id_number = {1}".format(cout,self.item["id_number"]),)
        
         return
            
 class  adminlog():
-    def __init__(self, vector,img,database):
+    def __init__(self, vector,img):
       
-        self.database = database
+        
         #用户信息
-        item = self.database.c.execute(
+        item = database.c.execute(
                 "SELECT  id_number from admin where vector = ?",
                 (vector, )).fetchall() # 取出返回所有数据，fetchall返回类型是[()]
         print(len(item))
@@ -90,7 +89,7 @@ class  adminlog():
 
     def insert_time(self):
         
-        self.database.c.execute(
+        database.c.execute(
             "INSERT INTO admin_log_time (id_number,log_time ) \
       VALUES (?,?)",
             (self.item["id_number"], datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))

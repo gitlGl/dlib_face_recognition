@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QDialog, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QMessageBox, QFileDialog
-from src.Database import Database
+from src.Database import database
 from PyQt5.QtGui import QIcon 
 from PyQt5.QtCore import Qt
 from .Creatuser import CreatUser
@@ -92,11 +92,10 @@ class UpdateUserData(QDialog):
     
     def delete(self,id):
         path = "img_information/student/{0}".format(str(id))
-        data = Database()
-        data.delete(id)
-        data.c.execute("delete from student_log_time where id_number = {0}".format(id))
+       
+        database.delete(id)
+        database.c.execute("delete from student_log_time where id_number = {0}".format(id))
         
-        data.conn.close()
         #删除用户日志信息文件
         if  os.path.exists(path):
             shutil.rmtree(path)
@@ -119,7 +118,7 @@ class UpdateUserData(QDialog):
             QMessageBox.critical(self, 'Wrong', 'id_number is only digit or is too long!')
             return False
 
-        if  len(Database().c.execute("select id_number from student where id_number = {} "
+        if  len(database.c.execute("select id_number from student where id_number = {} "
         .format(id_number)).fetchall()) == 1 and id != id_number:
             QMessageBox.critical(self, 'Wrong',
                                      ' 这个学号已经存在')
@@ -144,31 +143,30 @@ class UpdateUserData(QDialog):
             os.rename("img_information/student/{0}/{1}.jpg".format(str(id),str(id)),"img_information/student/{0}/{1}.jpg".format(str(id),str(id_number)))
             os.rename(old_path,new_path)
         if self.path == None:#图片可以为不变更
-            data = Database()
+           
             if(password != self.information["password"]):
                 salt = MyMd5().create_salt()
                 password = MyMd5().create_md5(password,salt)
-                data.c.execute("UPDATE student SET id_number = '{0}',user_name = '{1}',gender = '{2}',password = ?,img_path =? ,salt = ? WHERE id_number = {3}"\
+                database.c.execute("UPDATE student SET id_number = '{0}',user_name = '{1}',gender = '{2}',password = ?,img_path =? ,salt = ? WHERE id_number = {3}"\
             .format(id_number,user_name,gender,id),(password,"img_information/student/{0}/log".format(id_number),salt))
             else:
-                data.c.execute("UPDATE student SET id_number = '{0}',user_name = '{1}',gender = '{2}',img_path = ?  WHERE id_number = '{3}'"\
+                database.c.execute("UPDATE student SET id_number = '{0}',user_name = '{1}',gender = '{2}',img_path = ?  WHERE id_number = '{3}'"\
             .format(id_number,user_name,gender,id),("img_information/student/{0}/log".format(id_number),))
             
         else :
-            data = Database()
+           
             creatuser = CreatUser()
             vector = creatuser.get_vector(self.path)
             creatuser.insert_img(id_number,self.path,"student")
             if(password != self.information["password"]):
                 salt = MyMd5().create_salt()
                 password = MyMd5().create_md5(password,salt)
-                data.c.execute("update student set id_number= ?,user_name = ?,gender = ? ,vector = ?,password = ?,img_path = ? ,salt = ? where id_number = {0}"
+                database.c.execute("update student set id_number= ?,user_name = ?,gender = ? ,vector = ?,password = ?,img_path = ? ,salt = ? where id_number = {0}"
                 .format(id),(id_number,user_name,gender,vector,password,"img_information/student/{0}/log".format(id_number),salt))
             else:
-                data.c.execute("update student set id_number= ?,user_name = ?,gender = ? ,vector = ?,img_path = ?  where id_number = {0}"
+                database.c.execute("update student set id_number= ?,user_name = ?,gender = ? ,vector = ?,img_path = ?  where id_number = {0}"
                 .format(id),(id_number,user_name,gender,vector,"img_information/student/{0}/log".format(id_number)))
-        data.c.execute("update student_log_time set id_number= {0} where id_number = {1}".format(id_number,id))
-        data.conn.close()
+        database.c.execute("update student_log_time set id_number= {0} where id_number = {1}".format(id_number,id))
         return True
            
         #获取图片路径  

@@ -1,9 +1,8 @@
 from src.MyMd5 import MyMd5
 import numpy as np
-from src.Database import Database
 from src.GlobalVariable import models
 import xlrd ,os
-from src.Database import Database
+from src.Database import database
 import cv2,dlib
 class CreatUser():
     def __init__(self):
@@ -53,7 +52,6 @@ class CreatStudentUser(CreatUser):
         book = xlrd.open_workbook(path)
         sheets = book.sheets()
         list_problem = []
-        student = Database()
 
         for sheet in sheets:
             rows = sheet.nrows
@@ -62,7 +60,7 @@ class CreatStudentUser(CreatUser):
                 #判断用户名是否符合格式要求
               
                 if str(list1[0]).isdigit() and len(str(list1[0])) == 13:
-                    user = student.c.execute(
+                    user = database.c.execute(
                         "select id_number from student where id_number = {} "
                         .format(str(list1[0]))).fetchall()
                     if len(user) == 1:
@@ -148,7 +146,6 @@ class CreatStudentUser(CreatUser):
                 dic = dict(zip(list2, list1))
                 information = self.set_information(dic)
                 self.insert_user(information)
-        student.conn.close()
         return list_problem
 
     def set_information(self, part_information):
@@ -166,7 +163,7 @@ class CreatStudentUser(CreatUser):
         return information
 
     def insert_user(self, information):
-        Database().insert_user(information["id_number"],
+        database.insert_user(information["id_number"],
                                information["user_name"],
                                information["gender"],
                                information["password"],

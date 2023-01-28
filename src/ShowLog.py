@@ -3,7 +3,7 @@ from PyQt5.QtCore import Qt,QPoint,pyqtSlot,QSize
 from  PyQt5.QtWidgets import QTableWidget,QTableWidgetItem,QVBoxLayout,QMenu,QHeaderView,QMessageBox, QDialog
 from PyQt5 import QtWidgets
 from .ImageView import ShowImage
-from .Database import Database
+from .Database import database
 from .Paging import Page
 import os
 from PyQt5.QtGui import QIcon
@@ -22,6 +22,7 @@ class ShowLog(QDialog):
         self.page = Page(self.table+"_log_time",self.list_cloumn,
         page_count=self.page_count,id_number = self.id_number)
         if  not self.page.information:
+            self.close()
             return
         self.page.information_signal.connect(self.set_information)
         
@@ -90,7 +91,7 @@ class ShowLog(QDialog):
             r = QMessageBox.warning(self, "注意", "删除可不能恢复了哦！", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
             if r == QMessageBox.No:
                 return
-            database =  Database()
+           
             log_table = self.table + "_log_time"
             database.c.execute("delete from {0} where rowid  = {1}".format(
                 log_table,self.information[row]["rowid"])).fetchall()
@@ -108,7 +109,6 @@ class ShowLog(QDialog):
             if os.path.isfile(imag_path):
                 os.remove(imag_path)
            
-            database.conn.close()
             self.tableWidget.removeRow(row) 
             self.information.pop(row)#删除信息列表
             
