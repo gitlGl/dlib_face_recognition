@@ -3,7 +3,7 @@ import numpy as np
 from src.GlobalVariable import models
 import xlrd ,os
 from src.Database import database
-import cv2,dlib
+import cv2,dlib,pickle
 class CreatUser():
     def __init__(self):
         pass
@@ -40,7 +40,7 @@ class CreatUser():
         # frame = models.predictor(rgbImage, face)
         face_data = np.array(
             models.encoder.compute_face_descriptor(rgbImage, frame))
-        face_data = np.ndarray.dumps(face_data)
+        face_data = pickle.dumps(face_data)
         return face_data
 
 

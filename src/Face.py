@@ -3,7 +3,7 @@ from src.Log import adminlog, studentlog
 from src.GlobalVariable import models
 import numpy as np
 from threading import Timer
-
+import pickle
 
 class Face():  #基类，包含人脸编码，人脸识别
     def __init__(self):
@@ -37,7 +37,7 @@ class StudentRgFace(Face):
        
         self.list_vector = []
         for i in database.c.execute("SELECT vector from student"):#查询数据库中所有人脸编码
-            i = np.loads(i["vector"])
+            i = pickle.loads(i["vector"])
             self.list_vector.append(i)
       
         #student.conn.close()
@@ -90,7 +90,7 @@ class AdminRgFace(Face):
         list_vector = []
         list_user = database.c.execute("SELECT vector,id_number from admin").fetchall ()# 查询数据库中的数据:
         for i in list_user:
-            vector = np.loads(i["vector"])#把数据库中的vector（二进制）转换成ndarray
+            vector = pickle.loads(i["vector"])#把数据库中的vector（二进制）转换成ndarray
             list_vector.append(vector)
         if len(list_vector) == 0:
             return False
@@ -98,7 +98,7 @@ class AdminRgFace(Face):
         min_distance = np.argmin(distances)
         print("距离", distances[min_distance])
         if distances[min_distance] < 0.5:
-            tembyte = np.ndarray.dumps(list_vector[min_distance])
+            tembyte = pickle.dumps(list_vector[min_distance])
             log = adminlog(tembyte, img)
             if hasattr(log, "item"):
                 id_number = list_user[min_distance]["id_number"]#返回管理员的id_number
