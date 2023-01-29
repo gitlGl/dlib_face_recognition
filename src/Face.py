@@ -75,7 +75,7 @@ class StudentRgFace(Face):
         min_distance = np.argmin(distances)
         print("距离", distances[min_distance])
         if distances[min_distance] < share:
-            tembyte = np.ndarray.dumps(self.list_vector[min_distance])
+            tembyte = pickle.dumps(self.list_vector[min_distance])
             return tembyte
         
         return False
