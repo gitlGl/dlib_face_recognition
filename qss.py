@@ -177,45 +177,52 @@ QLineEdit:!enabled {
             }
 """
 
+
+
+
 # sql2 = "SELECT gender where gender = 1 in (select gender as gender FROM student_log_time where log_time between '2022-03-18'  and '2022-03-19') ;"
 # test = Database()
 # sql = "select count (gender) FROM student_log_time where log_time between '2022-03-18'  and '2022-03-19' and gender =0;"
 
 # print(test.c.execute(sql).fetchall())
-# input()
+# input() 
 
 #递归删除文件夹以及文件
 
-# import numpy as np
-# import faiss
 
-# # 向量个数
-# num_vec = 5000
-# # 向量维度
+
+
+# import numpy as np  
+# import faiss  
+
+# # 向量个数  
+# num_vec = 5000  
+# # 向量维度  
 # vec_dim =   128
-# # 搜索topk
+# # 搜索topk  
 # topk = 5
 
-# # 随机生成一批向量数据
+# # 随机生成一批向量数据  
 # vectors = np.random.rand(num_vec, vec_dim).astype('float32')
 
-# # 创建索引
-# faiss_index = faiss.IndexFlatL2(vec_dim)  # 使用欧式距离作为度量
+
+# # 创建索引  
+# faiss_index = faiss.IndexFlatL2(vec_dim)  # 使用欧式距离作为度量 
 # print(type(vectors))
 
-# # 添加数据
-# faiss_index.add(vectors)
+# # 添加数据  
+# faiss_index.add(vectors)  
 
-# # 查询向量 假设有5个
+# # 查询向量 假设有5个  
 # query_vectors = np.random.rand(5, vec_dim).astype('float32')
 # print(type(query_vectors))
 # print(query_vectors)
 
-# # 搜索结果
-# # 分别是 每条记录对应topk的距离和索引
-# # ndarray类型 。shape：len(query_vectors)*topk
-# res_distance, res_index = faiss_index.search(query_vectors, topk)
-# print("索引:",res_index)
+# # 搜索结果  
+# # 分别是 每条记录对应topk的距离和索引  
+# # ndarray类型 。shape：len(query_vectors)*topk  
+# res_distance, res_index = faiss_index.search(query_vectors, topk)  
+# print("索引:",res_index)  
 # print("距离:",res_distance)
 # print(vectors[res_index[0]])
 
@@ -225,11 +232,11 @@ QLineEdit:!enabled {
 # #         for i in student.c.execute("SELECT vector from student"):#查询数据库中所有人脸编码
 # #             i = np.loads(i["vector"])
 # #             self.list_vector.append(i)
-
+       
 # #         if len(self.list_vector) == 0:
 # #             return "请先注册用户"
 # #         vec_dim = 128
-# #         self.faiss_index = faiss.IndexFlatL2(vec_dim)  # 使用欧式距离作为度量
+# #         self.faiss_index = faiss.IndexFlatL2(vec_dim)  # 使用欧式距离作为度量  
 # #         self.faiss_index.add(np.array(self.list_vector).astype('float32'))
 
 # import csv
@@ -247,8 +254,9 @@ QLineEdit:!enabled {
 # except IOError as ioe:
 #     print('Error: ' + str(ioe))
 
-# import csv
 
+# import csv
+ 
 # filename='Informationen.csv'
 # data = []
 # with open(filename) as csvfile:
@@ -263,7 +271,7 @@ QLineEdit:!enabled {
 # raw_data = np.fromfile("./3.jpg", dtype=np.uint8)  #先用numpy把图片文件存入内存：raw_data，把图片数据看做是纯字节数据
 # img = cv2.imdecode(raw_data, cv2.IMREAD_COLOR)  #从内存数据读入图片
 # cv2.imwrite( "5.jpg",img)
-
+                               
 # raw_data = np.fromfile("./6.jpg", dtype=np.uint8)  #先用numpy把图片文件存入内存：raw_data，把图片数据看做是纯字节数据
 # rgbImage = cv2.imdecode(raw_data, cv2.IMREAD_COLOR)  #从内存数据读入图片
 
@@ -274,7 +282,7 @@ QLineEdit:!enabled {
 # window = dlib.image_window()
 # image = dlib.get_face_chip(rgbImage, faces[0])
 # cv2.imwrite("./2.jpg" ,image)
-
+  
 # window.set_image(image)
 # dlib.hit_enter_to_continue()
 #   img = rgbImage

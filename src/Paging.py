@@ -2,32 +2,29 @@ import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import pyqtSignal
 from .Database import database
-
-
 class Paging(QWidget):
     page_number = pyqtSignal(int)
-
-    def __init__(self, total_page=20):
+    def __init__(self,total_page=20):
         super(Paging, self).__init__()
         self.total_page = total_page
-
+        
         self.__layout = QVBoxLayout()
         self.setLayout(self.__layout)
         self.setPageController()
-
+    
     def setPageController(self):
         """自定义页码控制器"""
         control_layout = QHBoxLayout()
-        homePage = QPushButton("首页", objectName="GreenButton")
-        prePage = QPushButton("<上一页", objectName="GreenButton")
+        homePage = QPushButton("首页",objectName="GreenButton")
+        prePage = QPushButton("<上一页",objectName="GreenButton")
         self.curPage = QLabel("1")
-        nextPage = QPushButton("下一页>", objectName="GreenButton")
-        finalPage = QPushButton("尾页", objectName="GreenButton")
+        nextPage = QPushButton("下一页>",objectName="GreenButton")
+        finalPage = QPushButton("尾页",objectName="GreenButton")
         self.totalPage = QLabel("共" + str(self.total_page) + "页")
         skipLable_0 = QLabel("跳到")
         self.skipPage = QLineEdit(objectName="QLineEdit2")
         skipLabel_1 = QLabel("页")
-        confirmSkip = QPushButton("确定", objectName="GreenButton")
+        confirmSkip = QPushButton("确定",objectName="GreenButton")
         homePage.clicked.connect(self.__home_total_page)
         prePage.clicked.connect(self.__pre_total_page)
         nextPage.clicked.connect(self.__next_total_page)
@@ -53,154 +50,154 @@ class Paging(QWidget):
 
         self.page_number.emit(1)
         return
+        
 
     def __pre_total_page(self):
         """跳转上一页"""
         if 1 == int(self.curPage.text()):
             QMessageBox.information(self, "提示", "已经是第一页了", QMessageBox.Yes)
             return
-        self.page_number.emit(int(self.curPage.text()) - 1)
-        self.curPage.setText(str(int(self.curPage.text()) - 1))
+        self.page_number.emit(int(self.curPage.text())-1)
+        self.curPage.setText(str(int(self.curPage.text())-1))
         return
+        
+       
 
     def __next_total_page(self):
         """跳转下一页"""
         if int(self.curPage.text()) >= self.total_page:
             QMessageBox.information(self, "提示", "已经是最后一页了", QMessageBox.Yes)
             return
-        self.page_number.emit(int(self.curPage.text()) + 1)
-        self.curPage.setText(str(int(self.curPage.text()) + 1))
+        self.page_number.emit(int(self.curPage.text())+1)
+        self.curPage.setText(str(int(self.curPage.text())+1))
         return
+       
 
     def __final_total_page(self):
         """跳转尾页"""
         self.page_number.emit(int(self.total_page))
         self.curPage.setText(str(self.total_page))
         return
+       
 
     def __confirm_skip(self):
         """跳转指定页"""
-        if not self.skipPage.text():
+        if not self.skipPage.text() :
             QMessageBox.information(self, "提示", "请输入页码", QMessageBox.Yes)
             return
         if not self.skipPage.text().isdigit():
             QMessageBox.information(self, "提示", "页码为数字", QMessageBox.Yes)
             return
 
-        if self.total_page < int(self.skipPage.text()) or int(
-                self.skipPage.text()) < 0:
+        if self.total_page < int(self.skipPage.text()) or int(self.skipPage.text()) < 0:
             QMessageBox.information(self, "提示", "跳转页码超出范围", QMessageBox.Yes)
             return
         self.curPage.setText(self.skipPage.text())
         self.page_number.emit(int(self.skipPage.text()))
         return
+        
 
 
 class Page(Paging):
     information_signal = pyqtSignal()
-
-    def __init__(
-        self,
-        table,
-        column,
-        page_count=15,
-        id_number=None,
-    ):
-        super().__init__(Page.total_count(table, page_count, id_number))
+    def __init__(self,table,column,page_count=15,id_number=None,):
+        super().__init__(Page.total_count(table,page_count,id_number))
         self.page_count = page_count
         self.id_number = id_number
         self.table = table
         self.column = column
-
+        
         #super().__init__(page_count,self.total_page)
         self.page_number.connect(self.set_information)
         self.init_information()
-
+  
     def init_information(self):
-        self.total_page = Page.total_count(self.table, self.page_count,
-                                           self.id_number)
+        self.total_page = Page.total_count(self.table,self.page_count,self.id_number)
         self.string = ""
         for i in self.column:
-            self.string = self.string + i + ","
+            self.string = self.string+i+","
         self.string = self.string[:-1]
         if self.id_number:
-
-            self.sql = "select {0} from {1} where id_number ={2}   limit {3} offset {4}"
-            sql = self.sql.format(self.string, self.table, self.id_number,
-                                  self.page_count, 0)
+            
+            self.sql =  "select {0} from {1} where id_number ={2}   limit {3} offset {4}"
+            sql = self.sql.format(self.string,self.table,self.id_number,self.page_count,0)
             print(sql)
-
+                
             self.information = database.c.execute(sql).fetchall()
 
         else:
-            self.sql = "select {0} from {1}   limit {2} offset {3}"
-            sql = self.sql.format(self.string, self.table, self.page_count, 0)
+            self.sql =  "select {0} from {1}   limit {2} offset {3}"
+            sql = self.sql.format(self.string,self.table,self.page_count,0)
             self.information = database.c.execute(sql).fetchall()
         if not self.information:
-            QMessageBox.critical(self, 'Wrong', '不存在用户或记录')
-            return
+                QMessageBox.critical(self, 'Wrong', '不存在用户或记录')
+                return
+            
+            
 
     def set_information(self, signal=0):
-        total_page = Page.total_count(self.table, self.page_count,
-                                      self.id_number)
-        self.totalPage.setText("共" + str(total_page) + "页")  #更新总页数
+        total_page = Page.total_count(self.table,self.page_count,self.id_number)
+        self.totalPage.setText("共" + str(total_page) + "页")#更新总页数
         self.total_page = total_page
         if self.id_number:
-            sql = self.sql.format(self.string, self.table, self.id_number,
-                                  self.page_count,
-                                  (signal - 1) * self.page_count)
+            sql = self.sql.format(self.string,self.table,self.id_number,self.page_count,(signal-1)*self.page_count)
             print(sql)
             self.information = database.c.execute(sql).fetchall()
             self.information_signal.emit()
-
+        
         else:
-            sql = self.sql.format(self.string, self.table, self.page_count,
-                                  (signal - 1) * self.page_count)
+            sql = self.sql.format(self.string,self.table,self.page_count,(signal-1)*self.page_count)
             print(sql)
             self.information = database.c.execute(sql).fetchall()
             self.information_signal.emit()
         return
 
+        
     #计算页数,静态函数
-    def total_count(table, page_count, id_number=None):
+    def total_count(table,page_count,id_number=None):
         print(id_number)
 
+
         if id_number:
-            Page.count = database.c.execute(
-                "select count(id_number)  from {0} where id_number ={1} ".
-                format(table, id_number)).fetchall()
+            Page.count =database.c.execute(
+                "select count(id_number)  from {0} where id_number ={1} "
+                .format(table,id_number)).fetchall()
             print(Page.count)
-            print("select count(id_number)  from {0} where id_number ={1} ".
-                  format(table, id_number))
-
+            print("select count(id_number)  from {0} where id_number ={1} "
+                .format(table,id_number))
+          
         else:
-
+            
             Page.count = database.c.execute(
-                "select count(id_number)  from {0} ".format(table)).fetchall()
-            print("select count(id_number)  from {0} ".format(table))
+            "select count(id_number)  from {0} "
+            .format(table)).fetchall()
+            print("select count(id_number)  from {0} "
+            .format(table))
             print(Page.count)
-
+            
         if not Page.count[0]["count(id_number)"]:
             return 0
-
+       
+       
         print(Page.count)
-        count = Page.count[0]["count(id_number)"]
-        i = count / page_count
-        q = count % page_count
-
+        count  = Page.count[0]["count(id_number)"]
+        i = count/page_count
+        q = count%page_count
+    
         if count < page_count:
             total_page = 1
             return total_page
         else:
             if q > 0:
-                total_page = i + 1
+                total_page = i+1
                 return int(total_page)
             else:
                 total_page = i
                 return int(total_page)
-
+    
 
 # app = QApplication(sys.argv)
 # window = PageSudentLog()
 # window.show()
 # sys.exit(app.exec_())
+

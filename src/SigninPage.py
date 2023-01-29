@@ -7,7 +7,6 @@ from PyQt5.QtGui import QIcon
 from .Creatuser import CreatUser
 from .ImgPath import get_img_path
 
-
 class SigninPage(QWidget):
     def __init__(self):
         super(SigninPage, self).__init__()
@@ -22,17 +21,13 @@ class SigninPage(QWidget):
         self.signin_user_line = QLineEdit(self)
         self.signin_pwd_line = QLineEdit(self)
         self.signin_pwd2_line = QLineEdit(self)
-        self.signin_vector_button = QPushButton(" 图片:",
-                                                self,
-                                                objectName="GreenButton")
+        self.signin_vector_button = QPushButton(" 图片:",self,objectName="GreenButton")
         self.signin_vector_button.setFlat(True)
 
         self.signin_vector_button.setIcon(QIcon("./resources/文件.png"))
 
         self.signin_vector_line = QLineEdit(self)
-        self.signin_button = QPushButton('Sign in',
-                                         self,
-                                         objectName="GreenButton")
+        self.signin_button = QPushButton('Sign in', self,objectName="GreenButton")
 
         self.user_h_layout = QHBoxLayout()
         self.pwd_h_layout = QHBoxLayout()
@@ -84,25 +79,25 @@ class SigninPage(QWidget):
         #self.signin_vector_line.clear()
     def get_path(self):
         path = get_img_path(self)
-        if path:
+        if path :
             self.path = path
             self.signin_vector_line.setText(path)
-            return
+            return 
+       
+
+       
 
     def pushbutton_init(self):
         self.signin_button.setEnabled(False)
         self.signin_button.clicked.connect(self.check_signin_func)
-
-#响应注册请求
-
+ #响应注册请求
     def check_signin_func(self):
+        
 
         #检查输入信息格式
-        if (not self.signin_user_line.text().isdigit()) or (len(
-                self.signin_user_line.text()) > 15):
+        if (not self.signin_user_line.text().isdigit()) or (len(self.signin_user_line.text())>15):
 
-            QMessageBox.critical(self, 'Wrong',
-                                 'Usernumber is only digit or is too long!')
+            QMessageBox.critical(self, 'Wrong', 'Usernumber is only digit or is too long!')
 
             return
         if self.signin_pwd_line.text() != self.signin_pwd2_line.text():
@@ -113,20 +108,20 @@ class SigninPage(QWidget):
 
         if len(self.signin_pwd_line.text()) < 6 or len(
                 self.signin_pwd_line.text()) > 13:
-            QMessageBox.critical(self, 'Wrong',
-                                 ' Passwords is too short or too long!')
+            QMessageBox.critical(self, 'Wrong', ' Passwords is too short or too long!')
 
             return
-
+    
         user_name = self.signin_user_line.text()
         user = database.c.execute(
             "select id_number from admin where id_number = {} ".format(
                 user_name)).fetchall()
         if len(user) == 1:
             QMessageBox.critical(self, 'Wrong',
-                                 'This Username Has Been Registered!')
+                                    'This Username Has Been Registered!')
 
             return
+    
 
         user_name = self.signin_user_line.text()
         pass_word = self.signin_pwd_line.text()
@@ -134,12 +129,14 @@ class SigninPage(QWidget):
         pass_word = MyMd5().create_md5(pass_word, salt)
         creatuser = CreatUser()
         vector = creatuser.get_vector(self.path)
-        creatuser.insert_img(user_name, self.path, "admin")
+        creatuser.insert_img(user_name,self.path,"admin")
 
         database.c.execute(
             "INSERT INTO admin (id_number,password,salt,vector) \
 VALUES (?, ?,?,?)", (user_name, pass_word, salt, vector))
-        QMessageBox.information(self, 'Information', 'Register Successfully')
-
+        QMessageBox.information(self, 'Information',
+                                'Register Successfully')
+        
         self.close()
         return
+            

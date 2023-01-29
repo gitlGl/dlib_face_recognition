@@ -1,8 +1,7 @@
-import cv2, dlib
+import cv2,dlib
 from src.GlobalVariable import models
 from src.Face import StudentRgFace
 import time
-
 
 #此用于面部特征计算进程
 def process_student_rg(Q1, Q2, share):
@@ -16,7 +15,7 @@ def process_student_rg(Q1, Q2, share):
             if len(location_faces) == 1:
                 raw_face = models.predictor(rgbImage, location_faces[0])
                 #rgbImage = dlib.get_face_chip(rgbImage, face)
-
+            
                 result = face_rg.rg(img, rgbImage, raw_face, share)
                 Q2.put(result)
 

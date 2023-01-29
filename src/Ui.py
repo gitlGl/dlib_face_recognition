@@ -1,13 +1,11 @@
-from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QGroupBox, QCheckBox, QLabel, QSlider
-from PyQt5.QtCore import Qt, QObject
-from PyQt5.QtGui import QIcon, QFont
-
+from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QHBoxLayout,QGroupBox,QCheckBox,QLabel,QSlider
+from PyQt5.QtCore import Qt,QObject
+from PyQt5.QtGui import QIcon,QFont
 
 class Ui(QObject):
-    def __init__(self):
+     def __init__(self):
         super().__init__()
-
-    def setupUi(self, mainwin):
+     def setupUi(self,mainwin):
         self.setWindowTitle("图书馆人脸识别系统")
         self.setWindowIcon(QIcon("./resources/图书馆.png"))
         #self.setStyleSheet ("border:2px groove gray;border-radius:10px;padding:2px 2px;")
@@ -30,14 +28,13 @@ class Ui(QObject):
         self.btn7 = QPushButton(objectName="GreenButton")
         self.btn7.setText("插件")
         self.btn7.setIcon(QIcon("./resources/插件.png"))
-        self.btn7.clicked.connect(
-            lambda: mainwin.pos_menu_plugins(self.btn7.pos()))
+        self.btn7.clicked.connect(lambda:mainwin.pos_menu_plugins(self.btn7.pos()))
 
         self.btn1.setText("打开摄像头")
         self.btn1.setIcon(QIcon("./resources/摄像头_关闭.png"))
         self.btn2.setText("普通识别")
         self.btn3.setText("活体识别")
-
+      
         self.btn4.setText("数据")
         self.btn5.setText("帮助")
         self.btn5.clicked.connect(mainwin.help)
@@ -49,7 +46,7 @@ class Ui(QObject):
         self.btn1.clicked.connect(mainwin.open)
         self.btn2.clicked.connect(mainwin.open_normal)
         self.btn3.clicked.connect(mainwin.open_eye)
-        self.btn6.clicked.connect(lambda: mainwin.pos_menu(self.btn6.pos()))
+        self.btn6.clicked.connect(lambda:mainwin.pos_menu(self.btn6.pos()))
 
         self.btn6.setIcon(QIcon("./resources/用户.png"))
         self.btn6.setText("用户")
@@ -57,7 +54,7 @@ class Ui(QObject):
         self.qlabel2 = QLabel()
         self.qlabel3 = QLabel()
         self.qlabel4 = QLabel()
-        self.qlabel5 = QLabel()  #用于修复无法清理（qlable.claer()）图片
+        self.qlabel5 = QLabel()#用于修复无法清理（qlable.claer()）图片
         self.qlabel5.hide()
         self.qlabel3.setFixedSize(30, 20)
         self.qlabel3.setFont(QFont("Arial", 10))
@@ -81,7 +78,7 @@ class Ui(QObject):
         #self.Hlayout.addWidget(self.btn7)
         self.Hlayout.addWidget(self.btn5)
         self.Hlayout.addWidget(self.btn6)
-
+       
         self.groupbox_1.setLayout(self.Hlayout)
 
         self.Hlayout2.addWidget(self.qlabel1)

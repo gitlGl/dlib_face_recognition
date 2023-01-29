@@ -2,28 +2,28 @@ import cv2, numpy as np
 from PyQt5.QtCore import QThread
 from src.GlobalVariable import models
 
-
 class LivenessDetection(QThread):
     def __init__(self):
         super().__init__()
         self.img1 = np.random.randint(255, size=(900, 800, 3), dtype=np.uint8)
         self.img2 = np.random.randint(255, size=(900, 800, 3), dtype=np.uint8)
-
+      
         self.EYE_AR_THRESH = 0.3  #小于0.3时认为是闭眼状态
         self.MAR_THRESH = 0.5  #大于于0.5时认为是张嘴状态
 
         #68个人脸特征中眼睛的位置
 
         self.FACIAL_LANDMARKS_IDXS = {
-            "mouth": (48, 68),
-            "inner_mouth": (60, 68),
-            "right_eyebrow": (17, 22),
-            "left_eyebrow": (22, 27),
-            "right_eye": (36, 42),
-            "left_eye": (42, 48),
-            "nose": (27, 36),
-            "jaw": (0, 17)
-        }
+	"mouth": (48, 68),
+	"inner_mouth": (60, 68),
+	"right_eyebrow": (17, 22),
+	"left_eyebrow": (22, 27),
+	"right_eye" : (36, 42),
+	"left_eye" : (42, 48),
+	"nose" : (27, 36),
+	"jaw": (0, 17)
+}
+
 
         self.lStart, self.lEnd = self.FACIAL_LANDMARKS_IDXS["left_eye"]
         self.rStart, self.rEnd = self.FACIAL_LANDMARKS_IDXS["right_eye"]
@@ -34,18 +34,18 @@ class LivenessDetection(QThread):
         """
         计算眼睛大小
         """
-        A = np.linalg.norm(eye[1] - eye[5])
-        B = np.linalg.norm(eye[2] - eye[4])
-        C = np.linalg.norm(eye[0] - eye[3])
+        A = np.linalg.norm(eye[1]- eye[5])
+        B = np.linalg.norm(eye[2]-eye[4])
+        C = np.linalg.norm(eye[0]- eye[3])
 
         ear = (A + B) / (2.0 * C)  #眼睛大小值
         return ear
 
     #计算嘴巴张开大小
     def mouth__aspect_ratio(self, mouth):
-        A = np.linalg.norm(mouth[2] - mouth[9])  # 51, 59
-        B = np.linalg.norm(mouth[4] - mouth[7])  # 53, 57
-        C = np.linalg.norm(mouth[0] - mouth[6])  # 49, 55
+        A = np.linalg.norm(mouth[2]-mouth[9])  # 51, 59
+        B = np.linalg.norm(mouth[4]-mouth[7])  # 53, 57
+        C = np.linalg.norm(mouth[0]-mouth[6])  # 49, 55
         mar = (A + B) / (2.0 * C)  #嘴巴大小值
 
         return mar
@@ -65,8 +65,7 @@ class LivenessDetection(QThread):
 
                 return True
         return False
-
-    def shape_to_np(self, shape, dtype="int"):
+    def shape_to_np(self,shape, dtype="int"):
         # initialize the list of (x, y)-coordinates
         coords = np.zeros((shape.num_parts, 2), dtype=dtype)
 
@@ -77,11 +76,10 @@ class LivenessDetection(QThread):
 
         # return the list of (x, y)-coordinates
         return coords
-
     #判断是否眨眼
     def comput_eye(self, rgbImage, rect):
         shape = models.predictor(rgbImage, rect[0])
-
+        
         shape = self.shape_to_np(shape)  #68个人脸特征坐标
         leftEye = shape[self.lStart:self.lEnd]
         rightEye = shape[self.rStart:self.rEnd]
