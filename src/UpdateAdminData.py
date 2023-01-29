@@ -85,8 +85,9 @@ class UpdateAdminData(QDialog):
 
     def delete(self, id):
         path = "img_information/admin/{0}".format(str(id))
-       
-        database.c.execute("delete from admin where id_number = {0}".format(id))
+
+        database.c.execute(
+            "delete from admin where id_number = {0}".format(id))
         database.c.execute(
             "delete from admin_log_time where id_number = {0}".format(id))
 
@@ -104,9 +105,10 @@ class UpdateAdminData(QDialog):
                                  'id_number is only digit or is too long!')
             return False
 
-        if len(database.c.execute(
-                "select id_number from admin where id_number = {} ".format(
-                    id_number)).fetchall()) == 1 and id != id_number:
+        if len(
+                database.c.execute(
+                    "select id_number from admin where id_number = {} ".format(
+                        id_number)).fetchall()) == 1 and id != id_number:
             QMessageBox.critical(self, 'Wrong', ' 这个用户已存在')
             return False
         if (len(password) < 6 or len(password) > 13):
@@ -136,7 +138,6 @@ class UpdateAdminData(QDialog):
                     str(id), str(id_number)))
             os.rename(old_path, new_path)
 
-        
         if self.path == None:  #图片可以为不变更
             if (password != self.information["password"]):
                 salt = MyMd5().create_salt()
@@ -167,7 +168,7 @@ class UpdateAdminData(QDialog):
         database.c.execute(
             "update admin_log_time set id_number= {0} where id_number = {1}".
             format(id_number, id))
-        
+
         return True
 
         #获取图片路径

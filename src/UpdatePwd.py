@@ -5,10 +5,13 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QHBoxLayout, QLabel, QVBoxLayout, QPushButton,\
 QMessageBox, QLineEdit,QDialog
 from .Check import verifye_pwd
+
+
 class UpdatePwd(QDialog):
-    def __init__(self,id_number):
+    def __init__(self, id_number):
         super().__init__()
-        self.setWindowFlags(Qt.WindowMinMaxButtonsHint | Qt.WindowCloseButtonHint)
+        self.setWindowFlags(Qt.WindowMinMaxButtonsHint
+                            | Qt.WindowCloseButtonHint)
         self.setWindowTitle('修改密码')
         self.setWindowIcon(QIcon('resources/修改密码.png'))
         self.id_number = id_number
@@ -48,18 +51,18 @@ class UpdatePwd(QDialog):
         self.pwd_v_layout.addLayout(self.ensure_or)
         self.btn1.clicked.connect(self.btn1_update_pwd)
         self.btn2.clicked.connect(self.btn2_event)
-      
+
         self.setLayout(self.pwd_v_layout)
- 
+
     def btn1_update_pwd(self):
-        old_pwd =  self.old_pwd_line.text()
+        old_pwd = self.old_pwd_line.text()
         new_pwd = self.new_pwd2_line.text()
         new_pwd_2 = self.new_pwd3_line.text()
         if new_pwd != new_pwd_2:
             QMessageBox.critical(self, 'Wrong', '两次密码不一致')
             return
-        
-        if len(new_pwd) < 6 and len(new_pwd) > 16 :
+
+        if len(new_pwd) < 6 and len(new_pwd) > 16:
             QMessageBox.critical(self, 'Wrong', '密码长度不能小于6位或大于16位')
             return
 
@@ -67,22 +70,22 @@ class UpdatePwd(QDialog):
             QMessageBox.critical(self, 'Wrong', '新旧密码不能一致')
             return
 
-    
-      
-        item = database.c.execute("select salt from admin where id_number = {0}".format(self.id_number)).fetchone()
-        result = verifye_pwd(self.id_number,old_pwd,"admin")
+        item = database.c.execute(
+            "select salt from admin where id_number = {0}".format(
+                self.id_number)).fetchone()
+        result = verifye_pwd(self.id_number, old_pwd, "admin")
         if not result:
-             QMessageBox.critical(self, 'Wrong', '旧密码错误')
-             return
+            QMessageBox.critical(self, 'Wrong', '旧密码错误')
+            return
         new_pass_word = MyMd5().create_md5(new_pwd, item["salt"])
-        database.c.execute("update admin set password = ? where id_number = {0}".format(self.id_number),(new_pass_word,))
-        
+        database.c.execute(
+            "update admin set password = ? where id_number = {0}".format(
+                self.id_number), (new_pass_word, ))
+
         QMessageBox.information(self, 'Success', '修改成功')
         self.close()
         return
-    
+
     #取消修改
     def btn2_event(self):
         self.close()
-
-
