@@ -162,6 +162,11 @@ class ShowData(QWidget):
     def analyze_data(self):
         #根据输入时间范围决定X轴刻度间隔
         self.Vhlayout.itemAt(1).widget().deleteLater()
+        if self.DateEdit1.date().daysTo(self.DateEdit2.date()) < 0 :
+            self.time1 = self.DateEdit2
+        else:
+            self.time1 = self.DateEdit1
+           
         days = abs(self.DateEdit1.date().daysTo(self.DateEdit2.date()) )
         temdays = self.DateEdit1.date().daysTo(self.DateEdit2.date())
         if days < 1:
@@ -242,27 +247,18 @@ class ShowData(QWidget):
         sql_male = "SELECT count(id_number)  FROM student_log_time where log_time between  '{0}'   and '{1}' and gender =1;"
         sql = "SELECT count(id_number)  FROM student_log_time where log_time \
          between '{0}'  and '{1}';"
-        if days >=0:
-            step_= 0
-            for k in range(abs(days)+1):   
-                    result = database.c.execute(sql.format(self.DateEdit1.date().addDays(step_).toPyDate().strftime("%Y-%m-%d"),self.DateEdit1.date().addDays(step_+step).toPyDate().strftime("%Y-%m-%d"))).fetchall()
-                    total_data .append(result[0]['count(id_number)'])
-                    result = database.c.execute(sql_female.format(self.DateEdit1.date().addDays(step_).toPyDate().strftime("%Y-%m-%d"),self.DateEdit1.date().addDays(step_+step).toPyDate().strftime("%Y-%m-%d"))).fetchall()
-                    female_data .append(result[0]['count(id_number)'])
-                    result = database.c.execute(sql_male.format(self.DateEdit1.date().addDays(step_).toPyDate().strftime("%Y-%m-%d"),self.DateEdit1.date().addDays(step_+step).toPyDate().strftime("%Y-%m-%d"))).fetchall()
-                    male_data .append(result[0]['count(id_number)'])
-                    step_ = step+step_
+    
+        step_= 0
+        for k in range(abs(days)+1):   
+                result = database.c.execute(sql.format(self.time1.date().addDays(step_).toPyDate().strftime("%Y-%m-%d"),self.time1.date().addDays(step_+step).toPyDate().strftime("%Y-%m-%d"))).fetchall()
+                total_data .append(result[0]['count(id_number)'])
+                result = database.c.execute(sql_female.format(self.time1.date().addDays(step_).toPyDate().strftime("%Y-%m-%d"),self.time1.date().addDays(step_+step).toPyDate().strftime("%Y-%m-%d"))).fetchall()
+                female_data .append(result[0]['count(id_number)'])
+                result = database.c.execute(sql_male.format(self.time1.date().addDays(step_).toPyDate().strftime("%Y-%m-%d"),self.time1.date().addDays(step_+step).toPyDate().strftime("%Y-%m-%d"))).fetchall()
+                male_data .append(result[0]['count(id_number)'])
+                step_ = step+step_
 
-        else: 
-            step_= 0
-            for k in range(abs(days)+1):   
-                    result = database.c.execute(sql.format(self.DateEdit2.date().addDays(step_).toPyDate().strftime("%Y-%m-%d"),self.DateEdit2.date().addDays(step_+step).toPyDate().strftime("%Y-%m-%d"))).fetchall()
-                    total_data .append(result[0]['count(id_number)'])
-                    result = database.c.execute(sql_female.format(self.DateEdit2.date().addDays(step_).toPyDate().strftime("%Y-%m-%d"),self.DateEdit2.date().addDays(step_+step).toPyDate().strftime("%Y-%m-%d"))).fetchall()
-                    female_data .append(result[0]['count(id_number)'])
-                    result = database.c.execute(sql_male.format(self.DateEdit2.date().addDays(step_).toPyDate().strftime("%Y-%m-%d"),self.DateEdit2.date().addDays(step_+step).toPyDate().strftime("%Y-%m-%d"))).fetchall()
-                    male_data .append(result[0]['count(id_number)'])
-                    step_ = step+step_
+       
   
         category1 = ["总数"]    
         category2 = ["女性"]  
@@ -275,18 +271,12 @@ class ShowData(QWidget):
         datatabel.append(category2)
         datatabel.append(category3)
         data_title = [] 
-        if days >=0 :
-            step_ = step
-            data_title.append(self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d"))
-            for i in range(days):
-               data_title.append(self.DateEdit1.date().addDays(step_).toPyDate().strftime("%Y-%m-%d"))
-               step_ = step_+step
-        else:
-            step_ = step
-            data_title.append(self.DateEdit2.date().toPyDate().strftime("%Y-%m-%d"))
-            for i in range(abs(days)):
-               data_title.append(self.DateEdit2.date().addDays(step_).toPyDate().strftime("%Y-%m-%d"))
-               step_ = step_+step
+
+        step_ = step
+        data_title.append(self.time1.date().toPyDate().strftime("%Y-%m-%d"))
+        for i in range(abs(days)):
+            data_title.append(self.time1.date().addDays(step_).toPyDate().strftime("%Y-%m-%d"))
+            step_ = step_+step
         
         temdata = copy.deepcopy(total_data)
         temdata.sort(reverse=True)    
