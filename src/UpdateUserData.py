@@ -4,7 +4,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
 from .Creatuser import CreatUser
 import os,shutil
-from .ImgPath import get_img_path
+from .Check import get_img_path
 from .MyMd5 import MyMd5
 class UpdateUserData(QDialog):
     def __init__(self,information= None):

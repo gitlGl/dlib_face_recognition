@@ -5,7 +5,7 @@ from src.Database import database
 from src.MyMd5 import MyMd5
 from PyQt5.QtGui import QIcon
 from .Creatuser import CreatUser
-from .ImgPath import get_img_path
+from .Check import get_img_path
 
 class SigninPage(QWidget):
     def __init__(self):

@@ -7,7 +7,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QHBoxLayout, QLabel, QVBoxLayout, QGroupBox,QPushButton,\
 QMessageBox, QMenu,QWidget
-from .ImgPath import get_img_path
+from .Check import get_img_path
 from .UpdatePwd import UpdatePwd
 from .ShowUser import ShowAdminUser
 class AdminInformation(QWidget):

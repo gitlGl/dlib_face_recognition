@@ -6,7 +6,7 @@ from src.GlobalVariable import models
 from .Creatuser import CreatUser
 import os, shutil
 from .MyMd5 import MyMd5
-from .ImgPath import get_img_path
+from .Check import get_img_path
 
 
 class UpdateAdminData(QDialog):
