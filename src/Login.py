@@ -7,7 +7,7 @@ from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtGui import QIcon
 import datetime
 from src.FaceLoginPage import FaceLoginPage
-from .Check import check_user_id, check_user_pwd,verifye_pwd
+from .Check import checkUserId, checkUserPwd,verifyePwd
 from .SigninPage import SigninPage
 class LoginUi(QWidget):
     emitsingal = pyqtSignal(str)
@@ -89,14 +89,14 @@ class LoginUi(QWidget):
         uesr_id = self.user_line.text()
         user_pwd = self.pwd_line.text()
 
-        if not check_user_id(uesr_id):
+        if not checkUserId(uesr_id):
            QMessageBox.critical(self, '警告', '用户名只能为数字，且不能超过100位')
            return
-        if not check_user_pwd(user_pwd):
+        if not checkUserPwd(user_pwd):
             QMessageBox.critical(self,'警告', '密码长度大于6位小于13位')
             return
     
-        result = verifye_pwd(uesr_id,user_pwd,"admin")
+        result = verifyePwd(uesr_id,user_pwd,"admin")
         if not result:
             QMessageBox.warning(self, '警告', '账号或密码错误，请重新输入', QMessageBox.Yes)
             clear()

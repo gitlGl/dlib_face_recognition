@@ -5,18 +5,18 @@ import os
 from PyQt5.QtWidgets import QFileDialog,QMessageBox
 from .GlobalVariable import models
 from .Creatuser import CreatUser
-def check_user_id(user_id):
+def checkUserId(user_id):
 
     if not user_id.isdigit() or len(user_id) > 100:
         return False
     return True
 
 
-def check_user_pwd(user_pwd):
+def checkUserPwd(user_pwd):
     if len(user_pwd) < 6 or len(user_pwd) > 13:
             return False
     return True
-def verifye_pwd(user_id,user_pwd,tabel_name):
+def verifyePwd(user_id,user_pwd,tabel_name):
    
     user = database.c.execute(
                 "select id_number,salt, password  from {0} where id_number = {1} "

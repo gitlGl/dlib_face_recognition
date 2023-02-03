@@ -32,11 +32,11 @@ class ToolTipWidget(QWidget):
         self.setStyleSheet(
             "ToolTipWidget{background: rgba(50, 50, 50, 100);}")
         layout = QVBoxLayout(self)
-        self.titleLabel = QLabel(self, styleSheet="color:white;background: none;")
-        layout.addWidget(self.titleLabel)
+        self.title_label = QLabel(self, styleSheet="color:white;background: none;")
+        layout.addWidget(self.title_label)
 
     def updateUi(self, title, points):
-        self.titleLabel.setText(title)
+        self.title_label.setText(title)
         for serie, point in points:
             if serie not in self.Cache:
                 item = ToolTipItem(
@@ -56,8 +56,8 @@ class GraphicsProxyWidget(QGraphicsProxyWidget):
     def __init__(self, *args, **kwargs):
         super(GraphicsProxyWidget, self).__init__(*args, **kwargs)
         self.setZValue(999)
-        self.tipWidget = ToolTipWidget()
-        self.setWidget(self.tipWidget)
+        self.tip_widget = ToolTipWidget()
+        self.setWidget(self.tip_widget)
         self.hide()
 
     def width(self):
@@ -68,7 +68,7 @@ class GraphicsProxyWidget(QGraphicsProxyWidget):
 
     def show(self, title, points, pos):
         self.setGeometry(QRectF(pos, self.size()))
-        self.tipWidget.updateUi(title, points)
+        self.tip_widget.updateUi(title, points)
         super(GraphicsProxyWidget, self).show()
 
 

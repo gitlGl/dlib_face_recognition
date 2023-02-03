@@ -6,7 +6,7 @@ from .Creatuser import CreatUser
 import os,shutil
 from .Check import getImgPath
 from .MyMd5 import MyMd5
-from .Check import verifye_pwd
+from .Check import verifyePwd
 class UpdateUserData(QDialog):
     def __init__(self,information= None):
         super(UpdateUserData, self).__init__()
@@ -412,7 +412,7 @@ class UpdatePwd(QDialog):
     
       
         item = database.c.execute("select salt from admin where id_number = {0}".format(self.id_number)).fetchone()
-        result = verifye_pwd(self.id_number,old_pwd,"admin")
+        result = verifyePwd(self.id_number,old_pwd,"admin")
         if not result:
              QMessageBox.critical(self, 'Wrong', '旧密码错误')
              return
