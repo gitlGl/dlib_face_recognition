@@ -2,10 +2,10 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt,QSize, QPoint,pyqtSlot
 from .ImageView import ShowImage
 from  PyQt5.QtWidgets import QWidget,QTableWidget,QTableWidgetItem,QVBoxLayout,QMenu,QHeaderView,QMessageBox,QAbstractItemView
-from src.UpdateUserData import UpdateUserData
+from src.UpdateUser import UpdateUserData
 from .ShowLog import ShowLog
 from .Paging import Page
-from .UpdateAdminData import UpdateAdminData
+from .UpdateUser import UpdateAdminData
 import copy
 class ShowUser(QWidget):
     def __init__(self,str_list_column,table,list_cloumn,information=None ):

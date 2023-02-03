@@ -24,11 +24,6 @@ class Ui(QObject):
         self.btn4 = QPushButton(objectName="GreenButton")
         self.btn5 = QPushButton(objectName="GreenButton")
         self.btn6 = QPushButton(objectName="GreenButton")
-        self.btn7 = QPushButton()
-        self.btn7 = QPushButton(objectName="GreenButton")
-        self.btn7.setText("插件")
-        self.btn7.setIcon(QIcon("./resources/插件.png"))
-        self.btn7.clicked.connect(lambda:mainwin.pos_menu_plugins(self.btn7.pos()))
 
         self.btn1.setText("打开摄像头")
         self.btn1.setIcon(QIcon("./resources/摄像头_关闭.png"))
@@ -75,7 +70,6 @@ class Ui(QObject):
         self.Hlayout.addWidget(self.btn2)
         self.Hlayout.addWidget(self.btn3)
         self.Hlayout.addWidget(self.btn4)
-        #self.Hlayout.addWidget(self.btn7)
         self.Hlayout.addWidget(self.btn5)
         self.Hlayout.addWidget(self.btn6)
        

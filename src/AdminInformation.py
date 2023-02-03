@@ -8,7 +8,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QHBoxLayout, QLabel, QVBoxLayout, QGroupBox,QPushButton,\
 QMessageBox, QMenu,QWidget
 from .Check import get_img_path
-from .UpdatePwd import UpdatePwd
+from .UpdateUser import UpdatePwd
 from .ShowUser import ShowAdminUser
 class AdminInformation(QWidget):
     def __init__(self,id_number):

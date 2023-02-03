@@ -65,18 +65,7 @@ class Main(QWidget,Ui):
         self.view.show()
         pass
 
-       #插件菜单
-    def pos_menu_plugins(self,pos):#pos是按钮坐标
-        path = os.path.abspath("./src/plugins")#获取绝对路径
-        controls_class = Plugins(path).load_plugins()
-        pop_menu = QMenu()
-        for label,clazz in controls_class.items():
-            pop_menu.addAction(label)
-        action = pop_menu.exec_(self.mapToGlobal(pos))
-        if action:
-
-            self.win = (controls_class[action.text()]())
-            self.win.show()
+ 
         
     
     #登录成功后显示主界面
