@@ -11,12 +11,12 @@ class Face():  #基类，包含人脸编码，人脸识别
         pass
 
     #为人脸编码
-    def encodeface(self, rgbImage, raw_face):
+    def encodeFace(self, rgbImage, raw_face):
         return np.array(
             models.encoder.compute_face_descriptor(rgbImage, raw_face))
 
     #计算人脸相似度，flaot值越小越相似
-    def compare_faces(self, face_encoding, test_encoding, axis=0):
+    def compareFaces(self, face_encoding, test_encoding, axis=0):
         return np.linalg.norm(face_encoding - test_encoding, axis=axis)#计算欧式距离
 
     #与数据库人脸对比，相似度小于0.5则认为是同一个人
@@ -49,12 +49,12 @@ class StudentRgFace(Face):
 
     def rg(self, img, rgbImage, raw_face,
            share):  #优化识别流程，识别成功后避免同一人频繁识别，频繁记录数据
-        face_data = self.encodeface(rgbImage, raw_face)
-        flag = self.compare_faces(face_data, self.face_data, axis=0)#计算欧式距离
+        face_data = self.encodeFace(rgbImage, raw_face)
+        flag = self.compareFaces(face_data, self.face_data, axis=0)#计算欧式距离
         if flag < share.value:
             return self.former_result
         
-        result = self.rg_face(face_data, share.value)
+        result = self.rgFace(face_data, share.value)
         if result == "请先注册用户":
             return "请先注册用户"
         if result:
@@ -68,10 +68,10 @@ class StudentRgFace(Face):
 
         return "验证失败"
 
-    def rg_face(self, face_data, share):
+    def rgFace(self, face_data, share):
         if len(self.list_vector) == 0:
             return "请先注册用户"
-        distances = self.compare_faces(np.array(self.list_vector), face_data, axis=1)#计算欧式距离
+        distances = self.compareFaces(np.array(self.list_vector), face_data, axis=1)#计算欧式距离
         min_distance = np.argmin(distances)
         print("距离", distances[min_distance])
         if distances[min_distance] < share:
@@ -85,8 +85,8 @@ class AdminRgFace(Face):
     def __init__(self):
         super().__init__()
 
-    def rg_face(self, img, rgbImage, raw_face):
-        face_data = self.encodeface(rgbImage, raw_face)
+    def rgFace(self, img, rgbImage, raw_face):
+        face_data = self.encodeFace(rgbImage, raw_face)
         list_vector = []
         list_user = database.c.execute("SELECT vector,id_number from admin").fetchall ()# 查询数据库中的数据:
         for i in list_user:
@@ -94,7 +94,7 @@ class AdminRgFace(Face):
             list_vector.append(vector)
         if len(list_vector) == 0:
             return False
-        distances = self.compare_faces(np.array(list_vector), face_data, axis=1)
+        distances = self.compareFaces(np.array(list_vector), face_data, axis=1)
         min_distance = np.argmin(distances)
         print("距离", distances[min_distance])
         if distances[min_distance] < 0.5:

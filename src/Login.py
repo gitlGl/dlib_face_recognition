@@ -34,12 +34,12 @@ class LoginUi(QWidget):
 
         self.v_layout = QVBoxLayout()
 
-        self.lineedit_init()
-        self.pushbutton_init()
-        self.layout_init()
+        self.lineeditInit()
+        self.pushbuttonInit()
+        self.layoutInit()
         self.signin_page = SigninPage()  # 实例化SigninPage()
 
-    def layout_init(self):
+    def layoutInit(self):
         self.h_user_layout.addWidget(self.user_label)
         self.h_user_layout.addWidget(self.user_line)
         self.h_password_layout.addWidget(self.pwd_label)
@@ -54,34 +54,34 @@ class LoginUi(QWidget):
 
         self.setLayout(self.v_layout)
 
-    def lineedit_init(self):
+    def lineeditInit(self):
         self.user_line.setPlaceholderText('Please enter your usernumber')
         self.pwd_line.setPlaceholderText('Please enter your password')
         self.pwd_line.setEchoMode(QLineEdit.Password)
 
-        self.user_line.textChanged.connect(self.check_input_func)
-        self.pwd_line.textChanged.connect(self.check_input_func)
+        self.user_line.textChanged.connect(self.checkInputFunc)
+        self.pwd_line.textChanged.connect(self.checkInputFunc)
 
     #检查输入是否完成
-    def check_input_func(self):
+    def checkInputFunc(self):
         if self.user_line.text() and self.pwd_line.text():
             self.login_button.setEnabled(True)
         else:
             self.login_button.setEnabled(False)
 
-    def pushbutton_init(self):
+    def pushbuttonInit(self):
         self.login_button.setEnabled(False)
-        self.signin_button.clicked.connect(self.show_signin_page_func)
-        self.login_button.clicked.connect(self.check_login_func)
-        self.face_login_button.clicked.connect(self.face_login)
+        self.signin_button.clicked.connect(self.showSigninPageFunc)
+        self.login_button.clicked.connect(self.checkLoginFunc)
+        self.face_login_button.clicked.connect(self.faceLogin)
 
         #切换注册页面
-    def show_signin_page_func(self):
+    def showSigninPageFunc(self):
 
         self.signin_page.show()
 
     #响应登录请求
-    def check_login_func(self):
+    def checkLoginFunc(self):
         def clear():
             self.pwd_line.clear()
             self.user_line.clear()
@@ -109,7 +109,7 @@ VALUES (?,?)", (uesr_id, datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
         self.close()
            
  #self.emitsingal.emit(item["id_number"])
-    def face_login(self):
+    def faceLogin(self):
         self.face_login_page = FaceLoginPage()
         self.face_login_page.emit_show_parent.connect(self.rev)
 #接受人脸识别登录成功信号，接收发送给主页面

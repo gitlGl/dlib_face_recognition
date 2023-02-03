@@ -26,13 +26,13 @@ def verifye_pwd(user_id,user_pwd,tabel_name):
         return False              
 
     item = user[0]
-    pass_word = MyMd5().create_md5(user_pwd, item["salt"])
+    pass_word = MyMd5().createMd5(user_pwd, item["salt"])
     if pass_word == item["password"]: 
         return True
     
     return False
 
-def check_path(path,parent=None):
+def checkPath(path,parent=None):
     if path == '':
         return False
         
@@ -46,7 +46,7 @@ def check_path(path,parent=None):
         return False
 
   
-    rgbImage = CreatUser().get_img(path)
+    rgbImage = CreatUser().getImg(path)
     
     faces = models.detector(rgbImage)
     if len(faces) != 1:
@@ -54,10 +54,10 @@ def check_path(path,parent=None):
         return False
     return path
 
-def get_img_path(parent=None):
+def getImgPath(parent=None):
     path, _ = QFileDialog.getOpenFileName(
         parent, "选择文件", "c:\\", "Image files(*.jpg *.gif *.png)")
-    if check_path(path,parent):
+    if checkPath(path,parent):
         return path    
     return False
 # QMessageBox.information(parent, 'Information', '警告 username or Password')

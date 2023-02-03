@@ -12,14 +12,14 @@ class  studentlog():
                 
         if(len(item) == 1):
             self.item = item[0]
-            self.insert_time()
-            self.insert_img(img)
-            self.insert_cout()
+            self.insertTime()
+            self.insertImg(img)
+            self.insertCout()
            
         else:
             pass #应该输出异常日志
     #记录识别成功时间
-    def insert_time(self):
+    def insertTime(self):
         
         database.c.execute(
             "INSERT INTO student_log_time (id_number,gender,log_time ) \
@@ -36,7 +36,7 @@ class  studentlog():
         # print(test)
 
     #记录识别成功时照片
-    def insert_img(self, img):
+    def insertImg(self, img):
         """
         向数据库插入识时照片
         """
@@ -44,12 +44,12 @@ class  studentlog():
         if not os.path.exists(path):  # 判断是否存在文件夹如果不存在则创建为文件夹
             os.makedirs(path)
         cv2.imwrite(
-            path + "/" + self.get_time()+ ".jpg",
+            path + "/" + self.getTime()+ ".jpg",
             img)
-    def get_time(self):
+    def getTime(self):
         return str(datetime.datetime.now().strftime("%Y-%m-%d-%H-%M"))
     #记录识别成功次数
-    def insert_cout(self):
+    def insertCout(self):
         if self.item["cout"] == None:
             cout = 1
             database.c.execute(
@@ -82,12 +82,12 @@ class  adminlog():
                 # break
         if(len(item) == 1):
             self.item = item[0]
-            self.insert_img(img)
-            self.insert_time()
+            self.inserImg(img)
+            self.insertTime()
         else:
             pass #应该输出异常日志
 
-    def insert_time(self):
+    def insertTime(self):
         
         database.c.execute(
             "INSERT INTO admin_log_time (id_number,log_time ) \
@@ -97,13 +97,13 @@ class  adminlog():
        
        
 
-    def insert_img(self, img):
+    def inserImg(self, img):
     
         path ="img_information/" +"admin/" +str(self.item["id_number"])+"/log"
         if not os.path.exists(path):  # 判断是否存在文件夹如果不存在则创建为文件夹
             os.makedirs(path)
         cv2.imwrite(
-            path + "/" + self.get_time() + ".jpg",
+            path + "/" + self.get_Time() + ".jpg",
             img)
-    def get_time(self):
+    def get_Time(self):
         return str(datetime.datetime.now().strftime("%Y-%m-%d-%H-%M"))

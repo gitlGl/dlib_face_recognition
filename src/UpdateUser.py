@@ -4,7 +4,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
 from .Creatuser import CreatUser
 import os,shutil
-from .Check import get_img_path
+from .Check import getImgPath
 from .MyMd5 import MyMd5
 from .Check import verifye_pwd
 class UpdateUserData(QDialog):
@@ -56,7 +56,7 @@ class UpdateUserData(QDialog):
         #self.buttonBox.setGeometry(QRect(-20, 340, 341, 32))
         self.buttonBox1.clicked.connect(self.accept_)
         self.buttonBox2.clicked.connect(self.reject_)
-        self.layout_init()
+        self.layoutInit()
     #
     def accept_(self):#接受弹出窗口状态
        result = self.update(self.information["id_number"])
@@ -68,7 +68,7 @@ class UpdateUserData(QDialog):
             self.accept()#返回1
     def reject_(self):
         self.reject()#返回0
-    def layout_init(self):
+    def layoutInit(self):
         self.user_h_layout.addWidget(self.id_label)
         self.user_h_layout.addWidget(self.id_number_line)
         self.pwd_h_layout.addWidget(self.user_label)
@@ -89,7 +89,7 @@ class UpdateUserData(QDialog):
         self.buttonBox_layout.addWidget(self.buttonBox2)
         self.all_v_layout.addLayout(self.buttonBox_layout)
         self.setLayout(self.all_v_layout)
-        self.vector_button.clicked.connect(self.get_path)
+        self.vector_button.clicked.connect(self.getPath)
     
     def delete(self,id):
         path = "img_information/student/{0}".format(str(id))
@@ -146,8 +146,8 @@ class UpdateUserData(QDialog):
         if self.path == None:#图片可以为不变更
            
             if(password != self.information["password"]):
-                salt = MyMd5().create_salt()
-                password = MyMd5().create_md5(password,salt)
+                salt = MyMd5().createSalt()
+                password = MyMd5().createMd5(password,salt)
                 database.c.execute("UPDATE student SET id_number = '{0}',user_name = '{1}',gender = '{2}',password = ?,img_path =? ,salt = ? WHERE id_number = {3}"\
             .format(id_number,user_name,gender,id),(password,"img_information/student/{0}/log".format(id_number),salt))
             else:
@@ -157,11 +157,11 @@ class UpdateUserData(QDialog):
         else :
            
             creatuser = CreatUser()
-            vector = creatuser.get_vector(self.path)
-            creatuser.insert_img(id_number,self.path,"student")
+            vector = creatuser.getVector(self.path)
+            creatuser.insertImg(id_number,self.path,"student")
             if(password != self.information["password"]):
-                salt = MyMd5().create_salt()
-                password = MyMd5().create_md5(password,salt)
+                salt = MyMd5().createSalt()
+                password = MyMd5().createMd5(password,salt)
                 database.c.execute("update student set id_number= ?,user_name = ?,gender = ? ,vector = ?,password = ?,img_path = ? ,salt = ? where id_number = {0}"
                 .format(id),(id_number,user_name,gender,vector,password,"img_information/student/{0}/log".format(id_number),salt))
             else:
@@ -171,8 +171,8 @@ class UpdateUserData(QDialog):
         return True
            
         #获取图片路径  
-    def get_path(self):
-        path = get_img_path(self)
+    def getPath(self):
+        path = getImgPath(self)
         if path :
             self.path = path
             self.vector_line.setText(path) 
@@ -221,7 +221,7 @@ class UpdateAdminData(QDialog):
         #self.buttonBox.setGeometry(QRect(-20, 340, 341, 32))
         self.buttonBox1.clicked.connect(self.accept_)
         self.buttonBox2.clicked.connect(self.reject_)
-        self.layout_init()
+        self.layoutInit()
 
     #
     def accept_(self):  #接受弹出窗口状态
@@ -233,7 +233,7 @@ class UpdateAdminData(QDialog):
     def reject_(self):
         self.reject()  #返回0
 
-    def layout_init(self):
+    def layoutInit(self):
         self.user_h_layout.addWidget(self.id_label)
         self.user_h_layout.addWidget(self.id_number_line)
         self.pwd_h_layout.addWidget(self.password_label)
@@ -250,7 +250,7 @@ class UpdateAdminData(QDialog):
         self.buttonBox_layout.addWidget(self.buttonBox2)
         self.all_v_layout.addLayout(self.buttonBox_layout)
         self.setLayout(self.all_v_layout)
-        self.vector_button.clicked.connect(self.get_path)
+        self.vector_button.clicked.connect(self.getPath)
 
     def delete(self, id):
         path = "img_information/admin/{0}".format(str(id))
@@ -308,8 +308,8 @@ class UpdateAdminData(QDialog):
         
         if self.path == None:  #图片可以为不变更
             if (password != self.information["password"]):
-                salt = MyMd5().create_salt()
-                password = MyMd5().create_md5(password, salt)
+                salt = MyMd5().createSalt()
+                password = MyMd5().createMd5(password, salt)
                 database.c.execute(
                     "update admin set id_number = ?,password = ?,salt = ? where id_number = {0}"
                     .format(id), (id_number, password, salt))
@@ -320,11 +320,11 @@ class UpdateAdminData(QDialog):
 
         else:
             creatuser = CreatUser()
-            vector = creatuser.get_vector(self.path)
-            creatuser.insert_img(id_number, self.path, "admin")
+            vector = creatuser.getVector(self.path)
+            creatuser.insertImg(id_number, self.path, "admin")
             if (password != self.information["password"]):
-                salt = MyMd5().create_salt()
-                password = MyMd5().create_md5(password, salt)
+                salt = MyMd5().createSalt()
+                password = MyMd5().createMd5(password, salt)
 
                 database.c.execute(
                     "update admin set id_number= ?,password = ?,salt = ? ,vector = ? where id_number = {0}"
@@ -340,8 +340,8 @@ class UpdateAdminData(QDialog):
         return True
 
         #获取图片路径
-    def get_path(self):
-        path = get_img_path(self)
+    def getPath(self):
+        path = getImgPath(self)
         if path:
             self.path = path
             self.vector_line.setText(path)
@@ -388,12 +388,12 @@ class UpdatePwd(QDialog):
         self.ensure_or.addWidget(self.btn1)
         self.ensure_or.addWidget(self.btn2)
         self.pwd_v_layout.addLayout(self.ensure_or)
-        self.btn1.clicked.connect(self.btn1_update_pwd)
-        self.btn2.clicked.connect(self.btn2_event)
+        self.btn1.clicked.connect(self.btn1UpdatePwd)
+        self.btn2.clicked.connect(self.btn2Event)
       
         self.setLayout(self.pwd_v_layout)
  
-    def btn1_update_pwd(self):
+    def btn1UpdatePwd(self):
         old_pwd =  self.old_pwd_line.text()
         new_pwd = self.new_pwd2_line.text()
         new_pwd_2 = self.new_pwd3_line.text()
@@ -416,7 +416,7 @@ class UpdatePwd(QDialog):
         if not result:
              QMessageBox.critical(self, 'Wrong', '旧密码错误')
              return
-        new_pass_word = MyMd5().create_md5(new_pwd, item["salt"])
+        new_pass_word = MyMd5().createMd5(new_pwd, item["salt"])
         database.c.execute("update admin set password = ? where id_number = {0}".format(self.id_number),(new_pass_word,))
         
         QMessageBox.information(self, 'Success', '修改成功')
@@ -424,7 +424,7 @@ class UpdatePwd(QDialog):
         return
     
     #取消修改
-    def btn2_event(self):
+    def btn2Event(self):
         self.close()
 
 

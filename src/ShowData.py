@@ -77,12 +77,12 @@ class ShowData(QWidget):
         self.grou.setMaximumSize(1000,40)
         
         self.setLayout(self.Vhlayout)
-        self.btn1.clicked.connect(self.analyze_data)
-        self.btn2.clicked.connect(self.show_search_result)
+        self.btn1.clicked.connect(self.analyzeData)
+        self.btn2.clicked.connect(self.showSearchResult)
         self.btn3.clicked.connect(self.browse)
-        self.btn4.clicked.connect(self.creat_student_user)
-        self.btn5.clicked.connect(lambda:self.pos_menu(self.btn5.pos()))
-        datatabel,data_title ,number=  self.get_data_()
+        self.btn4.clicked.connect(self.creatStudentUser)
+        self.btn5.clicked.connect(lambda:self.posMenu(self.btn5.pos()))
+        datatabel,data_title ,number=  self.getData_()
         self.qlabel_ = QLabel(self)
         self.view = ChartView(datatabel,data_title,number)
         #self.Vhlayout.addWidget(self.view)
@@ -97,7 +97,7 @@ class ShowData(QWidget):
     #     self.grou.resize(self.width,40)
 
     #插件菜单
-    def pos_menu(self,pos):#pos是按钮坐标
+    def posMenu(self,pos):#pos是按钮坐标
         path = os.path.abspath("./src/plugins")#获取绝对路径
         controls_class = Plugins(path).load_plugins()
         pop_menu = QMenu()
@@ -110,12 +110,12 @@ class ShowData(QWidget):
         
        
         
-    def creat_student_user(self):#批量创建用户
+    def creatStudentUser(self):#批量创建用户
         path, _ = QFileDialog.getOpenFileName(self, "选择文件", "c:\\",
                                               "files(*.xlsx )")
         if path == '':
             return
-        list_error = CreatStudentUser().creat_user(path)
+        list_error = CreatStudentUser().creatUser(path)
         if len(list_error) == 0:
             QMessageBox.information(self, 'Information',
                                     'Register Successfully')
@@ -127,7 +127,7 @@ class ShowData(QWidget):
 
         QMessageBox.information(self, 'Information', error_string)
     #显示搜索结果
-    def show_search_result(self):
+    def showSearchResult(self):
         if not self.linnedit.text(): 
              QMessageBox.critical(self, 'Wrong', '请输入学号')
              self.linnedit.clear()
@@ -159,7 +159,7 @@ class ShowData(QWidget):
         return
 
             
-    def analyze_data(self):
+    def analyzeData(self):
         #根据输入时间范围决定X轴刻度间隔
         self.Vhlayout.itemAt(1).widget().deleteLater()
         if self.DateEdit1.date().daysTo(self.DateEdit2.date()) < 0 :
@@ -170,30 +170,30 @@ class ShowData(QWidget):
         days = abs(self.DateEdit1.date().daysTo(self.DateEdit2.date()) )
         temdays = self.DateEdit1.date().daysTo(self.DateEdit2.date())
         if days < 1:
-            datatabel,data_title,number = self.get_data_()
+            datatabel,data_title,number = self.getData_()
            
             self.view = ChartView(datatabel,data_title,number)
             self.Vhlayout.addWidget(self.view)
         elif days <14 and days >= 1:
-            datatabel,data_title ,number=  self.get_data( temdays,1)
+            datatabel,data_title ,number=  self.getData( temdays,1)
             #print(datatabel,data_title,number)
             self.view = ChartView(datatabel,data_title,number)
             self.Vhlayout.addWidget(self.view)
 
         elif days >=14 and days< 60:
-            datatabel,data_title ,number=  self.get_data(int( temdays/7),7)#计算x轴步长
+            datatabel,data_title ,number=  self.getData(int( temdays/7),7)#计算x轴步长
             self.view = ChartView(datatabel,data_title,number)
             self.Vhlayout.addWidget(self.view)
         elif days >= 60 and days< 365:
-            datatabel,data_title,number =  self.get_data(int(temdays/30),30)
+            datatabel,data_title,number =  self.getData(int(temdays/30),30)
             self.view = ChartView(datatabel,data_title,number)
             self.Vhlayout.addWidget(self.view)
         elif days >= 365 :
-            datatabel,data_title,number =  self.get_data(int (temdays/365),365)
+            datatabel,data_title,number =  self.getData(int (temdays/365),365)
             self.view = ChartView(datatabel,data_title,number)
             self.Vhlayout.addWidget(self.view)  
             pass
-    def get_data_(self):
+    def getData_(self):
     
        
         timestr = ["-07","-08","-09","-10","-11","-12","-13","-14","-15","-16","-17","-18","-19","-20","-21","-22","-23"]
@@ -237,7 +237,7 @@ class ShowData(QWidget):
         temdata.sort(reverse=True)    
         return datatabel,data_title ,temdata[0]
 
-    def get_data(self,days,step):
+    def getData(self,days,step):
         self.DateEdit1.date()
        
         total_data = []

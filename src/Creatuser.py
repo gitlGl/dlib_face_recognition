@@ -10,10 +10,10 @@ class CreatUser():
     def __init__(self):
         pass
 
-    def get_pass_word(self, salt, password="12345"):
-        return MyMd5().create_md5(password, salt)
+    def getPassWord(self, salt, password="12345"):
+        return MyMd5().createMd5(password, salt)
 
-    def get_img(self, img_path):
+    def getImg(self, img_path):
         raw_data = np.fromfile(
             img_path, dtype=np.uint8)  #先用numpy把图片文件存入内存：raw_data，把图片数据看做是纯字节数据
         rgbImage = cv2.imdecode(raw_data, cv2.IMREAD_COLOR)  #从内存数据读入图片
@@ -21,21 +21,21 @@ class CreatUser():
         #rgbImage = cv2.cvtColor(rgbImage, cv2.COLOR_BGR2RGB)
         return rgbImage
 
-    def insert_img(self, id_number, img_path, fuck):
+    def insertImg(self, id_number, img_path, fuck):
         path = "img_information/" + fuck + "/" + str(id_number)
         if not os.path.exists(path):  # 判断是否存在文件夹如果不存在则创建为文件夹
             os.makedirs(path)
-        rgbImage = self.get_img(img_path)
+        rgbImage = self.getImg(img_path)
         cv2.imwrite(
             "img_information/" + fuck + "/" + str(id_number) + "/" +
             str(id_number) + ".jpg", rgbImage)
 
-    def get_vector(self, img_path):
+    def getVector(self, img_path):
         """
         读取照片，获取人脸编码信息，把照片存储起来
         返回128维人脸编码信息
         """
-        rgbImage = self.get_img(img_path)
+        rgbImage = self.getImg(img_path)
         face = models.detector(rgbImage)[0]
         frame = models.predictor(rgbImage, face)
         # rgbImage = dlib.get_face_chip(rgbImage, frame)
@@ -51,7 +51,7 @@ class CreatStudentUser(CreatUser):
     def __init__(self):
         super().__init__()
 
-    def creat_user(self, path):
+    def creatUser(self, path):
         book = xlrd.open_workbook(path)
         sheets = book.sheets()
         list_problem = []
@@ -124,7 +124,7 @@ class CreatStudentUser(CreatUser):
 
                     ##opencv 不支持中文路径,用python图片库读取图片
 
-                rgbImage = self.get_img(list1[4])
+                rgbImage = self.getImg(list1[4])
                 #rgbImage = cv2.cvtColor(rgbImage, cv2.COLOR_BGR2RGB)
                 faces = models.detector(rgbImage)
                 if len(faces) != 1:
@@ -136,32 +136,32 @@ class CreatStudentUser(CreatUser):
                     "id_number", "user_name", "gender", "password", "img_path"
                 ]
                 dic = dict(zip(list2, list1))
-                information = self.set_information(dic)
-                self.insert_user(information)
+                information = self.setInformation(dic)
+                self.insertUser(information)
         return list_problem
 
-    def set_information(self, part_information):
+    def setInformation(self, part_information):
         information = {}
         information["user_name"] = part_information["user_name"]
         information["gender"] = part_information["gender"]
-        information['salt'] = MyMd5().create_salt()
-        information["img_path"] = self.get_img_log_path(
+        information['salt'] = MyMd5().createSalt()
+        information["img_path"] = self.getImgLogPath(
             part_information["id_number"])
         information["id_number"] = part_information["id_number"]
-        information["password"] = self.get_pass_word(
+        information["password"] = self.getPassWord(
             part_information["password"], information["salt"])
-        information["vector"] = self.get_vector(part_information["img_path"])
-        self.insert_img(part_information["id_number"],
+        information["vector"] = self.getVector(part_information["img_path"])
+        self.insertImg(part_information["id_number"],
                         part_information["img_path"], "student")
         return information
 
-    def insert_user(self, information):
-        database.insert_user(information["id_number"],
+    def insertUser(self, information):
+        database.insertUser(information["id_number"],
                              information["user_name"], information["gender"],
                              information["password"], information["img_path"],
                              information["vector"], information["salt"])
 
-    def get_img_log_path(self, id_number=123456):
+    def getImgLogPath(self, id_number=123456):
         path = "img_information/student/{0}/log".format(str(id_number))
         if not os.path.exists(path):  #判断是否存在文件夹如果不存在则创建为文件夹
             os.makedirs(path)

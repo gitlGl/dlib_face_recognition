@@ -4,7 +4,7 @@ from src.Face import StudentRgFace
 import time
 
 #此用于面部特征计算进程
-def process_student_rg(Q1, Q2, share):
+def processStudentRg(Q1, Q2, share):
     face_rg = StudentRgFace()
     while True:
         while not Q1.empty():

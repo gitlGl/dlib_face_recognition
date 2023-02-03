@@ -24,7 +24,7 @@ class ShowLog(QDialog):
         if  not self.page.information:
             self.close()
             return
-        self.page.information_signal.connect(self.set_information)
+        self.page.information_signal.connect(self.setInformation)
         
         self.tableWidget.setContextMenuPolicy(Qt.CustomContextMenu)#允许右键显示上菜单
         self.tableWidget.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)#禁止用户编辑单元格
@@ -32,8 +32,8 @@ class ShowLog(QDialog):
         # self.qlineedit = QLineEdit()
         # self.qlineedit.setPlaceholderText('Please enter your usernumber')
         # self
-        self.tableWidget.customContextMenuRequested[QPoint].connect(self.context_menu)#菜单右键槽函数
-        self.tableWidget.cellDoubleClicked.connect(self.on_tableWidget_cellDoubleClicked)
+        self.tableWidget.customContextMenuRequested[QPoint].connect(self.contextMenu)#菜单右键槽函数
+        self.tableWidget.cellDoubleClicked.connect(self.onTableWidgetCellDoubleClicked)
         self.VBoxLayout = QVBoxLayout()
         self.VBoxLayout.addWidget(self.tableWidget)
         self.VBoxLayout.addWidget(self.page)
@@ -42,11 +42,11 @@ class ShowLog(QDialog):
         columncout = len(str_list_column)
         self.tableWidget.setColumnCount(columncout)#根据数据量确定列数
         self.tableWidget.setHorizontalHeaderLabels(str_list_column)
-        self.set_information()
+        self.setInformation()
 
     
         
-    def set_information(self):
+    def setInformation(self):
         self.information = self.page.information
         self.row = 0
         self.tableWidget.setRowCount(0)
@@ -70,14 +70,14 @@ class ShowLog(QDialog):
             self.tableWidget.setRowCount(self.row)
       
            
-    def on_tableWidget_cellDoubleClicked(self, row, column):#双击槽函数 self.tableWidget.cellDoubleClicked.connect()
+    def onTableWidgetCellDoubleClicked(self, row, column):#双击槽函数 self.tableWidget.cellDoubleClicked.connect()
         imag_path = "img_information/{0}/{1}/log/{2}.jpg".format(
             self.table,str(self.information[row]["id_number"]),str(self.information[row]["log_time"]))
         show_imag = ShowImage(imag_path,Qt.WhiteSpaceMode)
         show_imag.exec_()
 
     @pyqtSlot(QPoint)
-    def context_menu(self,pos):
+    def contextMenu(self,pos):
         pop_menu = QMenu()
         #菜单事件信号
         delete_event = pop_menu.addAction("删除")

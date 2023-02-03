@@ -58,8 +58,8 @@ class LivenessDetection(QThread):
         rect2 = models.detector(rgbImage2, 0)
         list = []
         if (len(rect1) == 1) and (len(rect2)) == 1:
-            list.append(self.comput_eye(rgbImage1, rect1))
-            list.append(self.comput_eye(rgbImage2, rect2))
+            list.append(self.computEye(rgbImage1, rect1))
+            list.append(self.computEye(rgbImage2, rect2))
             result = abs(list[0] - list[1])
             if result >= 0.05:
 
@@ -77,7 +77,7 @@ class LivenessDetection(QThread):
         # return the list of (x, y)-coordinates
         return coords
     #判断是否眨眼
-    def comput_eye(self, rgbImage, rect):
+    def computEye(self, rgbImage, rect):
         shape = models.predictor(rgbImage, rect[0])
         
         shape = self.shape_to_np(shape)  #68个人脸特征坐标
@@ -89,7 +89,7 @@ class LivenessDetection(QThread):
         return ear
 
     #判断是否张开嘴巴
-    def comput_mouth(self, img):
+    def computMouth(self, img):
         rgbImage = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         rect = models.detector(rgbImage, 0)
         if (len(rect) == 1):

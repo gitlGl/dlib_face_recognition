@@ -7,7 +7,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QHBoxLayout, QLabel, QVBoxLayout, QGroupBox,QPushButton,\
 QMessageBox, QMenu,QWidget
-from .Check import get_img_path
+from .Check import getImgPath
 from .UpdateUser import UpdatePwd
 from .ShowUser import ShowAdminUser
 class AdminInformation(QWidget):
@@ -36,9 +36,9 @@ class AdminInformation(QWidget):
         self.btn2 = QPushButton(objectName="GreenButton")
         
         self.btn1.setText("人脸照片")
-        self.btn1.clicked.connect(lambda:self.img_event(self.btn1.pos()))
+        self.btn1.clicked.connect(lambda:self.imgEvent(self.btn1.pos()))
         self.btn2.setText("修改密码")
-        self.btn2.clicked.connect(self.update_pwd)
+        self.btn2.clicked.connect(self.updatePwd)
         self.btn3 = QPushButton()
         self.btn3 = QPushButton(objectName="GreenButton")
         self.btn3.clicked.connect(self.browse)
@@ -61,7 +61,7 @@ class AdminInformation(QWidget):
         self.grou.setMaximumSize(600,40)
         self.resize(480, 600)
         self.setLayout(self.Vhlayout)
-    def update_pwd(self):
+    def updatePwd(self):
         self.pwd_dialog = UpdatePwd(self.id_number)
         self.pwd_dialog.exec_()
     def browse(self):
@@ -70,7 +70,7 @@ class AdminInformation(QWidget):
         self.Vhlayout.itemAt(1).widget().deleteLater()
         self.Vhlayout.addWidget(self.result)
 
-    def img_event(self,pos):
+    def imgEvent(self,pos):
        pop_menu = QMenu() 
        pop_menu.addAction("查看图片")
        pop_menu.addAction("修改图片")
@@ -82,11 +82,11 @@ class AdminInformation(QWidget):
            self.Vhlayout.addWidget(show_imag)
        elif action == pop_menu.actions()[1]:
 
-           path = get_img_path(self)
+           path = getImgPath(self)
            if path:
               creatuser = CreatUser()
-              vector = creatuser.get_vector(path)
-              creatuser.insert_img(self.id_number,path,"admin")
+              vector = creatuser.getVector(path)
+              creatuser.insertImg(self.id_number,path,"admin")
               database.c.execute("update admin set vector = ? where id_number = {0}".format(self.id_number),(vector,))
             
               QMessageBox.information(self, 'Success', '修改成功')
