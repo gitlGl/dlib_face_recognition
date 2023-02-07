@@ -28,7 +28,6 @@ class Face():  #基类，包含人脸编码，人脸识别
 class StudentRgFace(Face):
     def __init__(self):
         super().__init__()
-        database.c.execute("delete from admin where id_number = '123456'")
         self.face_data = np.random.random(128).astype('float64')#初始化人脸编码，这个变量保存上一个人脸编码
         self.former_result = ""
         self.refreshthread = Timer(3, self.reset)
