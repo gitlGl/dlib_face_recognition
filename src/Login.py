@@ -118,13 +118,5 @@ VALUES (?,?)", (uesr_id, datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
        
         self.emitsingal.emit(id_number)
 
-    def closeEvent(self, Event):
-        pass
-
-        # p = os.getpid()
-        # print("KILL")
-        # print("KILL")
-        # #psutil.Process(p).kill()
-        # print("KILL")
-
+    
 
