@@ -7,7 +7,6 @@ class  studentlog():
         item = database.c.execute(
                 "SELECT  id_number,gender,img_path,cout,user_name from student where vector = ?",
                 (vector, )).fetchall() # 取出返回所有数据，fetchall返回类型是[()]
-        print(len(item))
         
                 
         if(len(item) == 1):
@@ -16,8 +15,6 @@ class  studentlog():
             self.insertImg(img)
             self.insertCout()
            
-        else:
-            pass #应该输出异常日志
     #记录识别成功时间
     def insertTime(self):
         
@@ -73,7 +70,6 @@ class  adminlog():
                 "SELECT  id_number from admin where vector = ?",
                 (vector, )).fetchall() # 取出返回所有数据，fetchall返回类型是[()]
         print(len(item))
-        print(item)
         # while(True):
         #     item = self.database.c.execute(
         #         "SELECT  id_number,gender,img_path,cout,user_name from student where vector = ?",

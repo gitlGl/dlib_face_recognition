@@ -100,7 +100,6 @@ class UpdateUserData(QDialog):
         #删除用户日志信息文件
         if  os.path.exists(path):
             shutil.rmtree(path)
-            print("删除用户文件夹")
 
     def update(self,id):
         user_name = self.user_name_line.text()

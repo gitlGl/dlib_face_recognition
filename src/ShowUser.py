@@ -54,11 +54,9 @@ class ShowUser(QWidget):
                 self.information.pop(self.row)
                
                 continue
-            print(type(information))
-            print(len(information))
+           
             self.tableWidget.insertRow(self.row)
             self.row2 = 0
-            print(i["id_number"])
             for cloumn in self.list_cloumn:
                 
                 item  = QTableWidgetItem((i[cloumn]))
@@ -82,8 +80,6 @@ class ShowStudentUser(ShowUser):
         super().__init__(str_list_column,table,list_cloumn,information)
       
     def onTableWidgetCellDoubleClicked(self, row):#双击槽函数 self.tableWidget.cellDoubleClicked.connect()
-        print(row)
-        print(self.information)
         update_data = UpdateUserData(self.information[row])
         ok = update_data.exec_()
         if not ok:
@@ -200,7 +196,6 @@ class ShowAdminUser(ShowUser):
             return
         
         row = item.row()
-        print(row)
         update_data =UpdateAdminData(self.information[row])
         action = pop_menu.exec_(self.tableWidget.mapToGlobal(pos))#显示菜单列表，pos为菜单栏坐标位置
         if action == change_new_event:

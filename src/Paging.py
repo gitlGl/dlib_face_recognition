@@ -121,7 +121,7 @@ class Page(Paging):
             
             self.sql =  "select {0} from {1} where id_number ={2}   limit {3} offset {4}"
             sql = self.sql.format(self.string,self.table,self.id_number,self.page_count,0)
-            print(sql)
+          
                 
             self.information = database.c.execute(sql).fetchall()
 
@@ -141,13 +141,11 @@ class Page(Paging):
         self.total_page = total_page
         if self.id_number:
             sql = self.sql.format(self.string,self.table,self.id_number,self.page_count,(signal-1)*self.page_count)
-            print(sql)
             self.information = database.c.execute(sql).fetchall()
             self.information_signal.emit()
         
         else:
             sql = self.sql.format(self.string,self.table,self.page_count,(signal-1)*self.page_count)
-            print(sql)
             self.information = database.c.execute(sql).fetchall()
             self.information_signal.emit()
         return
@@ -155,31 +153,24 @@ class Page(Paging):
         
     #计算页数,静态函数
     def totalCount(table,page_count,id_number=None):
-        print(id_number)
+
 
 
         if id_number:
             Page.count =database.c.execute(
                 "select count(id_number)  from {0} where id_number ={1} "
                 .format(table,id_number)).fetchall()
-            print(Page.count)
-            print("select count(id_number)  from {0} where id_number ={1} "
-                .format(table,id_number))
           
         else:
             
             Page.count = database.c.execute(
             "select count(id_number)  from {0} "
             .format(table)).fetchall()
-            print("select count(id_number)  from {0} "
-            .format(table))
-            print(Page.count)
+            
             
         if not Page.count[0]["count(id_number)"]:
             return 0
-       
-       
-        print(Page.count)
+    
         count  = Page.count[0]["count(id_number)"]
         i = count/page_count
         q = count%page_count
