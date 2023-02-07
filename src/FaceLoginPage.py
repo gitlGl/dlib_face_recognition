@@ -34,24 +34,24 @@ class FaceLoginPage(QWidget):
         self.face_rg = AdminRgFace()
         self.capture = Capture()
         self.capture.SetCap()
-        self.capture.work.emit_img.connect(self.set_normal_img)
+        self.capture.work.emit_img.connect(self.setNormalImg)
         self.capture.work_thread.start()
         self.timer1 = QTimer()
         self.timer2 =QTimer()
-        self.timer2.timeout.connect(self.collect_frame)
-        self.timer1.timeout.connect(self.get_result)
+        self.timer2.timeout.connect(self.collectFrame)
+        self.timer1.timeout.connect(self.getResult)
         self.timer1.start(500)
         self.cout = 0
         self.list_img = []
         self.show()
 
-    def get_result(self):
+    def getResult(self):
         self.timer1.stop()
         rgbImage = cv2.cvtColor(self.capture.frame, cv2.COLOR_BGR2RGB)
         location_faces = models.detector(rgbImage)
         if len(location_faces) == 1:
             raw_face = models.predictor(rgbImage, location_faces[0])
-            result = self.face_rg.rg_face(self.capture.frame, rgbImage,
+            result = self.face_rg.rgFace(self.capture.frame, rgbImage,
                                           raw_face)
             if result:
                 self.capture.close()
@@ -69,11 +69,11 @@ class FaceLoginPage(QWidget):
             self.label1.setText("验证失败{0}".format(self.cout))
         self.timer1.start(500)
         
-    def collect_frame(self):
+    def collectFrame(self):
         self.timer2.stop()
         if not GlobalFlag.gflag2:
             img = copy.deepcopy(self.capture.frame)
-            flag = self.livecheck.comput_mouth(img)
+            flag = self.livecheck.computMouth(img)
             if flag:
                 GlobalFlag.gflag2 = True
                 self.label1.setText("提示：请看镜头眨眼睛")
@@ -91,7 +91,7 @@ class FaceLoginPage(QWidget):
                     location_faces = models.detector(rgbImage)
                     if len(location_faces) == 1:
                         raw_face = models.predictor(rgbImage, location_faces[0])
-                        result = self.face_rg.rg_face(self.capture.frame, rgbImage,
+                        result = self.face_rg.rgFace(self.capture.frame, rgbImage,
                                             raw_face)
                                      
                         if result:                      
@@ -114,7 +114,7 @@ class FaceLoginPage(QWidget):
         super().closeEvent(event)
 
     #@pyqtSlot(list,QImage)
-    def set_normal_img(self, list):
+    def setNormalImg(self, list):
         self.label2.setPixmap(QPixmap.fromImage(list[0]))#设置图片
         self.capture.frame = list[1]#待识别帧
         #QPixmap.fromImage(img).scaled(self.label2.size(), Qt.KeepAspectRatio))#图片跟随qlabel大小缩放

@@ -1,6 +1,6 @@
 import gc,multiprocessing,psutil,os
 from PyQt5.QtWidgets import QWidget, QMessageBox,QMenu
-from src.Process import process_student_rg 
+from src.Process import processStudentRg
 from PyQt5.QtCore import pyqtSlot, QTimer
 from PyQt5.QtGui import QIcon,QPixmap
 from src.Help import Help
@@ -65,18 +65,7 @@ class Main(QWidget,Ui):
         self.view.show()
         pass
 
-       #插件菜单
-    def pos_menu_plugins(self,pos):#pos是按钮坐标
-        path = os.path.abspath("./src/plugins")#获取绝对路径
-        controls_class = Plugins(path).load_plugins()
-        pop_menu = QMenu()
-        for label,clazz in controls_class.items():
-            pop_menu.addAction(label)
-        action = pop_menu.exec_(self.mapToGlobal(pos))
-        if action:
-
-            self.win = (controls_class[action.text()]())
-            self.win.show()
+ 
         
     
     #登录成功后显示主界面
@@ -85,7 +74,7 @@ class Main(QWidget,Ui):
         self.id_number = id_number
         del self.login_ui
         gc.collect()
-        self.p = Process(target=process_student_rg,
+        self.p = Process(target=processStudentRg,
                          args=(self.Q1, self.Q2, self.share))
         self.p.daemon = True
         self.show()

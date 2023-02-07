@@ -192,52 +192,7 @@ QLineEdit:!enabled {
 
 
 
-# import numpy as np  
-# import faiss  
 
-# # 向量个数  
-# num_vec = 5000  
-# # 向量维度  
-# vec_dim =   128
-# # 搜索topk  
-# topk = 5
-
-# # 随机生成一批向量数据  
-# vectors = np.random.rand(num_vec, vec_dim).astype('float32')
-
-
-# # 创建索引  
-# faiss_index = faiss.IndexFlatL2(vec_dim)  # 使用欧式距离作为度量 
-# print(type(vectors))
-
-# # 添加数据  
-# faiss_index.add(vectors)  
-
-# # 查询向量 假设有5个  
-# query_vectors = np.random.rand(5, vec_dim).astype('float32')
-# print(type(query_vectors))
-# print(query_vectors)
-
-# # 搜索结果  
-# # 分别是 每条记录对应topk的距离和索引  
-# # ndarray类型 。shape：len(query_vectors)*topk  
-# res_distance, res_index = faiss_index.search(query_vectors, topk)  
-# print("索引:",res_index)  
-# print("距离:",res_distance)
-# print(vectors[res_index[0]])
-
-# # def creat_faiss(self):
-# #         student = Database()
-# #         self.list_vector = []
-# #         for i in student.c.execute("SELECT vector from student"):#查询数据库中所有人脸编码
-# #             i = np.loads(i["vector"])
-# #             self.list_vector.append(i)
-       
-# #         if len(self.list_vector) == 0:
-# #             return "请先注册用户"
-# #         vec_dim = 128
-# #         self.faiss_index = faiss.IndexFlatL2(vec_dim)  # 使用欧式距离作为度量  
-# #         self.faiss_index.add(np.array(self.list_vector).astype('float32'))
 
 # import csv
 # car = ['car 11',1]

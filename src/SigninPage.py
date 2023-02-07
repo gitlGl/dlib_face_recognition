@@ -5,7 +5,7 @@ from src.Database import database
 from src.MyMd5 import MyMd5
 from PyQt5.QtGui import QIcon
 from .Creatuser import CreatUser
-from .ImgPath import get_img_path
+from .Check import getImgPath
 
 class SigninPage(QWidget):
     def __init__(self):
@@ -36,11 +36,11 @@ class SigninPage(QWidget):
         self.all_v_layout = QVBoxLayout()
         self.resize(300, 200)
 
-        self.lineedit_init()
-        self.pushbutton_init()
-        self.layout_init()
+        self.lineeditInit()
+        self.pushButtonInit()
+        self.layoutInit()
 
-    def layout_init(self):
+    def layoutInit(self):
         self.user_h_layout.addWidget(self.signin_user_label)
         self.user_h_layout.addWidget(self.signin_user_line)
         self.pwd_h_layout.addWidget(self.signin_pwd_label)
@@ -58,17 +58,17 @@ class SigninPage(QWidget):
 
         self.setLayout(self.all_v_layout)
 
-    def lineedit_init(self):
+    def lineeditInit(self):
         self.signin_pwd_line.setEchoMode(QLineEdit.Password)
         self.signin_pwd2_line.setEchoMode(QLineEdit.Password)
 
-        self.signin_user_line.textChanged.connect(self.check_input_func)
-        self.signin_pwd_line.textChanged.connect(self.check_input_func)
-        self.signin_pwd2_line.textChanged.connect(self.check_input_func)
-        self.signin_vector_line.textChanged.connect(self.check_input_func)
-        self.signin_vector_button.clicked.connect(self.get_path)
+        self.signin_user_line.textChanged.connect(self.checkInputFunc)
+        self.signin_pwd_line.textChanged.connect(self.checkInputFunc)
+        self.signin_pwd2_line.textChanged.connect(self.checkInputFunc)
+        self.signin_vector_line.textChanged.connect(self.checkInputFunc)
+        self.signin_vector_button.clicked.connect(self.getPath)
 
-    def check_input_func(self):
+    def checkInputFunc(self):
         if self.signin_user_line.text() and self.signin_pwd_line.text(
         ) and self.signin_pwd2_line.text() and self.signin_vector_line.text():
             self.signin_button.setEnabled(True)
@@ -77,8 +77,8 @@ class SigninPage(QWidget):
 
         #self.signin_vector_line.setText(path)
         #self.signin_vector_line.clear()
-    def get_path(self):
-        path = get_img_path(self)
+    def getPath(self):
+        path = getImgPath(self)
         if path :
             self.path = path
             self.signin_vector_line.setText(path)
@@ -87,11 +87,11 @@ class SigninPage(QWidget):
 
        
 
-    def pushbutton_init(self):
+    def pushButtonInit(self):
         self.signin_button.setEnabled(False)
-        self.signin_button.clicked.connect(self.check_signin_func)
+        self.signin_button.clicked.connect(self.checkSigninFunc)
  #响应注册请求
-    def check_signin_func(self):
+    def checkSigninFunc(self):
         
 
         #检查输入信息格式
@@ -125,17 +125,23 @@ class SigninPage(QWidget):
 
         user_name = self.signin_user_line.text()
         pass_word = self.signin_pwd_line.text()
-        salt = MyMd5().create_salt()
-        pass_word = MyMd5().create_md5(pass_word, salt)
+        salt = MyMd5().createSalt()
+        pass_word = MyMd5().createMd5(pass_word, salt)
         creatuser = CreatUser()
-        vector = creatuser.get_vector(self.path)
-        creatuser.insert_img(user_name,self.path,"admin")
+        vector = creatuser.getVector(self.path)
+        creatuser.insertImg(user_name,self.path,"admin")
 
         database.c.execute(
             "INSERT INTO admin (id_number,password,salt,vector) \
 VALUES (?, ?,?,?)", (user_name, pass_word, salt, vector))
         QMessageBox.information(self, 'Information',
                                 'Register Successfully')
+
+        
+        self.signin_user_line.clear()
+        self.signin_pwd_line.clear()
+        self.signin_pwd2_line.clear()
+        self.signin_vector_line.clear()
         
         self.close()
         return
