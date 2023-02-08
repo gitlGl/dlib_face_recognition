@@ -149,17 +149,17 @@ class Page(Paging):
 
         if id_number:
             Page.count =database.c.execute(
-                "select count(id_number)  from {0} where id_number ={1} "
+                "select count(*)  from {0} where id_number ={1} "
                 .format(table,id_number)).fetchall()
         else:
             Page.count = database.c.execute(
-            "select count(id_number)  from {0} "
+            "select count(*)  from {0} "
             .format(table)).fetchall()
             
-        if not Page.count[0]["count(id_number)"]:
+        if not Page.count[0]["count(*)"]:
             return 0
     
-        count  = Page.count[0]["count(id_number)"]
+        count  = Page.count[0]["count(*)"]
         i = count/page_count
         q = count%page_count
     

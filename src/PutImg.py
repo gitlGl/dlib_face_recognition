@@ -56,6 +56,7 @@ class PutImg(Capture):
             list_img = copy.deepcopy(self.list_img)
             flag = self.livecheck.compare2faces(list_img)
             if flag:
+                GlobalFlag.gflag2 = False
                 self.Q1.put(self.list_img[0])
                 self.timer2.start(1000)
                 self.list_img.clear()
@@ -67,7 +68,7 @@ class PutImg(Capture):
         self.timer2.stop()
         if self.Q2.qsize() != 0:
             self.emit_result.emit(self.Q2.get())
-            GlobalFlag.gflag2 = False
+            
             #self.emit_text.emit("提示：请张嘴")
             self.timer1.start(200)
         else:

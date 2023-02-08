@@ -19,7 +19,7 @@ def processStudentRg(Q1, Q2, share):
                 result = face_rg.rg(img, rgbImage, raw_face, share)
                 Q2.put(result)
 
-        time.sleep(0.5)
+        time.sleep(1)
 
 
 # def process_admin_rg(Q1, share):
