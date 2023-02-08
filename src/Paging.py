@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import pyqtSignal
-from .Database import database
+from .GlobalVariable import database
 class Paging(QWidget):
     page_number = pyqtSignal(int)
     def __init__(self,total_page=20):

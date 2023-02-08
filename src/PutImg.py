@@ -3,7 +3,6 @@ from PyQt5.QtCore import QTimer
 import numpy as np
 from PyQt5.QtCore import pyqtSignal
 from .LivenessDetection import LivenessDetection
-from .GlobalVariable import GlobalFlag
 from .Capture import Capture
 class PutImg(Capture):
     """
@@ -28,6 +27,7 @@ class PutImg(Capture):
         self.Q2 = Q2
         self.frame = np.random.randint(255, size=(900, 800, 3),
                                        dtype=np.uint8)  #初始化
+        self.flag = False
     #获取判断结果后把帧通过队列发送到子进程进行人脸识别
     def toPut(self):
         self.timer3.stop()
@@ -41,11 +41,11 @@ class PutImg(Capture):
     #获取两帧（间隔0.2s）判断是否发生眨眼
     def collectFrame(self):
         self.timer1.stop()
-        if not GlobalFlag.gflag2:
+        if not self.flag:
             img = copy.deepcopy(self.frame)
             flag = self.livecheck.computMouth(img)
             if flag:
-                GlobalFlag.gflag2 = True
+                self.flag = True
                 self.emit_text.emit("提示：请看镜头眨眼睛")
             self.timer1.start(200)   
             return
@@ -56,7 +56,7 @@ class PutImg(Capture):
             list_img = copy.deepcopy(self.list_img)
             flag = self.livecheck.compare2faces(list_img)
             if flag:
-                GlobalFlag.gflag2 = False
+                self.flag = False
                 self.Q1.put(self.list_img[0])
                 self.timer2.start(1000)
                 self.list_img.clear()

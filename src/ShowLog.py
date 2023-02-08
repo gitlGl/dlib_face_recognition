@@ -3,7 +3,7 @@ from PyQt5.QtCore import Qt,QPoint,pyqtSlot,QSize
 from  PyQt5.QtWidgets import QTableWidget,QTableWidgetItem,QVBoxLayout,QMenu,QHeaderView,QMessageBox, QDialog,QCheckBox
 from PyQt5 import QtWidgets
 from .ImageView import ShowImage
-from .Database import database
+from .GlobalVariable import database
 from .Paging import Page
 import os
 from PyQt5.QtGui import QIcon

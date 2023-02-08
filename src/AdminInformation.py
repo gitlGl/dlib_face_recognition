@@ -1,6 +1,6 @@
 from .ShowLog import ShowLog
 from .ImageView import ImageView
-from .Database import database
+from .GlobalVariable import database
 from .ImageView import ShowImage
 from .Creatuser import CreatUser
 from PyQt5.QtCore import Qt

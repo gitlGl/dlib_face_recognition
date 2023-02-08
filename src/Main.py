@@ -1,4 +1,4 @@
-import gc,multiprocessing,psutil,os
+import gc,multiprocessing,psutil
 from PyQt5.QtWidgets import QWidget, QMessageBox,QMenu
 from src.Process import processStudentRg
 from PyQt5.QtCore import pyqtSlot, QTimer
@@ -8,12 +8,10 @@ from src.AdminInformation  import AdminInformation
 from multiprocessing import Process, Queue
 from .PutImg import PutImg
 from src.Login import LoginUi
-from .GlobalVariable import  GlobalFlag
 from src.ShowData import ShowData
-from .Plugins import Plugins
 from .Login import LoginUi
 from  .Ui import Ui
-from src.Database import database
+from src.GlobalVariable import database
 class Main(QWidget,Ui):
     def __init__(self):
         super().__init__()
@@ -156,7 +154,7 @@ class Main(QWidget,Ui):
             self.btn2.setChecked(False)
             self.btn3.setEnabled(False)
             self.btn2.setEnabled(True)
-            GlobalFlag.gflag2 = False
+            self.put_img.flag = False
             if self.put_img.work_thread.isRunning():
                 if self.put_img.timer3.isActive():
                     self.put_img.timer3.stop()
@@ -210,7 +208,7 @@ class Main(QWidget,Ui):
     def close(self):
         self.put_img.work.emit_img.disconnect(self.set_normal_img)
        
-        GlobalFlag.gflag2 = False
+        self.put_img.flag = False
 
         self.btn1.clicked.connect(self.open)
         self.btn1.clicked.disconnect(self.close)

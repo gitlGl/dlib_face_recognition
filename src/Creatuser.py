@@ -2,7 +2,7 @@ from src.MyMd5 import MyMd5
 import numpy as np
 from src.GlobalVariable import models
 import xlrd, os
-from src.Database import database
+from src.GlobalVariable import database
 import cv2, dlib, pickle
 
 

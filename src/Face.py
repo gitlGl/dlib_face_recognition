@@ -1,4 +1,4 @@
-from src.Database import database
+from src.GlobalVariable import database
 from src.Log import adminlog, studentlog
 from src.GlobalVariable import models
 import numpy as np

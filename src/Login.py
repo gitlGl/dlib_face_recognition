@@ -2,7 +2,7 @@
 from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, \
     QVBoxLayout, QHBoxLayout, QMessageBox
 from PyQt5.QtCore import pyqtSignal
-from src.Database import database
+from src.GlobalVariable import database
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtGui import QIcon
 import datetime

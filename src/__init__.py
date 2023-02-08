@@ -7,4 +7,4 @@ from .ImageView import ImageView
 from .ShowUser import ShowStudentUser
 from .ImageView import ImageView,ShowImage
 from .GlobalVariable import models
-from .Database import database
+from .GlobalVariable import database

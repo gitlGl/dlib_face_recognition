@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, \
     QVBoxLayout, QHBoxLayout, QMessageBox
 from PyQt5.QtCore import Qt
-from src.Database import database
+from src.GlobalVariable import database
 from src.MyMd5 import MyMd5
 from PyQt5.QtGui import QIcon
 from .Creatuser import CreatUser

@@ -1,10 +1,10 @@
 from PyQt5.QtWidgets import QWidget, QLabel,QVBoxLayout,QHBoxLayout
-from PyQt5.QtCore import pyqtSignal,Qt,pyqtSlot,QTimer, Qt
+from PyQt5.QtCore import pyqtSignal,Qt,QTimer, Qt
 from src.Capture import Capture
-from PyQt5.QtGui import QImage,QPixmap,QIcon
+from PyQt5.QtGui import QPixmap,QIcon
 from .Face import AdminRgFace
 import cv2,copy
-from .GlobalVariable import GlobalFlag,models
+from .GlobalVariable import models
 from PyQt5.QtWidgets import QGroupBox
 from .LivenessDetection import LivenessDetection
 
@@ -43,6 +43,7 @@ class FaceLoginPage(QWidget):
         self.timer1.start(500)
         self.cout = 0
         self.list_img = []
+        self.flag = False
         self.show()
 
     def getResult(self):
@@ -71,11 +72,11 @@ class FaceLoginPage(QWidget):
         
     def collectFrame(self):
         self.timer2.stop()
-        if not GlobalFlag.gflag2:
+        if not self.flag:
             img = copy.deepcopy(self.capture.frame)
             flag = self.livecheck.computMouth(img)
             if flag:
-                GlobalFlag.gflag2 = True
+                self.flag = True
                 self.label1.setText("提示：请看镜头眨眼睛")
         else:
             if len(self.list_img) <= 1:
@@ -85,7 +86,7 @@ class FaceLoginPage(QWidget):
                 list_img = copy.deepcopy(self.list_img)
                 flag = self.livecheck.compare2faces(list_img)
                 if flag: 
-                    GlobalFlag.gflag2 = False
+                    self.flag = False
                     rgbImage = cv2.cvtColor(self.capture.frame, cv2.COLOR_BGR2RGB)
                     
                     location_faces = models.detector(rgbImage)

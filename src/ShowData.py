@@ -1,6 +1,6 @@
 
 from src.Creatuser import CreatStudentUser
-from src.Database import database
+from src.GlobalVariable import database
 from src.ShowUser import ShowStudentUser
 from PyQt5.QtCore import QDate,Qt
 import copy,os 

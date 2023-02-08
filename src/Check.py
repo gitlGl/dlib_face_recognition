@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QMessageBox
-from .Database import database
+from .GlobalVariable import database
 from .MyMd5 import MyMd5
 import os
 from PyQt5.QtWidgets import QFileDialog,QMessageBox

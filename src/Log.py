@@ -1,4 +1,4 @@
-from src.Database import database
+from src.GlobalVariable import database
 import datetime,cv2,os
 class  studentlog():
     def __init__(self, vector,img):
