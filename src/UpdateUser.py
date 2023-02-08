@@ -142,6 +142,7 @@ class UpdateUserData(QDialog):
         else :
             os.rename("img_information/student/{0}/{1}.jpg".format(str(id),str(id)),"img_information/student/{0}/{1}.jpg".format(str(id),str(id_number)))
             os.rename(old_path,new_path)
+            
         if self.path == None:#图片可以为不变更
            
             if(password != self.information["password"]):

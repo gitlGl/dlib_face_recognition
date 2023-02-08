@@ -30,7 +30,6 @@ class PutImg(Capture):
                                        dtype=np.uint8)  #初始化
     #获取判断结果后把帧通过队列发送到子进程进行人脸识别
     def toPut(self):
-        
         self.timer3.stop()
         #控制队列数量为1
         if self.Q1.empty()  and self.Q2.empty() :
@@ -49,20 +48,20 @@ class PutImg(Capture):
                 GlobalFlag.gflag2 = True
                 self.emit_text.emit("提示：请看镜头眨眼睛")
             self.timer1.start(200)   
-        else:
+            return
      
-            if len(self.list_img) <= 1:
-                self.list_img.append(self.frame)
-            elif len(self.list_img) == 2:
-                list_img = copy.deepcopy(self.list_img)
-                flag = self.livecheck.compare2faces(list_img)
-                if flag:
-                    self.Q1.put(self.list_img[0])
-                    self.timer2.start(1000)
-                    self.list_img.clear()
-                    return
+        if len(self.list_img) <= 1:
+            self.list_img.append(self.frame)
+        elif len(self.list_img) == 2:
+            list_img = copy.deepcopy(self.list_img)
+            flag = self.livecheck.compare2faces(list_img)
+            if flag:
+                self.Q1.put(self.list_img[0])
+                self.timer2.start(1000)
                 self.list_img.clear()
-            self.timer1.start(200)
+                return
+            self.list_img.clear()
+        self.timer1.start(200)
     #获取判断结果
     def getFesult(self):
         self.timer2.stop()

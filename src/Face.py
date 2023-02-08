@@ -57,7 +57,6 @@ class StudentRgFace(Face):
         if result == "请先注册用户":
             return "请先注册用户"
         if result:
-            
             log = studentlog(result, img)
             if hasattr(log, "item"):
                 self.face_data = face_data#保存这次识别人脸编码，下次识别时比较是否是同一人

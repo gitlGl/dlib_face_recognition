@@ -31,7 +31,6 @@ class ShowUser(QWidget):
             return
         self.page.information_signal.connect(self.setInformation)
         if not information:
-            
             self.VBoxLayout.addWidget(self.page)
         else:
             self.page.information = information

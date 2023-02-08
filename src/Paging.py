@@ -45,12 +45,10 @@ class Paging(QWidget):
         self.__layout.addLayout(control_layout)
 
     def homeTotalPage(self):
-        """点击首页信号"""
+        """跳转首页"""
         self.cur_page.setText("1")
-
         self.page_number.emit(1)
-        return
-        
+       
 
     def preTotalPage(self):
         """跳转上一页"""
@@ -59,8 +57,7 @@ class Paging(QWidget):
             return
         self.page_number.emit(int(self.cur_page.text())-1)
         self.cur_page.setText(str(int(self.cur_page.text())-1))
-        return
-        
+      
        
 
     def nextTotalPage(self):
@@ -118,20 +115,14 @@ class Page(Paging):
             self.string = self.string+i+","
         self.string = self.string[:-1]
         if self.id_number:
-            
             self.sql =  "select {0} from {1} where id_number ={2}   limit {3} offset {4}"
             sql = self.sql.format(self.string,self.table,self.id_number,self.page_count,0)
-          
-                
             self.information = database.c.execute(sql).fetchall()
-
-        else:
-            self.sql =  "select {0} from {1}   limit {2} offset {3}"
-            sql = self.sql.format(self.string,self.table,self.page_count,0)
-            self.information = database.c.execute(sql).fetchall()
-        if not self.information:
-                QMessageBox.critical(self, 'Wrong', '不存在用户或记录')
-                return
+            return
+        self.sql =  "select {0} from {1}   limit {2} offset {3}"
+        sql = self.sql.format(self.string,self.table,self.page_count,0)
+        self.information = database.c.execute(sql).fetchall()
+        
             
             
 
@@ -143,12 +134,12 @@ class Page(Paging):
             sql = self.sql.format(self.string,self.table,self.id_number,self.page_count,(signal-1)*self.page_count)
             self.information = database.c.execute(sql).fetchall()
             self.information_signal.emit()
+            return
         
-        else:
-            sql = self.sql.format(self.string,self.table,self.page_count,(signal-1)*self.page_count)
-            self.information = database.c.execute(sql).fetchall()
-            self.information_signal.emit()
-        return
+        sql = self.sql.format(self.string,self.table,self.page_count,(signal-1)*self.page_count)
+        self.information = database.c.execute(sql).fetchall()
+        self.information_signal.emit()
+        
 
         
     #计算页数,静态函数
@@ -160,13 +151,10 @@ class Page(Paging):
             Page.count =database.c.execute(
                 "select count(id_number)  from {0} where id_number ={1} "
                 .format(table,id_number)).fetchall()
-          
         else:
-            
             Page.count = database.c.execute(
             "select count(id_number)  from {0} "
             .format(table)).fetchall()
-            
             
         if not Page.count[0]["count(id_number)"]:
             return 0
@@ -178,13 +166,13 @@ class Page(Paging):
         if count < page_count:
             total_page = 1
             return total_page
+    
+        if q > 0:
+            total_page = i+1
+            return int(total_page)
         else:
-            if q > 0:
-                total_page = i+1
-                return int(total_page)
-            else:
-                total_page = i
-                return int(total_page)
+            total_page = i
+            return int(total_page)
     
 
 # app = QApplication(sys.argv)
