@@ -23,10 +23,10 @@ psutil                  5.9.0 <br>
 PyQt5                   5.15.6<br>               
 xlrd                    1.2.0 <br> 
 PyQtChart               5.15.5<br>
-![](https://raw.githubusercontent.com/gitlGl/dlib_face_recognition/master/Screenshot/%E6%95%B0%E6%8D%AE.png) <br>
-![](https://github.com/gitlGl/dlib_face_recognition/delete/master/Screenshot/%E6%97%A5%E5%BF%97.png) <br>
-![](https://raw.githubusercontent.com/gitlGl/dlib_face_recognition/master/Screenshot/%E6%B3%A8%E5%86%8C.png) <br>
-![](https://github.com/gitlGl/dlib_face_recognition/blob/master/Screenshot/%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86.png) <br>
-![](https://github.com/gitlGl/dlib_face_recognition/blob/master/Screenshot/%E7%99%BB%E5%BD%95.png) <br>
-![](https://github.com/gitlGl/dlib_face_recognition/blob/master/Screenshot/%E9%A1%B5%E9%9D%A2.png) <br>
+![](./Screenshot/登录.png) <br>
+![](./Screenshot/注册.png) <br>
+![](./Screenshot/页面.png) <br>
+![](./Screenshot/数据.png) <br>
+![](./Screenshot/用户管理.png) <br>
+![](./Screenshot/日志.png) <br>
 
