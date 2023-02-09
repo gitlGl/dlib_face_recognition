@@ -28,3 +28,5 @@ PyQtChart               5.15.5<br>
 ![](./Screenshot/页面.png) <br>
 ![](./Screenshot/数据.png) <br>
 ![](./Screenshot/用户管理.png) <br>
+![](./Screenshot/日志.png) <br>
+
