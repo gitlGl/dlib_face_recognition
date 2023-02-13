@@ -28,6 +28,8 @@ class ShowUser(QWidget):
         self.list_cloumn = list_cloumn
         self.page = Page(table,self.list_cloumn,page_count=self.page_count)
         if  not self.page.information:
+            QMessageBox.critical(self, 'Wrong', '不存在用户或记录')
+            self.close()
             return
         self.page.information_signal.connect(self.setInformation)
         if not information:

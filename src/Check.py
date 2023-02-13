@@ -26,7 +26,7 @@ def verifyePwd(user_id,user_pwd,tabel_name):
         return False              
 
     item = user[0]
-    pass_word = MyMd5().createMd5(user_pwd, item["salt"])
+    pass_word = MyMd5().createMd5(user_pwd, item["salt"],user_id)
     if pass_word == item["password"]: 
         return True
     

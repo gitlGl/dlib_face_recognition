@@ -3,15 +3,10 @@ import numpy as np
 from src.GlobalVariable import models
 import xlrd, os
 from src.GlobalVariable import database
-import cv2, dlib, pickle
+import cv2, pickle
 
 
 class CreatUser():
-    def __init__(self):
-        pass
-
-    def getPassWord(self, salt, password="12345"):
-        return MyMd5().createMd5(password, salt)
 
     def getImg(self, img_path):
         raw_data = np.fromfile(
@@ -148,8 +143,8 @@ class CreatStudentUser(CreatUser):
         information["img_path"] = self.getImgLogPath(
             part_information["id_number"])
         information["id_number"] = part_information["id_number"]
-        information["password"] = self.getPassWord(
-            part_information["password"], information["salt"])
+        information["password"] = MyMd5().createMd5(
+            part_information["password"], information["salt"],part_information["id_number"])
         information["vector"] = self.getVector(part_information["img_path"])
         self.insertImg(part_information["id_number"],
                         part_information["img_path"], "student")

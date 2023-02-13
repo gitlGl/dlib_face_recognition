@@ -18,7 +18,7 @@ class MyMd5():
             salt += chars[random.randint(0, len_chars)]
         return salt
 
-    def createMd5(self, password, salt):
+    def createMd5(self, password, salt,id_number):#随机盐加三位用户id混淆
         md5 = hashlib.md5()
-        md5.update((password + salt).encode("utf-8"))
+        md5.update((password + salt + id_number[-4:-1]).encode("utf-8"))
         return md5.hexdigest()

@@ -147,7 +147,7 @@ class UpdateUserData(QDialog):
            
             if(password != self.information["password"]):
                 salt = MyMd5().createSalt()
-                password = MyMd5().createMd5(password,salt)
+                password = MyMd5().createMd5(password,salt,id_number)
                 database.c.execute("UPDATE student SET id_number = '{0}',user_name = '{1}',gender = '{2}',password = ?,img_path =? ,salt = ? WHERE id_number = {3}"\
             .format(id_number,user_name,gender,id),(password,"img_information/student/{0}/log".format(id_number),salt))
             else:
@@ -161,7 +161,7 @@ class UpdateUserData(QDialog):
             creatuser.insertImg(id_number,self.path,"student")
             if(password != self.information["password"]):
                 salt = MyMd5().createSalt()
-                password = MyMd5().createMd5(password,salt)
+                password = MyMd5().createMd5(password,salt,id_number)
                 database.c.execute("update student set id_number= ?,user_name = ?,gender = ? ,vector = ?,password = ?,img_path = ? ,salt = ? where id_number = {0}"
                 .format(id),(id_number,user_name,gender,vector,password,"img_information/student/{0}/log".format(id_number),salt))
             else:
@@ -309,7 +309,7 @@ class UpdateAdminData(QDialog):
         if self.path == None:  #图片可以为不变更
             if (password != self.information["password"]):
                 salt = MyMd5().createSalt()
-                password = MyMd5().createMd5(password, salt)
+                password = MyMd5().createMd5(password, salt,id_number)
                 database.c.execute(
                     "update admin set id_number = ?,password = ?,salt = ? where id_number = {0}"
                     .format(id), (id_number, password, salt))
@@ -324,7 +324,7 @@ class UpdateAdminData(QDialog):
             creatuser.insertImg(id_number, self.path, "admin")
             if (password != self.information["password"]):
                 salt = MyMd5().createSalt()
-                password = MyMd5().createMd5(password, salt)
+                password = MyMd5().createMd5(password, salt,id_number)
 
                 database.c.execute(
                     "update admin set id_number= ?,password = ?,salt = ? ,vector = ? where id_number = {0}"
@@ -416,7 +416,7 @@ class UpdatePwd(QDialog):
         if not result:
              QMessageBox.critical(self, 'Wrong', '旧密码错误')
              return
-        new_pass_word = MyMd5().createMd5(new_pwd, item["salt"])
+        new_pass_word = MyMd5().createMd5(new_pwd, item["salt"],self.id_number)
         database.c.execute("update admin set password = ? where id_number = {0}".format(self.id_number),(new_pass_word,))
         
         QMessageBox.information(self, 'Success', '修改成功')
