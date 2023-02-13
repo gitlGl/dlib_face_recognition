@@ -24,7 +24,7 @@ PyQt5                   5.15.6<br>
 xlrd                    1.2.0 <br> 
 PyQtChart               5.15.5<br>
 <div align="center"> 
-     <img src="Screenshot/登录.png"> 
+     <img src="Screenshot/登录.png"/> 
  </div>
 
 ![](./Screenshot/登录.png) <br>
