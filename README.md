@@ -23,10 +23,6 @@ psutil                  5.9.0 <br>
 PyQt5                   5.15.6<br>               
 xlrd                    1.2.0 <br> 
 PyQtChart               5.15.5<br>
-<div align="center"> 
-     <img src="Screenshot/登录.png"/> 
- </div>
-
 ![](./Screenshot/登录.png) <br>
 ![](./Screenshot/注册.png) <br>
 ![](./Screenshot/页面.png) <br>
