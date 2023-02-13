@@ -30,7 +30,7 @@ class LivenessDetection(QThread):
         #68个人脸特征中嘴巴的位置
         self.mStart, self.mEnd = self.FACIAL_LANDMARKS_IDXS["mouth"]
 
-    def eye_aspect_ratio(self, eye):
+    def eyeAspectRatio(self, eye):
         """
         计算眼睛大小
         """
@@ -42,7 +42,7 @@ class LivenessDetection(QThread):
         return ear
 
     #计算嘴巴张开大小
-    def mouth__aspect_ratio(self, mouth):
+    def mouthAspectRatio(self, mouth):
         A = np.linalg.norm(mouth[2]-mouth[9])  # 51, 59
         B = np.linalg.norm(mouth[4]-mouth[7])  # 53, 57
         C = np.linalg.norm(mouth[0]-mouth[6])  # 49, 55
@@ -65,7 +65,7 @@ class LivenessDetection(QThread):
 
                 return True
         return False
-    def shape_to_np(self,shape, dtype="int"):
+    def shape2np(self,shape, dtype="int"):
         # initialize the list of (x, y)-coordinates
         coords = np.zeros((shape.num_parts, 2), dtype=dtype)
 
@@ -80,11 +80,11 @@ class LivenessDetection(QThread):
     def computEye(self, rgbImage, rect):
         shape = models.predictor(rgbImage, rect[0])
         
-        shape = self.shape_to_np(shape)  #68个人脸特征坐标
+        shape = self.shape2np(shape)  #68个人脸特征坐标
         leftEye = shape[self.lStart:self.lEnd]
         rightEye = shape[self.rStart:self.rEnd]
-        leftEAR = self.eye_aspect_ratio(leftEye)
-        rightEAR = self.eye_aspect_ratio(rightEye)
+        leftEAR = self.eyeAspectRatio(leftEye)
+        rightEAR = self.eyeAspectRatio(rightEye)
         ear = (leftEAR + rightEAR) / 2.0  # 两个眼睛大小平均值
         return ear
 
@@ -94,9 +94,9 @@ class LivenessDetection(QThread):
         rect = models.detector(rgbImage, 0)
         if (len(rect) == 1):
             shape = models.predictor(rgbImage, rect[0])
-            shape = self.shape_to_np(shape)  #68个人脸特征坐标
+            shape = self.shape2np(shape)  #68个人脸特征坐标
             mouth = shape[self.mStart:self.mEnd]
-            mouth = self.mouth__aspect_ratio(mouth)
+            mouth = self.mouthAspectRatio(mouth)
             if mouth > 0.5:
                 return True
         return False
