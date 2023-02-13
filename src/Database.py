@@ -15,13 +15,10 @@ class Database():
         self.c.execute('''CREATE TABLE IF NOT EXISTS student
        ( 
         id_number        CHAR(50)    NOT NULL ,
-   
         user_name       CHAR(50)    NOT NULL,
         gender           char(2)    NOT NULL, 
         password        char(20)    NOT NULL,
-        img_path        char(60),
         vector          blob        ,
-           
         salt            char(10)  NOT NULL ,
         cout              INT,
         PRIMARY KEY (id_number )
@@ -58,12 +55,12 @@ class Database():
 
      
 
-    def insertUser(self, id_number, user_name,gender, password, img_path, vector,
+    def insertUser(self, id_number, user_name,gender, password, vector,
                     salt):
         self.c.execute(
-            "INSERT INTO student (id_number,user_name,gender,password ,img_path ,vector,salt) \
-      VALUES (?,?, ?, ? , ?,?,?)",
-            (id_number, user_name,gender, password, img_path, vector, salt))
+            "INSERT INTO student (id_number,user_name,gender,password ,vector,salt) \
+      VALUES (?,?, ?, ? , ?,?)",
+            (id_number, user_name,gender, password,  vector, salt))
       
         
 

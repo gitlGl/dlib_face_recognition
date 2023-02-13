@@ -148,11 +148,11 @@ class UpdateUserData(QDialog):
             if(password != self.information["password"]):
                 salt = MyMd5().createSalt()
                 password = MyMd5().createMd5(password,salt,id_number)
-                database.c.execute("UPDATE student SET id_number = '{0}',user_name = '{1}',gender = '{2}',password = ?,img_path =? ,salt = ? WHERE id_number = {3}"\
-            .format(id_number,user_name,gender,id),(password,"img_information/student/{0}/log".format(id_number),salt))
+                database.c.execute("UPDATE student SET id_number = '{0}',user_name = '{1}',gender = '{2}',password = ?,salt = ? WHERE id_number = {3}"\
+            .format(id_number,user_name,gender,id),(password,salt))
             else:
-                database.c.execute("UPDATE student SET id_number = '{0}',user_name = '{1}',gender = '{2}',img_path = ?  WHERE id_number = '{3}'"\
-            .format(id_number,user_name,gender,id),("img_information/student/{0}/log".format(id_number),))
+                database.c.execute("UPDATE student SET id_number = '{0}',user_name = '{1}',gender = '{2}' WHERE id_number = '{3}'"\
+            .format(id_number,user_name,gender,id))
             
         else :
            
@@ -162,11 +162,11 @@ class UpdateUserData(QDialog):
             if(password != self.information["password"]):
                 salt = MyMd5().createSalt()
                 password = MyMd5().createMd5(password,salt,id_number)
-                database.c.execute("update student set id_number= ?,user_name = ?,gender = ? ,vector = ?,password = ?,img_path = ? ,salt = ? where id_number = {0}"
-                .format(id),(id_number,user_name,gender,vector,password,"img_information/student/{0}/log".format(id_number),salt))
+                database.c.execute("update student set id_number= ?,user_name = ?,gender = ? ,vector = ?,password = ?,salt = ? where id_number = {0}"
+                .format(id),(id_number,user_name,gender,vector,password,salt))
             else:
-                database.c.execute("update student set id_number= ?,user_name = ?,gender = ? ,vector = ?,img_path = ?  where id_number = {0}"
-                .format(id),(id_number,user_name,gender,vector,"img_information/student/{0}/log".format(id_number)))
+                database.c.execute("update student set id_number= ?,user_name = ?,gender = ? ,vector = ? where id_number = {0}"
+                .format(id),(id_number,user_name,gender,vector))
         database.c.execute("update student_log_time set id_number= {0} where id_number = {1}".format(id_number,id))
         return True
            

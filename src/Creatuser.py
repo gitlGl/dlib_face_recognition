@@ -7,7 +7,6 @@ import cv2, pickle
 
 
 class CreatUser():
-
     def getImg(self, img_path):
         raw_data = np.fromfile(
             img_path, dtype=np.uint8)  #先用numpy把图片文件存入内存：raw_data，把图片数据看做是纯字节数据
@@ -140,27 +139,21 @@ class CreatStudentUser(CreatUser):
         information["user_name"] = part_information["user_name"]
         information["gender"] = part_information["gender"]
         information['salt'] = MyMd5().createSalt()
-        information["img_path"] = self.getImgLogPath(
-            part_information["id_number"])
         information["id_number"] = part_information["id_number"]
         information["password"] = MyMd5().createMd5(
-            part_information["password"], information["salt"],part_information["id_number"])
+            part_information["password"], information["salt"],
+            part_information["id_number"])
         information["vector"] = self.getVector(part_information["img_path"])
         self.insertImg(part_information["id_number"],
-                        part_information["img_path"], "student")
+                       part_information["img_path"], "student")
         return information
 
     def insertUser(self, information):
-        database.insertUser(information["id_number"],
-                             information["user_name"], information["gender"],
-                             information["password"], information["img_path"],
-                             information["vector"], information["salt"])
+        database.insertUser(information["id_number"], information["user_name"],
+                            information["gender"], information["password"],
+                            information["vector"], information["salt"])
 
-    def getImgLogPath(self, id_number=123456):
-        path = "img_information/student/{0}/log".format(str(id_number))
-        if not os.path.exists(path):  #判断是否存在文件夹如果不存在则创建为文件夹
-            os.makedirs(path)
-        return path
+
 
 
 # def get_path():
