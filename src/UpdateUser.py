@@ -151,6 +151,45 @@ class UpdateUserData(QDialog):
                                 QMessageBox.No)
         if r == QMessageBox.No:
             return False
+
+        try:
+            if self.path == None:  #图片可以为不变更
+                if (password != self.information["password"]):
+                    salt = MyMd5().createSalt()
+                    password = MyMd5().createMd5(password, salt, id_number)
+                    database.c.execute("UPDATE student SET id_number = '{0}',user_name = '{1}',gender = '{2}',password = ?,salt = ? WHERE id_number = {3}"\
+                .format(id_number,user_name,gender,id),(password,salt))
+                else:
+                    database.c.execute("UPDATE student SET id_number = '{0}',user_name = '{1}',gender = '{2}' WHERE id_number = '{3}'"\
+                .format(id_number,user_name,gender,id))
+                database.c.execute(
+                    "update student_log_time set id_number= {0} where id_number = {1}"
+                    .format(id_number, id))
+                database.conn.commit()
+            else:
+                vector =  CreatUser().getVector(self.path)
+                if (password != self.information["password"]):
+                    salt = MyMd5().createSalt()
+                    password = MyMd5().createMd5(password, salt, id_number)
+                    database.c.execute(
+                        "update student set id_number= ?,user_name = ?,gender = ? ,vector = ?,password = ?,salt = ? where id_number = {0}"
+                        .format(id),
+                        (id_number, user_name, gender, vector, password, salt))
+                else:
+                    database.c.execute(
+                        "update student set id_number= ?,user_name = ?,gender = ? ,vector = ? where id_number = {0}"
+                        .format(id), (id_number, user_name, gender, vector))
+
+                database.c.execute(
+                    "update student_log_time set id_number= {0} where id_number = {1}"
+                    .format(id_number, id))
+                database.conn.commit()
+
+        except:
+            database.conn.rollback()
+            QMessageBox.critical(self, 'Wrong', "未知错误")
+            return False
+
             ##更改用户文件信息
         old_path = "img_information/student/{0}/".format(str(id))
         new_path = "img_information/student/{0}/".format(str(id_number))
@@ -171,48 +210,9 @@ class UpdateUserData(QDialog):
             else:
                 QMessageBox.critical(self, 'Wrong', "该用户图片文件可能丢失！")
             os.rename(old_path, new_path)
-
-        try:
-            if self.path == None:  #图片可以为不变更
-                if (password != self.information["password"]):
-                    salt = MyMd5().createSalt()
-                    password = MyMd5().createMd5(password, salt, id_number)
-                    database.c.execute("UPDATE student SET id_number = '{0}',user_name = '{1}',gender = '{2}',password = ?,salt = ? WHERE id_number = {3}"\
-                .format(id_number,user_name,gender,id),(password,salt))
-                else:
-                    database.c.execute("UPDATE student SET id_number = '{0}',user_name = '{1}',gender = '{2}' WHERE id_number = '{3}'"\
-                .format(id_number,user_name,gender,id))
-                database.c.execute(
-                    "update student_log_time set id_number= {0} where id_number = {1}"
-                    .format(id_number, id))
-                database.conn.commit()
-                return True
-
-            creatuser = CreatUser()
-            vector = creatuser.getVector(self.path)
-            creatuser.insertImg(id_number, self.path, "student")
-            if (password != self.information["password"]):
-                salt = MyMd5().createSalt()
-                password = MyMd5().createMd5(password, salt, id_number)
-                database.c.execute(
-                    "update student set id_number= ?,user_name = ?,gender = ? ,vector = ?,password = ?,salt = ? where id_number = {0}"
-                    .format(id),
-                    (id_number, user_name, gender, vector, password, salt))
-            else:
-                database.c.execute(
-                    "update student set id_number= ?,user_name = ?,gender = ? ,vector = ? where id_number = {0}"
-                    .format(id), (id_number, user_name, gender, vector))
-
-            database.c.execute(
-                "update student_log_time set id_number= {0} where id_number = {1}"
-                .format(id_number, id))
-            database.conn.commit()
-            return True
-
-        except:
-            database.conn.rollback()
-            QMessageBox.critical(self, 'Wrong', "未知错误")
-            return False
+        if self.path:
+            CreatUser().insertImg(id_number, self.path, "student")
+        return True
 
         #获取图片路径
     def getPath(self):
@@ -341,26 +341,6 @@ class UpdateAdminData(QDialog):
                                 QMessageBox.No)
         if r == QMessageBox.No:
             return False
-
-        ##更改用户文件信息
-        old_path = "img_information/admin/{0}/".format(str(id))
-        new_path = "img_information/admin/{0}/".format(str(id_number))
-        #更改后变更用户日志信息文件夹
-        if not os.path.exists(old_path):  #判断是否存在文件夹如果不存在则创建为文件夹
-            os.makedirs(new_path)
-            os.makedirs("img_information/admin/{0}/log".format(str(id_number)))
-            QMessageBox.critical(self, 'Wrong', "该用户图片文件可能丢失！")
-            #shutil.rmtree("img_information/admin/{0}".format(str(id)))
-        else:
-            img_path = "img_information/admin/{0}/{1}.jpg".format(
-                str(id), str(id))
-            if os.path.isfile(img_path):
-                os.rename(
-                    img_path, "img_information/admin/{0}/{1}.jpg".format(
-                        str(id), str(id_number)))
-            else:
-                QMessageBox.critical(self, 'Wrong', "该用户图片文件可能丢失！")
-            os.rename(old_path, new_path)
         try:
             if self.path == None:  #图片可以为不变更
                 if (password != self.information["password"]):
@@ -377,29 +357,50 @@ class UpdateAdminData(QDialog):
                     "update admin_log_time set id_number= {0} where id_number = {1}"
                     .format(id_number, id))
                 database.conn.commit()
-                return True
-
-            creatuser = CreatUser()
-            vector = creatuser.getVector(self.path)
-            creatuser.insertImg(id_number, self.path, "admin")
-            if (password != self.information["password"]):
-                salt = MyMd5().createSalt()
-                password = MyMd5().createMd5(password, salt, id_number)
-
-                database.c.execute(
-                    "update admin set id_number= ?,password = ?,salt = ? ,vector = ? where id_number = {0}"
-                    .format(id), (id_number, password, salt, vector))
             else:
-                database.c.execute(
-                    "update admin set id_number= ? ,vector = ? where id_number = {0}"
-                    .format(id), (id_number, vector))
-            database.conn.commit()
-            return True
-
+                vector = CreatUser().getVector(self.path)
+                if (password != self.information["password"]):
+                    salt = MyMd5().createSalt()
+                    password = MyMd5().createMd5(password, salt, id_number)
+                    database.c.execute(
+                        "update admin set id_number= ?,password = ?,salt = ? ,vector = ? where id_number = {0}"
+                        .format(id), (id_number, password, salt, vector))
+                else:
+                    database.c.execute(
+                        "update admin set id_number= ? ,vector = ? where id_number = {0}"
+                        .format(id), (id_number, vector))
+                database.conn.commit()
         except:
             QMessageBox.critical(self, 'Wrong', "未知错误")
             database.conn.rollback()
             return False
+
+        ##更改用户文件信息
+
+
+        old_path = "img_information/admin/{0}/".format(str(id))
+        new_path = "img_information/admin/{0}/".format(str(id_number))
+        #更改后变更用户日志信息文件夹
+        if not os.path.exists(old_path):  #判断是否存在文件夹如果不存在则创建为文件夹
+            os.makedirs(new_path)
+            os.makedirs("img_information/admin/{0}/log".format(str(id_number)))
+            
+            QMessageBox.critical(self, 'Wrong', "该用户图片文件可能丢失！")
+            #shutil.rmtree("img_information/admin/{0}".format(str(id)))
+        else:
+            img_path = "img_information/admin/{0}/{1}.jpg".format(
+                str(id), str(id))
+            if os.path.isfile(img_path):
+                os.rename(
+                    img_path, "img_information/admin/{0}/{1}.jpg".format(
+                        str(id), str(id_number)))
+            else:
+                QMessageBox.critical(self, 'Wrong', "该用户图片文件可能丢失！")
+            os.rename(old_path, new_path)
+        if self.path:
+            CreatUser().insertImg(id_number, self.path, "admin")
+        return True
+
         #获取图片路径
     def getPath(self):
         path = getImgPath(self)
