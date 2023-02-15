@@ -33,6 +33,7 @@ class Database():
        
       
         );''')
+        #id_number 字段应使用外键约束保证数据一致性
 
         self.c.execute('''CREATE TABLE IF NOT EXISTS admin
        ( 
@@ -44,6 +45,7 @@ class Database():
         vector          blob        ,
         PRIMARY KEY (id_number )
                  )without rowid;''')
+    
         self.c.execute('''CREATE TABLE IF NOT EXISTS admin_log_time 
        ( 
         id_number             CHAR(50)    NOT NULL ,
@@ -52,8 +54,7 @@ class Database():
        
       
         );''')
-
-     
+        #id_number 字段应使用外键约束保证数据一致性 
 
     def insertUser(self, id_number, user_name,gender, password, vector,
                     salt):
