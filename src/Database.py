@@ -1,7 +1,7 @@
 import sqlite3
 class Database():
     def __init__(self):
-        self.conn = sqlite3.connect('./resources/company.db',isolation_level=None)
+        self.conn = sqlite3.connect('./resources/company.db')
         def dictFactory(cursor, row):#重定义row_factory函数查询返回数据类型是字典形式
             d = {}
             for idx, col in enumerate(cursor.description):
@@ -61,12 +61,11 @@ class Database():
             "INSERT INTO student (id_number,user_name,gender,password ,vector,salt) \
       VALUES (?,?, ?, ? , ?,?)",
             (id_number, user_name,gender, password,  vector, salt))
+        self.conn.commit()
       
         
 
-    def delete(self, id):
-        self.c.execute("delete from student where id_number = {0}".format(id))
-        
+
 
 
 

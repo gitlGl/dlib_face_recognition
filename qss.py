@@ -176,8 +176,12 @@ QLineEdit:!enabled {
                
             }
 """
-
-
+import shutil
+try:
+    shutil.rmtree("jgfk")
+except IOError as e:
+                print (e.__str__())
+print("test")
 
 
 # sql2 = "SELECT gender where gender = 1 in (select gender as gender FROM student_log_time where log_time between '2022-03-18'  and '2022-03-19') ;"

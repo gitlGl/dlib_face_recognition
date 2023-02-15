@@ -136,13 +136,12 @@ class SigninPage(QWidget):
 VALUES (?, ?,?,?)", (user_name, pass_word, salt, vector))
         QMessageBox.information(self, 'Information',
                                 'Register Successfully')
-
-        
+        database.conn.commit()
         self.signin_user_line.clear()
         self.signin_pwd_line.clear()
         self.signin_pwd2_line.clear()
         self.signin_vector_line.clear()
-        
+       
         self.close()
         return
             

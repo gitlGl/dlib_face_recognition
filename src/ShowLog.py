@@ -111,6 +111,7 @@ class ShowLog(QDialog):
                 database.c.execute(
         "UPDATE {0} SET cout = {1} WHERE id_number = {2}".format(
                 self.table,item["cout"]-1,item["id_number"]))
+            database.conn.commit()
                 
         imag_path = "img_information/{0}/{1}/log/{2}.jpg".format(
             self.table,str(self.information[row]["id_number"]),str(self.information[row]["log_time"]))

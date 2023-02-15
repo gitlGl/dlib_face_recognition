@@ -14,6 +14,7 @@ class  studentlog():
             self.insertTime()
             self.insertImg(img)
             self.insertCout()
+            database.conn.commit()
            
     #记录识别成功时间
     def insertTime(self):
@@ -70,6 +71,7 @@ class  adminlog():
             self.item = item[0]
             self.inserImg(img)
             self.insertTime()
+            database.conn.commit()
         else:
             pass #应该输出异常日志
 
