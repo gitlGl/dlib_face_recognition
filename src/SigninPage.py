@@ -21,7 +21,7 @@ class SigninPage(QWidget):
         self.signin_user_line = QLineEdit(self)
         self.signin_pwd_line = QLineEdit(self)
         self.signin_pwd2_line = QLineEdit(self)
-        self.signin_vector_button = QPushButton(" 图片:",self,objectName="GreenButton")
+        self.signin_vector_button = QPushButton("图片:",self,objectName="GreenButton")
         self.signin_vector_button.setFlat(True)
 
         self.signin_vector_button.setIcon(QIcon("./resources/文件.png"))
@@ -41,12 +41,19 @@ class SigninPage(QWidget):
         self.layoutInit()
 
     def layoutInit(self):
+        
         self.user_h_layout.addWidget(self.signin_user_label)
         self.user_h_layout.addWidget(self.signin_user_line)
+
+       
         self.pwd_h_layout.addWidget(self.signin_pwd_label)
         self.pwd_h_layout.addWidget(self.signin_pwd_line)
+
+        
         self.pwd2_h_layout.addWidget(self.signin_pwd2_label)
         self.pwd2_h_layout.addWidget(self.signin_pwd2_line)
+
+        self.vector_h_layout.addSpacing(5)
         self.vector_h_layout.addWidget(self.signin_vector_button)
         self.vector_h_layout.addWidget(self.signin_vector_line)
 

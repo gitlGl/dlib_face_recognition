@@ -28,7 +28,7 @@ class UpdateUserData(QDialog):
         self.user_name_line = QLineEdit(self)
         self.gender_line = QLineEdit(self)
         self.password_line = QLineEdit(self)
-        self.vector_button = QPushButton(":", self, objectName="GreenButton2")
+        self.vector_button = QPushButton("图片:", self, objectName="GreenButton")
         self.vector_button.setFlat(True)
 
         self.vector_button.setIcon(QIcon("./resources/文件.png"))
@@ -76,12 +76,19 @@ class UpdateUserData(QDialog):
         self.reject()  #返回0
 
     def layoutInit(self):
+        self.user_h_layout.addSpacing(20)
         self.user_h_layout.addWidget(self.id_label)
         self.user_h_layout.addWidget(self.id_number_line)
+
+        self.pwd_h_layout.addSpacing(20)
         self.pwd_h_layout.addWidget(self.user_label)
         self.pwd_h_layout.addWidget(self.user_name_line)
+
+        self.pwd2_h_layout.addSpacing(20)
         self.pwd2_h_layout.addWidget(self.gender_label)
         self.pwd2_h_layout.addWidget(self.gender_line)
+
+        self.password_h_layout.addSpacing(20)
         self.password_h_layout.addWidget(self.password_label)
         self.password_h_layout.addWidget(self.password_line)
         self.vector_h_layout.addWidget(self.vector_button)
@@ -238,7 +245,7 @@ class UpdateAdminData(QDialog):
 
         self.id_number_line = QLineEdit(self)
         self.password_line = QLineEdit(self)
-        self.vector_button = QPushButton(":", self, objectName="GreenButton2")
+        self.vector_button = QPushButton("图片:", self, objectName="GreenButton")
         self.vector_button.setFlat(True)
 
         self.vector_button.setIcon(QIcon("./resources/文件.png"))
@@ -279,8 +286,11 @@ class UpdateAdminData(QDialog):
         self.reject()  #返回0
 
     def layoutInit(self):
+        self.user_h_layout.addSpacing(20)
         self.user_h_layout.addWidget(self.id_label)
         self.user_h_layout.addWidget(self.id_number_line)
+
+        self.pwd_h_layout.addSpacing(20)
         self.pwd_h_layout.addWidget(self.password_label)
         self.pwd_h_layout.addWidget(self.password_line)
 
@@ -430,10 +440,15 @@ class UpdatePwd(QDialog):
         self.pwd2_h_layout = QHBoxLayout()
         self.pwd3_h_layout = QHBoxLayout()
         self.ensure_or = QHBoxLayout()
+        self.pwd_h_layout.addSpacing(12)
         self.pwd_h_layout.addWidget(self.old_pwd_label)
+        
         self.pwd_h_layout.addWidget(self.old_pwd_line)
 
+        self.pwd2_h_layout.addSpacing(12)
+        
         self.pwd2_h_layout.addWidget(self.new_pwd2_label)
+        
         self.pwd2_h_layout.addWidget(self.new_pwd2_line)
 
         self.pwd3_h_layout.addWidget(self.new_pwd3_label)
