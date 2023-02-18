@@ -131,7 +131,8 @@ class LoginUi(QWidget):
         database.c.execute("INSERT INTO admin_log_time (id_number,log_time ) \
 VALUES (?,?)", (uesr_id, datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
         database.conn.commit()
-        self.config.setPwdId(self.user_line.text(),self.config.encrypt(self.pwd_line.text()))
+        if self.remember_password.isChecked():
+            self.config.setPwdId(self.user_line.text(),self.config.encrypt(self.pwd_line.text()))
         self.emitsingal.emit(uesr_id)
         self.close()
            
