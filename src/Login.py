@@ -26,9 +26,10 @@ class LoginUi(QWidget):
         self.pwd_label = QLabel('Password:', self)
         self.user_line = QLineEdit(self)
         self.pwd_line = QLineEdit(self)
-        self.login_button = QPushButton('账号密码登录', self,objectName="GreenButton")
+        self.login_button = QPushButton('登录', self,objectName="GreenButton")
         self.signin_button = QPushButton('注册', self,objectName="GreenButton")
         self.remember_password = QCheckBox("记住密码")
+        self.auto_login = QCheckBox("自动登录")
         self.face_login_button = QPushButton("人脸识别登录", self,objectName="GreenButton")
 
         #self.grid_layout = QGridLayout()
@@ -41,27 +42,30 @@ class LoginUi(QWidget):
         self.lineeditInit()
         self.pushbuttonInit()
         self.layoutInit()
-        self.config = configRemberPwd()
-        if not self.config.checkFlag():
+        config_rember_pwd = configRemberPwd()
+        if not config_rember_pwd.check():
             return
         self.remember_password.setChecked(True)
-        dic = self.config.get()
+        dic = config_rember_pwd.get()
         
-        result = self.config.decrypt(dic["pwd"])
+        result = aes.decrypt(dic["pwd"])
         if result:
             self.user_line.setText(dic["id"])
-            self.pwd_line.setText(self.config.decrypt(dic["pwd"]))
+            self.pwd_line.setText(aes.decrypt(dic["pwd"]))
         
     def layoutInit(self):
         self.h_user_layout.addWidget(self.user_label)
         self.h_user_layout.addWidget(self.user_line)
         self.h_password_layout.addWidget(self.pwd_label)
         self.h_password_layout.addWidget(self.pwd_line)
+        self.h_in_layout.addStretch(1)
         self.h_in_layout.addWidget(self.login_button)
         self.h_in_layout.addStretch(1)
         self.h_in_layout.addWidget(self.face_login_button)
         self.h_in_layout.addStretch(1)
         self.h_in_layout.addWidget(self.remember_password)
+        self.h_in_layout.addStretch(1)
+        self.h_in_layout.addWidget(self.auto_login)
         self.h_in_layout.addStretch(1)
         self.h_in_layout.addWidget(self.signin_button)
         self.h_in_layout.addStretch(1)
@@ -92,19 +96,18 @@ class LoginUi(QWidget):
         self.signin_button.clicked.connect(self.showSigninPageFunc)
         self.login_button.clicked.connect(self.checkLoginFunc)
         self.face_login_button.clicked.connect(self.faceLogin)
-        self.remember_password.clicked.connect(self.setConfigFlag)
+        self.remember_password.clicked.connect(self.setRemberConfigFlag)
         #切换注册页面
     def showSigninPageFunc(self):
         self.signin_page = SigninPage()  # 实例化SigninPage()
         self.signin_page.show()
 
-    def setConfigFlag(self):
-        if self.remember_password.isChecked():
-            self.config.setFlag("1")
-        else:
-            self.config.setFlag("0")
-            self.config.setPwdId('','')
-        
+    def setRemberConfigFlag(self):
+        if not self.remember_password.isChecked():
+            configRemberPwd().setTimeFlag("0",'')
+            configRemberPwd().setPwdId('','')
+
+           
         
     #响应登录请求
     def checkLoginFunc(self):
@@ -132,7 +135,14 @@ class LoginUi(QWidget):
 VALUES (?,?)", (uesr_id, datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
         database.conn.commit()
         if self.remember_password.isChecked():
-            self.config.setPwdId(self.user_line.text(),self.config.encrypt(self.pwd_line.text()))
+            configRemberPwd().setTimeFlag("1",datetime.datetime.now().strftime("%Y-%m-%d-%H-%M"))
+            configRemberPwd().setPwdId(self.user_line.text(),aes.encrypt(self.pwd_line.text()))
+        if self.auto_login.isChecked():
+            configAotuLogin().setStates(aes.encrypt(uuid.uuid1().hex[-12:]+'1'))#aes不能解密加密自身
+            configAotuLogin().setId(uesr_id)
+            configAotuLogin().setTimeFlag("1",datetime.datetime.now().strftime("%Y-%m-%d-%H-%M"))
+
+
         self.emitsingal.emit(uesr_id)
         self.close()
            
@@ -153,15 +163,20 @@ class  configRemberPwd():
         self.config = configparser.ConfigParser()
         # 打开 ini 文件
         self.config.read("cfg.ini", encoding="utf-8") 
-    def checkFlag(self) -> bool:
+    def check(self) -> bool:
         if self.config["rember_pwd"]["flag"] == "0":
+            return False
+        pre_time = datetime.datetime.strptime(self.config["rember_pwd"]["time"],"%Y-%m-%d-%H-%M")
+        days = (datetime.datetime.now() - pre_time ).days
+        if days > 7:
             return False
         return True
     def get(self):
         return dict(self.config["rember_pwd"])
 
-    def setFlag(self,flag):
+    def setTimeFlag(self,flag,time):
         self.config["rember_pwd"]["flag"] = flag
+        self.config["rember_pwd"]["time"] = time
         with open("cfg.ini", "w", encoding="utf-8") as f:
             self.config.write(f)
 
@@ -171,7 +186,53 @@ class  configRemberPwd():
         with open("cfg.ini", "w", encoding="utf-8") as f:
             self.config.write(f)
     
-    def encrypt(self,data):
+  
+
+class  configAotuLogin():
+    """自动登录功能，只保存用户登录状态，不保存密码，更安全"""
+    def __init__(self) -> None:
+        self.config = configparser.ConfigParser()
+        # 打开 ini 文件
+        self.config.read("cfg.ini", encoding="utf-8") 
+    def check(self) -> bool:
+        if self.config["aotu_login"]["flag"] == "0":
+            return False
+        pre_time = datetime.datetime.strptime(self.config["aotu_login"]["time"],"%Y-%m-%d-%H-%M")
+        days = (datetime.datetime.now() - pre_time ).days
+        if days > 7:
+            return False
+        print(self.config["aotu_login"]["login_states"])
+        states = aes.decrypt(self.config["aotu_login"]["login_states"])
+        print(states,uuid.uuid1().hex[-12:])
+        if not states == uuid.uuid1().hex[-12:]+'1':
+            return False
+        return True
+    def get(self):
+        return dict(self.config["aotu_login"])
+
+    def setTimeFlag(self,flag,time):
+        self.config["aotu_login"]["flag"] = flag
+        self.config["aotu_login"]["time"] = time
+        with open("cfg.ini", "w", encoding="utf-8") as f:
+            self.config.write(f)
+    def setId(self,id):
+         self.config["aotu_login"]["id"] = id
+         with open("cfg.ini", "w", encoding="utf-8") as f:
+            self.config.write(f)
+    
+
+    def setStates(self,states):
+        self.config["aotu_login"]["login_states"] = states
+        with open("cfg.ini", "w", encoding="utf-8") as f:
+            self.config.write(f)
+    
+       
+
+
+
+
+class aes():
+    def encrypt(data):
         mac_address = uuid.uuid1().hex[-12:]
         key = pad(mac_address.encode("utf8"),AES.block_size)
         cipher = AES.new(key,AES.MODE_ECB)
@@ -180,7 +241,7 @@ class  configRemberPwd():
         result = str(base64.b64encode(msg).decode('utf8'))
         return result
 
-    def decrypt(self,data):
+    def decrypt(data):
         mac_address = uuid.uuid1().hex[-12:]
         key = pad(mac_address.encode("utf8"),AES.block_size)
         cipher = AES.new(key,AES.MODE_ECB)
@@ -191,6 +252,3 @@ class  configRemberPwd():
             return result
         except:
             return False
-       
-
-

@@ -9,7 +9,7 @@ from multiprocessing import Process, Queue
 from .PutImg import PutImg
 from src.Login import LoginUi
 from src.ShowData import ShowData
-from .Login import LoginUi
+from .Login import LoginUi,configAotuLogin
 from  .Ui import Ui
 from src.GlobalVariable import database
 class Main(QWidget,Ui):
@@ -24,8 +24,15 @@ class Main(QWidget,Ui):
         self.put_img.emit_text.connect(self.change_text)
         self.timer = QTimer()
         self.timer.timeout.connect(self.clear_qlabel2)#清除识别结果
-
         self.login_ui = LoginUi()
+        if configAotuLogin().check():
+            self.id_number = configAotuLogin().get()["id"]
+            self.p = Process(target=processStudentRg,
+                         args=(self.Q1, self.Q2, self.share))
+            self.p.daemon = True
+            self.show()
+            del self.login_ui
+            return
         self.login_ui.emitsingal.connect(self.show_parent)
         self.login_ui.show()
     #退出登录
@@ -51,6 +58,10 @@ class Main(QWidget,Ui):
             self.login_ui = LoginUi()
             self.login_ui.emitsingal.connect(self.show_parent)
             self.login_ui.show()
+            configAotuLogin().setId('')
+            configAotuLogin().setStates('')
+            configAotuLogin().setTimeFlag('0','')
+        
     def show_error(self):
         if(self.put_img.work_thread.isRunning()):
              QMessageBox.critical(self, 'Wrong', '请先关闭摄像头')
