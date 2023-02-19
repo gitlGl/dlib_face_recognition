@@ -25,8 +25,8 @@ class Main(QWidget,Ui):
         self.timer = QTimer()
         self.timer.timeout.connect(self.clear_qlabel2)#清除识别结果
         self.login_ui = LoginUi()
-        if configAotuLogin().check():
-            self.id_number = configAotuLogin().get()["id"]
+        if self.login_ui.config_auto_login.check():
+            self.id_number = self.login_ui.config_auto_login.get()["id"]
             self.p = Process(target=processStudentRg,
                          args=(self.Q1, self.Q2, self.share))
             self.p.daemon = True
@@ -58,9 +58,9 @@ class Main(QWidget,Ui):
             self.login_ui = LoginUi()
             self.login_ui.emitsingal.connect(self.show_parent)
             self.login_ui.show()
-            configAotuLogin().setId('')
-            configAotuLogin().setStates('')
-            configAotuLogin().setTimeFlag('0','')
+            self.login_ui.config_auto_login.setId('')
+            self.login_ui.config_auto_login.setStates('')
+            self.login_ui.config_auto_login.setTimeFlag('0','')
         
     def show_error(self):
         if(self.put_img.work_thread.isRunning()):

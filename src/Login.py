@@ -42,11 +42,12 @@ class LoginUi(QWidget):
         self.lineeditInit()
         self.pushbuttonInit()
         self.layoutInit()
-        config_rember_pwd = configRemberPwd()
-        if not config_rember_pwd.check():
+        self.config_rember_pwd = configRemberPwd()
+        self.config_auto_login = configAotuLogin()
+        if not self.config_rember_pwd.check():
             return
         self.remember_password.setChecked(True)
-        dic = config_rember_pwd.get()
+        dic = self.config_rember_pwd.get()
         
         result = aes.decrypt(dic["pwd"])
         if result:
@@ -104,8 +105,8 @@ class LoginUi(QWidget):
 
     def setRemberConfigFlag(self):
         if not self.remember_password.isChecked():
-            configRemberPwd().setTimeFlag("0",'')
-            configRemberPwd().setPwdId('','')
+            self.config_rember_pwd.setTimeFlag("0",'')
+            self.config_rember_pwd.setPwdId('','')
 
            
         
@@ -135,12 +136,12 @@ class LoginUi(QWidget):
 VALUES (?,?)", (uesr_id, datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
         database.conn.commit()
         if self.remember_password.isChecked():
-            configRemberPwd().setTimeFlag("1",datetime.datetime.now().strftime("%Y-%m-%d-%H-%M"))
-            configRemberPwd().setPwdId(self.user_line.text(),aes.encrypt(self.pwd_line.text()))
+            self.config_rember_pwd.setTimeFlag("1",datetime.datetime.now().strftime("%Y-%m-%d-%H-%M"))
+            self.config_rember_pwd.setPwdId(self.user_line.text(),aes.encrypt(self.pwd_line.text()))
         if self.auto_login.isChecked():
-            configAotuLogin().setStates(aes.encrypt(uuid.uuid1().hex[-12:]+'1'))#aes不能解密加密自身
-            configAotuLogin().setId(uesr_id)
-            configAotuLogin().setTimeFlag("1",datetime.datetime.now().strftime("%Y-%m-%d-%H-%M"))
+            self.config_auto_login.setStates(aes.encrypt(uuid.uuid1().hex[-12:]+'1'))#aes不能解密加密自身
+            self.config_auto_login.setId(uesr_id)
+            self.config_auto_login.setTimeFlag("1",datetime.datetime.now().strftime("%Y-%m-%d-%H-%M"))
 
 
         self.emitsingal.emit(uesr_id)
@@ -156,75 +157,80 @@ VALUES (?,?)", (uesr_id, datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
        
         self.emitsingal.emit(id_number)
 
-    
+class config():
+    config = None#使用全局变量单例模式,保证数据一致性
 
-class  configRemberPwd():
+    def __del__(self):
+        if config.config != None:
+            config.config = None#释放全局变量，降低内存占用
+class  configRemberPwd(config):
     def __init__(self) -> None:
-        self.config = configparser.ConfigParser()
-        # 打开 ini 文件
-        self.config.read("cfg.ini", encoding="utf-8") 
+        if config.config == None:
+            config.config = configparser.ConfigParser()
+            # 打开 ini 文件
+            config.config.read("cfg.ini", encoding="utf-8") 
     def check(self) -> bool:
-        if self.config["rember_pwd"]["flag"] == "0":
+        if config.config["rember_pwd"]["flag"] == "0":
             return False
-        pre_time = datetime.datetime.strptime(self.config["rember_pwd"]["time"],"%Y-%m-%d-%H-%M")
+        pre_time = datetime.datetime.strptime(config.config["rember_pwd"]["time"],"%Y-%m-%d-%H-%M")
         days = (datetime.datetime.now() - pre_time ).days
         if days > 7:
             return False
         return True
     def get(self):
-        return dict(self.config["rember_pwd"])
+        return dict(config.config["rember_pwd"])
 
     def setTimeFlag(self,flag,time):
-        self.config["rember_pwd"]["flag"] = flag
-        self.config["rember_pwd"]["time"] = time
+        config.config["rember_pwd"]["flag"] = flag
+        config.config["rember_pwd"]["time"] = time
         with open("cfg.ini", "w", encoding="utf-8") as f:
-            self.config.write(f)
+            config.config.write(f)
 
     def setPwdId(self,id,pwd):
-        self.config["rember_pwd"]["id"] = id
-        self.config["rember_pwd"]["pwd"] = pwd
+        config.config["rember_pwd"]["id"] = id
+        config.config["rember_pwd"]["pwd"] = pwd
         with open("cfg.ini", "w", encoding="utf-8") as f:
-            self.config.write(f)
+            config.config.write(f)
     
   
 
-class  configAotuLogin():
+class  configAotuLogin(config):
     """自动登录功能，只保存用户登录状态，不保存密码，更安全"""
     def __init__(self) -> None:
-        self.config = configparser.ConfigParser()
-        # 打开 ini 文件
-        self.config.read("cfg.ini", encoding="utf-8") 
+        if config.config == None:
+            config.config = configparser.ConfigParser()
+            # 打开 ini 文件
+            config.config.read("cfg.ini", encoding="utf-8") 
     def check(self) -> bool:
-        if self.config["aotu_login"]["flag"] == "0":
+        if config.config["aotu_login"]["flag"] == "0":
             return False
-        pre_time = datetime.datetime.strptime(self.config["aotu_login"]["time"],"%Y-%m-%d-%H-%M")
+        pre_time = datetime.datetime.strptime(config.config["aotu_login"]["time"],"%Y-%m-%d-%H-%M")
         days = (datetime.datetime.now() - pre_time ).days
         if days > 7:
             return False
-        print(self.config["aotu_login"]["login_states"])
-        states = aes.decrypt(self.config["aotu_login"]["login_states"])
+        states = aes.decrypt(config.config["aotu_login"]["login_states"])
         print(states,uuid.uuid1().hex[-12:])
         if not states == uuid.uuid1().hex[-12:]+'1':
             return False
         return True
     def get(self):
-        return dict(self.config["aotu_login"])
+        return dict(config.config["aotu_login"])
 
     def setTimeFlag(self,flag,time):
-        self.config["aotu_login"]["flag"] = flag
-        self.config["aotu_login"]["time"] = time
+        config.config["aotu_login"]["flag"] = flag
+        config.config["aotu_login"]["time"] = time
         with open("cfg.ini", "w", encoding="utf-8") as f:
-            self.config.write(f)
+            config.config.write(f)
     def setId(self,id):
-         self.config["aotu_login"]["id"] = id
+         config.config["aotu_login"]["id"] = id
          with open("cfg.ini", "w", encoding="utf-8") as f:
-            self.config.write(f)
+            config.config.write(f)
     
 
     def setStates(self,states):
-        self.config["aotu_login"]["login_states"] = states
+        config.config["aotu_login"]["login_states"] = states
         with open("cfg.ini", "w", encoding="utf-8") as f:
-            self.config.write(f)
+            config.config.write(f)
     
        
 
