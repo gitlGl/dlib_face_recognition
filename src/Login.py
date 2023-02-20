@@ -52,7 +52,7 @@ class LoginUi(QWidget):
         result = aes.decrypt(dic["pwd"])
         if result:
             self.user_line.setText(dic["id"])
-            self.pwd_line.setText(aes.decrypt(dic["pwd"]))
+            self.pwd_line.setText(aes.decrypt(dic["pwd"])[:-3])
         
     def layoutInit(self):
         self.h_user_layout.addWidget(self.user_label)
@@ -137,9 +137,9 @@ VALUES (?,?)", (uesr_id, datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
         database.conn.commit()
         if self.remember_password.isChecked():
             self.config_rember_pwd.setTimeFlag("1",datetime.datetime.now().strftime("%Y-%m-%d-%H-%M"))
-            self.config_rember_pwd.setPwdId(self.user_line.text(),aes.encrypt(self.pwd_line.text()))
+            self.config_rember_pwd.setPwdId(self.user_line.text(),aes.encrypt(self.pwd_line.text()+'cba'))
         if self.auto_login.isChecked():
-            self.config_auto_login.setStates(aes.encrypt(uuid.uuid1().hex[-12:]+'1'))#aes不能解密加密自身
+            self.config_auto_login.setStates(aes.encrypt(uuid.uuid1().hex[-12:]+'__'))#aes不能解密加密自身
             self.config_auto_login.setId(uesr_id)
             self.config_auto_login.setTimeFlag("1",datetime.datetime.now().strftime("%Y-%m-%d-%H-%M"))
 
@@ -209,7 +209,7 @@ class  configAotuLogin(config):
         if days > 7:
             return False
         states = aes.decrypt(config.config["aotu_login"]["login_states"])
-        if not states == uuid.uuid1().hex[-12:]+'1':
+        if not states == uuid.uuid1().hex[-12:]+'__':
             return False
         return True
     def get(self):
@@ -238,7 +238,7 @@ class  configAotuLogin(config):
 
 class aes():
     def encrypt(data):
-        mac_address = uuid.uuid1().hex[-12:]
+        mac_address = uuid.uuid1().hex[-12:][1:6]+'abc'
         key = pad(mac_address.encode("utf8"),AES.block_size)
         cipher = AES.new(key,AES.MODE_ECB)
         plaintext = data.encode('utf8')
@@ -247,7 +247,7 @@ class aes():
         return result
 
     def decrypt(data):
-        mac_address = uuid.uuid1().hex[-12:]
+        mac_address = uuid.uuid1().hex[-12:][1:6]+'abc'
         key = pad(mac_address.encode("utf8"),AES.block_size)
         cipher = AES.new(key,AES.MODE_ECB)
         try:
