@@ -209,7 +209,6 @@ class  configAotuLogin(config):
         if days > 7:
             return False
         states = aes.decrypt(config.config["aotu_login"]["login_states"])
-        print(states,uuid.uuid1().hex[-12:])
         if not states == uuid.uuid1().hex[-12:]+'1':
             return False
         return True

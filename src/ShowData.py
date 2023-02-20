@@ -281,3 +281,4 @@ class ShowData(QWidget):
         temdata = copy.deepcopy(total_data)
         temdata.sort(reverse=True)    
         return datatabel,data_title ,temdata[0]
+

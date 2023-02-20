@@ -22,7 +22,7 @@ class  studentlog():
         database.c.execute(
             "INSERT INTO student_log_time (id_number,gender,log_time ) \
       VALUES (?, ?,?)",
-            (self.item["id_number"], self.item["gender"],))
+            (self.item["id_number"], self.item["gender"],datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
 
        
         
