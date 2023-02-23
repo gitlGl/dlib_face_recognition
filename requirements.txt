@@ -5,4 +5,4 @@ psutil==5.9.0
 PyQt5==5.15.6       
 xlrd==1.2.0
 PyQtChart==5.15.5
-pycryptodome = "*"
+pycryptodome==3.16.0
