@@ -93,41 +93,41 @@ class Main(QWidget,Ui):
     #显示识别结果
     @pyqtSlot(str)
     def show_result(self, str_result):
-        self.qlabel2.clear()
-        self.qlabel2.setText(str_result)
-        self.qlabel1.clear()#清除提示
+        self.rg_label.clear()
+        self.rg_label.setText(str_result)
+        self.tips_label.clear()#清除提示
         if not self.timer.isActive():#开启清除识别结果
             self.timer.start(1500)
 
     #清除识别结果
     def clear_qlabel2(self):
         self.timer.stop()
-        self.qlabel2.clear()
-        if self.btn3.isChecked() and self.put_img.work_thread.isRunning(): #and self.put_img.isRunning()
-            self.qlabel1.setText("提示：请张嘴")
+        self.rg_label.clear()
+        if self.Liveness_rgface_btn.isChecked() and self.put_img.work_thread.isRunning(): #and self.put_img.isRunning()
+            self.tips_label.setText("提示：请张嘴")
 
 
     #刻度值槽函数
     def valueChange(self):
         distance = round(self.slider.value() * 0.05, 2)
         self.share.value = distance
-        self.qlabel3.setText(str(distance))
+        self.scale_value_label.setText(str(distance))
 
     #清理活体识别提示信息，设置提示信息
     @pyqtSlot(str)
     def change_text(self, str):
-        self.qlabel1.clear()
-        self.qlabel1.setText(str)
+        self.tips_label.clear()
+        self.tips_label.setText(str)
 
     #帧显示视频流
     #@pyqtSlot(list,QImage)
     def set_normal_img(self, list):   
-        self.qlabel4.setPixmap(QPixmap.fromImage(list[0])) #设置图片，图片跟随ui.qlabel大小缩放
+        self.picture_qlabel.setPixmap(QPixmap.fromImage(list[0])) #设置图片，图片跟随ui.qlabel大小缩放
         self.put_img.frame = list[1]#待识别帧
         
         
         #QPixmap.fromImage(img).scaled(self.qlabel4.size(),Qt.KeepAspectRatio)图片跟随ui.qlabel大小缩放
-        self.qlabel4.setScaledContents(True)#ui.qlabel4自适应图片大小
+        self.picture_qlabel.setScaledContents(True)#ui.qlabel4自适应图片大小
 
     #帮助页面
     def help(self):
@@ -138,10 +138,10 @@ class Main(QWidget,Ui):
 
     #正常识别
     def open_normal(self):
-        if self.btn2.isChecked():  # 两个按钮互斥判断另一个按钮
-            self.btn3.setChecked(False)
-            self.btn2.setEnabled(False)
-            self.btn3.setEnabled(True)
+        if self.normal_rgface_btn.isChecked():  # 两个按钮互斥判断另一个按钮
+            self.Liveness_rgface_btn.setChecked(False)
+            self.normal_rgface_btn.setEnabled(False)
+            self.Liveness_rgface_btn.setEnabled(True)
 
             while self.put_img.timer1.isActive():
                 self.put_img.timer1.stop()
@@ -153,7 +153,7 @@ class Main(QWidget,Ui):
                 pass
             while self.Q2.qsize() != 0:
                 self.Q2.get()
-            self.qlabel1.clear()
+            self.tips_label.clear()
             if self.put_img.work_thread.isRunning():
                 if not self.put_img.timer3.isActive():
                     self.put_img.timer3.start(1000)
@@ -161,10 +161,10 @@ class Main(QWidget,Ui):
     #活体识别
     def open_eye(self):
 
-        if self.btn3.isChecked():
-            self.btn2.setChecked(False)
-            self.btn3.setEnabled(False)
-            self.btn2.setEnabled(True)
+        if self.Liveness_rgface_btn.isChecked():
+            self.normal_rgface_btn.setChecked(False)
+            self.Liveness_rgface_btn.setEnabled(False)
+            self.normal_rgface_btn.setEnabled(True)
             self.put_img.flag = False
             if self.put_img.work_thread.isRunning():
                 if self.put_img.timer3.isActive():
@@ -176,17 +176,17 @@ class Main(QWidget,Ui):
             if self.put_img.work_thread.isRunning():
                 if not self.put_img.timer1.isActive():
                     self.put_img.timer1.start(200)
-                    self.qlabel1.setText("提示：请张嘴")
+                    self.tips_label.setText("提示：请张嘴")
                   
 
     def open(self):
-        self.qlabel4.show()
+        self.picture_qlabel.show()
         self.qlabel5.hide()##用于修复无法清理（qlable.claer()）图片
         self.put_img.work.emit_img.connect(self.set_normal_img)
-        self.btn1.clicked.disconnect(self.open)
-        self.btn1.clicked.connect(self.close)
-        self.btn1.setText("关闭摄像头")
-        self.btn1.setIcon(QIcon("./resources/摄像头.png"))
+        self.open_capture_btn.clicked.disconnect(self.open)
+        self.open_capture_btn.clicked.connect(self.close)
+        self.open_capture_btn.setText("关闭摄像头")
+        self.open_capture_btn.setIcon(QIcon("./resources/摄像头.png"))
         self.put_img.SetCap()
         self.put_img.work_thread.start()
         if not self.p.is_alive():
@@ -204,15 +204,15 @@ class Main(QWidget,Ui):
             psutil.Process(self.p.pid).resume()
             self.flag = True##子进程状态标志，True表示子进程启动
 
-        if self.btn2.isChecked():
+        if self.normal_rgface_btn.isChecked():
             if not self.put_img.timer3.isActive():
                 self.put_img.timer3.start(1000)
             return
 
-        if self.btn3.isChecked():
+        if self.Liveness_rgface_btn.isChecked():
             if not self.put_img.timer1.isActive():
                 self.put_img.timer1.start(200)
-                self.qlabel1.setText("提示：请张嘴")
+                self.tips_label.setText("提示：请张嘴")
             return
                
 
@@ -221,10 +221,10 @@ class Main(QWidget,Ui):
        
         self.put_img.flag = False
 
-        self.btn1.clicked.connect(self.open)
-        self.btn1.clicked.disconnect(self.close)
-        self.btn1.setText("打开摄像头")
-        self.btn1.setIcon(QIcon("./resources/摄像头_关闭.png"))
+        self.open_capture_btn.clicked.connect(self.open)
+        self.open_capture_btn.clicked.disconnect(self.close)
+        self.open_capture_btn.setText("打开摄像头")
+        self.open_capture_btn.setIcon(QIcon("./resources/摄像头_关闭.png"))
         self.put_img.close()  # 关闭摄像头
         #self.qlabel4.setPixmap(QPixmap("./resources/摄像头.png"))
 
@@ -244,12 +244,12 @@ class Main(QWidget,Ui):
             pass
         while self.Q2.qsize() != 0:
             self.Q2.get()
-        self.qlabel1.clear()#清除提示信息
+        self.tips_label.clear()#清除提示信息
         if self.flag == True:
             psutil.Process(self.p.pid).suspend()  # 挂起进程
             self.flag = False#子进程状态标志，False表示子进程已经暂停
-        self.qlabel4.clear()
-        self.qlabel4.hide()#用于修复无法清理（qlable.claer()）图片
+        self.picture_qlabel.clear()
+        self.picture_qlabel.hide()#用于修复无法清理（qlable.claer()）图片
         self.qlabel5.show()
 
     def closeEvent(self, Event):
