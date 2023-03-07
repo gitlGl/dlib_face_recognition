@@ -60,7 +60,7 @@ class Main(QWidget,Ui):
             self.login_ui.show()
             self.login_ui.config_auto_login.setId('')
             self.login_ui.config_auto_login.setStates('')
-            self.login_ui.config_auto_login.setTimeFlag('0','')
+            self.login_ui.config_auto_login.setFlag('0')
         
     def show_error(self):
         if(self.put_img.work_thread.isRunning()):

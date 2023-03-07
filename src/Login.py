@@ -52,7 +52,7 @@ class LoginUi(QWidget):
         result = aes.decrypt(dic["pwd"])
         if result:
             self.user_line.setText(dic["id"])
-            self.pwd_line.setText(aes.decrypt(dic["pwd"])[:-3])
+            self.pwd_line.setText(aes.decrypt(dic["pwd"])[:-16])
         
     def layoutInit(self):
         self.h_user_layout.addWidget(self.user_label)
@@ -105,7 +105,7 @@ class LoginUi(QWidget):
 
     def setRemberConfigFlag(self):
         if not self.remember_password.isChecked():
-            self.config_rember_pwd.setTimeFlag("0",'')
+            self.config_rember_pwd.setFlag("0")
             self.config_rember_pwd.setPwdId('','')
 
            
@@ -135,13 +135,14 @@ class LoginUi(QWidget):
         database.c.execute("INSERT INTO admin_log_time (id_number,log_time ) \
 VALUES (?,?)", (uesr_id, datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
         database.conn.commit()
+        time = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")
         if self.remember_password.isChecked():
-            self.config_rember_pwd.setTimeFlag("1",datetime.datetime.now().strftime("%Y-%m-%d-%H-%M"))
-            self.config_rember_pwd.setPwdId(self.user_line.text(),aes.encrypt(self.pwd_line.text()+'cba'))
+            self.config_rember_pwd.setFlag("1")
+            self.config_rember_pwd.setPwdId(self.user_line.text(),aes.encrypt(self.pwd_line.text()+time))
         if self.auto_login.isChecked():
-            self.config_auto_login.setStates(aes.encrypt(uuid.uuid1().hex[-12:]+'__'))#aes不能解密加密自身
+            self.config_auto_login.setStates(aes.encrypt(uuid.uuid1().hex[-12:]+time))#aes不能解密加密自身
             self.config_auto_login.setId(uesr_id)
-            self.config_auto_login.setTimeFlag("1",datetime.datetime.now().strftime("%Y-%m-%d-%H-%M"))
+            self.config_auto_login.setFlag("1")
 
 
         self.emitsingal.emit(uesr_id)
@@ -172,7 +173,7 @@ class  configRemberPwd(config):
     def check(self) -> bool:
         if config.config["rember_pwd"]["flag"] == "0":
             return False
-        pre_time = datetime.datetime.strptime(config.config["rember_pwd"]["time"],"%Y-%m-%d-%H-%M")
+        pre_time = datetime.datetime.strptime(aes.decrypt(config.config["rember_pwd"]["pwd"])[-16:],"%Y-%m-%d-%H-%M")
         days = (datetime.datetime.now() - pre_time ).days
         if days > 7:
             return False
@@ -180,9 +181,8 @@ class  configRemberPwd(config):
     def get(self):
         return dict(config.config["rember_pwd"])
 
-    def setTimeFlag(self,flag,time):
+    def setFlag(self,flag):
         config.config["rember_pwd"]["flag"] = flag
-        config.config["rember_pwd"]["time"] = time
         with open("cfg.ini", "w", encoding="utf-8") as f:
             config.config.write(f)
 
@@ -204,20 +204,21 @@ class  configAotuLogin(config):
     def check(self) -> bool:
         if config.config["aotu_login"]["flag"] == "0":
             return False
-        pre_time = datetime.datetime.strptime(config.config["aotu_login"]["time"],"%Y-%m-%d-%H-%M")
+        states = aes.decrypt(config.config["aotu_login"]["login_states"])
+       
+        pre_time = datetime.datetime.strptime(states[-16:],"%Y-%m-%d-%H-%M")
         days = (datetime.datetime.now() - pre_time ).days
         if days > 7:
             return False
-        states = aes.decrypt(config.config["aotu_login"]["login_states"])
-        if not states == uuid.uuid1().hex[-12:]+'__':
+        
+        if not states[:12] == uuid.uuid1().hex[-12:]:
             return False
         return True
     def get(self):
         return dict(config.config["aotu_login"])
 
-    def setTimeFlag(self,flag,time):
+    def setFlag(self,flag):
         config.config["aotu_login"]["flag"] = flag
-        config.config["aotu_login"]["time"] = time
         with open("cfg.ini", "w", encoding="utf-8") as f:
             config.config.write(f)
     def setId(self,id):
