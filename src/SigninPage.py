@@ -87,7 +87,6 @@ class SigninPage(QWidget):
     def getPath(self):
         path = getImgPath(self)
         if path :
-            self.path = path
             self.signin_vector_line.setText(path)
             return 
        
@@ -132,11 +131,12 @@ class SigninPage(QWidget):
 
         user_name = self.signin_user_line.text()
         pass_word = self.signin_pwd_line.text()
+        path = self.signin_vector_line.text()
         salt = MyMd5().createSalt()
         pass_word = MyMd5().createMd5(pass_word, salt,user_name)
         creatuser = CreatUser()
-        vector = creatuser.getVector(self.path)
-        creatuser.insertImg(user_name,self.path,"admin")
+        vector = creatuser.getVector(path)
+        creatuser.insertImg(user_name,path,"admin")
 
         database.c.execute(
             "INSERT INTO admin (id_number,password,salt,vector) \

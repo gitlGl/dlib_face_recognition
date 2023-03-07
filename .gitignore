@@ -9,5 +9,4 @@ settings.json
 *.xlsx
 *.pyc
 test.py
-runtime/
 .python-version
