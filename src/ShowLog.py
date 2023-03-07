@@ -47,26 +47,27 @@ class ShowLog(QDialog):
         
     def setInformation(self):
         self.information = self.page.information
-        self.row = 0
+        row = 0
+        row2 = 0
         self.tableWidget.setRowCount(0)
         for i in self.information:
-            self.tableWidget.insertRow(self.row)
-            self.row2 = 0
+            self.tableWidget.insertRow(row)
+            row2 = 0
             for cloumn in self.list_cloumn:
                 if cloumn == 'rowid':
                     continue
                 item  = QTableWidgetItem(i[cloumn])
-                self.tableWidget.setItem(self.row, self.row2, item)
+                self.tableWidget.setItem(row, row2, item)
                 item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-                self.row2 = self.row2 +1
+                row2 = row2 +1
             
             imag_path = "img_information/{0}/{1}/log/{2}.jpg".format(self.table,i["id_number"],i["log_time"])
             img_item =  QTableWidgetItem()
             img_item.setIcon(QIcon(imag_path))
-            self.tableWidget.setItem(self.row, self.row2,img_item)
+            self.tableWidget.setItem(row, row2,img_item)
             self.tableWidget.setIconSize(QSize(60, 100))
-            self.row = self.row + 1
-            self.tableWidget.setRowCount(self.row)
+            row = row + 1
+            self.tableWidget.setRowCount(row)
       
            
     def onTableWidgetCellDoubleClicked(self, row, column):#双击槽函数 self.tableWidget.cellDoubleClicked.connect()
