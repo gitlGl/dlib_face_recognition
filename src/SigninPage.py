@@ -5,7 +5,7 @@ from src.GlobalVariable import database
 from src.MyMd5 import MyMd5
 from PyQt5.QtGui import QIcon
 from .Creatuser import CreatUser
-from .Check import getImgPath
+from .Check import getImgPath,checkPath
 
 class SigninPage(QWidget):
     def __init__(self):
@@ -132,6 +132,8 @@ class SigninPage(QWidget):
         user_name = self.signin_user_line.text()
         pass_word = self.signin_pwd_line.text()
         path = self.signin_vector_line.text()
+        if not checkPath(path):
+            return
         salt = MyMd5().createSalt()
         pass_word = MyMd5().createMd5(pass_word, salt,user_name)
         creatuser = CreatUser()

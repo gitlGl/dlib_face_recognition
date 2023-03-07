@@ -36,8 +36,9 @@ def checkPath(path,parent=None):
     if path == '':
         return False
         
-    if os.path.getsize(path) > 1024000 :
-        QMessageBox.critical(parent, 'Wrong', '文件应小于10mb')
+    if (not os.path.isfile(path)) or (os.path.getsize(path) >
+                                                  1024000):  #文件小于10mb
+        QMessageBox.critical(parent, 'Wrong', '文件应小于10mb，或不存在文件')
         return False
 
     data = open(path,"rb").read(32)

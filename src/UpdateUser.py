@@ -6,7 +6,7 @@ from .Creatuser import CreatUser
 import os, shutil
 from .Check import getImgPath
 from .MyMd5 import MyMd5
-from .Check import verifyePwd
+from .Check import verifyePwd,checkPath
 
 
 class UpdateUserData(QDialog):
@@ -129,6 +129,11 @@ class UpdateUserData(QDialog):
         password = self.password_line.text()
         gender = self.gender_line.text()
         #检查输入信息
+        lenth = len(user_name)
+        if lenth > 16 or lenth == 0:
+
+             QMessageBox.critical(self, 'Wrong', '用户名为13个有效字符')
+             return False
 
         if gender == "男" or gender == "女":
             pass
@@ -160,7 +165,7 @@ class UpdateUserData(QDialog):
             return False
 
         try:
-            if self.path == None:  #图片可以为不变更
+            if self.vector_line.text() == '':  #图片可以为不变更
                 if (password != self.information["password"]):
                     salt = MyMd5().createSalt()
                     password = MyMd5().createMd5(password, salt, id_number)
@@ -174,7 +179,10 @@ class UpdateUserData(QDialog):
                     .format(id_number, id))
                 database.conn.commit()
             else:
-                vector =  CreatUser().getVector(self.path)
+                path = self.vector_line.text()
+                if not checkPath(path):
+                    return
+                vector =  CreatUser().getVector(path)
                 if (password != self.information["password"]):
                     salt = MyMd5().createSalt()
                     password = MyMd5().createMd5(password, salt, id_number)
@@ -225,7 +233,6 @@ class UpdateUserData(QDialog):
     def getPath(self):
         path = getImgPath(self)
         if path:
-            self.path = path
             self.vector_line.setText(path)
             return
 
@@ -352,7 +359,7 @@ class UpdateAdminData(QDialog):
         if r == QMessageBox.No:
             return False
         try:
-            if self.path == None:  #图片可以为不变更
+            if self.vector_line.text() == '':  #图片可以为不变更
                 if (password != self.information["password"]):
                     salt = MyMd5().createSalt()
                     password = MyMd5().createMd5(password, salt, id_number)
@@ -368,7 +375,10 @@ class UpdateAdminData(QDialog):
                     .format(id_number, id))
                 database.conn.commit()
             else:
-                vector = CreatUser().getVector(self.path)
+                path = self.vector_line.text()
+                if not checkPath(path):
+                    return
+                vector = CreatUser().getVector(path)
                 if (password != self.information["password"]):
                     salt = MyMd5().createSalt()
                     password = MyMd5().createMd5(password, salt, id_number)
@@ -415,7 +425,6 @@ class UpdateAdminData(QDialog):
     def getPath(self):
         path = getImgPath(self)
         if path:
-            self.path = path
             self.vector_line.setText(path)
             return
 
