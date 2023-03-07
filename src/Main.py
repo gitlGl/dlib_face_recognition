@@ -9,9 +9,10 @@ from multiprocessing import Process, Queue
 from .PutImg import PutImg
 from src.Login import LoginUi
 from src.ShowData import ShowData
-from .Login import LoginUi,configAotuLogin
+from .Login import LoginUi,configAotuLogin,aes
 from  .Ui import Ui
 from src.GlobalVariable import database
+
 class Main(QWidget,Ui):
     def __init__(self):
         super().__init__()
@@ -26,7 +27,12 @@ class Main(QWidget,Ui):
         self.timer.timeout.connect(self.clear_qlabel2)#清除识别结果
         self.login_ui = LoginUi()
         if self.login_ui.config_auto_login.check():
-            self.id_number = self.login_ui.config_auto_login.get()["id"]
+           
+            result =aes.decrypt(self.login_ui.config_auto_login.get()["login_states"])
+            id = result[-36:]
+            id = id[:-16]
+            id = id.strip(' ')
+            self.id_number = id
             self.p = Process(target=processStudentRg,
                          args=(self.Q1, self.Q2, self.share))
             self.p.daemon = True

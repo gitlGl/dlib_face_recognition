@@ -51,8 +51,11 @@ class LoginUi(QWidget):
         
         result = aes.decrypt(dic["pwd"])
         if result:
-            self.user_line.setText(dic["id"])
-            self.pwd_line.setText(aes.decrypt(dic["pwd"])[:-16])
+            id = result[-36:]
+            id = id[:-16]
+            id = id.strip(' ')
+            self.user_line.setText(id)
+            self.pwd_line.setText(result[:-36])
         
     def layoutInit(self):
         self.h_user_layout.addWidget(self.user_label)
@@ -106,7 +109,7 @@ class LoginUi(QWidget):
     def setRemberConfigFlag(self):
         if not self.remember_password.isChecked():
             self.config_rember_pwd.setFlag("0")
-            self.config_rember_pwd.setPwdId('','')
+            self.config_rember_pwd.setPwd('')
 
            
         
@@ -120,7 +123,7 @@ class LoginUi(QWidget):
         user_pwd = self.pwd_line.text()
 
         if not checkUserId(uesr_id):
-           QMessageBox.critical(self, '警告', '用户名只能为数字，且不能超过100位')
+           QMessageBox.critical(self, '警告', '用户名只能为数字，且不能超过20个数字')
            return
         if not checkUserPwd(user_pwd):
             QMessageBox.critical(self,'警告', '密码长度大于6位小于13位')
@@ -136,12 +139,15 @@ class LoginUi(QWidget):
 VALUES (?,?)", (uesr_id, datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
         database.conn.commit()
         time = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")
+        len_ = len(uesr_id)
+        id = uesr_id
+        for i in range(len_,20):
+            id = id+" "
         if self.remember_password.isChecked():
             self.config_rember_pwd.setFlag("1")
-            self.config_rember_pwd.setPwdId(self.user_line.text(),aes.encrypt(self.pwd_line.text()+time))
+            self.config_rember_pwd.setPwd(aes.encrypt(self.pwd_line.text()+id+time))
         if self.auto_login.isChecked():
-            self.config_auto_login.setStates(aes.encrypt(uuid.uuid1().hex[-12:]+time))#aes不能解密加密自身
-            self.config_auto_login.setId(uesr_id)
+            self.config_auto_login.setStates(aes.encrypt(uuid.uuid1().hex[-12:]+id+time))#aes不能解密加密自身
             self.config_auto_login.setFlag("1")
 
 
@@ -186,8 +192,7 @@ class  configRemberPwd(config):
         with open("cfg.ini", "w", encoding="utf-8") as f:
             config.config.write(f)
 
-    def setPwdId(self,id,pwd):
-        config.config["rember_pwd"]["id"] = id
+    def setPwd(self,pwd):
         config.config["rember_pwd"]["pwd"] = pwd
         with open("cfg.ini", "w", encoding="utf-8") as f:
             config.config.write(f)
@@ -222,7 +227,6 @@ class  configAotuLogin(config):
         with open("cfg.ini", "w", encoding="utf-8") as f:
             config.config.write(f)
     def setId(self,id):
-         config.config["aotu_login"]["id"] = id
          with open("cfg.ini", "w", encoding="utf-8") as f:
             config.config.write(f)
     

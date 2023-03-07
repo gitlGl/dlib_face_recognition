@@ -7,7 +7,7 @@ from .GlobalVariable import models
 from .Creatuser import CreatUser
 def checkUserId(user_id):
 
-    if not user_id.isdigit() or len(user_id) > 100:
+    if not user_id.isdigit() or len(user_id) > 20:
         return False
     return True
 
