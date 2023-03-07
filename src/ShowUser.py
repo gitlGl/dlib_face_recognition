@@ -46,35 +46,29 @@ class ShowUser(QWidget):
                
     def setInformation(self):
         self.information = self.page.information
-        self.row = 0
+        row = 0
+        row2 = 0
         self.tableWidget.setRowCount(0)
         information = copy.deepcopy(self.information)
         for i in information:
             if i["id_number"] == "12345678910":
-               
-                self.information.pop(self.row)
-               
+                self.information.pop(row)
                 continue
-           
-            self.tableWidget.insertRow(self.row)
-            self.row2 = 0
+            self.tableWidget.insertRow(row)
+            row2 = 0
             for cloumn in self.list_cloumn:
-                
                 item  = QTableWidgetItem((i[cloumn]))
-                self.tableWidget.setItem(self.row, self.row2, item)
+                self.tableWidget.setItem(row, row2, item)
                 item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-                 
-                self.row2 +=1
-
-
+                row2 +=1
             img_item =  QTableWidgetItem()
             self.tableWidget.setIconSize(QSize(60, 100))
             imag_path = "img_information/{0}/{1}/{2}.jpg".format(
                 self.table,i["id_number"],i["id_number"])#获取图片路径
             img_item.setIcon(QIcon(imag_path))
             img_item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-            self.tableWidget.setItem(self.row, self.row2,img_item)
-            self.row = self.row + 1
+            self.tableWidget.setItem(row, row2,img_item)
+            row = row + 1
 
 class ShowStudentUser(ShowUser):
     def __init__(self,str_list_column,table,list_cloumn,information=None ):

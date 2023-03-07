@@ -144,22 +144,20 @@ class Page(Paging):
         
     #计算页数,静态函数
     def totalCount(table,page_count,id_number=None):
-
-
-
+        count = {}
         if id_number:
-            Page.count =database.c.execute(
+            count =database.c.execute(
                 "select count(*)  from {0} where id_number ={1} "
                 .format(table,id_number)).fetchall()
         else:
-            Page.count = database.c.execute(
+            count = database.c.execute(
             "select count(*)  from {0} "
             .format(table)).fetchall()
             
-        if not Page.count[0]["count(*)"]:
+        if not count[0]["count(*)"]:
             return 0
     
-        count  = Page.count[0]["count(*)"]
+        count  = count[0]["count(*)"]
         i = count/page_count
         q = count%page_count
     
