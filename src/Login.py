@@ -218,8 +218,6 @@ class  configAotuLogin(config):
         if not self.result[:12] == uuid.uuid1().hex[-12:]:
             return False
         return True
-    def get(self):
-        return dict(config.config["aotu_login"])
 
     def setFlag(self,flag):
         config.config["aotu_login"]["flag"] = flag
