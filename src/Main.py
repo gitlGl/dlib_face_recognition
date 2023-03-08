@@ -27,8 +27,7 @@ class Main(QWidget,Ui):
         self.timer.timeout.connect(self.clear_qlabel2)#清除识别结果
         self.login_ui = LoginUi()
         if self.login_ui.config_auto_login.check():
-           
-            result =aes.decrypt(self.login_ui.config_auto_login.get()["login_states"])
+            result = self.login_ui.config_auto_login.result
             id_ = result[-36:]
             id_ = id_[:-16]
             id_ = id_.strip(' ')

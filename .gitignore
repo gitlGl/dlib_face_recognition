@@ -10,4 +10,5 @@ settings.json
 *.pyc
 test.py
 runtime/
+cfg.ini
 .python-version

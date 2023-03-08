@@ -47,9 +47,7 @@ class LoginUi(QWidget):
         if not self.config_rember_pwd.check():
             return
         self.remember_password.setChecked(True)
-        dic = self.config_rember_pwd.get()
-        
-        result = aes.decrypt(dic["pwd"])
+        result = self.config_rember_pwd.result
         if result:
             id = result[-36:]
             id = id[:-16]
@@ -144,12 +142,14 @@ VALUES (?,?)", (uesr_id, datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
         for i in range(len_,20):
             id = id+" "
         if self.remember_password.isChecked():
+            
+            if not self.config_rember_pwd.check():
+                self.config_rember_pwd.setPwd(aes.encrypt(self.pwd_line.text()+id+time))
             self.config_rember_pwd.setFlag("1")
-            self.config_rember_pwd.setPwd(aes.encrypt(self.pwd_line.text()+id+time))
         if self.auto_login.isChecked():
-            self.config_auto_login.setStates(aes.encrypt(uuid.uuid1().hex[-12:]+id+time))#aes不能解密加密自身
+            if not self.config_auto_login.check():
+                self.config_auto_login.setStates(aes.encrypt(uuid.uuid1().hex[-12:]+id+time))#aes不能解密加密自身
             self.config_auto_login.setFlag("1")
-
 
         self.emitsingal.emit(uesr_id)
         self.close()
@@ -175,18 +175,17 @@ class  configRemberPwd(config):
         if config.config == None:
             config.config = configparser.ConfigParser()
             # 打开 ini 文件
-            config.config.read("cfg.ini", encoding="utf-8") 
+            config.config.read("cfg.ini", encoding="utf-8")
+        if  config.config["rember_pwd"]['flag'] == '1':
+            self.result = aes.decrypt(config.config["rember_pwd"]["pwd"])
     def check(self) -> bool:
         if config.config["rember_pwd"]["flag"] == "0":
             return False
-        pre_time = datetime.datetime.strptime(aes.decrypt(config.config["rember_pwd"]["pwd"])[-16:],"%Y-%m-%d-%H-%M")
+        pre_time = datetime.datetime.strptime(self.result[-16:],"%Y-%m-%d-%H-%M")
         days = (datetime.datetime.now() - pre_time ).days
         if days > 7:
             return False
         return True
-    def get(self):
-        return dict(config.config["rember_pwd"])
-
     def setFlag(self,flag):
         config.config["rember_pwd"]["flag"] = flag
         with open("cfg.ini", "w", encoding="utf-8") as f:
@@ -206,11 +205,12 @@ class  configAotuLogin(config):
             config.config = configparser.ConfigParser()
             # 打开 ini 文件
             config.config.read("cfg.ini", encoding="utf-8") 
+        if  config.config["aotu_login"]['flag'] == '1':
+            self.result = aes.decrypt(config.config["aotu_login"]["login_states"])
     def check(self) -> bool:
         if config.config["aotu_login"]["flag"] == "0":
             return False
-        states = aes.decrypt(config.config["aotu_login"]["login_states"])
-       
+        states = self.result
         pre_time = datetime.datetime.strptime(states[-16:],"%Y-%m-%d-%H-%M")
         days = (datetime.datetime.now() - pre_time ).days
         if days > 7:
