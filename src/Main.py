@@ -26,20 +26,17 @@ class Main(QWidget,Ui):
         self.timer = QTimer()
         self.timer.timeout.connect(self.clear_qlabel2)#清除识别结果
         self.login_ui = LoginUi()
-    
-        result = self.login_ui.config_auto_login.result
-        if result:
-            if self.login_ui.config_auto_login.check():
-                id_ = result[-36:]
-                id_ = id_[:-16]
-                id_ = id_.strip(' ')
-                self.id_number = id_
-                self.p = Process(target=processStudentRg,
-                                args=(self.Q1, self.Q2, self.share))
-                self.p.daemon = True
-                self.show()
-                del self.login_ui
-                return
+        if self.login_ui.config_auto_login.check():
+            id_ = self.login_ui.config_auto_login.result[-36:]
+            id_ = id_[:-16]
+            id_ = id_.strip(' ')
+            self.id_number = id_
+            self.p = Process(target=processStudentRg,
+                            args=(self.Q1, self.Q2, self.share))
+            self.p.daemon = True
+            self.show()
+            del self.login_ui
+            return
         self.login_ui.emitsingal.connect(self.show_parent)
         self.login_ui.show()
     #退出登录

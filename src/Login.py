@@ -46,16 +46,15 @@ class LoginUi(QWidget):
         self.config_auto_login = configAotuLogin()
         
         self.remember_password.setChecked(True)
-        result = self.config_rember_pwd.result
-        if result:
-            if not self.config_rember_pwd.check():
-                return
-            id = result[-36:]
-            id = id[:-16]
-            id = id.strip(' ')
-            self.user_line.setText(id)
-            self.pwd_line.setText(result[:-36])
-        
+
+        if not self.config_rember_pwd.check():
+            return
+        id = self.config_rember_pwd.result[-36:]
+        id = id[:-16]
+        id = id.strip(' ')
+        self.user_line.setText(id)
+        self.pwd_line.setText(self.config_rember_pwd.result[:-36])
+    
     def layoutInit(self):
         self.h_user_layout.addWidget(self.user_label)
         self.h_user_layout.addWidget(self.user_line)
