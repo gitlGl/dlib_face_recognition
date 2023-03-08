@@ -210,13 +210,12 @@ class  configAotuLogin(config):
     def check(self) -> bool:
         if config.config["aotu_login"]["flag"] == "0":
             return False
-        states = self.result
-        pre_time = datetime.datetime.strptime(states[-16:],"%Y-%m-%d-%H-%M")
+        pre_time = datetime.datetime.strptime(self.result[-16:],"%Y-%m-%d-%H-%M")
         days = (datetime.datetime.now() - pre_time ).days
         if days > 7:
             return False
         
-        if not states[:12] == uuid.uuid1().hex[-12:]:
+        if not self.result[:12] == uuid.uuid1().hex[-12:]:
             return False
         return True
     def get(self):
