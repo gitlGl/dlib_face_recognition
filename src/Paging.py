@@ -109,16 +109,18 @@ class Page(Paging):
         self.initInformation()
   
     def initInformation(self):
+        """数据初始化"""
         self.total_page = Page.totalCount(self.table,self.page_count,self.id_number)
-        self.string = ""
+        self.string = ""#拼接sql语句
         for i in self.column:
             self.string = self.string+i+","
         self.string = self.string[:-1]
-        if self.id_number:
+        if self.id_number:#显示用户log数据
             self.sql =  "select {0} from {1} where id_number ={2}   limit {3} offset {4}"
             sql = self.sql.format(self.string,self.table,self.id_number,self.page_count,0)
             self.information = database.c.execute(sql).fetchall()
             return
+        #显示用户
         self.sql =  "select {0} from {1}   limit {2} offset {3}"
         sql = self.sql.format(self.string,self.table,self.page_count,0)
         self.information = database.c.execute(sql).fetchall()
@@ -127,15 +129,16 @@ class Page(Paging):
             
 
     def setInformation(self, signal=0):
+        """获取数据库数据"""
         total_page = Page.totalCount(self.table,self.page_count,self.id_number)
         self.totalPage.setText("共" + str(total_page) + "页")#更新总页数
         self.total_page = total_page
-        if self.id_number:
+        if self.id_number:#显示用户log数据
             sql = self.sql.format(self.string,self.table,self.id_number,self.page_count,(signal-1)*self.page_count)
             self.information = database.c.execute(sql).fetchall()
             self.information_signal.emit()
             return
-        
+        #显示用户
         sql = self.sql.format(self.string,self.table,self.page_count,(signal-1)*self.page_count)
         self.information = database.c.execute(sql).fetchall()
         self.information_signal.emit()

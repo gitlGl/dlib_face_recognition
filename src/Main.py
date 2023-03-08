@@ -29,10 +29,10 @@ class Main(QWidget,Ui):
         if self.login_ui.config_auto_login.check():
            
             result =aes.decrypt(self.login_ui.config_auto_login.get()["login_states"])
-            id = result[-36:]
-            id = id[:-16]
-            id = id.strip(' ')
-            self.id_number = id
+            id_ = result[-36:]
+            id_ = id_[:-16]
+            id_ = id_.strip(' ')
+            self.id_number = id_
             self.p = Process(target=processStudentRg,
                          args=(self.Q1, self.Q2, self.share))
             self.p.daemon = True
