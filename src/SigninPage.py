@@ -24,7 +24,7 @@ class SigninPage(QWidget):
         self.signin_vector_button = QPushButton("图片:",self,objectName="GreenButton")
         self.signin_vector_button.setFlat(True)
 
-        self.signin_vector_button.setIcon(QIcon("./resources/文件.png"))
+        self.signin_vector_button.setIcon(QIcon("resources/文件.png"))
 
         self.signin_vector_line = QLineEdit(self)
         self.signin_button = QPushButton('Sign in', self,objectName="GreenButton")

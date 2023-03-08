@@ -31,7 +31,7 @@ class UpdateUserData(QDialog):
         self.vector_button = QPushButton("图片:", self, objectName="GreenButton")
         self.vector_button.setFlat(True)
 
-        self.vector_button.setIcon(QIcon("./resources/文件.png"))
+        self.vector_button.setIcon(QIcon("resources/文件.png"))
 
         self.vector_line = QLineEdit(self)
         #self.ensure_button = QPushButton('确定修改', self,objectName="GreenButton")
@@ -255,7 +255,7 @@ class UpdateAdminData(QDialog):
         self.vector_button = QPushButton("图片:", self, objectName="GreenButton")
         self.vector_button.setFlat(True)
 
-        self.vector_button.setIcon(QIcon("./resources/文件.png"))
+        self.vector_button.setIcon(QIcon("resources/文件.png"))
 
         self.vector_line = QLineEdit(self)
         #self.ensure_button = QPushButton('确定修改', self,objectName="GreenButton")

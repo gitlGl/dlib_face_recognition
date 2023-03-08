@@ -26,7 +26,7 @@ class AdminInformation(QWidget):
         #self.linnedit.setFixedSize(400,15)
         
         self.grou = QGroupBox(self)
-        self.img = ImageView("./resources/bg.jpg",Qt.black)
+        self.img = ImageView("resources/bg.jpg",Qt.black)
         self.id_label = QLabel(self)
         self.id_label.setText("用户ID：{}".format(self.id_number))
         self.face_picture_btn1 = QPushButton()

@@ -7,7 +7,7 @@ class Ui(QObject):
         super().__init__()
      def setupUi(self,mainwin):
         self.setWindowTitle("图书馆人脸识别系统")
-        self.setWindowIcon(QIcon("./resources/图书馆.png"))
+        self.setWindowIcon(QIcon("resources/图书馆.png"))
         #self.setStyleSheet ("border:2px groove gray;border-radius:10px;padding:2px 2px;")
         self.groupbox_1 = QGroupBox()  # 1
         self.groupbox_2 = QGroupBox()
@@ -26,15 +26,15 @@ class Ui(QObject):
         self.user_btn = QPushButton(objectName="GreenButton")
 
         self.open_capture_btn.setText("打开摄像头")
-        self.open_capture_btn.setIcon(QIcon("./resources/摄像头_关闭.png"))
+        self.open_capture_btn.setIcon(QIcon("resources/摄像头_关闭.png"))
         self.normal_rgface_btn.setText("普通识别")
         self.Liveness_rgface_btn.setText("活体识别")
       
         self.data_btn.setText("数据")
         self.help_btn.setText("帮助")
         self.help_btn.clicked.connect(mainwin.help)
-        self.data_btn.setIcon(QIcon("./resources/数据.png"))
-        self.help_btn.setIcon(QIcon("./resources/帮助.png"))
+        self.data_btn.setIcon(QIcon("resources/数据.png"))
+        self.help_btn.setIcon(QIcon("resources/帮助.png"))
         self.open_capture_btn.setFlat(True)
         self.help_btn.setFlat(True)
         self.data_btn.clicked.connect(mainwin.show_data)
@@ -43,7 +43,7 @@ class Ui(QObject):
         self.Liveness_rgface_btn.clicked.connect(mainwin.open_eye)
         self.user_btn.clicked.connect(lambda:mainwin.pos_menu(self.user_btn.pos()))
 
-        self.user_btn.setIcon(QIcon("./resources/用户.png"))
+        self.user_btn.setIcon(QIcon("resources/用户.png"))
         self.user_btn.setText("用户")
         self.tips_label = QLabel()
         self.rg_label = QLabel()

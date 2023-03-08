@@ -192,7 +192,7 @@ class Main(QWidget,Ui):
         self.open_capture_btn.clicked.disconnect(self.open)
         self.open_capture_btn.clicked.connect(self.close)
         self.open_capture_btn.setText("关闭摄像头")
-        self.open_capture_btn.setIcon(QIcon("./resources/摄像头.png"))
+        self.open_capture_btn.setIcon(QIcon("resources/摄像头.png"))
         self.put_img.SetCap()
         self.put_img.work_thread.start()
         if not self.p.is_alive():
@@ -230,7 +230,7 @@ class Main(QWidget,Ui):
         self.open_capture_btn.clicked.connect(self.open)
         self.open_capture_btn.clicked.disconnect(self.close)
         self.open_capture_btn.setText("打开摄像头")
-        self.open_capture_btn.setIcon(QIcon("./resources/摄像头_关闭.png"))
+        self.open_capture_btn.setIcon(QIcon("resources/摄像头_关闭.png"))
         self.put_img.close()  # 关闭摄像头
         #self.qlabel4.setPixmap(QPixmap("./resources/摄像头.png"))
 
