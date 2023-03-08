@@ -44,11 +44,12 @@ class LoginUi(QWidget):
         self.layoutInit()
         self.config_rember_pwd = configRemberPwd()
         self.config_auto_login = configAotuLogin()
-        if not self.config_rember_pwd.check():
-            return
+        
         self.remember_password.setChecked(True)
         result = self.config_rember_pwd.result
         if result:
+            if not self.config_rember_pwd.check():
+                return
             id = result[-36:]
             id = id[:-16]
             id = id.strip(' ')
@@ -166,12 +167,13 @@ VALUES (?,?)", (uesr_id, datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
 
 class config():
     config = None#使用全局变量单例模式,保证数据一致性
-
+    
     def __del__(self):
         if config.config != None:
             config.config = None#释放全局变量，降低内存占用
 class  configRemberPwd(config):
     def __init__(self) -> None:
+        self.result = False
         if config.config == None:
             config.config = configparser.ConfigParser()
             # 打开 ini 文件
@@ -181,11 +183,13 @@ class  configRemberPwd(config):
     def check(self) -> bool:
         if config.config["rember_pwd"]["flag"] == "0":
             return False
-        pre_time = datetime.datetime.strptime(self.result[-16:],"%Y-%m-%d-%H-%M")
-        days = (datetime.datetime.now() - pre_time ).days
-        if days > 7:
-            return False
-        return True
+        if self.result:
+            pre_time = datetime.datetime.strptime(self.result[-16:],"%Y-%m-%d-%H-%M")
+            days = (datetime.datetime.now() - pre_time ).days
+            if days > 7:
+                return False
+            return True
+        return False
     def setFlag(self,flag):
         config.config["rember_pwd"]["flag"] = flag
         with open("cfg.ini", "w", encoding="utf-8") as f:
@@ -201,6 +205,7 @@ class  configRemberPwd(config):
 class  configAotuLogin(config):
     """自动登录功能，只保存用户登录状态，不保存密码，更安全"""
     def __init__(self) -> None:
+        self.result = False
         if config.config == None:
             config.config = configparser.ConfigParser()
             # 打开 ini 文件
@@ -210,11 +215,13 @@ class  configAotuLogin(config):
     def check(self) -> bool:
         if config.config["aotu_login"]["flag"] == "0":
             return False
-        pre_time = datetime.datetime.strptime(self.result[-16:],"%Y-%m-%d-%H-%M")
-        days = (datetime.datetime.now() - pre_time ).days
-        if days > 7:
+        if self.result:
+            pre_time = datetime.datetime.strptime(self.result[-16:],"%Y-%m-%d-%H-%M")
+            days = (datetime.datetime.now() - pre_time ).days
+            if days > 7:
+                return False
+        else:
             return False
-        
         if not self.result[:12] == uuid.uuid1().hex[-12:]:
             return False
         return True
