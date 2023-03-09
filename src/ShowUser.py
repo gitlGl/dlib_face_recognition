@@ -23,20 +23,16 @@ class ShowUser(QWidget):
         self.tableWidget.cellDoubleClicked.connect(self.onTableWidgetCellDoubleClicked)
         self.VBoxLayout = QVBoxLayout()
         self.VBoxLayout.addWidget(self.tableWidget)
-
-        self.page_count = 30
         self.list_cloumn = list_cloumn
-        self.page = Page(table,self.list_cloumn,page_count=self.page_count)
-        if  not self.page.information:
-            QMessageBox.critical(self, 'Wrong', '不存在用户或记录')
-            self.close()
-            return
-        self.page.information_signal.connect(self.setInformation)
         if not information:
+            page_count = 30
+            self.page = Page(table,self.list_cloumn,page_count=page_count)
+            self.page.information_signal.connect(self.setInformation)
+            if  not self.page.information:
+                QMessageBox.critical(self, 'Wrong', '不存在用户或记录')
+                self.close()
+                return
             self.VBoxLayout.addWidget(self.page)
-        else:
-            self.page.information = information
-            self.page.hide()
         self.setLayout(self.VBoxLayout)
         columncout = len(str_list_column)
         self.tableWidget.setColumnCount(columncout)#根据数据量确定列数
@@ -45,7 +41,8 @@ class ShowUser(QWidget):
         
                
     def setInformation(self):
-        self.information = self.page.information
+        if not self.information:
+            self.information = self.page.information
         row = 0
         row2 = 0
         self.tableWidget.setRowCount(0)
