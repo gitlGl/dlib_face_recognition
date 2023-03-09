@@ -126,19 +126,21 @@ class ShowData(QWidget):
     #显示搜索结果
     def showSearchResult(self):
         if not self.linnedit.text(): 
-             QMessageBox.critical(self, 'Wrong', '请输入学号')
+             QMessageBox.critical(self, 'Wrong', '请输入内容')
              self.linnedit.clear()
              return 
-        id_number = self.linnedit.text()
-        if not id_number.isdigit():
-            QMessageBox.critical(self, 'Wrong', '学号为数字')
-            self.linnedit.clear()
-            return
-            
-        result = database.c.execute("select id_number,user_name,gender,password from student where id_number = {}".format(id_number)).fetchall()
-        if len(result) == 0:
-            QMessageBox.critical(self, 'Wrong', '用户不存在')
-            return
+        search_content = self.linnedit.text()
+        result = None
+        if  search_content.isdigit():
+            result = database.c.execute("select id_number,user_name,gender,password from student where id_number = {}".format(search_content)).fetchall()
+            if len(result) == 0:
+                QMessageBox.critical(self, 'Wrong', '用户不存在')
+                return
+        else:
+            result = database.c.execute("select id_number,user_name,gender,password from student where user_name like '%{}%'".format(search_content)).fetchall()
+            if len(result) == 0:
+                QMessageBox.critical(self, 'Wrong', '用户不存在')
+                return
            
         result = ShowStudentUser([ '学号', '姓名', '性别','性别',"图片" ],
         "student",["id_number","user_name","gender","password"],result)
