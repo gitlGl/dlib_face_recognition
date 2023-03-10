@@ -47,13 +47,13 @@ class LoginUi(QWidget):
        
     def init_rember_pwd(self):
         if  self.config_rember_pwd.config["rember_pwd"]['flag'] == '0':
-            return
+            return False
 
         else:
             self.remember_password.setChecked(True)
         if not self.config_rember_pwd.check():
             self.remember_password.setChecked(False)
-            return 'time_out'
+            return True
         id = self.config_rember_pwd.result[-36:]
         id = id[:-16]
         id = id.strip(' ')
@@ -61,10 +61,10 @@ class LoginUi(QWidget):
         self.pwd_line.setText(self.config_rember_pwd.result[:-36])
     def init_auto_login(self):
         if config.config["aotu_login"]["flag"] != "1":
-            return
+            return False
         if not self.config_auto_login.check():
             self.auto_login.setChecked(False)
-            return 'time_out'
+            return True
     def layoutInit(self):
         self.h_user_layout.addWidget(self.user_label)
         self.h_user_layout.addWidget(self.user_line)
@@ -88,7 +88,7 @@ class LoginUi(QWidget):
         self.v_layout.addStretch(1)
         self.v_layout.addLayout(self.h_password_layout)
         self.v_layout.addStretch(1.5)
-        if self.init_rember_pwd() == 'time_out' or self.init_auto_login():
+        if self.init_rember_pwd()  or self.init_auto_login():
             qlbel = QLabel("记住密码或自动登录超时")
             qlbel.setStyleSheet("font-size:12px;color:red")
             self.h_tips = QHBoxLayout()
