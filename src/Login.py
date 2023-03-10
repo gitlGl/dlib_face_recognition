@@ -12,6 +12,7 @@ from .SigninPage import SigninPage
 import configparser,base64
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
+import os
 class LoginUi(QWidget):
     emitsingal = pyqtSignal(str)
     emit_close = pyqtSignal()
@@ -44,11 +45,11 @@ class LoginUi(QWidget):
         self.layoutInit()
         self.config_rember_pwd = configRemberPwd()
         self.config_auto_login = configAotuLogin()
-        
-        self.remember_password.setChecked(True)
 
         if not self.config_rember_pwd.check():
             return
+        else:
+            self.remember_password.setChecked(True)
         id = self.config_rember_pwd.result[-36:]
         id = id[:-16]
         id = id.strip(' ')
@@ -166,12 +167,21 @@ VALUES (?,?)", (uesr_id, datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
 
 class config():
     config = None#使用全局变量单例模式,保证数据一致性
-    
+    def __init__(self):
+        if  os.path.isfile("cfg.ini"):
+            return
+        config = configparser.ConfigParser()    #实例化一个对象
+        config["rember_pwd"] = {  'flag':'0','pwd':'' }     # 类似于操作字典的形式
+        config["aotu_login"] = {'flag':'0','login_states':''}
+        with open("cfg.ini", "w", encoding="utf-8") as f:
+            config.write(f)
+
     def __del__(self):
         if config.config != None:
             config.config = None#释放全局变量，降低内存占用
 class  configRemberPwd(config):
     def __init__(self) -> None:
+        super().__init__()
         self.result = False
         if config.config == None:
             config.config = configparser.ConfigParser()
@@ -204,6 +214,7 @@ class  configRemberPwd(config):
 class  configAotuLogin(config):
     """自动登录功能，只保存用户登录状态，不保存密码，更安全"""
     def __init__(self) -> None:
+        super().__init__()
         self.result = False
         if config.config == None:
             config.config = configparser.ConfigParser()
