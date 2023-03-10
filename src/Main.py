@@ -24,7 +24,7 @@ class Main(QWidget,Ui):
         self.put_img.emit_result.connect(self.show_result)
         self.put_img.emit_text.connect(self.change_text)
         self.timer = QTimer()
-        self.timer.timeout.connect(self.clear_qlabel2)#清除识别结果
+        self.timer.timeout.connect(self.clear_qlabel)#清除识别结果
         self.login_ui = LoginUi()
         if self.login_ui.config_auto_login.check():
             id_ = self.login_ui.config_auto_login.result[-36:]
@@ -62,7 +62,6 @@ class Main(QWidget,Ui):
             self.login_ui = LoginUi()
             self.login_ui.emitsingal.connect(self.show_parent)
             self.login_ui.show()
-            self.login_ui.config_auto_login.setId('')
             self.login_ui.config_auto_login.setStates('')
             self.login_ui.config_auto_login.setFlag('0')
         
@@ -104,7 +103,7 @@ class Main(QWidget,Ui):
             self.timer.start(1500)
 
     #清除识别结果
-    def clear_qlabel2(self):
+    def clear_qlabel(self):
         self.timer.stop()
         self.rg_label.clear()
         if self.Liveness_rgface_btn.isChecked() and self.put_img.work_thread.isRunning(): #and self.put_img.isRunning()

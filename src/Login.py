@@ -39,28 +39,39 @@ class LoginUi(QWidget):
         self.h_in_layout = QHBoxLayout()
 
         self.v_layout = QVBoxLayout()
-
+        self.config_rember_pwd = configRemberPwd()
+        self.config_auto_login = configAotuLogin()
         self.lineeditInit()
         self.pushbuttonInit()
         self.layoutInit()
-        self.config_rember_pwd = configRemberPwd()
-        self.config_auto_login = configAotuLogin()
-
-        if not self.config_rember_pwd.check():
+       
+    def init_rember_pwd(self):
+        if  self.config_rember_pwd.config["rember_pwd"]['flag'] == '0':
             return
+
         else:
             self.remember_password.setChecked(True)
+        if not self.config_rember_pwd.check():
+            self.remember_password.setChecked(False)
+            return 'time_out'
         id = self.config_rember_pwd.result[-36:]
         id = id[:-16]
         id = id.strip(' ')
         self.user_line.setText(id)
         self.pwd_line.setText(self.config_rember_pwd.result[:-36])
-    
+    def init_auto_login(self):
+        if config.config["aotu_login"]["flag"] != "1":
+            return
+        if not self.config_auto_login.check():
+            self.auto_login.setChecked(False)
+            return 'time_out'
     def layoutInit(self):
         self.h_user_layout.addWidget(self.user_label)
         self.h_user_layout.addWidget(self.user_line)
         self.h_password_layout.addWidget(self.pwd_label)
         self.h_password_layout.addWidget(self.pwd_line)
+    
+
         self.h_in_layout.addStretch(1)
         self.h_in_layout.addWidget(self.login_button)
         self.h_in_layout.addStretch(1)
@@ -72,11 +83,26 @@ class LoginUi(QWidget):
         self.h_in_layout.addStretch(1)
         self.h_in_layout.addWidget(self.signin_button)
         self.h_in_layout.addStretch(1)
-
+        self.v_layout.addStretch(1)
         self.v_layout.addLayout(self.h_user_layout)
+        self.v_layout.addStretch(1)
         self.v_layout.addLayout(self.h_password_layout)
+        self.v_layout.addStretch(1.5)
+        if self.init_rember_pwd() == 'time_out' or self.init_auto_login():
+            qlbel = QLabel("记住密码或自动登录超时")
+            qlbel.setStyleSheet("font-size:12px;color:red")
+            self.h_tips = QHBoxLayout()
+            self.config_auto_login.setStates('')
+            self.config_auto_login.setFlag('0')
+            self.config_rember_pwd.setFlag("0")
+            self.config_rember_pwd.setPwd('')
+            self.h_tips.addStretch(1)
+            self.h_tips.addWidget(qlbel)
+            self.h_tips.addStretch(1)
+            self.v_layout.addLayout(self.h_tips)
+            self.v_layout.addStretch(1.5)
         self.v_layout.addLayout(self.h_in_layout)
-
+        self.v_layout.addStretch(1)
         self.setLayout(self.v_layout)
 
     def lineeditInit(self):
@@ -190,12 +216,12 @@ class  configRemberPwd(config):
         if  config.config["rember_pwd"]['flag'] == '1':
             self.result = aes.decrypt(config.config["rember_pwd"]["pwd"])
     def check(self) -> bool:
-        if config.config["rember_pwd"]["flag"] == "0":
+        if config.config["rember_pwd"]["flag"] != "1":
             return False
         if self.result:
             pre_time = datetime.datetime.strptime(self.result[-16:],"%Y-%m-%d-%H-%M")
             days = (datetime.datetime.now() - pre_time ).days
-            if days > 7:
+            if days > 3:
                 return False
             return True
         return False
@@ -223,12 +249,12 @@ class  configAotuLogin(config):
         if  config.config["aotu_login"]['flag'] == '1':
             self.result = aes.decrypt(config.config["aotu_login"]["login_states"])
     def check(self) -> bool:
-        if config.config["aotu_login"]["flag"] == "0":
+        if config.config["aotu_login"]["flag"] != "1":
             return False
         if self.result:
             pre_time = datetime.datetime.strptime(self.result[-16:],"%Y-%m-%d-%H-%M")
             days = (datetime.datetime.now() - pre_time ).days
-            if days > 7:
+            if days > 3:
                 return False
         else:
             return False
@@ -240,10 +266,6 @@ class  configAotuLogin(config):
         config.config["aotu_login"]["flag"] = flag
         with open("cfg.ini", "w", encoding="utf-8") as f:
             config.config.write(f)
-    def setId(self,id):
-         with open("cfg.ini", "w", encoding="utf-8") as f:
-            config.config.write(f)
-    
 
     def setStates(self,states):
         config.config["aotu_login"]["login_states"] = states
