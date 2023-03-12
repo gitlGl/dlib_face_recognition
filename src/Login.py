@@ -46,12 +46,12 @@ class LoginUi(QWidget):
         self.layoutInit()
        
     def init_rember_pwd(self):
-        if  self.config_rember_pwd.config["rember_pwd"]['flag'] == '0':
+        if  not self.config_rember_pwd.checkFlag():
             return False
 
         else:
             self.remember_password.setChecked(True)
-        if not self.config_rember_pwd.check():
+        if not self.config_rember_pwd.checkTime():
             self.remember_password.setChecked(False)
             return True
         id = self.config_rember_pwd.result[-36:]
@@ -59,12 +59,14 @@ class LoginUi(QWidget):
         id = id.strip(' ')
         self.user_line.setText(id)
         self.pwd_line.setText(self.config_rember_pwd.result[:-36])
+        return False
     def init_auto_login(self):
-        if config.config["aotu_login"]["flag"] != "1":
+        if not self.config_auto_login.checkFlag():
             return False
-        if not self.config_auto_login.check():
+        if not self.config_auto_login.checkTime():
             self.auto_login.setChecked(False)
             return True
+        return False
     def layoutInit(self):
         self.h_user_layout.addWidget(self.user_label)
         self.h_user_layout.addWidget(self.user_line)
@@ -215,14 +217,20 @@ class  configRemberPwd(config):
             config.config.read("cfg.ini", encoding="utf-8")
         if  config.config["rember_pwd"]['flag'] == '1':
             self.result = aes.decrypt(config.config["rember_pwd"]["pwd"])
-    def check(self) -> bool:
-        if config.config["rember_pwd"]["flag"] != "1":
-            return False
+    def checkFlag(self):
+        return config.config["rember_pwd"]["flag"] == "1"
+    def checkTime(self):
         if self.result:
             pre_time = datetime.datetime.strptime(self.result[-16:],"%Y-%m-%d-%H-%M")
             days = (datetime.datetime.now() - pre_time ).days
             if days > 3:
                 return False
+            return True
+
+    def check(self) -> bool:
+        if not self.checkFlag():
+            return False
+        if self.checkTime():
             return True
         return False
     def setFlag(self,flag):
@@ -248,15 +256,20 @@ class  configAotuLogin(config):
             config.config.read("cfg.ini", encoding="utf-8") 
         if  config.config["aotu_login"]['flag'] == '1':
             self.result = aes.decrypt(config.config["aotu_login"]["login_states"])
-    def check(self) -> bool:
-        if config.config["aotu_login"]["flag"] != "1":
-            return False
+    def checkFlag(self):
+        return config.config["aotu_login"]["flag"] == "1"
+    def checkTime(self):
         if self.result:
             pre_time = datetime.datetime.strptime(self.result[-16:],"%Y-%m-%d-%H-%M")
             days = (datetime.datetime.now() - pre_time ).days
             if days > 3:
                 return False
-        else:
+            return True
+
+    def check(self) -> bool:
+        if not self.checkFlag():
+            return False
+        if not self.checkTime():
             return False
         if not self.result[:12] == uuid.uuid1().hex[-12:]:
             return False
