@@ -13,7 +13,7 @@ from .Login import LoginUi,configAotuLogin,aes
 from  .Ui import Ui
 from src.GlobalVariable import database
 
-class Main(QWidget,Ui):
+class Main(Ui):
     def __init__(self):
         super().__init__()
         self.setupUi(self)

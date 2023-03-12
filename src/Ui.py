@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QHBoxLayout,QGrou
 from PyQt5.QtCore import Qt,QObject
 from PyQt5.QtGui import QIcon,QFont
 
-class Ui(QObject):
+class Ui(QWidget):
      def __init__(self):
         super().__init__()
      def setupUi(self,mainwin):
