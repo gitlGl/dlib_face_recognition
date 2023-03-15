@@ -67,7 +67,7 @@ class AdminInformation(QWidget):
     def browse(self):
         self.result = ShowLog(self.id_number,[ '用户ID', '登录时间',"图片" ],
         "admin",['rowid','id_number','log_time'])
-        self.Vhlayout.itemAt(1).widget().deleteLater()
+        self.Vhlayout.itemAt(1).widget().destroy()
         self.Vhlayout.addWidget(self.result)
 
     def imgEvent(self,pos):
@@ -76,7 +76,7 @@ class AdminInformation(QWidget):
        pop_menu.addAction("修改图片")
        action = pop_menu.exec_(self.mapToGlobal(pos))
        if action == pop_menu.actions()[0]:
-           self.Vhlayout.itemAt(1).widget().deleteLater()
+           self.Vhlayout.itemAt(1).widget().destroy()
            img_path = "img_information/admin/{0}/{1}.jpg".format(str(self.id_number),str(self.id_number))
            show_imag = ShowImage(img_path,Qt.WhiteSpaceMode)
            self.Vhlayout.addWidget(show_imag)
@@ -95,7 +95,7 @@ class AdminInformation(QWidget):
     def root(self):
         result = database.c.execute("select id_number,password from admin ").fetchall()
         show_admin_User = ShowAdminUser([ '用户ID', '密码',"图片" ],'admin',["id_number",'password'],result)
-        self.Vhlayout.itemAt(1).widget().deleteLater()
+        self.Vhlayout.itemAt(1).widget().destroy()
         self.Vhlayout.addWidget(show_admin_User)
         pass
 #密码修改窗口

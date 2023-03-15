@@ -4,9 +4,10 @@ from src.GlobalVariable import database
 from src.ShowUser import ShowStudentUser
 from PyQt5.QtCore import QDate,Qt
 import copy,os 
+from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel, QVBoxLayout, QLineEdit,\
-QGroupBox,QPushButton,QFileDialog,QDateEdit,QMessageBox, QMenu
+QGroupBox,QPushButton,QFileDialog,QDateEdit,QMessageBox, QMenu,QProgressBar,QProgressDialog
 from src.LineStack import ChartView
 from src.Plugins import Plugins
 class ShowData(QWidget):
@@ -16,8 +17,6 @@ class ShowData(QWidget):
         self.setWindowTitle('数据')
         self.setWindowIcon(QIcon('resources/数据.png'))
         self.setWindowModality(Qt.ApplicationModal)
-        
-
         self.Hlayout = QHBoxLayout()
         self.Vhlayout = QVBoxLayout()
         self.linnedit = QLineEdit()
@@ -73,6 +72,8 @@ class ShowData(QWidget):
         self.Hlayout.addWidget(self.btn_plugin)
         self.grou.setLayout(self.Hlayout)
         self.Vhlayout.addWidget(self.grou)
+        
+        
         self.grou.setMaximumSize(1000,40)
         
         self.setLayout(self.Vhlayout)
@@ -81,12 +82,11 @@ class ShowData(QWidget):
         self.btn_brow.clicked.connect(self.browse)
         self.btn_create_user.clicked.connect(self.creatStudentUser)
         self.btn_plugin.clicked.connect(lambda:self.posMenu(self.btn_plugin.pos()))
-        datatabel,data_title ,number=  self.getData_()
         self.qlabel_ = QLabel(self)
-        self.view = ChartView(datatabel,data_title,number)
         #self.Vhlayout.addWidget(self.view)
         self.resize(480, 600)
         self.Vhlayout.addWidget(self.qlabel_)
+
        
   
     # def resizeEvent(self, event):
@@ -102,7 +102,10 @@ class ShowData(QWidget):
             pop_menu.addAction(label)
         action = pop_menu.exec_(self.mapToGlobal(pos))
         if action:
-            self.Vhlayout.itemAt(1).widget().deleteLater()
+            item = self.Vhlayout.itemAt(1)
+            self.Vhlayout.removeItem(item)
+            item.widget().deleteLater()
+            print(type(self.Vhlayout.itemAt(1)))            
             self.Vhlayout.addWidget(controls_class[action.text()](self))
         
        
@@ -112,7 +115,32 @@ class ShowData(QWidget):
                                               "files(*.xlsx )")
         if path == '':
             return
-        list_error = CreatStudentUser().creatUser(path)
+        
+        self.test = QtBoxStyleProgressBar()
+        print(self.Vhlayout.count())
+        item = self.Vhlayout.itemAt(1)
+        self.Vhlayout.removeItem(item)
+        item.widget().deleteLater()
+        print(type(self.Vhlayout.itemAt(1))) 
+        print(self.Vhlayout.count())
+        self.Vhlayout.addWidget(self.test)
+        self.qlabel_ = QLabel()
+        self.Vhlayout.addWidget(self.qlabel_)
+        
+        QApplication.processEvents()
+        
+        creat_student_user =  CreatStudentUser()
+        creat_student_user.sig_end.connect(self.showEerror)
+        creat_student_user.sig_progress.connect(self.test.setValue)
+        QApplication.processEvents()
+        self.setEnabled(False)
+        list_error = creat_student_user.creatUser(path)
+        self.setEnabled(True)
+        
+    def showEerror(self,list_error):
+        item = self.Vhlayout.itemAt(1)
+        self.Vhlayout.removeItem(item)
+        item.widget().deleteLater()
         if len(list_error) == 0:
             QMessageBox.information(self, 'Information',
                                     'Register Successfully')
@@ -123,6 +151,11 @@ class ShowData(QWidget):
             error_string = error_string + i + "\n"
 
         QMessageBox.information(self, 'Information', error_string)
+        
+       
+        
+        
+
     #显示搜索结果
     def showSearchResult(self):
         if not self.linnedit.text(): 
@@ -144,7 +177,12 @@ class ShowData(QWidget):
            
         result = ShowStudentUser([ '学号', '姓名', '性别','性别',"图片" ],
         "student",["id_number","user_name","gender","password"],result)
-        self.Vhlayout.itemAt(1).widget().deleteLater()
+        item = self.Vhlayout.itemAt(1)
+        self.Vhlayout.removeItem(item)
+        item.widget().deleteLater()
+        print(type(self.Vhlayout.itemAt(1))) 
+      
+       
         self.Vhlayout.addWidget(result)
         return
         
@@ -153,14 +191,20 @@ class ShowData(QWidget):
            
         result = ShowStudentUser([ '学号', '姓名', '性别','密码',"图片" ],
         "student",["id_number","user_name","gender","password"])
-        self.Vhlayout.itemAt(1).widget().deleteLater()
+        item = self.Vhlayout.itemAt(1)
+        self.Vhlayout.removeItem(item)
+        item.widget().deleteLater()
+        print(type(self.Vhlayout.itemAt(1)))
         self.Vhlayout.addWidget(result)
         return
 
             
     def analyzeData(self):
         #根据输入时间范围决定X轴刻度间隔
-        self.Vhlayout.itemAt(1).widget().deleteLater()
+        item = self.Vhlayout.itemAt(1)
+        self.Vhlayout.removeItem(item)
+        item.widget().deleteLater()
+        print(type(self.Vhlayout.itemAt(1)))
         if self.DateEdit1.date().daysTo(self.DateEdit2.date()) < 0 :
             self.time1 = self.DateEdit2
         else:
@@ -191,7 +235,6 @@ class ShowData(QWidget):
             datatabel,data_title,number =  self.getData(int (temdays/365),365)
             self.view = ChartView(datatabel,data_title,number)
             self.Vhlayout.addWidget(self.view)  
-            pass
     def getData_(self):
     
        
@@ -281,3 +324,34 @@ class ShowData(QWidget):
         temdata.sort(reverse=True)    
         return datatabel,data_title ,temdata[0]
 
+
+
+class QtBoxStyleProgressBar(QProgressBar):
+    def __init__(self):
+        super(QtBoxStyleProgressBar, self).__init__()
+        #self.setWindowFlag(Qt.FramelessWindowHint) 
+        #self.setWindowModality(Qt.WindowModal)    
+        self.setRange(0, 100)
+        self.setValue(0)
+        self.setStyleSheet("""
+        QProgressBar::chunk
+            {
+                border-radius:5px;
+                background:qlineargradient(spread:pad,x1:0,y1:0,x2:1,y2:0,stop:0 #01FAFF,stop:1  #26B4FF);
+            }
+            QProgressBar
+            {
+                height:22px;
+                text-align:center;/*文本位置*/
+                font-size:14px;
+                color:white;
+                border-radius:5px;
+                background: #1D5573 ;
+            }
+       
+
+        """)
+    def setValue(self, value: int) -> None:
+        self.setFormat("加载中请勿关闭窗口，loading {}%.....".format(value))
+        super().setValue(value)
+        return

@@ -4,9 +4,12 @@ from src.GlobalVariable import models
 import xlrd, os
 from src.GlobalVariable import database
 import cv2, pickle
+from PyQt5.QtCore import pyqtSignal,QObject
+from PyQt5.QtWidgets import QApplication
 
-
-class CreatUser():
+class CreatUser(QObject):
+    def __init__(self) -> None:
+        super().__init__()
     def getImg(self, img_path):
         raw_data = np.fromfile(
             img_path, dtype=np.uint8)  #先用numpy把图片文件存入内存：raw_data，把图片数据看做是纯字节数据
@@ -42,6 +45,8 @@ class CreatUser():
 
 
 class CreatStudentUser(CreatUser):
+    sig_progress = pyqtSignal(int)
+    sig_end = pyqtSignal(list)
     def __init__(self):
         super().__init__()
 
@@ -53,8 +58,12 @@ class CreatStudentUser(CreatUser):
         for sheet in sheets:
             rows = sheet.nrows
             for i in range(1, rows):
+                QApplication.processEvents()
+                self.sig_progress.emit(int(i/rows*100)) 
                 list1 = sheet.row_values(rowx=i)
                 #判断用户名是否符合格式要求
+                if type(list1[0]) == float:
+                    list1[0] = int(list1[0])
 
                 if (not str(list1[0]).isdigit()) or len(str(list1[0])) != 13:
                     list_problem.append("第{0}行第1列，用户名为13位数字 ".format(i) +
@@ -132,6 +141,9 @@ class CreatStudentUser(CreatUser):
                 dic = dict(zip(list2, list1))
                 information = self.setInformation(dic)
                 self.insertUser(information)
+        self.sig_progress.emit(100)
+        self.sig_end.emit(list_problem)
+
         return list_problem
 
     def setInformation(self, part_information):
