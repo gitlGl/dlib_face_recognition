@@ -104,8 +104,7 @@ class ShowData(QWidget):
         if action:
             item = self.Vhlayout.itemAt(1)
             self.Vhlayout.removeItem(item)
-            item.widget().deleteLater()
-            print(type(self.Vhlayout.itemAt(1)))            
+            item.widget().deleteLater()       
             self.Vhlayout.addWidget(controls_class[action.text()](self))
         
        
@@ -117,12 +116,11 @@ class ShowData(QWidget):
             return
         
         self.test = QtBoxStyleProgressBar()
-        print(self.Vhlayout.count())
+        
         item = self.Vhlayout.itemAt(1)
         self.Vhlayout.removeItem(item)
+        QApplication.processEvents()
         item.widget().deleteLater()
-        print(type(self.Vhlayout.itemAt(1))) 
-        print(self.Vhlayout.count())
         self.Vhlayout.addWidget(self.test)
         self.qlabel_ = QLabel()
         self.Vhlayout.addWidget(self.qlabel_)
@@ -180,7 +178,7 @@ class ShowData(QWidget):
         item = self.Vhlayout.itemAt(1)
         self.Vhlayout.removeItem(item)
         item.widget().deleteLater()
-        print(type(self.Vhlayout.itemAt(1))) 
+        
       
        
         self.Vhlayout.addWidget(result)
@@ -194,8 +192,9 @@ class ShowData(QWidget):
         item = self.Vhlayout.itemAt(1)
         self.Vhlayout.removeItem(item)
         item.widget().deleteLater()
-        print(type(self.Vhlayout.itemAt(1)))
+       
         self.Vhlayout.addWidget(result)
+        QApplication.processEvents()
         return
 
             
@@ -204,7 +203,6 @@ class ShowData(QWidget):
         item = self.Vhlayout.itemAt(1)
         self.Vhlayout.removeItem(item)
         item.widget().deleteLater()
-        print(type(self.Vhlayout.itemAt(1)))
         if self.DateEdit1.date().daysTo(self.DateEdit2.date()) < 0 :
             self.time1 = self.DateEdit2
         else:
