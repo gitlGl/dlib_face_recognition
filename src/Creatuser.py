@@ -65,7 +65,7 @@ class CreatStudentUser(CreatUser):
                 if type(list1[0]) == float:
                     list1[0] = int(list1[0])
 
-                if (not str(list1[0]).isdigit()) or len(str(list1[0])) != 13:
+                if (not str(list1[0]).isdigit()) or len(str(list1[0])) >13:
                     list_problem.append("第{0}行第1列，用户名为13位数字 ".format(i) +
                                         str(list1[0]))
                     continue
