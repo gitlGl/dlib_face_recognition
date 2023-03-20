@@ -5,10 +5,10 @@ class  studentlog():
       
         #用户信息
         item = database.c.execute(
-                "SELECT  id_number,gender,cout,user_name from student where vector = ?",
+                "SELECT  id_number,gender,cout,user_name from student where vector = ? limit 1",
                 (vector, )).fetchall() # 取出返回所有数据，fetchall返回类型是[()]
         
-                
+        print(len(item))
         if(len(item) == 1):
             self.item = item[0]
             self.insertTime()
@@ -63,7 +63,7 @@ class  adminlog():
         
         #用户信息
         item = database.c.execute(
-                "SELECT  id_number from admin where vector = ?",
+                "SELECT  id_number from admin where vector = ? limit 1",
                 (vector, )).fetchall() # 取出返回所有数据，fetchall返回类型是[()]
         print(len(item))
      

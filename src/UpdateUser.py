@@ -225,8 +225,8 @@ class UpdateUserData(QDialog):
             else:
                 QMessageBox.critical(self, 'Wrong', "该用户图片文件可能丢失！")
             os.rename(old_path, new_path)
-        if self.path:
-            CreatUser().insertImg(id_number, self.path, "student")
+        if self.vector_line.text() != '': 
+            CreatUser().insertImg(id_number, self.vector_line.text(), "student")
         return True
 
         #获取图片路径
@@ -417,8 +417,8 @@ class UpdateAdminData(QDialog):
             else:
                 QMessageBox.critical(self, 'Wrong', "该用户图片文件可能丢失！")
             os.rename(old_path, new_path)
-        if self.path:
-            CreatUser().insertImg(id_number, self.path, "admin")
+        if self.vector_line.text()!='':
+            CreatUser().insertImg(id_number, self.vector_line.text(), "admin")
         return True
 
         #获取图片路径
