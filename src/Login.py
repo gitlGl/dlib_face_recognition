@@ -22,7 +22,6 @@ class LoginUi(QWidget):
         self.setWindowTitle('登录')
         self.setWindowIcon(QIcon('resources/登录.png'))
         self.resize(400, 300)
-
         self.user_label = QLabel('Username:', self)
         self.pwd_label = QLabel('Password:', self)
         self.user_line = QLineEdit(self)

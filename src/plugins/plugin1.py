@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
+from PyQt5.QtWidgets import QWidget
+from PyQt5.QtCore import Qt
 class Plugin1(QWidget):
     label="第一个插件"
     def __init__(self, parent=None) -> None:

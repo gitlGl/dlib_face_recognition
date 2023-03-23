@@ -1,5 +1,5 @@
 import gc,multiprocessing,psutil
-from PyQt5.QtWidgets import QWidget, QMessageBox,QMenu
+from PyQt5.QtWidgets import QMessageBox,QMenu
 from src.Process import processStudentRg
 from PyQt5.QtCore import pyqtSlot, QTimer
 from PyQt5.QtGui import QIcon,QPixmap
@@ -9,7 +9,7 @@ from multiprocessing import Process, Queue
 from .PutImg import PutImg
 from src.Login import LoginUi
 from src.ShowData import ShowData
-from .Login import LoginUi,configAotuLogin,aes
+from .Login import LoginUi
 from  .Ui import Ui
 from src.GlobalVariable import database
 
@@ -21,27 +21,25 @@ class Main(Ui):
         self.Q2 = Queue()
         self.share = multiprocessing.Value("f", 0.4)
         self.put_img = PutImg(self.Q1, self.Q2)
-        self.put_img.emit_result.connect(self.show_result)
-        self.put_img.emit_text.connect(self.change_text)
+        self.put_img.emit_result.connect(self.showResult)
+        self.put_img.emit_text.connect(self.changeText)
         self.timer = QTimer()
-        self.timer.timeout.connect(self.clear_qlabel)#清除识别结果
+        self.timer.timeout.connect(self.clearQlabel)#清除识别结果
         self.login_ui = LoginUi()
         if self.login_ui.config_auto_login.check():
-            id_ = self.login_ui.config_auto_login.result[-36:]
-            id_ = id_[:-16]
-            id_ = id_.strip(' ')
-            self.id_number = id_
+            self.id_number = self.login_ui.config_auto_login.result[-36:][:-16].strip(' ')
             self.p = Process(target=processStudentRg,
                             args=(self.Q1, self.Q2, self.share))
             self.p.daemon = True
             self.show()
+            self.hide()
             del self.login_ui
             return
-        self.login_ui.emitsingal.connect(self.show_parent)
+        self.login_ui.emitsingal.connect(self.showParent)
         self.login_ui.show()
     #退出登录
-    def pos_menu(self,pos):
-        if(self.show_error()):
+    def posMenu(self,pos):
+        if(self.showError()):
              return
         pop_menu = QMenu(self)
         pop_menu.addAction("用户信息")
@@ -60,18 +58,18 @@ class Main(Ui):
                 self.p.terminate()
             self.hide()
             self.login_ui = LoginUi()
-            self.login_ui.emitsingal.connect(self.show_parent)
+            self.login_ui.emitsingal.connect(self.showParent)
             self.login_ui.show()
             self.login_ui.config_auto_login.setStates('')
             self.login_ui.config_auto_login.setFlag('0')
         
-    def show_error(self):
+    def showError(self):
         if(self.put_img.work_thread.isRunning()):
              QMessageBox.critical(self, 'Wrong', '请先关闭摄像头')
              return True
              
-    def show_data(self):
-        if(self.show_error()):
+    def showData(self):
+        if(self.showError()):
              return
         self.view =ShowData()
         self.view.show()
@@ -82,7 +80,7 @@ class Main(Ui):
     
     #登录成功后显示主界面
    # @pyqtSlot(str)
-    def show_parent(self,id_number):
+    def showParent(self,id_number):
         self.id_number = id_number
         del self.login_ui
         gc.collect()
@@ -95,7 +93,7 @@ class Main(Ui):
 
     #显示识别结果
     @pyqtSlot(str)
-    def show_result(self, str_result):
+    def showResult(self, str_result):
         self.rg_label.clear()
         self.rg_label.setText(str_result)
         self.tips_label.clear()#清除提示
@@ -103,7 +101,7 @@ class Main(Ui):
             self.timer.start(1500)
 
     #清除识别结果
-    def clear_qlabel(self):
+    def clearQlabel(self):
         self.timer.stop()
         self.rg_label.clear()
         if self.Liveness_rgface_btn.isChecked() and self.put_img.work_thread.isRunning(): #and self.put_img.isRunning()
@@ -118,13 +116,13 @@ class Main(Ui):
 
     #清理活体识别提示信息，设置提示信息
     @pyqtSlot(str)
-    def change_text(self, str):
+    def changeText(self, str):
         self.tips_label.clear()
         self.tips_label.setText(str)
 
     #帧显示视频流
     #@pyqtSlot(list,QImage)
-    def set_normal_img(self, list):   
+    def setNormalImg(self, list):   
         self.picture_qlabel.setPixmap(QPixmap.fromImage(list[0])) #设置图片，图片跟随ui.qlabel大小缩放
         self.put_img.frame = list[1]#待识别帧
         
@@ -134,13 +132,13 @@ class Main(Ui):
 
     #帮助页面
     def help(self):
-        if(self.show_error()):
+        if(self.showError()):
              return
         self.help_qlabe = Help()
         self.help_qlabe.exec_()
 
     #正常识别
-    def open_normal(self):
+    def openNormal(self):
         if self.normal_rgface_btn.isChecked():  # 两个按钮互斥判断另一个按钮
             self.Liveness_rgface_btn.setChecked(False)
             self.normal_rgface_btn.setEnabled(False)
@@ -162,7 +160,7 @@ class Main(Ui):
                     self.put_img.timer3.start(1000)
 
     #活体识别
-    def open_eye(self):
+    def openEye(self):
 
         if self.Liveness_rgface_btn.isChecked():
             self.normal_rgface_btn.setChecked(False)
@@ -185,7 +183,7 @@ class Main(Ui):
     def open(self):
         self.picture_qlabel.show()
         self.qlabel5.hide()##用于修复无法清理（qlable.claer()）图片
-        self.put_img.work.emit_img.connect(self.set_normal_img)
+        self.put_img.work.emit_img.connect(self.setNormalImg)
         self.open_capture_btn.clicked.disconnect(self.open)
         self.open_capture_btn.clicked.connect(self.close)
         self.open_capture_btn.setText("关闭摄像头")
@@ -220,7 +218,7 @@ class Main(Ui):
                
 
     def close(self):
-        self.put_img.work.emit_img.disconnect(self.set_normal_img)
+        self.put_img.work.emit_img.disconnect(self.setNormalImg)
        
         self.put_img.flag = False
 
