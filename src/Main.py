@@ -32,7 +32,6 @@ class Main(Ui):
                             args=(self.Q1, self.Q2, self.share))
             self.p.daemon = True
             self.show()
-            self.hide()
             del self.login_ui
             return
         self.login_ui.emitsingal.connect(self.showParent)
