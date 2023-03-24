@@ -160,9 +160,9 @@ class LoginUi(QWidget):
             QMessageBox.warning(self, '警告', '账号或密码错误，请重新输入', QMessageBox.Yes)
             clear()
             return
-        
+        time = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")
         database.c.execute("INSERT INTO admin_log_time (id_number,log_time ) \
-VALUES (?,?)", (uesr_id, datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
+VALUES (?,?)", (uesr_id, time))
         database.conn.commit()
         time = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")
         len_ = len(uesr_id)

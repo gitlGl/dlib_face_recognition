@@ -12,6 +12,7 @@ from src.ShowData import ShowData
 from .Login import LoginUi
 from  .Ui import Ui
 from src.GlobalVariable import database
+import datetime
 
 class Main(Ui):
     def __init__(self):
@@ -26,13 +27,7 @@ class Main(Ui):
         self.timer = QTimer()
         self.timer.timeout.connect(self.clearQlabel)#清除识别结果
         self.login_ui = LoginUi()
-        if self.login_ui.config_auto_login.check():
-            self.id_number = self.login_ui.config_auto_login.result[-36:][:-16].strip(' ')
-            self.p = Process(target=processStudentRg,
-                            args=(self.Q1, self.Q2, self.share))
-            self.p.daemon = True
-            self.show()
-            del self.login_ui
+        if self.aotuLogin():#检查是否自动登录
             return
         self.login_ui.emitsingal.connect(self.showParent)
         self.login_ui.show()
@@ -75,6 +70,19 @@ class Main(Ui):
         pass
 
  
+    def aotuLogin(self):
+        if not self.login_ui.config_auto_login.check():
+            return False
+        self.id_number = self.login_ui.config_auto_login.result[-36:][:-16].strip(' ')
+        self.p = Process(target=processStudentRg,
+                        args=(self.Q1, self.Q2, self.share))
+        self.p.daemon = True
+        self.show()
+        del self.login_ui
+        database.c.execute("INSERT INTO admin_log_time (id_number,log_time ) \
+VALUES (?,?)", (self.id_number, datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
+        database.conn.commit()
+        return True
         
     
     #登录成功后显示主界面
