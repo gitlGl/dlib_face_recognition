@@ -264,13 +264,16 @@ class  configAotuLogin(config):
             if days > 3:
                 return False
             return True
+    def checkPwd(self):
+        if self.result:
+            return self.result[:12] == uuid.uuid1().hex[-12:]
 
     def check(self) -> bool:
         if not self.checkFlag():
             return False
         if not self.checkTime():
             return False
-        if not self.result[:12] == uuid.uuid1().hex[-12:]:
+        if not self.checkPwd():
             return False
         return True
 
