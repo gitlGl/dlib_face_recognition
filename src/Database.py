@@ -63,7 +63,8 @@ class Database():
       VALUES (?,?, ?, ? , ?,?)",
             (id_number, user_name,gender, password,  vector, salt))
         self.conn.commit()
-      
+    def __del__(self):
+        self.conn.close()
         
 
 
