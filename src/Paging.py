@@ -147,7 +147,6 @@ class Page(Paging):
         
     #计算页数,静态函数
     def totalCount(table,page_count,id_number=None):
-        count = {}
         if id_number:
             count =database.c.execute(
                 "select count(*)  from {0} where id_number ={1} "
