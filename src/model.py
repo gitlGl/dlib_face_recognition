@@ -1,11 +1,6 @@
 from peewee import *
 
 database1 = SqliteDatabase('resources/company.db')
-from .Database import database
-
-
-class UnknownField(object):
-    def __init__(self, *_, **__): pass
 
 class BaseModel(Model):
     class Meta:
@@ -48,8 +43,15 @@ class StudentLogTime(BaseModel):
     class Meta:
         table_name = 'student_log_time'
         primary_key = False
+database1.create_tables([Admin, AdminLogTime, Student, StudentLogTime])
 
-item  = Admin.select().where(Admin.id_number == "123456")
-print(item)
-database1.c.execute(item)
+item  = Admin.select().where(Admin.id_number == '123456')
+print(item.count())
+print(item[0].password)
+for i in item:  
+    print(i.password)
+#print(type(item))
+
+
+
 
