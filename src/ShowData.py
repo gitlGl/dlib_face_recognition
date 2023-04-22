@@ -10,6 +10,7 @@ from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel, QVBoxLayout, QLineEdit
 QGroupBox,QPushButton,QFileDialog,QDateEdit,QMessageBox, QMenu,QProgressBar,QProgressDialog
 from src.LineStack import ChartView
 from src.Plugins import Plugins
+from src.model import StudentLogTime,Student
 class ShowData(QWidget):
     def __init__(self):
         super().__init__()
@@ -163,6 +164,8 @@ class ShowData(QWidget):
         search_content = self.linnedit.text()
         result = None
         if  search_content.isdigit():
+            item = Student.select().where(Student.id_number == search_content)
+            print(str(item))
             result = database.c.execute("select id_number,user_name,gender,password from student where id_number = {}".format(search_content)).fetchall()
             if len(result) == 0:
                 QMessageBox.critical(self, 'Wrong', '用户不存在')
@@ -248,14 +251,15 @@ class ShowData(QWidget):
         sql_male = "SELECT count(id_number)  FROM student_log_time where log_time like  '{0}%'    and gender =1;"
         sql = "SELECT count(id_number)  FROM student_log_time where log_time \
          like '{0}%';"
+        #item = Student.select().where(Student.log_time).count()
 
         for i in timestr:
-            reuslt = database.c.execute(sql.format(self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d")+i,self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d")+i)).fetchall()
+            reuslt = database.c.execute(sql.format(self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d")+i)).fetchall()
             #print(type(result))
             total_data.append(reuslt[0]['count(id_number)'])
-            reuslt =  database.c.execute(sql_female.format(self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d")+i,self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d")+i)).fetchall()
+            reuslt =  database.c.execute(sql_female.format(self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d")+i)).fetchall()
             female_data.append(reuslt[0]['count(id_number)'])
-            reuslt = database.c.execute(sql_male.format(self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d")+i,self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d")+i)).fetchall()
+            reuslt = database.c.execute(sql_male.format(self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d")+i)).fetchall()
             male_data.append(reuslt[0]['count(id_number)'])
     
       
@@ -287,7 +291,7 @@ class ShowData(QWidget):
         sql_male = "SELECT count(id_number)  FROM student_log_time where log_time between  '{0}'   and '{1}' and gender =1;"
         sql = "SELECT count(id_number)  FROM student_log_time where log_time \
          between '{0}'  and '{1}';"
-    
+       
         step_= 0
         for k in range(abs(days)+1):   
                 result = database.c.execute(sql.format(self.time1.date().addDays(step_).toPyDate().strftime("%Y-%m-%d"),self.time1.date().addDays(step_+step).toPyDate().strftime("%Y-%m-%d"))).fetchall()
