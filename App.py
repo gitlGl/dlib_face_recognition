@@ -1,7 +1,7 @@
 import sys
 sys.path.append(r'./')
 
-
+from  Crypto.PublicKey import RSA
 from PyQt5.QtWidgets import QApplication
 from src import Main
 import sys

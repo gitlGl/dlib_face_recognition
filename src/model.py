@@ -46,11 +46,7 @@ class StudentLogTime(BaseModel):
 database1.create_tables([Admin, AdminLogTime, Student, StudentLogTime])
 
 item  = Admin.select().where(Admin.id_number == '123456')
-print(item.count())
-print(item[0].password)
-for i in item:  
-    print(i.password)
-#print(type(item))
+
 
 
 
