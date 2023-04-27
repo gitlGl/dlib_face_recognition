@@ -6,6 +6,7 @@ class BaseModel(Model):
     class Meta:
         database = database1
 
+
 class Admin(BaseModel):
     id_number = CharField(primary_key=True)
     password = CharField()
@@ -45,9 +46,30 @@ class StudentLogTime(BaseModel):
         primary_key = False
 database1.create_tables([Admin, AdminLogTime, Student, StudentLogTime])
 
-item  = Admin.select().where(Admin.id_number == '123456')
 
 
 
+RemoteDatabase = MySQLDatabase(
+
+"face_recognition",  # 数据库名
+host = '127.0.0.1',  # 数据库地址
+port = 3306,  # 数据库端口
+password = '123456',  # 数据库密码
+charset = "utf8",  # 字符集
+user = "user"
+
+)
+class BaseRemote(Model):
+   class Meta:
+         database = RemoteDatabase
+class RemoteAdmin(BaseRemote):
+    mac_address = CharField()
+    verifye = CharField(primary_key=True)
+    vector = BlobField(null=True)
+
+
+    
+    class Meta:
+        table_name = 'admin'
 
 

@@ -13,6 +13,7 @@ import configparser,base64
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 import os
+from .Check import Req
 class LoginUi(QWidget):
     emitsingal = pyqtSignal(str)
     emit_close = pyqtSignal()
@@ -160,6 +161,9 @@ class LoginUi(QWidget):
             QMessageBox.warning(self, '警告', '账号或密码错误，请重新输入', QMessageBox.Yes)
             clear()
             return
+        if not  Req({'flag':'login',"mac_address":uuid.uuid1().hex[-12:]}):
+            QMessageBox.critical(self, '警告', "设备与账号不匹配", QMessageBox.Yes)
+            return
         time = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")
         database.c.execute("INSERT INTO admin_log_time (id_number,log_time ) \
 VALUES (?,?)", (uesr_id, time))
@@ -189,7 +193,10 @@ VALUES (?,?)", (uesr_id, time))
 #接受人脸识别登录成功信号，接收发送给主页面
     @pyqtSlot(str)
     def rev(self,id_number):
-       
+        self.face_login_page.close()
+        if not id_number.isdigit():
+            QMessageBox.critical(self, '警告', id_number, QMessageBox.Yes)
+            return
         self.emitsingal.emit(id_number)
 
 class config():

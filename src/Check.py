@@ -1,10 +1,11 @@
 from PyQt5.QtWidgets import QMessageBox
 from .GlobalVariable import database
 from .MyMd5 import MyMd5
-import os
+import os,uuid
 from PyQt5.QtWidgets import QFileDialog,QMessageBox
 from .GlobalVariable import models
 from .Creatuser import CreatUser
+import http.client,pickle
 def checkUserId(user_id):
 
     if not user_id.isdigit() or len(user_id) > 20:
@@ -28,8 +29,7 @@ def verifyePwd(user_id,user_pwd,tabel_name):
     item = user[0]
     pass_word = MyMd5().createMd5(user_pwd, item["salt"],user_id)
     if pass_word == item["password"]: 
-        return True
-    
+      return True
     return False
 
 def checkPath(path,parent=None):
@@ -62,3 +62,24 @@ def getImgPath(parent=None):
         return path    
     return False
 # QMessageBox.information(parent, 'Information', '警告 username or Password')
+
+from .model import RemoteAdmin
+
+#校对验证码
+def checkVerifye(data):
+    if Req(data):
+        return True
+ 
+    else:
+        return False
+
+
+#客户端请求
+def Req(data):
+    conn = http.client.HTTPConnection("localhost", 8888)
+    data_tem = pickle.dumps(data)
+    conn.request("POST", "", data_tem)
+    response = conn.getresponse()
+    rev_data = response.read()
+    conn.close()
+    return pickle.loads(rev_data)

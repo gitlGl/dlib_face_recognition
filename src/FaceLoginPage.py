@@ -3,10 +3,13 @@ from PyQt5.QtCore import pyqtSignal,Qt,QTimer, Qt
 from src.Capture import Capture
 from PyQt5.QtGui import QPixmap,QIcon
 from .Face import AdminRgFace
-import cv2,copy
+import cv2,copy,uuid
 from .GlobalVariable import models
 from PyQt5.QtWidgets import QGroupBox
 from .LivenessDetection import LivenessDetection
+from .Check import  Req
+import time
+
 
 class FaceLoginPage(QWidget):
     emit_show_parent = pyqtSignal(str)
@@ -55,10 +58,18 @@ class FaceLoginPage(QWidget):
             result = self.face_rg.rgFace(self.capture.frame, rgbImage,
                                           raw_face)
             if result:
-                self.capture.close()
-                self.emit_show_parent.emit(result)
-                self.close
-                return
+                   
+                if Req({'flag':'login',"mac_address":uuid.uuid1().hex[-12:]}):
+                    self.emit_show_parent.emit(result)
+                    self.hide()
+                    self.close()
+                    return True
+                else :
+                    self.emit_show_parent.emit("设备与账号不匹配")
+                    self.hide()
+                    self.close()
+                    return False
+                    
         
             self.groupbox.show()
             if self.cout> 2:

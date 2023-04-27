@@ -3,7 +3,9 @@ from src.Log import adminlog, studentlog
 from src.GlobalVariable import models
 import numpy as np
 from threading import Timer
-import pickle
+import pickle,http.client,ssl
+from urllib import request
+import http
 
 class Face():  #基类，包含人脸编码，人脸识别
     def __init__(self):
@@ -98,6 +100,7 @@ class AdminRgFace(Face):
         if distances[min_distance] < 0.5:
             tembyte = pickle.dumps(list_vector[min_distance])
             log = adminlog(tembyte, img)
+            
             if hasattr(log, "item"):
                 id_number = list_user[min_distance]["id_number"]#返回管理员的id_number
                 return id_number

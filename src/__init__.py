@@ -7,4 +7,5 @@ from .ShowUser import ShowStudentUser
 from .ImageView import ImageView,ShowImage
 from .GlobalVariable import models
 from .GlobalVariable import database
-from .model import Admin,AdminLogTime,Student,StudentLogTime
+from .model import *
+from .Check import *
