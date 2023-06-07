@@ -2,13 +2,13 @@ import cv2, numpy as np
 from PyQt5.QtCore import QThread
 from .GlobalVariable import models
 
-class LivenessDetection(QThread):
+class LivenessDetection():
     def __init__(self):
         super().__init__()
         self.img1 = np.random.randint(255, size=(900, 800, 3), dtype=np.uint8)
         self.img2 = np.random.randint(255, size=(900, 800, 3), dtype=np.uint8)
       
-        self.EYE_AR_THRESH = 0.3  #小于0.3时认为是闭眼状态
+        self.EYE_AR_THRESH = 0.05  #小于0.3时认为是闭眼状态
         self.MAR_THRESH = 0.5  #大于于0.5时认为是张嘴状态
 
         #68个人脸特征中眼睛的位置
@@ -50,7 +50,7 @@ class LivenessDetection(QThread):
 
         return mar
 
-    def compare2faces(self, list_img):  #对比两张人脸照片对比是否发生眨眼。两张照片眼睛距离大于0.1时认为发生眨眼
+    def compare2faces(self, list_img):  #对比两张人脸照片对比是否发生眨眼。两张照片眼睛距离大于0.05时认为发生眨眼
 
         rgbImage1 = cv2.cvtColor(list_img[0], cv2.COLOR_BGR2RGB)
         rgbImage2 = cv2.cvtColor(list_img[1], cv2.COLOR_BGR2RGB)
@@ -61,7 +61,7 @@ class LivenessDetection(QThread):
             list.append(self.computEye(rgbImage1, rect1))
             list.append(self.computEye(rgbImage2, rect2))
             result = abs(list[0] - list[1])
-            if result >= 0.05:
+            if result >= self.EYE_AR_THRESH:
 
                 return True
         return False
@@ -97,6 +97,6 @@ class LivenessDetection(QThread):
             shape = self.shape2np(shape)  #68个人脸特征坐标
             mouth = shape[self.mStart:self.mEnd]
             mouth = self.mouthAspectRatio(mouth)
-            if mouth > 0.5:
+            if mouth >  self.MAR_THRESH:
                 return True
         return False
