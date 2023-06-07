@@ -84,6 +84,7 @@ class StudentRgFace(Face):
 class AdminRgFace(Face):
     def __init__(self):
         super().__init__()
+        self.value = 0.5
 
     def rgFace(self, img, rgbImage, raw_face):
         face_data = self.encodeFace(rgbImage, raw_face)
@@ -97,7 +98,7 @@ class AdminRgFace(Face):
         distances = self.compareFaces(np.array(list_vector), face_data, axis=1)
         min_distance = np.argmin(distances)
         print("距离", distances[min_distance])
-        if distances[min_distance] < 0.5:
+        if distances[min_distance] < self.value:
             tembyte = pickle.dumps(list_vector[min_distance])
             log = adminlog(tembyte, img)
             
