@@ -82,7 +82,7 @@ class RemoteAdmin(BaseRemote):
     mac_address = CharField(null=True)
     verifye = CharField(unique=True)
     vector = BlobField(null=True)
-
+    isResgister = BooleanField(null=False)
 
     
     class Meta:

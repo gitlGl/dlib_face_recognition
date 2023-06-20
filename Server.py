@@ -44,10 +44,15 @@ class Resquest(BaseHTTPRequestHandler):
        
         tem_data = RemoteAdmin.get_or_none(RemoteAdmin.id == data["id"])
         
-       
         if tem_data:
             verifye_md5 = aes.decrypt(data['verifye'],tem_data.verifye)
             vector_md5 = aes.decrypt(data['vector'],tem_data.verifye)
+    
+            if not tem_data.isResgister:
+                
+                self.responses = self.flag_fals
+                self.wfile.write(self.flag_fals)
+                return
             if not verifye_md5 or not vector_md5:
                 self.responses = self.flag_fals
                 self.wfile.write(self.flag_fals)
@@ -67,7 +72,8 @@ class Resquest(BaseHTTPRequestHandler):
             
             self.wfile.write(self.flag_fals)
             return
-        RemoteAdmin.update({RemoteAdmin.mac_address: data["mac_address"],RemoteAdmin.vector:vector_md5}
+        RemoteAdmin.update({RemoteAdmin.mac_address: data["mac_address"],
+                            RemoteAdmin.vector:vector_md5,RemoteAdmin.isResgister:False}
         ).where(RemoteAdmin.id == data["id"]).execute()
         return True
         
