@@ -24,6 +24,7 @@ from .Capture import *
 from .LivenessDetection import *
 from .AdminInformation import *
 from .Database import *
+from .model import *
 
 
 

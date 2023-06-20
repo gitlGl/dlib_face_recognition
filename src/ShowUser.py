@@ -147,7 +147,7 @@ class ShowStudentUser(ShowUser):
         if action == log_event:
             #result = Database().c.execute("select rowid,id_number,log_time from student_log_time where id_number ={0} order by log_time desc".format(self.information[row]["id_number"])).fetchall()
             result = ShowLog(self.information[row]["id_number"],
-            [ '学号','时间',"图片" ], self.table,['rowid','id_number','log_time'])
+            [ '学号','时间',"图片" ], self.table,['id','id_number','log_time'])
             if not result.page.information:
                 return
             result.exec()
@@ -222,7 +222,7 @@ class ShowAdminUser(ShowUser):
             return
         if action == log_event:
             result = ShowLog(self.information[row]["id_number"],[ '用户ID', '登录时间',"图片" ],
-            self.table,['rowid','id_number','log_time'])
+            self.table,['id','id_number','log_time'])
             if not result.page.information:
                 return
             result.exec_()

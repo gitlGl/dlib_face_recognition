@@ -7,14 +7,14 @@ class BaseModel(Model):
         database = database
 
 
-class Admin(BaseModel):
+class verAdmin(BaseModel):
     id_number = CharField(primary_key=True)
     password = CharField()
     salt = CharField()
     vector = BlobField(null=True)
 
     class Meta:
-        table_name = 'admin'
+        table_name = 'ver_admin'
 
 class AdminLogTime(BaseModel):
     id_number = CharField()
@@ -44,7 +44,7 @@ class StudentLogTime(BaseModel):
     class Meta:
         table_name = 'student_log_time'
         primary_key = False
-database.create_tables([Admin, AdminLogTime, Student, StudentLogTime])
+database.create_tables([verAdmin, AdminLogTime, Student, StudentLogTime])
 
 
 def configRead(filePath:str):
@@ -86,7 +86,7 @@ class RemoteAdmin(BaseRemote):
 
     
     class Meta:
-        table_name = 'admin'
+        table_name = 'ver_admin'
 
 RemoteAdmin.create_table([RemoteAdmin])
 

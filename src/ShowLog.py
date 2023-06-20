@@ -51,10 +51,12 @@ class ShowLog(QDialog):
         row2 = 0
         self.tableWidget.setRowCount(0)
         for i in self.information:
+            if type(i['log_time']) is not str:
+                i['log_time'] = i['log_time'].strftime("%Y-%m-%d-%H-%M")
             self.tableWidget.insertRow(row)
             row2 = 0
             for cloumn in self.list_cloumn:
-                if cloumn == 'rowid':
+                if cloumn == "id":
                     continue
                 item  = QTableWidgetItem(i[cloumn])
                 self.tableWidget.setItem(row, row2, item)
@@ -102,17 +104,18 @@ class ShowLog(QDialog):
             return
         
         log_table = self.table + "_log_time"
-        database.c.execute("delete from {0} where rowid  = {1}".format(
-            log_table,self.information[row]["rowid"])).fetchall()
+        database.c.execute("delete from {0} where id  = {1}".format(
+            log_table,self.information[row]["id"]))
         if self.table == "student":
-            item = database.c.execute(
+            database.c.execute(
             "SELECT count,id_number from {0} where id_number = '{1}'".format(
-                self.table,str(self.information[row]["id_number"]))).fetchall()[0] # 取出返回所有数据，fetchall返回类型是[()]
+                self.table,str(self.information[row]["id_number"])))
+            item = database.c.fetchall()[0] # 取出返回所有数据，fetchall返回类型是[()]
             if item["count"] is not None:
                 database.c.execute(
         "UPDATE {0} SET count = {1} WHERE id_number = {2}".format(
                 self.table,item["count"]-1,item["id_number"]))
-            database.conn.commit()
+        database.conn.commit()
                 
         imag_path = "img_information/{0}/{1}/log/{2}.jpg".format(
             self.table,str(self.information[row]["id_number"]),str(self.information[row]["log_time"]))

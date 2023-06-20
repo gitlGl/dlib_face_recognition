@@ -37,7 +37,8 @@ class StudentRgFace(Face):
         self.refreshthread.start()
        
         self.list_vector = []
-        for i in database.c.execute("SELECT vector from student"):#查询数据库中所有人脸编码
+        database.c.execute("SELECT vector from student")
+        for i in database.c.fetchall():#查询数据库中所有人脸编码
             i = pickle.loads(i["vector"])
             self.list_vector.append(i)
       
@@ -89,7 +90,8 @@ class AdminRgFace(Face):
     def rgFace(self, img, rgbImage, raw_face):
         face_data = self.encodeFace(rgbImage, raw_face)
         list_vector = []
-        list_user = database.c.execute("SELECT vector,id_number from admin").fetchall ()# 查询数据库中的数据:
+        database.c.execute("SELECT vector,id_number from admin")# 查询数据库中的数据:
+        list_user = database.c.fetchall()
         for i in list_user:
             vector = pickle.loads(i["vector"])#把数据库中的vector（二进制）转换成ndarray
             list_vector.append(vector)

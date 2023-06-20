@@ -14,6 +14,7 @@ import configparser
 import os
 from .Check import Req,aes
 import configparser
+from .Database import PH
 #from PyQt5 import QString
 class LoginUi(QWidget):
     emitsingal = pyqtSignal(str)
@@ -180,8 +181,8 @@ class LoginUi(QWidget):
             self.login_button.setEnabled(True)
             return
         time = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")
-        database.c.execute("INSERT INTO admin_log_time (id_number,log_time ) \
-VALUES (?,?)", (uesr_id, time))
+        database.c.execute(f"INSERT INTO admin_log_time (id_number,log_time ) \
+VALUES ({PH},{PH})", (uesr_id, time))
         database.conn.commit()
         time = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")
         len_ = len(uesr_id)

@@ -6,10 +6,9 @@ from .MyMd5 import MyMd5
 from PyQt5.QtGui import QIcon
 from .Creatuser import CreatUser
 from .Check import getImgPath, checkPath,checkVerifye,createMd5
-from .model import RemoteAdmin
 import uuid
 from .Check import aes
-from PyQt5.QtGui import QPixmap
+from .Database import PH
 class SigninPage(QWidget):
     def __init__(self):
         super(SigninPage, self).__init__()
@@ -130,9 +129,10 @@ class SigninPage(QWidget):
             return
 
         user_name = self.signin_user_line.text()
-        user = database.c.execute(
+        database.c.execute(
             "select id_number from admin where id_number = {} ".format(
-                user_name)).fetchall()
+                user_name))
+        user = database.c.fetchall()
         if len(user) == 1:
             QMessageBox.critical(self, '警告',
                                     '该用户已被注册!')
@@ -176,8 +176,8 @@ class SigninPage(QWidget):
         creatuser.insertImg(user_name, path, "admin")
 
         database.c.execute(
-            "INSERT INTO admin (id_number,password,salt,vector) \
-VALUES (?, ?,?,?)", (user_name, pass_word, salt, vector))
+            f"INSERT INTO admin (id_number,password,salt,vector) \
+VALUES ({PH}, {PH},{PH},{PH})", (user_name, pass_word, salt, vector))
         QMessageBox.information(self, '信息',
                                 '注册成功!')
         database.conn.commit()

@@ -121,12 +121,15 @@ class Page(Paging):
         if self.id_number:#显示用户log数据
             self.sql =  "select {0} from {1} where id_number ={2}   limit {3} offset {4}"
             sql = self.sql.format(self.string,self.table,self.id_number,self.page_count,0)
-            self.information = database.c.execute(sql).fetchall()
+            database.c.execute(sql)
+            self.information = database.c.fetchall()
             return
         #显示用户
         self.sql =  "select {0} from {1}   limit {2} offset {3}"
         sql = self.sql.format(self.string,self.table,self.page_count,0)
-        self.information = database.c.execute(sql).fetchall()
+        database.c.execute(sql)
+        self.information = database.c.fetchall()
+
         
             
             
@@ -143,7 +146,8 @@ class Page(Paging):
             return
         #显示用户
         sql = self.sql.format(self.string,self.table,self.page_count,(signal-1)*self.page_count)
-        self.information = database.c.execute(sql).fetchall()
+        database.c.execute(sql)
+        self.information = database.c.fetchall()
         self.information_signal.emit()
         
 
@@ -151,13 +155,15 @@ class Page(Paging):
     #计算页数,静态函数
     def totalCount(table,page_count,id_number=None):
         if id_number:
-            count =database.c.execute(
+            database.c.execute(
                 "select count(*)  from {0} where id_number ={1} "
-                .format(table,id_number)).fetchall()
+                .format(table,id_number))
+            count = database.c.fetchall()
         else:
-            count = database.c.execute(
+            database.c.execute(
             "select count(*)  from {0} "
-            .format(table)).fetchall()
+            .format(table))
+            count = database.c.fetchall()
             
         if not count[0]["count(*)"]:
             return 0

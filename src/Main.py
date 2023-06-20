@@ -14,7 +14,7 @@ from  .Ui import Ui
 from .GlobalVariable import database
 import datetime
 from .Check import Req
-
+from .Database import PH
 class Main(Ui):
     def __init__(self):
         super().__init__()
@@ -100,8 +100,8 @@ class Main(Ui):
         self.p.daemon = True
         
         del self.login_ui
-        database.c.execute("INSERT INTO admin_log_time (id_number,log_time ) \
-VALUES (?,?)", (self.id_number, datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
+        database.c.execute(f"INSERT INTO admin_log_time (id_number,log_time ) \
+VALUES ({PH},{PH})", (self.id_number, datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
         database.conn.commit()
         return True
         
