@@ -10,6 +10,7 @@ QMessageBox, QMenu,QWidget
 from .Check import getImgPath
 from .UpdateUser import UpdatePwd
 from .ShowUser import ShowAdminUser
+from .Database import PH
 class AdminInformation(QWidget):
     def __init__(self,id_number):
         super().__init__()
@@ -67,7 +68,7 @@ class AdminInformation(QWidget):
         self.pwd_dialog.exec_()
     def browse(self):
         self.result = ShowLog(self.id_number,[ '用户ID', '登录时间',"图片" ],
-        "admin",['rowid','id_number','log_time'])
+        "admin",['id','id_number','log_time'])
         item = self.Vhlayout.itemAt(1)
         self.Vhlayout.removeItem(self.Vhlayout.itemAt(1))
         item.widget().deleteLater()
@@ -92,13 +93,14 @@ class AdminInformation(QWidget):
               creatuser = CreatUser()
               vector = creatuser.getVector(path)
               creatuser.insertImg(self.id_number,path,"admin")
-              database.c.execute("update admin set vector = ? where id_number = {0}".format(self.id_number),(vector,))
+              database.c.execute(f"update admin set vector = {PH} where id_number = {0}".format(self.id_number),(vector,))
               database.conn.commit()
             
               QMessageBox.information(self, 'Success', '修改成功')
    
     def root(self):
-        result = database.c.execute("select id_number,password from admin ").fetchall()
+        database.c.execute("select id_number,password from admin ")
+        result = database.c.fetchall()
         show_admin_User = ShowAdminUser([ '用户ID', '密码',"图片" ],'admin',["id_number",'password'],result)
         item = self.Vhlayout.itemAt(1)
         self.Vhlayout.removeItem(self.Vhlayout.itemAt(1))

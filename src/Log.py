@@ -1,13 +1,14 @@
 from .GlobalVariable import database
 import datetime,cv2,os
+from .Database import PH
 class  studentlog():
     def __init__(self, vector,img):
       
         #用户信息
-        item = database.c.execute(
-                "SELECT  id_number,gender,count,user_name from student where vector = ? limit 1",
-                (vector, )).fetchall() # 取出返回所有数据，fetchall返回类型是[()]
-        
+        database.c.execute(
+                f"SELECT  id_number,gender,count,user_name from student where vector = {PH} limit 1",
+                (vector, ))# 取出返回所有数据，fetchall返回类型是[()]
+        item =  database.c.fetchall()
         print(len(item))
         if(len(item) == 1):
             self.item = item[0]
@@ -19,8 +20,8 @@ class  studentlog():
     #记录识别成功时间
     def insertTime(self):
         database.c.execute(
-            "INSERT INTO student_log_time (id_number,gender,log_time ) \
-      VALUES (?, ?,?)",
+            f"INSERT INTO student_log_time (id_number,gender,log_time ) \
+      VALUES ({PH}, {PH},{PH})",
             (self.item["id_number"], self.item["gender"],datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
 
        
@@ -61,9 +62,10 @@ class  adminlog():
       
         
         #用户信息
-        item = database.c.execute(
-                "SELECT  id_number from admin where vector = ? limit 1",
-                (vector, )).fetchall() # 取出返回所有数据，fetchall返回类型是[()]
+        database.c.execute(
+                f"SELECT  id_number from admin where vector = {PH} limit 1",
+                (vector, ))# 取出返回所有数据，fetchall返回类型是[()]
+        item =  database.c.fetchall()
         print(len(item))
      
         if(len(item) == 1):
@@ -77,8 +79,8 @@ class  adminlog():
     def insertTime(self):
         
         database.c.execute(
-            "INSERT INTO admin_log_time (id_number,log_time ) \
-      VALUES (?,?)",
+            f"INSERT INTO admin_log_time (id_number,log_time ) \
+      VALUES ({PH},{PH})",
             (self.item["id_number"], datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
 
        

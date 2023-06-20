@@ -69,9 +69,10 @@ class CreatStudentUser(CreatUser):
                     list_problem.append("第{0}行第1列，用户名为13位数字 ".format(i) +
                                         str(list1[0]))
                     continue
-                user = database.c.execute(
+                database.c.execute(
                     "select id_number from student where id_number = {} ".
-                    format(str(list1[0]))).fetchall()
+                    format(str(list1[0])))
+                user = database.c.fetchall()
 
                 if len(user) == 1:
                     list_problem.append("第{0}行第1列,用户已存在: ".format(i) +

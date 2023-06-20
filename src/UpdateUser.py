@@ -1,4 +1,5 @@
 from PyQt5.QtWidgets import QDialog, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QMessageBox, QFileDialog
+from .Database import PH
 from .GlobalVariable import database
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
@@ -146,10 +147,11 @@ class UpdateUserData(QDialog):
                                  'id_number is only digit or is too long!')
             return False
 
-        if len(
-                database.c.execute(
+        
+        database.c.execute(
                     "select id_number from student where id_number = {} ".
-                    format(id_number)).fetchall()) == 1 and id != id_number:
+                    format(id_number))
+        if len( database.c.fetchall()) == 1 and id != id_number:
             QMessageBox.critical(self, '警告', ' 这个学号已经存在')
             return False
         if (len(password) < 6 or len(password) > 13):
@@ -168,7 +170,7 @@ class UpdateUserData(QDialog):
                 if (password != self.information["password"]):
                     salt = MyMd5().createSalt()
                     password = MyMd5().createMd5(password, salt, id_number)
-                    database.c.execute("UPDATE student SET id_number = '{0}',user_name = '{1}',gender = '{2}',password = ?,salt = ? WHERE id_number = {3}"\
+                    database.c.execute(f"UPDATE student SET id_number = '{0}',user_name = '{1}',gender = '{2}',password = {PH},salt = {PH} WHERE id_number = {3}"\
                 .format(id_number,user_name,gender,id),(password,salt))
                 else:
                     database.c.execute("UPDATE student SET id_number = '{0}',user_name = '{1}',gender = '{2}' WHERE id_number = '{3}'"\
@@ -186,12 +188,12 @@ class UpdateUserData(QDialog):
                     salt = MyMd5().createSalt()
                     password = MyMd5().createMd5(password, salt, id_number)
                     database.c.execute(
-                        "update student set id_number= ?,user_name = ?,gender = ? ,vector = ?,password = ?,salt = ? where id_number = {0}"
+                        f"update student set id_number= {PH},user_name = {PH},gender = {PH} ,vector = {PH},password = {PH},salt = {PH} where id_number = {0}"
                         .format(id),
                         (id_number, user_name, gender, vector, password, salt))
                 else:
                     database.c.execute(
-                        "update student set id_number= ?,user_name = ?,gender = ? ,vector = ? where id_number = {0}"
+                        f"update student set id_number= {PH},user_name = {PH},gender = {PH} ,vector = {PH} where id_number = {0}"
                         .format(id), (id_number, user_name, gender, vector))
 
                 database.c.execute(
@@ -340,10 +342,11 @@ class UpdateAdminData(QDialog):
                                  'id_number is only digit or is too long!')
             return False
 
-        if len(
-                database.c.execute(
+        
+        database.c.execute(
                     "select id_number from admin where id_number = {} ".format(
-                        id_number)).fetchall()) == 1 and id != id_number:
+                        id_number))
+        if len( database.c.fetchall()) == 1 and id != id_number:
             QMessageBox.critical(self, '警告', ' 这个用户已存在')
             return False
         if (len(password) < 6 or len(password) > 13):
@@ -362,7 +365,7 @@ class UpdateAdminData(QDialog):
                     salt = MyMd5().createSalt()
                     password = MyMd5().createMd5(password, salt, id_number)
                     database.c.execute(
-                        "update admin set id_number = ?,password = ?,salt = ? where id_number = {0}"
+                        f"update admin set id_number = {PH},password = {PH},salt = {PH} where id_number = {0}"
                         .format(id), (id_number, password, salt))
                 else:
                     database.c.execute(
@@ -381,11 +384,11 @@ class UpdateAdminData(QDialog):
                     salt = MyMd5().createSalt()
                     password = MyMd5().createMd5(password, salt, id_number)
                     database.c.execute(
-                        "update admin set id_number= ?,password = ?,salt = ? ,vector = ? where id_number = {0}"
+                        f"update admin set id_number= {PH},password = {PH},salt = {PH} ,vector = {PH} where id_number = {0}"
                         .format(id), (id_number, password, salt, vector))
                 else:
                     database.c.execute(
-                        "update admin set id_number= ? ,vector = ? where id_number = {0}"
+                        f"update admin set id_number= {PH} ,vector = {PH} where id_number = {0}"
                         .format(id), (id_number, vector))
                 database.conn.commit()
         except:
@@ -497,7 +500,8 @@ class UpdatePwd(QDialog):
 
         item = database.c.execute(
             "select salt from admin where id_number = {0}".format(
-                self.id_number)).fetchone()
+                self.id_number))
+        item = database.c.fetchone()
         result = verifyePwd(self.id_number, old_pwd, "admin")
         if not result:
             QMessageBox.critical(self, '警告', '旧密码错误')
@@ -505,7 +509,7 @@ class UpdatePwd(QDialog):
         new_pass_word = MyMd5().createMd5(new_pwd, item["salt"],
                                           self.id_number)
         database.c.execute(
-            "update admin set password = ? where id_number = {0}".format(
+            f"update admin set password = {PH} where id_number = {0}".format(
                 self.id_number), (new_pass_word, ))
         database.conn.commit()
         QMessageBox.information(self, 'Success', '修改成功')

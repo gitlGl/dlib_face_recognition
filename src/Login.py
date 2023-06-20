@@ -13,6 +13,9 @@ import configparser,base64
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 import os
+import configparser
+from .Database import PH
+#from PyQt5 import QString
 class LoginUi(QWidget):
     emitsingal = pyqtSignal(str)
     emit_close = pyqtSignal()
@@ -161,8 +164,8 @@ class LoginUi(QWidget):
             clear()
             return
         time = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")
-        database.c.execute("INSERT INTO admin_log_time (id_number,log_time ) \
-VALUES (?,?)", (uesr_id, time))
+        database.c.execute(f"INSERT INTO admin_log_time (id_number,log_time ) \
+VALUES ({PH},{PH})", (uesr_id, time))
         database.conn.commit()
         time = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")
         len_ = len(uesr_id)

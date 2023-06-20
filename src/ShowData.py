@@ -169,13 +169,15 @@ class ShowData(QWidget):
         search_content = self.linnedit.text()
         result = None
         if  search_content.isdigit():
-            result = database.c.execute("select id_number,user_name,gender,password from student where id_number = {}".format(search_content)).fetchall()
+            database.c.execute("select id_number,user_name,gender,password from student where id_number = {}".format(search_content))
+            result = database.c.fetchall()
             if len(result) == 0:
                 QMessageBox.critical(self, '警告', '用户不存在')
                 self.linnedit.clear()
                 return
         else:
-            result = database.c.execute("select id_number,user_name,gender,password from student where user_name like '%{}%'".format(search_content)).fetchall()
+            database.c.execute("select id_number,user_name,gender,password from student where user_name like '%{}%'".format(search_content))
+            result = database.c.fetchall()
             if len(result) == 0:
                 QMessageBox.critical(self, '警告', '用户不存在')
                 self.linnedit.clear()
@@ -257,12 +259,15 @@ class ShowData(QWidget):
         #item = Student.select().where(Student.log_time).count()
 
         for i in timestr:
-            reuslt = database.c.execute(sql.format(self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d")+i)).fetchall()
+            database.c.execute(sql.format(self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d")+i))
+            reuslt = database.c.fetchall()
             #print(type(result))
             total_data.append(reuslt[0]['count(id_number)'])
-            reuslt =  database.c.execute(sql_female.format(self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d")+i)).fetchall()
+            database.c.execute(sql_female.format(self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d")+i))
+            reuslt = database.c.fetchall()
             female_data.append(reuslt[0]['count(id_number)'])
-            reuslt = database.c.execute(sql_male.format(self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d")+i)).fetchall()
+            database.c.execute(sql_male.format(self.DateEdit1.date().toPyDate().strftime("%Y-%m-%d")+i))
+            reuslt = database.c.fetchall()
             male_data.append(reuslt[0]['count(id_number)'])
     
       
@@ -297,11 +302,14 @@ class ShowData(QWidget):
        
         step_= 0
         for k in range(abs(days)+1):   
-                result = database.c.execute(sql.format(self.time1.date().addDays(step_).toPyDate().strftime("%Y-%m-%d"),self.time1.date().addDays(step_+step).toPyDate().strftime("%Y-%m-%d"))).fetchall()
+                result = database.c.execute(sql.format(self.time1.date().addDays(step_).toPyDate().strftime("%Y-%m-%d"),self.time1.date().addDays(step_+step).toPyDate().strftime("%Y-%m-%d")))
+                result = database.c.fetchall()
                 total_data .append(result[0]['count(id_number)'])
-                result = database.c.execute(sql_female.format(self.time1.date().addDays(step_).toPyDate().strftime("%Y-%m-%d"),self.time1.date().addDays(step_+step).toPyDate().strftime("%Y-%m-%d"))).fetchall()
+                database.c.execute(sql_female.format(self.time1.date().addDays(step_).toPyDate().strftime("%Y-%m-%d"),self.time1.date().addDays(step_+step).toPyDate().strftime("%Y-%m-%d")))
+                result = database.c.fetchall()
                 female_data .append(result[0]['count(id_number)'])
-                result = database.c.execute(sql_male.format(self.time1.date().addDays(step_).toPyDate().strftime("%Y-%m-%d"),self.time1.date().addDays(step_+step).toPyDate().strftime("%Y-%m-%d"))).fetchall()
+                database.c.execute(sql_male.format(self.time1.date().addDays(step_).toPyDate().strftime("%Y-%m-%d"),self.time1.date().addDays(step_+step).toPyDate().strftime("%Y-%m-%d")))
+                result = database.c.fetchall()
                 male_data .append(result[0]['count(id_number)'])
                 step_ = step+step_
 
