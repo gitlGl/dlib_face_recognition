@@ -1,6 +1,7 @@
 #import sqlite3
 import sys
 import configparser
+##########兼容sqlite3和mysql
 type_database = 'mysql'
 if type_database is 'sqlite3':
     print('sqlite3 loaded')
@@ -8,12 +9,12 @@ if type_database is 'sqlite3':
     PH = '?'
     Auto = 'AUTOINCREMENT'
 elif type_database is 'mysql':
-    print('pymysql  loaded')
+    print('mysql  loaded')
     import pymysql
     PH = '%s'
     Auto = 'AUTO_INCREMENT'
 
-
+#######
 def configRead(filePath:str):
     cfg = configparser.ConfigParser() 
     cfg.read(filePath)
@@ -67,7 +68,7 @@ class Database():
         user_name       CHAR(50)    NOT NULL,
         gender           char(1)    NOT NULL, 
         password        char(50)    NOT NULL,
-        vector          blob        ,
+        vector          blob        NOT NULL,
         salt            char(10)  NOT NULL ,
        count              INT,
         PRIMARY KEY (id_number )
@@ -91,7 +92,7 @@ class Database():
 
         password        char(50)    NOT NULL,
         salt            char(10)  NOT NULL ,
-        vector          blob        ,
+        vector          blob       NOT NULL,
         PRIMARY KEY (id_number )
                  );''')
     
@@ -113,8 +114,8 @@ class Database():
       VALUES ({PH},{PH}, {PH}, {PH} , {PH},{PH})",
             (id_number, user_name,gender, password,  vector, salt))
         self.conn.commit()
-    # def __del__(self):
-    #     self.conn.close()
+    def __del__(self):
+        self.conn.close()
         
 
 

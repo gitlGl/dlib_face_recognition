@@ -36,11 +36,12 @@ class StudentRgFace(Face):
        
         self.list_vector = []
         database.c.execute("SELECT vector from student")
-        for i in database.c.fetchall():#查询数据库中所有人脸编码
-            i = pickle.loads(i["vector"])
-            self.list_vector.append(i)
-      
-        #student.conn.close()
+        #使用列表生成进行序列化
+        self.list_vector = [pickle.loads(i['vector']) for i in database.c.fetchall()]
+        
+        database.c.execute("SELECT id_number from student")
+        self.list_idnumber = database.c.fetchall()
+
     def reset(self):
         self.face_data = np.random.random(128).astype('float64')
         self.refreshthread = Timer(60, self.reset)
@@ -56,28 +57,26 @@ class StudentRgFace(Face):
         
         result = self.rgFace(face_data, share.value)
         if result == "请先注册用户":
-            return "请先注册用户"
-        if result:
-            log = studentlog(result, img)
-            if hasattr(log, "item"):
-                self.face_data = face_data#保存这次识别人脸编码，下次识别时比较是否是同一人
-                self.former_result = "验证成功：" + log.item["user_name"]
-                return "验证成功：" + log.item["user_name"]
-           
-
-        return "验证失败"
-
+            return result
+        print("result", result)
+        if result == "验证失败":
+            return result
+        log = studentlog(self.list_idnumber[result]["id_number"], img)
+        self.face_data = face_data#保存这次识别人脸编码，下次识别时比较是否是同一人
+        self.former_result = "验证成功：" + log.item["user_name"]
+        return "验证成功：" + log.item["user_name"]
+        
     def rgFace(self, face_data, share):
         if len(self.list_vector) == 0:
             return "请先注册用户"
         distances = self.compareFaces(np.array(self.list_vector), face_data, axis=1)#计算欧式距离
-        min_distance = np.argmin(distances)
-        print("距离", distances[min_distance])
-        if distances[min_distance] < share:
-            tembyte = pickle.dumps(self.list_vector[min_distance])
-            return tembyte
+        min_distance_index = np.argmin(distances)
+        print("距离", distances[min_distance_index])
+        if distances[min_distance_index] < share:
+            
+            return min_distance_index
         
-        return False
+        return "验证失败"
 
 
 class AdminRgFace(Face):
@@ -88,22 +87,23 @@ class AdminRgFace(Face):
     def rgFace(self, img, rgbImage, raw_face):
         face_data = self.encodeFace(rgbImage, raw_face)
         list_vector = []
-        database.c.execute("SELECT vector,id_number from admin")# 查询数据库中的数据:
-        list_user = database.c.fetchall()
-        for i in list_user:
-            vector = pickle.loads(i["vector"])#把数据库中的vector（二进制）转换成ndarray
-            list_vector.append(vector)
+        database.c.execute("SELECT vector from admin")# 查询数据库中的数据:
+        
+        #使用列表生成进行序列化
+        list_vector = [pickle.loads(i['vector']) for i in database.c.fetchall()]
+
+        database.c.execute("SELECT id_number from admin")
+        list_id_number = database.c.fetchall()
         if len(list_vector) == 0:
             return False
         distances = self.compareFaces(np.array(list_vector), face_data, axis=1)
         min_distance = np.argmin(distances)
         print("距离", distances[min_distance])
         if distances[min_distance] < self.value:
-            tembyte = pickle.dumps(list_vector[min_distance])
-            log = adminlog(tembyte, img)
-            if hasattr(log, "item"):
-                id_number = list_user[min_distance]["id_number"]#返回管理员的id_number
-                return id_number
+            
+            log = adminlog(list_id_number[min_distance]["id_number"], img)
+            id_number = list_id_number[min_distance]["id_number"]#返回管理员的id_number
+            return id_number
             
         return False
 
