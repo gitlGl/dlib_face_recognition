@@ -2,20 +2,20 @@ from .GlobalVariable import database
 import datetime,cv2,os
 from .Database import PH
 class  studentlog():
-    def __init__(self, vector,img):
+    def __init__(self, id_number,img):
       
         #用户信息
         database.c.execute(
-                f"SELECT  id_number,gender,count,user_name from student where vector = {PH} limit 1",
-                (vector, ))# 取出返回所有数据，fetchall返回类型是[()]
+                f"SELECT  id_number,gender,count,user_name from student where id_number = {PH} ",
+                (id_number, ))# 取出返回所有数据，fetchall返回类型是[()]
         item =  database.c.fetchall()
-        print(len(item))
-        if(len(item) == 1):
-            self.item = item[0]
-            self.insertTime()
-            self.insertImg(img)
-            self.insertCout()
-            database.conn.commit()
+       
+        
+        self.item = item[0]
+        self.insertTime()
+        self.insertImg(img)
+        self.insertCout()
+        database.conn.commit()
            
     #记录识别成功时间
     def insertTime(self):
@@ -58,23 +58,19 @@ class  studentlog():
         return
            
 class  adminlog():
-    def __init__(self, vector,img):
+    def __init__(self, id_number,img):
       
         
         #用户信息
         database.c.execute(
-                f"SELECT  id_number from admin where vector = {PH} limit 1",
-                (vector, ))# 取出返回所有数据，fetchall返回类型是[()]
+                f"SELECT  id_number from admin where id_number = {PH} ",
+                (id_number, ))# 取出返回所有数据，fetchall返回类型是[()]
         item =  database.c.fetchall()
-        print(len(item))
-     
-        if(len(item) == 1):
-            self.item = item[0]
-            self.inserImg(img)
-            self.insertTime()
-            database.conn.commit()
-        else:
-            pass #应该输出异常日志
+        self.item = item[0]
+        self.inserImg(img)
+        self.insertTime()
+        database.conn.commit()
+        
 
     def insertTime(self):
         

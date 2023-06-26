@@ -1,5 +1,7 @@
 #import sqlite3
 import sys
+import configparser
+##########兼容sqlite3和mysql
 type_database = 'mysql'
 if type_database is 'sqlite3':
     print('sqlite3 loaded')
@@ -7,10 +9,25 @@ if type_database is 'sqlite3':
     PH = '?'
     Auto = 'AUTOINCREMENT'
 elif type_database is 'mysql':
-    print('pymysql  loaded')
+    print('mysql  loaded')
     import pymysql
     PH = '%s'
     Auto = 'AUTO_INCREMENT'
+
+#######
+def configRead(filePath:str):
+    cfg = configparser.ConfigParser() 
+    cfg.read(filePath)
+    if "sql" in cfg.sections():
+        host=cfg.get('sql','host')
+        port=cfg.getint('sql','port')
+        user=cfg.get('sql','user')
+        passwd=cfg.get('sql','password')
+        dbName=cfg.get('sql','db_name')
+        charset=cfg.get('sql','charset')
+        return host,port,user,passwd,dbName,charset
+    else:
+        return None,None,None,None,None,None,None
 class Database():
     def __init__(self):
         def dictFactory(cursor, row):#重定义row_factory函数查询返回数据类型是字典形式
@@ -52,7 +69,7 @@ class Database():
         user_name       CHAR(50)    NOT NULL,
         gender           char(1)    NOT NULL, 
         password        char(50)    NOT NULL,
-        vector          blob        ,
+        vector          blob        NOT NULL,
         salt            char(10)  NOT NULL ,
        count              INT,
         PRIMARY KEY (id_number )
@@ -76,7 +93,7 @@ class Database():
 
         password        char(50)    NOT NULL,
         salt            char(10)  NOT NULL ,
-        vector          blob        ,
+        vector          blob       NOT NULL,
         PRIMARY KEY (id_number )
                  );''')
     
@@ -98,8 +115,8 @@ class Database():
       VALUES ({PH},{PH}, {PH}, {PH} , {PH},{PH})",
             (id_number, user_name,gender, password,  vector, salt))
         self.conn.commit()
-    # def __del__(self):
-    #     self.conn.close()
+    def __del__(self):
+        self.conn.close()
         
 
 
