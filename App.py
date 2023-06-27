@@ -4,7 +4,7 @@ import sys
 from qss import StyleSheet
 from PyQt5.QtGui import QFont
 from PyQt5 import QtCore
-
+#通过新建分支修复分支损坏错误
 if __name__ == '__main__':
     QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
     QApplication.setHighDpiScaleFactorRoundingPolicy(QtCore.Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
