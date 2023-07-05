@@ -175,7 +175,7 @@ VALUES ({PH},{PH})", (uesr_id, time))
             self.config_rember_pwd.setFlag("1")
         if self.auto_login.isChecked():
             if not self.config_auto_login.check():
-                self.config_auto_login.setStates(aes.encrypt(str({"mac_address":uuid.uuid1().hex[-12:],"id_number":uesr_id,"time":time}),
+                self.config_auto_login.setStates(aes.encrypt(str({"mac_address":aes.mac_address,"id_number":uesr_id,"time":time}),
                                                               aes.Key))#aes不能解密加密自身
             self.config_auto_login.setFlag("1")
 
@@ -268,12 +268,12 @@ class  configAotuLogin(config):
         if self.result:
             pre_time = datetime.datetime.strptime(self.result['time'],"%Y-%m-%d-%H-%M")
             days = (datetime.datetime.now() - pre_time ).days
-            if days > 3:
+            if days > aes.days:
                 return False
             return True
     def checkPwd(self):
         if self.result:
-            return self.result['mac_address'] == uuid.uuid1().hex[-12:]
+            return self.result['mac_address'] == aes.mac_address
 
     def check(self) -> bool:
         if not self.checkFlag():
@@ -301,6 +301,8 @@ class  configAotuLogin(config):
 
 class aes():
     Key = uuid.uuid1().hex[-12:][1:6]+'abc'
+    mac_address = uuid.uuid1().hex[-12:]
+    days = 3
     def encrypt(data,mac_address):
        
         key = pad(mac_address.encode("utf8"),AES.block_size)
