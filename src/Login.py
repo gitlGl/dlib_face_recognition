@@ -91,7 +91,7 @@ class LoginUi(QWidget):
         self.v_layout.addLayout(self.h_password_layout)
         self.v_layout.addStretch(1.5)
         if self.initRemberPwd()  or self.initAutoLogin():
-            qlbel = QLabel("记住密码或自动登录超时")
+            qlbel = QLabel("记住密码或自动登录超时或未知错误")
             qlbel.setStyleSheet("font-size:12px;color:red")
             self.h_tips = QHBoxLayout()
             self.config_auto_login.setStates('')
@@ -216,8 +216,10 @@ class  configRemberPwd(config):
             # 打开 ini 文件
             config.config.read(self.file_name, encoding="utf-8")
         if  config.config["rember_pwd"]['flag'] == '1':
-            self.result = eval(aes.decrypt(config.config["rember_pwd"]["pwd"],
-                                      uuid.uuid1().hex[-12:][1:6]+'abc'))
+            result = aes.decrypt(config.config["rember_pwd"]["pwd"],
+                                      uuid.uuid1().hex[-12:][1:6]+'abc')
+            if result:
+                self.result = eval(result),
             print(self.result)
     def checkFlag(self):
         return config.config["rember_pwd"]["flag"] == "1"
