@@ -102,6 +102,9 @@ def createMd5(password, id_number):#随机盐加三位用户id混淆
 
 class aes():
     Key = uuid.uuid1().hex[-12:][1:6] + "abc"
+    mac_address = uuid.uuid1().hex[-12:]
+    days = 3
+    
     def encrypt(data,mac_address):
        
         key = pad(mac_address.encode("utf8"),AES.block_size)
