@@ -62,6 +62,10 @@ class Main(Ui):
                 #if  self.flag == False:
                 psutil.Process(self.p.pid).resume()
                 self.share.value = self.process_exit
+            self.normal_rgface_btn.setChecked(False)
+            self.Liveness_rgface_btn.setChecked(False)
+            self.normal_rgface_btn.setEnabled(True)
+            self.Liveness_rgface_btn.setEnabled(True)
         
                 #self.p.terminate()
             self.hide()
