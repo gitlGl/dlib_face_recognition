@@ -56,11 +56,9 @@ class LoginUi(QWidget):
         if not self.config_rember_pwd.checkTime():
             self.remember_password.setChecked(False)
             return True
-        id = self.config_rember_pwd.result[-36:]
-        id = id[:-16]
-        id = id.strip(' ')
-        self.user_line.setText(id)
-        self.pwd_line.setText(self.config_rember_pwd.result[:-36])
+        
+        self.user_line.setText(self.config_rember_pwd.result["id_number"])
+        self.pwd_line.setText(self.config_rember_pwd.result['password'])
         return False
     def initAutoLogin(self):
         if not self.config_auto_login.checkFlag():
@@ -168,19 +166,16 @@ class LoginUi(QWidget):
 VALUES ({PH},{PH})", (uesr_id, time))
         database.conn.commit()
         time = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")
-        len_ = len(uesr_id)
-        id = uesr_id
-        for i in range(len_,20):
-            id = id+" "
+        
         if self.remember_password.isChecked():
             
             if not self.config_rember_pwd.check():
-                self.config_rember_pwd.setPwd(aes.encrypt(self.pwd_line.text()+id+time,
+                self.config_rember_pwd.setPwd(aes.encrypt(str({"password":self.pwd_line.text(),"id_number":uesr_id,"time":time}),
                                                          uuid.uuid1().hex[-12:][1:6]+'abc' ))
             self.config_rember_pwd.setFlag("1")
         if self.auto_login.isChecked():
             if not self.config_auto_login.check():
-                self.config_auto_login.setStates(aes.encrypt(uuid.uuid1().hex[-12:]+id+time,
+                self.config_auto_login.setStates(aes.encrypt(str({"mac_address":uuid.uuid1().hex[-12:],"id_number":uesr_id,"time":time}),
                                                              uuid.uuid1().hex[-12:][1:6]+'abc'))#aes不能解密加密自身
             self.config_auto_login.setFlag("1")
 
@@ -221,13 +216,14 @@ class  configRemberPwd(config):
             # 打开 ini 文件
             config.config.read(self.file_name, encoding="utf-8")
         if  config.config["rember_pwd"]['flag'] == '1':
-            self.result = aes.decrypt(config.config["rember_pwd"]["pwd"],
-                                      uuid.uuid1().hex[-12:][1:6]+'abc')
+            self.result = eval(aes.decrypt(config.config["rember_pwd"]["pwd"],
+                                      uuid.uuid1().hex[-12:][1:6]+'abc'))
+            print(self.result)
     def checkFlag(self):
         return config.config["rember_pwd"]["flag"] == "1"
     def checkTime(self):
         if self.result:
-            pre_time = datetime.datetime.strptime(self.result[-16:],"%Y-%m-%d-%H-%M")
+            pre_time = datetime.datetime.strptime(self.result['time'],"%Y-%m-%d-%H-%M")
             days = (datetime.datetime.now() - pre_time ).days
             if days > 3:
                 return False
@@ -261,20 +257,20 @@ class  configAotuLogin(config):
             # 打开 ini 文件
             config.config.read(self.file_name, encoding="utf-8") 
         if  config.config["aotu_login"]['flag'] == '1':
-            self.result = aes.decrypt(config.config["aotu_login"]["login_states"], 
-                                      uuid.uuid1().hex[-12:][1:6]+'abc')
+            self.result = eval(aes.decrypt(config.config["aotu_login"]["login_states"], 
+                                      uuid.uuid1().hex[-12:][1:6]+'abc'))
     def checkFlag(self):
         return config.config["aotu_login"]["flag"] == "1"
     def checkTime(self):
         if self.result:
-            pre_time = datetime.datetime.strptime(self.result[-16:],"%Y-%m-%d-%H-%M")
+            pre_time = datetime.datetime.strptime(self.result['time'],"%Y-%m-%d-%H-%M")
             days = (datetime.datetime.now() - pre_time ).days
             if days > 3:
                 return False
             return True
     def checkPwd(self):
         if self.result:
-            return self.result[:12] == uuid.uuid1().hex[-12:]
+            return self.result['mac_address'] == uuid.uuid1().hex[-12:]
 
     def check(self) -> bool:
         if not self.checkFlag():

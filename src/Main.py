@@ -78,7 +78,7 @@ class Main(Ui):
     def aotuLogin(self):
         if not self.login_ui.config_auto_login.check():
             return False
-        self.id_number = self.login_ui.config_auto_login.result[-36:][:-16].strip(' ')
+        self.id_number = self.login_ui.config_auto_login.result['id_number']
         self.p = Process(target=processStudentRg,
                         args=(self.Q_put, self.Q_get, self.share))
         self.p.daemon = True
