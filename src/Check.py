@@ -7,7 +7,7 @@ from .GlobalVariable import models
 from .Creatuser import CreatUser
 import http.client,pickle
 import hashlib
-import base64
+import base64,uuid
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 def checkUserId(user_id):
@@ -101,6 +101,7 @@ def createMd5(password, id_number):#随机盐加三位用户id混淆
     return md5.hexdigest()
 
 class aes():
+    Key = uuid.uuid1().hex[-12:][1:6] + "abc"
     def encrypt(data,mac_address):
        
         key = pad(mac_address.encode("utf8"),AES.block_size)

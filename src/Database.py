@@ -10,7 +10,7 @@ if type_database is 'sqlite3':
     PH = '?'
     Auto = 'AUTOINCREMENT'
 elif type_database is 'mysql':
-    print('pymysql  loaded')
+    print('mysql  loaded')
     import pymysql
     PH = '%s'
     Auto = 'AUTO_INCREMENT'
