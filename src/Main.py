@@ -94,7 +94,8 @@ class Main(Ui):
                 return "设备与账号不匹配"
         except: 
             return "网络错误"
-        self.id_number = self.login_ui.config_auto_login.result[-36:][:-16].strip(' ')
+        self.id_number = self.login_ui.config_auto_login.result["id_number"]
+        self.id_number = self.login_ui.config_auto_login.result['id_number']
         self.p = Process(target=processStudentRg,
                         args=(self.Q_put, self.Q_get, self.share))
         self.p.daemon = True
