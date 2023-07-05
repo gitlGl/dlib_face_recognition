@@ -171,12 +171,12 @@ VALUES ({PH},{PH})", (uesr_id, time))
             
             if not self.config_rember_pwd.check():
                 self.config_rember_pwd.setPwd(aes.encrypt(str({"password":self.pwd_line.text(),"id_number":uesr_id,"time":time}),
-                                                         uuid.uuid1().hex[-12:][1:6]+'abc' ))
+                                                    aes.Key))
             self.config_rember_pwd.setFlag("1")
         if self.auto_login.isChecked():
             if not self.config_auto_login.check():
                 self.config_auto_login.setStates(aes.encrypt(str({"mac_address":uuid.uuid1().hex[-12:],"id_number":uesr_id,"time":time}),
-                                                             uuid.uuid1().hex[-12:][1:6]+'abc'))#aes不能解密加密自身
+                                                              aes.Key))#aes不能解密加密自身
             self.config_auto_login.setFlag("1")
 
         self.emitsingal.emit(uesr_id)
@@ -217,10 +217,9 @@ class  configRemberPwd(config):
             config.config.read(self.file_name, encoding="utf-8")
         if  config.config["rember_pwd"]['flag'] == '1':
             result = aes.decrypt(config.config["rember_pwd"]["pwd"],
-                                      uuid.uuid1().hex[-12:][1:6]+'abc')
+                                      aes.Key)
             if result:
-                self.result = eval(result),
-            print(self.result)
+                self.result = eval(result)
     def checkFlag(self):
         return config.config["rember_pwd"]["flag"] == "1"
     def checkTime(self):
@@ -259,8 +258,10 @@ class  configAotuLogin(config):
             # 打开 ini 文件
             config.config.read(self.file_name, encoding="utf-8") 
         if  config.config["aotu_login"]['flag'] == '1':
-            self.result = eval(aes.decrypt(config.config["aotu_login"]["login_states"], 
-                                      uuid.uuid1().hex[-12:][1:6]+'abc'))
+            result = aes.decrypt(config.config["aotu_login"]["login_states"],
+                                      aes.Key)
+            if result:
+                self.result = eval(result)
     def checkFlag(self):
         return config.config["aotu_login"]["flag"] == "1"
     def checkTime(self):
@@ -299,6 +300,7 @@ class  configAotuLogin(config):
 
 
 class aes():
+    Key = uuid.uuid1().hex[-12:][1:6]+'abc'
     def encrypt(data,mac_address):
        
         key = pad(mac_address.encode("utf8"),AES.block_size)
