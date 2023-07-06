@@ -47,29 +47,24 @@ class ShowLog(QDialog):
         
     def setInformation(self):
         self.information = self.page.information
-        row = 0
-        row2 = 0
         self.tableWidget.setRowCount(0)
-        for i in self.information:
+        for row,i in enumerate(self.information):
             if type(i['log_time']) is not str:
                 i['log_time'] = i['log_time'].strftime("%Y-%m-%d-%H-%M")
             self.tableWidget.insertRow(row)
             row2 = 0
-            for cloumn in self.list_cloumn:
-                if cloumn == "id":
-                    continue
+            for row2,cloumn in enumerate(self.list_cloumn[1:]):#第一列为id，列表中不显示，所以从第二列开始，且id删除时需要使用
                 item  = QTableWidgetItem(i[cloumn])
                 self.tableWidget.setItem(row, row2, item)
                 item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-                row2 = row2 +1
+                
             
             imag_path = "img_information/{0}/{1}/log/{2}.jpg".format(self.table,i["id_number"],i["log_time"])
             img_item =  QTableWidgetItem()
             img_item.setIcon(QIcon(imag_path))
-            self.tableWidget.setItem(row, row2,img_item)
+            self.tableWidget.setItem(row, row2+1,img_item)
             self.tableWidget.setIconSize(QSize(60, 100))
-            row = row + 1
-            self.tableWidget.setRowCount(row)
+            self.tableWidget.setRowCount(row+1)
       
            
     def onTableWidgetCellDoubleClicked(self, row, column):#双击槽函数 self.tableWidget.cellDoubleClicked.connect()
