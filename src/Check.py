@@ -10,6 +10,7 @@ import hashlib
 import base64,uuid
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
+from .GlobalVariable import user
 def checkUserId(user_id):
 
     if not user_id.isdigit() or len(user_id) > 20:
@@ -18,7 +19,8 @@ def checkUserId(user_id):
 
 
 def checkUserPwd(user_pwd):
-    if len(user_pwd) < 6 or len(user_pwd) > 13:
+    if len(user_pwd) < user.password_min_length.value or len(
+        user_pwd) > user.password_max_length.value:
             return False
     return True
 def verifyePwd(user_id,user_pwd,tabel_name):
