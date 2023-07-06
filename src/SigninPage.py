@@ -5,7 +5,7 @@ from .GlobalVariable import database
 from .MyMd5 import MyMd5
 from PyQt5.QtGui import QIcon
 from .Creatuser import CreatUser
-
+from .GlobalVariable import admin
 from .Check import getImgPath, checkPath
 import uuid
 from .Database import PH
@@ -104,9 +104,10 @@ class SigninPage(QWidget):
         
 
         #检查输入信息格式
-        if (not self.signin_user_line.text().isdigit()) or (len(self.signin_user_line.text())>15):
+        if (not self.signin_user_line.text().isdigit()) or (
+            len(self.signin_user_line.text())>admin.id_length.value):
 
-            QMessageBox.critical(self, '警告', '用户名只能是数字且少于15位!')
+            QMessageBox.critical(self, f'警告', f'用户名只能是数字且少于{admin.id_length.value}位!')
 
             return
         if self.signin_pwd_line.text() != self.signin_pwd2_line.text():
@@ -115,9 +116,10 @@ class SigninPage(QWidget):
 
             return
 
-        if len(self.signin_pwd_line.text()) < 6 or len(
-                self.signin_pwd_line.text()) > 13:
-            QMessageBox.critical(self, '警告', ' 密码长度>=6<13!')
+        if len(self.signin_pwd_line.text()) < admin.password_min_length.value or len(
+                self.signin_pwd_line.text()) > admin.password_max_length.value:
+            QMessageBox.critical(self, '警告', 
+            f' 密码长度>={admin.password_min_length.value}<{admin.password_max_length.value}!')
 
             return
     

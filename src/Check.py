@@ -5,6 +5,7 @@ import os
 from PyQt5.QtWidgets import QFileDialog,QMessageBox
 from .GlobalVariable import models
 from .Creatuser import CreatUser
+from .GlobalVariable import user
 def checkUserId(user_id):
 
     if not user_id.isdigit() or len(user_id) > 20:
@@ -13,7 +14,8 @@ def checkUserId(user_id):
 
 
 def checkUserPwd(user_pwd):
-    if len(user_pwd) < 6 or len(user_pwd) > 13:
+    if len(user_pwd) < user.password_min_length.value or len(
+        user_pwd) > user.password_max_length.value:
             return False
     return True
 def verifyePwd(user_id,user_pwd,tabel_name):

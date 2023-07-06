@@ -6,7 +6,7 @@ from .GlobalVariable import database
 import cv2, pickle
 from PyQt5.QtCore import pyqtSignal,QObject
 from PyQt5.QtWidgets import QApplication
-
+from .GlobalVariable import user ,admin 
 class CreatUser(QObject):
     def __init__(self) -> None:
         super().__init__()
@@ -65,16 +65,18 @@ class CreatStudentUser(CreatUser):
                 if type(list1[0]) == float:
                     list1[0] = int(list1[0])
 
-                if (not str(list1[0]).isdigit()) or len(str(list1[0])) >13:
-                    list_problem.append("第{0}行第1列，用户名为13位数字 ".format(i) +
+                if (not str(list1[0]).isdigit()) or len(
+                    str(list1[0])) == user.id_length.value:
+                    list_problem.append(
+                        f"第{0}行第1列,用户id为{user.id_length.value}位数字 ".format(i) +
                                         str(list1[0]))
                     continue
                 database.c.execute(
                     "select id_number from student where id_number = {} ".
                     format(str(list1[0])))
-                user = database.c.fetchall()
+                user_ = database.c.fetchall()
 
-                if len(user) == 1:
+                if len(user_) == 1:
                     list_problem.append("第{0}行第1列,用户已存在: ".format(i) +
                                         str(list1[0]))
                     continue
@@ -99,7 +101,7 @@ class CreatStudentUser(CreatUser):
                 #判断密码是否符合格式要求
 
                 lenth = len(str(list1[3]))
-                if lenth > 13 or lenth < 6:
+                if lenth > user.password_max_length.value or lenth < user.password_min_length.value:
                     list_problem.append("第{0}行第4列,密码为6-13位字符: ".format(i) +
                                         str(list1[3]))
                     continue

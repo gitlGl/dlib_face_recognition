@@ -8,7 +8,7 @@ import os, shutil
 from .Check import getImgPath
 from .MyMd5 import MyMd5
 from .Check import verifyePwd,checkPath
-
+from .GlobalVariable import user,admin
 
 class UpdateUserData(QDialog):
     def __init__(self, information=None):
@@ -131,11 +131,11 @@ class UpdateUserData(QDialog):
         gender = self.gender_line.text()
         #检查输入信息
         lenth = len(user_name)
-        if lenth > 16 or lenth == 0:
+        if lenth > user.name_length.value or lenth == 0:
 
-             QMessageBox.critical(self, '警告', '用户名为13个有效字符')
+             QMessageBox.critical(self, '警告', f'用户名为{user.name_length.value}个有效字符')
              return False
-
+       
         if gender == "男" or gender == "女":
             pass
         else:
@@ -154,10 +154,11 @@ class UpdateUserData(QDialog):
         if len( database.c.fetchall()) == 1 and id != id_number:
             QMessageBox.critical(self, '警告', ' 这个学号已经存在')
             return False
-        if (len(password) < 6 or len(password) > 13):
+        if (len(password) < user.password_min_length.value or len(
+            password) > user.password_max_length.value):
             if (password != self.information["password"]):
                 QMessageBox.critical(self, '警告',
-                                     ' Passwords is too short or too long!')
+                                      f' 密码为{user.password_min_length.value}-{user.password_max_length.value}位!')
                 return False
 
         r = QMessageBox.warning(self, "注意", "确认修改？",
@@ -170,8 +171,8 @@ class UpdateUserData(QDialog):
                 if (password != self.information["password"]):
                     salt = MyMd5().createSalt()
                     password = MyMd5().createMd5(password, salt, id_number)
-                    database.c.execute(f"UPDATE student SET id_number = '{0}',user_name = '{1}',gender = '{2}',password = {PH},salt = {PH} WHERE id_number = {3}"\
-                .format(id_number,user_name,gender,id),(password,salt))
+                    database.c.execute(f"UPDATE student SET id_number = '{id_number}',user_name = '{user_name}',gender = '{gender}',password = {PH},salt = {PH} WHERE id_number = {id}"\
+               ,(password,salt))
                 else:
                     database.c.execute("UPDATE student SET id_number = '{0}',user_name = '{1}',gender = '{2}' WHERE id_number = '{3}'"\
                 .format(id_number,user_name,gender,id))
@@ -188,13 +189,12 @@ class UpdateUserData(QDialog):
                     salt = MyMd5().createSalt()
                     password = MyMd5().createMd5(password, salt, id_number)
                     database.c.execute(
-                        f"update student set id_number= {PH},user_name = {PH},gender = {PH} ,vector = {PH},password = {PH},salt = {PH} where id_number = {0}"
-                        .format(id),
+                        f"update student set id_number= {PH},user_name = {PH},gender = {PH} ,vector = {PH},password = {PH},salt = {PH} where id_number = {id}",
                         (id_number, user_name, gender, vector, password, salt))
                 else:
                     database.c.execute(
-                        f"update student set id_number= {PH},user_name = {PH},gender = {PH} ,vector = {PH} where id_number = {0}"
-                        .format(id), (id_number, user_name, gender, vector))
+                        f"update student set id_number= {PH},user_name = {PH},gender = {PH} ,vector = {PH} where id_number = {id}"
+                        , (id_number, user_name, gender, vector))
 
                 database.c.execute(
                     "update student_log_time set id_number= {0} where id_number = {1}"
@@ -210,7 +210,7 @@ class UpdateUserData(QDialog):
         old_path = "img_information/student/{0}/".format(str(id))
         new_path = "img_information/student/{0}/".format(str(id_number))
         #更改后变更用户日志信息文件夹
-        if not os.path.exists(old_path):  #判断是否存在文件夹如果不存在则创建为文件夹
+        if not os.path.exists(old_path) and not os.path.exists(new_path):  #判断是否存在文件夹如果不存在则创建为文件夹
             os.makedirs(new_path)
             os.makedirs("img_information/student/{0}/log".format(
                 str(id_number)))
@@ -337,9 +337,9 @@ class UpdateAdminData(QDialog):
         id_number = self.id_number_line.text()
 
         #检查输入信息
-        if len(id_number) > 20 or (not id_number.isdigit()):
+        if len(id_number) > admin.id_length.value or (not id_number.isdigit()):
             QMessageBox.critical(self, '警告',
-                                 'id_number is only digit or is too long!')
+                                 f'账号位数不大于{admin.id_length.value}!')
             return False
 
         
@@ -349,7 +349,8 @@ class UpdateAdminData(QDialog):
         if len( database.c.fetchall()) == 1 and id != id_number:
             QMessageBox.critical(self, '警告', ' 这个用户已存在')
             return False
-        if (len(password) < 6 or len(password) > 13):
+        if (len(password) < admin.password_min_length.value or len(
+            password) > admin.password_max_length.value):
             if (password != self.information["password"]):
                 QMessageBox.critical(self, '警告',
                                      ' Passwords is too short or too long!')
@@ -365,8 +366,8 @@ class UpdateAdminData(QDialog):
                     salt = MyMd5().createSalt()
                     password = MyMd5().createMd5(password, salt, id_number)
                     database.c.execute(
-                        f"update admin set id_number = {PH},password = {PH},salt = {PH} where id_number = {0}"
-                        .format(id), (id_number, password, salt))
+                        f"update admin set id_number = {PH},password = {PH},salt = {PH} where id_number = {id}"
+                        , (id_number, password, salt))
                 else:
                     database.c.execute(
                         "update admin set id_number = {0} where id_number = {1}"
@@ -384,12 +385,12 @@ class UpdateAdminData(QDialog):
                     salt = MyMd5().createSalt()
                     password = MyMd5().createMd5(password, salt, id_number)
                     database.c.execute(
-                        f"update admin set id_number= {PH},password = {PH},salt = {PH} ,vector = {PH} where id_number = {0}"
-                        .format(id), (id_number, password, salt, vector))
+                        f"update admin set id_number= {PH},password = {PH},salt = {PH} ,vector = {PH} where id_number = {id}"
+                        , (id_number, password, salt, vector))
                 else:
                     database.c.execute(
-                        f"update admin set id_number= {PH} ,vector = {PH} where id_number = {0}"
-                        .format(id), (id_number, vector))
+                        f"update admin set id_number= {PH} ,vector = {PH} where id_number = {id}"
+                        , (id_number, vector))
                 database.conn.commit()
         except:
             QMessageBox.critical(self, '警告', "未知错误")
@@ -402,7 +403,7 @@ class UpdateAdminData(QDialog):
         old_path = "img_information/admin/{0}/".format(str(id))
         new_path = "img_information/admin/{0}/".format(str(id_number))
         #更改后变更用户日志信息文件夹
-        if not os.path.exists(old_path):  #判断是否存在文件夹如果不存在则创建为文件夹
+        if not os.path.exists(old_path) and not os.path.exists(new_path):  #判断是否存在文件夹如果不存在则创建为文件夹
             os.makedirs(new_path)
             os.makedirs("img_information/admin/{0}/log".format(str(id_number)))
             
@@ -490,8 +491,10 @@ class UpdatePwd(QDialog):
             QMessageBox.critical(self, '警告', '两次密码不一致')
             return
 
-        if len(new_pwd) < 6 and len(new_pwd) > 16:
-            QMessageBox.critical(self, '警告', '密码长度不能小于6位或大于16位')
+        if len(new_pwd) < admin.password_min_length.value and len(
+            new_pwd) > admin.password_max_length.value:
+            QMessageBox.critical(self, '警告', 
+                                 f'密码长度不能小于{admin.password_min_length.value}位或大于{admin.password_max_length.value}位')
             return
 
         if old_pwd == new_pwd:
@@ -508,10 +511,12 @@ class UpdatePwd(QDialog):
             return
         new_pass_word = MyMd5().createMd5(new_pwd, item["salt"],
                                           self.id_number)
+       
         database.c.execute(
-            f"update admin set password = {PH} where id_number = {0}".format(
-                self.id_number), (new_pass_word, ))
+            f"update admin set password = '{new_pass_word}' where id_number = {self.id_number}")
+               
         database.conn.commit()
+       
         QMessageBox.information(self, 'Success', '修改成功')
         self.close()
         return
