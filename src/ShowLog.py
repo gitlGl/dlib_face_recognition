@@ -49,9 +49,10 @@ class ShowLog(QDialog):
         self.information = self.page.information
         self.tableWidget.setRowCount(0)
         for row,i in enumerate(self.information):
-            if type(i['log_time']) is not str:
-                i['log_time'] = i['log_time'].strftime("%Y-%m-%d-%H-%M")
+            i["log_time"] = i["log_time"].strftime("%Y-%m-%d-%H-%M")#时间格式化
+           
             self.tableWidget.insertRow(row)
+            
             row2 = 0
             for row2,cloumn in enumerate(self.list_cloumn[1:]):#第一列为id，列表中不显示，所以从第二列开始，且id删除时需要使用
                 item  = QTableWidgetItem(i[cloumn])
@@ -60,6 +61,7 @@ class ShowLog(QDialog):
                 
             
             imag_path = "img_information/{0}/{1}/log/{2}.jpg".format(self.table,i["id_number"],i["log_time"])
+            print(imag_path)
             img_item =  QTableWidgetItem()
             img_item.setIcon(QIcon(imag_path))
             self.tableWidget.setItem(row, row2+1,img_item)

@@ -20,9 +20,8 @@ class  studentlog():
     #记录识别成功时间
     def insertTime(self):
         database.c.execute(
-            f"INSERT INTO student_log_time (id_number,gender,log_time ) \
-      VALUES ({PH}, {PH},{PH})",
-            (self.item["id_number"], self.item["gender"],datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
+            f"INSERT INTO student_log_time (id_number,gender ) VALUES ({PH}, {PH})",
+            (self.item["id_number"],self.item["gender"],))
 
        
         
@@ -75,9 +74,9 @@ class  adminlog():
     def insertTime(self):
         
         database.c.execute(
-            f"INSERT INTO admin_log_time (id_number,log_time ) \
-      VALUES ({PH},{PH})",
-            (self.item["id_number"], datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
+            f"INSERT INTO admin_log_time (id_number,time ) \
+      VALUES ({PH},)",
+            (self.item["id_number"]))
 
        
        
@@ -91,4 +90,6 @@ class  adminlog():
             path + "/" + self.get_Time() + ".jpg",
             img)
     def get_Time(self):
+        Time =datetime.datetime.now().timestamp()
+        print("jdkvm",datetime.datetime.fromtimestamp(Time))    
         return str(datetime.datetime.now().strftime("%Y-%m-%d-%H-%M"))
