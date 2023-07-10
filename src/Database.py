@@ -8,11 +8,13 @@ if type_database is 'sqlite3':
     import sqlite3
     PH = '?'
     Auto = 'AUTOINCREMENT'
+    time =  "DATETIME DEFAULT (datetime('now','localtime'))"
 elif type_database is 'mysql':
     print('mysql  loaded')
     import pymysql
     PH = '%s'
     Auto = 'AUTO_INCREMENT'
+    time =  'DEFAULT CURRENT_TIMESTAMP'
 
 #######
 def configRead(filePath:str):
@@ -37,7 +39,7 @@ class Database():
             return d
 
         if type_database is 'sqlite3':
-            self.conn = sqlite3.connect('resources/company.db')
+            self.conn = sqlite3.connect('resources/company.db',detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
             self.conn.row_factory = dictFactory
             self.c = self.conn.cursor()
 
@@ -67,7 +69,7 @@ class Database():
        ( 
         id_number        CHAR(50)    UNIQUE NOT NULL ,
         user_name       CHAR(50)    NOT NULL,
-        gender           char(1)    NOT NULL, 
+        gender           char(4)    NOT NULL, 
         password        char(50)    NOT NULL,
         vector          blob        NOT NULL,
         salt            char(10)  NOT NULL ,
@@ -79,9 +81,9 @@ class Database():
        ( 
          id INTEGER PRIMARY KEY {Auto},
         id_number              CHAR(50)    NOT NULL ,
-        gender           char(1)    NOT NULL,
+        gender           char(4)    NOT NULL,
  
-        log_time datetime NOT NULL 
+        log_time TIMESTAMP  {time}
        
       
         );''')
@@ -102,8 +104,7 @@ class Database():
         id INTEGER PRIMARY KEY {Auto},
         id_number             CHAR(50)    NOT NULL ,
       
-        log_time datetime NOT NULL 
-       
+        log_time TIMESTAMP {time}
       
         );''')
         #id_number 字段应使用外键约束保证数据一致性 
