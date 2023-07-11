@@ -294,8 +294,9 @@ class ShowData(QWidget):
             "%Y-%m-%d"), self.time2.date().addDays(1).toPyDate().strftime("%Y-%m-%d")))
         result = database.c.fetchall()
 
-        count1 = len([i for i in result if abs(
-            (i["log_time"].date() - self.time1.date().toPyDate()).days) < step])
+        result1 = [i for i in result if abs(
+            (i["log_time"].date() - self.time1.date().toPyDate()).days) < step]
+        count1 = len(result1)
         total_data .append(count1)
         count2 = len([i for i in result if abs((i["log_time"].date(
         ) - self.time1.date().toPyDate()).days) < step and i['gender'] == '女'])
@@ -304,14 +305,13 @@ class ShowData(QWidget):
         ) - self.time1.date().toPyDate()).days) < step and i['gender'] == '男'])
         print("3:", count3)
         male_data .append(count3)
+        result = [i for i in result if i not in result1]
 
         step_ = 0
-
-        print("days", result)
         for i in range(days):
-            count1 = len([i for i in result if abs((i["log_time"].date(
-            ) - self.time1.date().addDays(step_ + step).toPyDate()).days) < step])
-
+            result1 = [i for i in result if abs((i["log_time"].date(
+            ) - self.time1.date().addDays(step_ + step).toPyDate()).days) < step]
+            count1 = len(result1)
             total_data .append(count1)
             count2 = len([i for i in result if abs((i["log_time"].date(
             ) - self.time1.date().addDays(step_ + step).toPyDate()).days) < step and i['gender'] == '女'])
@@ -322,6 +322,7 @@ class ShowData(QWidget):
             male_data .append(count3)
 
             step_ = step + step_
+            result = [i for i in result if i not in result1]
 
         category1 = ["总数"]
         category2 = ["女性"]
