@@ -313,12 +313,10 @@ class ShowData(QWidget):
             ) - self.time1.date().addDays(step_ + step).toPyDate()).days) < step]
             count1 = len(result1)
             total_data .append(count1)
-            count2 = len([i for i in result if abs((i["log_time"].date(
-            ) - self.time1.date().addDays(step_ + step).toPyDate()).days) < step and i['gender'] == '女'])
+            count2 = len([i for i in result1 if  i['gender'] == '女'])
 
             female_data .append(count2)
-            count3 = len([i for i in result if abs((i["log_time"].date(
-            ) - self.time1.date().addDays(step_ + step).toPyDate()).days) < step and i['gender'] == '男'])
+            count3 = len([i for i in result1 if  i['gender'] == '男'])
             male_data .append(count3)
 
             step_ = step + step_
