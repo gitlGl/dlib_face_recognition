@@ -5,7 +5,7 @@ from .ShowUser import ShowStudentUser
 from PyQt5.QtCore import QDate, Qt
 import copy
 import os
-from datetime import datetime,timedelta
+from datetime import datetime, timedelta
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel, QVBoxLayout, QLineEdit,\
@@ -212,7 +212,7 @@ class ShowData(QWidget):
             self.time2 = self.DateEdit2
 
         days = abs(self.DateEdit1.date().daysTo(self.DateEdit2.date()))
-        temdays = self.DateEdit1.date().daysTo(self.DateEdit2.date())
+        temdays = abs(self.DateEdit1.date().daysTo(self.DateEdit2.date()))
         if days < 1:
             datatabel, data_title, number = self.getData_()
 
@@ -291,24 +291,38 @@ class ShowData(QWidget):
         male_data = []
         sql = "SELECT log_time ,gender FROM student_log_time   where log_time between  '{0}'   and '{1}' ;"
 
-       
         result = database.c.execute(sql.format(self.time1.date().toPyDate().strftime(
-        "%Y-%m-%d-%H-%M"), self.time2.date().toPyDate().strftime("%Y-%m-%d-%H-%M")))
+            "%Y-%m-%d"), self.time2.date().addDays(1).toPyDate().strftime("%Y-%m-%d")))
         result = database.c.fetchall()
+
+        count1 = len([i for i in result if abs(
+            (i["log_time"].date() - self.time1.date().toPyDate()).days) < step])
+        total_data .append(count1)
+        count2 = len([i for i in result if abs((i["log_time"].date(
+        ) - self.time1.date().toPyDate()).days) < step and i['gender'] == '女'])
+        female_data .append(count2)
+        count3 = len([i for i in result if abs((i["log_time"].date(
+        ) - self.time1.date().toPyDate()).days) < step and i['gender'] == '男'])
+        print("3:", count3)
+        male_data .append(count3)
+
         step_ = 0
-        for i in range(abs(days)+1):
-            count1 = len([i for i in result if (((i['log_time']
-                 + timedelta(days = step_+step)) - (i["log_time"]) + timedelta(step_))).days <= step  ])
-          
+
+        print("days", result)
+        for i in range(days):
+            count1 = len([i for i in result if abs((i["log_time"].date(
+            ) - self.time1.date().addDays(step_ + step).toPyDate()).days) < step])
+
             total_data .append(count1)
-            count2 = len([i for i in result if (((i['log_time']
-                 + timedelta(days = step_+step)) - (i["log_time"]) + timedelta(step_))).days <= step and i['gender'] == '女' ])
+            count2 = len([i for i in result if abs((i["log_time"].date(
+            ) - self.time1.date().addDays(step_ + step).toPyDate()).days) < step and i['gender'] == '女'])
+
             female_data .append(count2)
-            count3 = len([i for i in result if (((i['log_time']
-                 + timedelta(days = step_+step)) - (i["log_time"]) + timedelta(step_))).days <= step and i['gender'] == '男' ])
-            
+            count3 = len([i for i in result if abs((i["log_time"].date(
+            ) - self.time1.date().addDays(step_ + step).toPyDate()).days) < step and i['gender'] == '男'])
             male_data .append(count3)
-            step_ = step+step_
+
+            step_ = step + step_
 
         category1 = ["总数"]
         category2 = ["女性"]
@@ -331,8 +345,8 @@ class ShowData(QWidget):
 
         temdata = copy.deepcopy(total_data)
         temdata.sort(reverse=True)
+
         return datatabel, data_title, temdata[0]
-        
 
 
 class QtBoxStyleProgressBar(QProgressBar):
