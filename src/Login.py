@@ -161,9 +161,9 @@ class LoginUi(QWidget):
             QMessageBox.warning(self, '警告', '账号或密码错误，请重新输入')
             clear()
             return
-        time = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")
-        database.c.execute(f"INSERT INTO admin_log_time (id_number,log_time ) \
-VALUES ({PH},{PH})", (uesr_id, time))
+        
+        database.c.execute(f"INSERT INTO admin_log_time (id_number ) \
+VALUES ({PH})", (uesr_id, ))
         database.conn.commit()
         time = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")
         
