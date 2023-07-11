@@ -61,7 +61,6 @@ class ShowLog(QDialog):
                 
             
             imag_path = "img_information/{0}/{1}/log/{2}.jpg".format(self.table,i["id_number"],i["log_time"])
-            print(imag_path)
             img_item =  QTableWidgetItem()
             img_item.setIcon(QIcon(imag_path))
             self.tableWidget.setItem(row, row2+1,img_item)

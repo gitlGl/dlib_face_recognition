@@ -249,9 +249,6 @@ class ShowData(QWidget):
         #  between '{0}'  and '{1}';"
         sql = "SELECT log_time ,gender FROM student_log_time   where log_time between  '{0}'   and '{1}' ;"
 
-        "" .format(self.DateEdit1.date().toPyDate().strftime(
-            "%Y-%m-%d"), (self.DateEdit1.date().addDays(1).toPyDate()).strftime("%Y-%m-%d"))
-
         database.c.execute(sql.format(self.DateEdit1.date().toPyDate().strftime(
             "%Y-%m-%d"), (self.DateEdit1.date().addDays(1).toPyDate()).strftime("%Y-%m-%d")))
         reuslt = database.c.fetchall()

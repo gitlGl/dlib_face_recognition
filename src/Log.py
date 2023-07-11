@@ -74,9 +74,9 @@ class  adminlog():
     def insertTime(self):
         
         database.c.execute(
-            f"INSERT INTO admin_log_time (id_number,time ) \
-      VALUES ({PH},)",
-            (self.item["id_number"]))
+            f"INSERT INTO admin_log_time (id_number) \
+      VALUES ({PH})",
+            (self.item["id_number"],))
 
        
        
@@ -89,7 +89,5 @@ class  adminlog():
         cv2.imwrite(
             path + "/" + self.get_Time() + ".jpg",
             img)
-    def get_Time(self):
-        Time =datetime.datetime.now().timestamp()
-        print("jdkvm",datetime.datetime.fromtimestamp(Time))    
+    def get_Time(self):   
         return str(datetime.datetime.now().strftime("%Y-%m-%d-%H-%M"))

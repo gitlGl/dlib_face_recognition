@@ -39,7 +39,8 @@ class Database():
             return d
 
         if type_database is 'sqlite3':
-            self.conn = sqlite3.connect('resources/company.db',detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+            self.conn = sqlite3.connect('resources/company.db',
+                                        detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
             self.conn.row_factory = dictFactory
             self.c = self.conn.cursor()
 
