@@ -90,9 +90,7 @@ class ShowData(QWidget):
         self.resize(720, 600)
         self.Vhlayout.addWidget(self.qlabel_)
 
-    # def resizeEvent(self, event):
-    #     super(ChartView, self).resizeEvent(event)
-    #     self.grou.resize(self.width,40)
+   
 
     # 插件菜单
     def posMenu(self, pos):  # pos是按钮坐标
@@ -243,10 +241,7 @@ class ShowData(QWidget):
         total_data = []
         female_data = []
         male_data = []
-        # sql_female = "SELECT count(id_number)  FROM student_log_time where log_time between  '{0}'   and '{1}' and gender =0;"
-        # sql_male = "SELECT count(id_number)  FROM student_log_time where log_time between  '{0}'   and '{1}' and gender =1;"
-        # sql = "SELECT count(id_number)  FROM student_log_time where log_time \
-        #  between '{0}'  and '{1}';"
+       
         sql = "SELECT log_time ,gender FROM student_log_time   where log_time between  '{0}'   and '{1}' ;"
 
         database.c.execute(sql.format(self.DateEdit1.date().toPyDate().strftime(

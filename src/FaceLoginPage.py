@@ -93,32 +93,33 @@ class FaceLoginPage(QWidget):
             if flag:
                 self.flag = True
                 self.tips_label.setText("提示：请看镜头眨眼睛")
-        else:
-            if len(self.list_img) <= 1:
-                self.list_img.append(self.capture.frame)
-            elif len(self.list_img) == 2:
+            self.get_frame_timer.start(200)
+            return
+        if len(self.list_img) < 2:
+            self.list_img.append(self.capture.frame)
+            self.get_frame_timer.start(200)
+            return
+    
+        list_img = copy.deepcopy(self.list_img)
+        flag = self.livecheck.compare2faces(list_img)
+        if flag: 
+            self.flag = False
+            rgbImage = cv2.cvtColor(self.capture.frame, cv2.COLOR_BGR2RGB)
+            
+            location_faces = models.detector(rgbImage)
+            if len(location_faces) == 1:
+                raw_face = models.predictor(rgbImage, location_faces[0])
+                result = self.face_rg.rgFace(self.capture.frame, rgbImage,
+                                    raw_face)
+                            
+                if result:                      
+                    self.capture.close()
+                    self.emit_show_parent.emit(result)
+                    self.close
+                    return
                 
-                list_img = copy.deepcopy(self.list_img)
-                flag = self.livecheck.compare2faces(list_img)
-                if flag: 
-                    self.flag = False
-                    rgbImage = cv2.cvtColor(self.capture.frame, cv2.COLOR_BGR2RGB)
-                    
-                    location_faces = models.detector(rgbImage)
-                    if len(location_faces) == 1:
-                        raw_face = models.predictor(rgbImage, location_faces[0])
-                        result = self.face_rg.rgFace(self.capture.frame, rgbImage,
-                                            raw_face)
-                                     
-                        if result:                      
-                            self.capture.close()
-                            self.emit_show_parent.emit(result)
-                            self.close
-                            return
-                           
-                    self.tips_label.setText("验证失败，提示：请张嘴")
-                self.list_img.clear()
-
+            self.tips_label.setText("验证失败，提示：请张嘴")
+        self.list_img.clear()
         self.get_frame_timer.start(200)
 
     def closeEvent(self, event):
