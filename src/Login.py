@@ -294,11 +294,6 @@ class  configAotuLogin(config):
         with open(self.file_name, "w", encoding="utf-8") as f:
             config.config.write(f)
     
-       
-
-
-
-
 class aes():
     Key = uuid.uuid1().hex[-12:][1:6]+'abc'
     mac_address = uuid.uuid1().hex[-12:]

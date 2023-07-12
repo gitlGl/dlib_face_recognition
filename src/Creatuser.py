@@ -35,9 +35,6 @@ class CreatUser(QObject):
         rgbImage = self.getImg(img_path)
         face = models.detector(rgbImage)[0]
         frame = models.predictor(rgbImage, face)
-        # rgbImage = dlib.get_face_chip(rgbImage, frame)
-        # face = models.detector(rgbImage)[0]
-        # frame = models.predictor(rgbImage, face)
         face_data = np.array(
             models.encoder.compute_face_descriptor(rgbImage, frame))
         face_data = pickle.dumps(face_data)

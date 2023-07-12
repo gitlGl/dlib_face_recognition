@@ -50,9 +50,9 @@ class PutImg(Capture):
             self.timer_collectFrame.start(200)   
             return
      
-        if len(self.list_img) <= 1:
+        if len(self.list_img) < 2:
             self.list_img.append(self.frame)
-        elif len(self.list_img) == 2:
+        else:
             list_img = copy.deepcopy(self.list_img)
             flag = self.livecheck.compare2faces(list_img)
             if flag:
