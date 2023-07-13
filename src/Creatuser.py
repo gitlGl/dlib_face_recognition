@@ -7,8 +7,12 @@ import cv2, pickle
 from PyQt5.QtCore import pyqtSignal,QObject
 from PyQt5.QtWidgets import QApplication
 from .GlobalVariable import user ,admin 
+
+
 class CreatUser(QObject):
-    def __init__(self) -> None:
+    sig_progress = pyqtSignal(int)
+    sig_end = pyqtSignal(list)
+    def __init__(self):
         super().__init__()
     def getImg(self, img_path):
         raw_data = np.fromfile(
@@ -39,13 +43,6 @@ class CreatUser(QObject):
             models.encoder.compute_face_descriptor(rgbImage, frame))
         face_data = pickle.dumps(face_data)
         return face_data
-
-
-class CreatStudentUser(CreatUser):
-    sig_progress = pyqtSignal(int)
-    sig_end = pyqtSignal(list)
-    def __init__(self):
-        super().__init__()
 
     def creatUser(self, path):
         book = xlrd.open_workbook(path)
@@ -150,9 +147,9 @@ class CreatStudentUser(CreatUser):
         information = {}
         information["user_name"] = part_information["user_name"]
         information["gender"] = part_information["gender"]
-        information['salt'] = MyMd5().createSalt()
+        information['salt'] = MyMd5.createSalt()
         information["id_number"] = part_information["id_number"]
-        information["password"] = MyMd5().createMd5(
+        information["password"] = MyMd5.createMd5(
             part_information["password"], information["salt"],
             part_information["id_number"])
         information["vector"] = self.getVector(part_information["img_path"])

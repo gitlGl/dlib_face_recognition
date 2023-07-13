@@ -157,6 +157,7 @@ class SigninPage(QWidget):
         self.signin_button.setEnabled(False)
         QApplication.processEvents()
         
+       
         creatuser = CreatUser()
         vector = creatuser.getVector(path)
         verifye_md5 = createMd5(verifye, uuid.uuid1().hex[-12:])
@@ -174,8 +175,9 @@ class SigninPage(QWidget):
             self.signin_button.setEnabled(True)
             return
        
-        salt = MyMd5().createSalt()
-        pass_word = MyMd5().createMd5(pass_word, salt, user_name)
+        salt = MyMd5.createSalt()
+        pass_word = MyMd5.createMd5(pass_word, salt,user_name)
+        
        
         creatuser.insertImg(user_name, path, "admin")
 

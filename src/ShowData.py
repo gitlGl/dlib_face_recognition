@@ -1,4 +1,4 @@
-from .Creatuser import CreatStudentUser
+from .Creatuser import CreatUser
 from .GlobalVariable import database
 from .ShowUser import ShowStudentUser
 from PyQt5.QtCore import QDate, Qt
@@ -124,7 +124,7 @@ class ShowData(QWidget):
         self.Vhlayout.addWidget(qlabel_)
         QApplication.processEvents()
 
-        creat_student_user = CreatStudentUser()
+        creat_student_user = CreatUser()
         creat_student_user.sig_end.connect(self.showEerror)
         creat_student_user.sig_progress.connect(self.ProgressBar.setValue)
         QApplication.processEvents()
