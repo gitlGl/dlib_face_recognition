@@ -5,7 +5,6 @@ from qss import StyleSheet
 from PyQt5.QtGui import QFont
 from PyQt5 import QtCore
 
-#通过新建新分支修复旧分支损坏
 
 if __name__ == '__main__':
     QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
