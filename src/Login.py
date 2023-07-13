@@ -146,40 +146,40 @@ class LoginUi(QWidget):
             self.pwd_line.clear()
             self.user_line.clear()
 
-        uesr_id = self.user_line.text()
+        user_id = self.user_line.text()
         user_pwd = self.pwd_line.text()
 
-        if not checkUserId(uesr_id):
+        if not checkUserId(user_id):
            QMessageBox.critical(self, '警告', '用户名只能为数字，且不能超过20个数字')
            return
         if not checkUserPwd(user_pwd):
             QMessageBox.critical(self,'警告', '密码长度大于6位小于13位')
             return
     
-        result = verifyePwd(uesr_id,user_pwd,"admin")
+        result = verifyePwd(user_id,user_pwd,"admin")
         if not result:
             QMessageBox.warning(self, '警告', '账号或密码错误，请重新输入')
             clear()
             return
         
         database.c.execute(f"INSERT INTO admin_log_time (id_number ) \
-VALUES ({PH})", (uesr_id, ))
+VALUES ({PH})", (user_id, ))
         database.conn.commit()
         time = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")
         
         if self.remember_password.isChecked():
             
-            if not self.config_rember_pwd.check():
-                self.config_rember_pwd.setPwd(aes.encrypt(str({"password":self.pwd_line.text(),"id_number":uesr_id,"time":time}),
+            if not self.config_rember_pwd.check(user_id): 
+                self.config_rember_pwd.setPwd(aes.encrypt(str({"password":user_pwd,"id_number":user_id,"time":time}),
                                                     aes.Key))
             self.config_rember_pwd.setFlag("1")
         if self.auto_login.isChecked():
-            if not self.config_auto_login.check():
-                self.config_auto_login.setStates(aes.encrypt(str({"mac_address":aes.mac_address,"id_number":uesr_id,"time":time}),
+            if not self.config_auto_login.check(user_id):
+                self.config_auto_login.setStates(aes.encrypt(str({"mac_address":aes.mac_address,"id_number":user_id,"time":time}),
                                                               aes.Key))#aes不能解密加密自身
             self.config_auto_login.setFlag("1")
 
-        self.emitsingal.emit(uesr_id)
+        self.emitsingal.emit(user_id)
         self.close()
            
  #self.emitsingal.emit(item["id_number"])
@@ -230,8 +230,10 @@ class  configRemberPwd(config):
                 return False
             return True
 
-    def check(self) -> bool:
+    def check(self,user_id) -> bool:
         if not self.checkFlag():
+            return False
+        if self.result['id_number'] != user_id:
             return False
         if self.checkTime():
             return True
@@ -275,7 +277,17 @@ class  configAotuLogin(config):
         if self.result:
             return self.result['mac_address'] == aes.mac_address
 
-    def check(self) -> bool:
+    def check(self,user_id) -> bool:
+        if not self.checkFlag():
+            return False
+        if self.result['id_number'] != user_id:
+            return False
+        if not self.checkTime():
+            return False
+        if not self.checkPwd():
+            return False
+        return True
+    def autoCHeck(self):
         if not self.checkFlag():
             return False
         if not self.checkTime():
@@ -283,6 +295,7 @@ class  configAotuLogin(config):
         if not self.checkPwd():
             return False
         return True
+        
 
     def setFlag(self,flag):
         config.config["aotu_login"]["flag"] = flag
