@@ -63,7 +63,7 @@ class ShowLog(QDialog):
             img_item.setIcon(QIcon(imag_path))
             self.tableWidget.setItem(row, row2+1,img_item)
             self.tableWidget.setIconSize(QSize(60, 100))
-            self.tableWidget.setRowCount(row+1)
+            
       
            
     def onTableWidgetCellDoubleClicked(self, row, column):#双击槽函数 self.tableWidget.cellDoubleClicked.connect()

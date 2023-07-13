@@ -140,8 +140,8 @@ class SigninPage(QWidget):
         path = self.signin_vector_line.text()
         if not checkPath(path):
             return
-        salt = MyMd5().createSalt()
-        pass_word = MyMd5().createMd5(pass_word, salt,user_name)
+        salt = MyMd5.createSalt()
+        pass_word = MyMd5.createMd5(pass_word, salt,user_name)
         creatuser = CreatUser()
         vector = creatuser.getVector(path)
         creatuser.insertImg(user_name,path,"admin")

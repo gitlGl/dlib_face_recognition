@@ -8,10 +8,10 @@ from .Paging import Page
 from .UpdateUser import UpdateAdminData
 import copy
 class ShowUser(QWidget):
-    def __init__(self,str_list_column,table,list_cloumn,information=None ):
+    def __init__(self,QTableWidget_column_name:list,table_name:str,table_cloumn_name:list,information=None ):
         super().__init__()
         self.information = information
-        self.table = table
+        self.table_name = table_name
         self.tableWidget = QTableWidget(self)
         self.tableWidget.setContextMenuPolicy(Qt.CustomContextMenu)#允许右键显示上菜单
         self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)#禁止用户编辑单元格
@@ -23,10 +23,10 @@ class ShowUser(QWidget):
         self.tableWidget.cellDoubleClicked.connect(self.onTableWidgetCellDoubleClicked)
         self.VBoxLayout = QVBoxLayout()
         self.VBoxLayout.addWidget(self.tableWidget)
-        self.list_cloumn = list_cloumn
+        self.table_cloumn_name = table_cloumn_name
         if not information:
             page_count = 30
-            self.page = Page(table,self.list_cloumn,page_count=page_count)
+            self.page = Page(table_name,self.table_cloumn_name,page_count=page_count)
             self.page.information_signal.connect(self.setInformation)
             if  not self.page.information:
                 QMessageBox.critical(self, '警告', '不存在用户或记录')
@@ -34,38 +34,37 @@ class ShowUser(QWidget):
                 return
             self.VBoxLayout.addWidget(self.page)
         self.setLayout(self.VBoxLayout)
-        columncout = len(str_list_column)
+        columncout = len(QTableWidget_column_name)
         self.tableWidget.setColumnCount(columncout)#根据数据量确定列数
-        self.tableWidget.setHorizontalHeaderLabels(str_list_column)
+        self.tableWidget.setHorizontalHeaderLabels(QTableWidget_column_name)
         self.setInformation()
         
                
     def setInformation(self):
         if not self.information:
             self.information = self.page.information
-        row = 0
-        row2 = 0
+      
         self.tableWidget.setRowCount(0)
         information = copy.deepcopy(self.information)
-        for i in information:
+        for row1 ,i in enumerate(information):
             if i["id_number"] == "12345678910":
-                self.information.pop(row)
+                self.information.pop(row1)
                 continue
-            self.tableWidget.insertRow(row)
-            row2 = 0
-            for cloumn in self.list_cloumn:
+            self.tableWidget.insertRow(row1)
+            
+            for row2,cloumn in enumerate(self.table_cloumn_name):
                 item  = QTableWidgetItem((i[cloumn]))
-                self.tableWidget.setItem(row, row2, item)
+                self.tableWidget.setItem(row1, row2, item)
                 item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-                row2 +=1
+
             img_item =  QTableWidgetItem()
             self.tableWidget.setIconSize(QSize(60, 100))
             imag_path = "img_information/{0}/{1}/{2}.jpg".format(
-                self.table,i["id_number"],i["id_number"])#获取图片路径
+                self.table_name,i["id_number"],i["id_number"])#获取图片路径
             img_item.setIcon(QIcon(imag_path))
             img_item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-            self.tableWidget.setItem(row, row2,img_item)
-            row = row + 1
+            self.tableWidget.setItem(row1, row2+1,img_item)
+           
 
 class ShowStudentUser(ShowUser):
     def __init__(self,str_list_column,table,list_cloumn,information=None ):
@@ -91,7 +90,7 @@ class ShowStudentUser(ShowUser):
         self.tableWidget.item(row, 2).setText(gender)
         self.tableWidget.item(row, 3).setText(password)
         self.tableWidget.item(row,4).setIcon(QIcon("img_information/{0}/{1}/{2}.jpg"
-        .format(self.table,self.information[row]["id_number"],self.information[row]["id_number"])))#获取图片路径)
+        .format(self.table_name,self.information[row]["id_number"],self.information[row]["id_number"])))#获取图片路径)
     @pyqtSlot(QPoint)
     def contextMenu(self,pos):
         pop_menu = QMenu()
@@ -126,7 +125,7 @@ class ShowStudentUser(ShowUser):
             self.tableWidget.item(item.row(), 2).setText(gender)
             self.tableWidget.item(row, 3).setText(password)
             self.tableWidget.item(row,4).setIcon(QIcon("img_information/{0}/{2}/{2}.jpg"
-    .format(self.table,self.information[row]["id_number"],self.information[row]["id_number"])))#获取图片路径)
+    .format(self.table_name,self.information[row]["id_number"],self.information[row]["id_number"])))#获取图片路径)
             return
 
         if action == delete_event:
@@ -138,7 +137,7 @@ class ShowStudentUser(ShowUser):
             self.information.pop(row)#删除信息列表
             return
         if action == imageView_event:
-            imag_path = "img_information/{0}/{1}/{2}.jpg".format(self.table,
+            imag_path = "img_information/{0}/{1}/{2}.jpg".format(self.table_name,
             str(self.information[row]["id_number"]),
             str(self.information[row]["id_number"]))
             show_imag = ShowImage(imag_path,Qt.WhiteSpaceMode)
@@ -147,7 +146,7 @@ class ShowStudentUser(ShowUser):
         if action == log_event:
             #result = Database().c.execute("select rowid,id_number,log_time from student_log_time where id_number ={0} order by log_time desc".format(self.information[row]["id_number"])).fetchall()
             result = ShowLog(self.information[row]["id_number"],
-            [ '学号','时间',"图片" ], self.table,['id','id_number','log_time'])
+            [ '学号','时间',"图片" ], self.table_name,['id','id_number','log_time'])
             if not result.page.information:
                 return
             result.exec()
@@ -215,14 +214,14 @@ class ShowAdminUser(ShowUser):
             self.tableWidget.removeRow(row) 
             self.information.pop(row)#删除信息列表
         if action == imageView_event:
-            imag_path = "img_information/{0}/{1}/{2}.jpg".format(self.table,
+            imag_path = "img_information/{0}/{1}/{2}.jpg".format(self.table_name,
             str(self.information[row]["id_number"]),str(self.information[row]["id_number"]))
             show_imag = ShowImage(imag_path,Qt.WhiteSpaceMode)
             show_imag.exec_()
             return
         if action == log_event:
             result = ShowLog(self.information[row]["id_number"],[ '用户ID', '登录时间',"图片" ],
-            self.table,['id','id_number','log_time'])
+            self.table_name,['id','id_number','log_time'])
             if not result.page.information:
                 return
             result.exec_()

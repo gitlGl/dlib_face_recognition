@@ -169,8 +169,8 @@ class UpdateUserData(QDialog):
         try:
             if self.vector_line.text() == '':  #图片可以为不变更
                 if (password != self.information["password"]):
-                    salt = MyMd5().createSalt()
-                    password = MyMd5().createMd5(password, salt, id_number)
+                    salt = MyMd5.createSalt()
+                    password = MyMd5.createMd5(password, salt, id_number)
                     database.c.execute(f"UPDATE student SET id_number = '{id_number}',user_name = '{user_name}',gender = '{gender}',password = {PH},salt = {PH} WHERE id_number = {id}"\
                ,(password,salt))
                 else:
@@ -186,8 +186,8 @@ class UpdateUserData(QDialog):
                     return
                 vector =  CreatUser().getVector(path)
                 if (password != self.information["password"]):
-                    salt = MyMd5().createSalt()
-                    password = MyMd5().createMd5(password, salt, id_number)
+                    salt = MyMd5.createSalt()
+                    password = MyMd5.createMd5(password, salt, id_number)
                     database.c.execute(
                         f"update student set id_number= {PH},user_name = {PH},gender = {PH} ,vector = {PH},password = {PH},salt = {PH} where id_number = {id}",
                         (id_number, user_name, gender, vector, password, salt))
@@ -363,8 +363,8 @@ class UpdateAdminData(QDialog):
         try:
             if self.vector_line.text() == '':  #图片可以为不变更
                 if (password != self.information["password"]):
-                    salt = MyMd5().createSalt()
-                    password = MyMd5().createMd5(password, salt, id_number)
+                    salt = MyMd5.createSalt()
+                    password = MyMd5.createMd5(password, salt, id_number)
                     database.c.execute(
                         f"update admin set id_number = {PH},password = {PH},salt = {PH} where id_number = {id}"
                         , (id_number, password, salt))
@@ -382,8 +382,8 @@ class UpdateAdminData(QDialog):
                     return
                 vector = CreatUser().getVector(path)
                 if (password != self.information["password"]):
-                    salt = MyMd5().createSalt()
-                    password = MyMd5().createMd5(password, salt, id_number)
+                    salt = MyMd5.createSalt()
+                    password = MyMd5.createMd5(password, salt, id_number)
                     database.c.execute(
                         f"update admin set id_number= {PH},password = {PH},salt = {PH} ,vector = {PH} where id_number = {id}"
                         , (id_number, password, salt, vector))
@@ -509,7 +509,7 @@ class UpdatePwd(QDialog):
         if not result:
             QMessageBox.critical(self, '警告', '旧密码错误')
             return
-        new_pass_word = MyMd5().createMd5(new_pwd, item["salt"],
+        new_pass_word = MyMd5.createMd5(new_pwd, item["salt"],
                                           self.id_number)
        
         database.c.execute(

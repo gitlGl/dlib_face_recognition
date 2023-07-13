@@ -6,17 +6,13 @@ from threading import Timer
 import pickle
 
 class Face():  #基类，包含人脸编码，人脸识别
-    def __init__(self):
-
-        pass
-
     #为人脸编码
-    def encodeFace(self, rgbImage, raw_face):
+    def encodeFace(rgbImage, raw_face):
         return np.array(
             models.encoder.compute_face_descriptor(rgbImage, raw_face))
 
     #计算人脸相似度，flaot值越小越相似
-    def compareFaces(self, face_encoding, test_encoding, axis=0):
+    def compareFaces(face_encoding, test_encoding, axis=0):
         return np.linalg.norm(face_encoding - test_encoding, axis=axis)#计算欧式距离
 
     #与数据库人脸对比，相似度小于0.5则认为是同一个人
@@ -25,9 +21,9 @@ class Face():  #基类，包含人脸编码，人脸识别
 
 
 #用于学生进入图书馆是别
-class StudentRgFace(Face):
+class StudentRgFace():
     def __init__(self):
-        super().__init__()
+       
         self.face_data = np.random.random(128).astype('float64')#初始化人脸编码，这个变量保存上一个人脸编码
         self.former_result = ""
         self.refreshthread = Timer(60, self.reset)
@@ -50,8 +46,8 @@ class StudentRgFace(Face):
 
     def rg(self, img, rgbImage, raw_face,
            share):  #优化识别流程，识别成功后避免同一人频繁识别，频繁记录数据
-        face_data = self.encodeFace(rgbImage, raw_face)
-        flag = self.compareFaces(face_data, self.face_data, axis=0)#计算欧式距离
+        face_data = Face.encodeFace(rgbImage, raw_face)
+        flag = Face.compareFaces(face_data, self.face_data, axis=0)#计算欧式距离
         if flag < share.value:
             return self.former_result
         
@@ -69,7 +65,7 @@ class StudentRgFace(Face):
     def rgFace(self, face_data, share):
         if len(self.list_vector) == 0:
             return "请先注册用户"
-        distances = self.compareFaces(np.array(self.list_vector), face_data, axis=1)#计算欧式距离
+        distances = Face.compareFaces(np.array(self.list_vector), face_data, axis=1)#计算欧式距离
         min_distance_index = np.argmin(distances)
         print("距离", distances[min_distance_index])
         if distances[min_distance_index] < share:
@@ -85,7 +81,7 @@ class AdminRgFace(Face):
         self.value = 0.5
 
     def rgFace(self, img, rgbImage, raw_face):
-        face_data = self.encodeFace(rgbImage, raw_face)
+        face_data = Face.encodeFace(rgbImage, raw_face)
         list_vector = []
         database.c.execute("SELECT vector from admin")# 查询数据库中的数据:
         
@@ -96,7 +92,7 @@ class AdminRgFace(Face):
         list_id_number = database.c.fetchall()
         if len(list_vector) == 0:
             return False
-        distances = self.compareFaces(np.array(list_vector), face_data, axis=1)
+        distances = Face.compareFaces(np.array(list_vector), face_data, axis=1)
         min_distance = np.argmin(distances)
         print("距离", distances[min_distance])
         if distances[min_distance] < self.value:
