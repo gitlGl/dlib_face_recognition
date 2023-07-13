@@ -90,7 +90,7 @@ class Main(Ui):
 
  
     def aotuLogin(self):
-        if not self.login_ui.config_auto_login.check():
+        if not self.login_ui.config_auto_login.autoCHeck():
             return False
         try:
             if not  Req({'flag':'login',"mac_address":uuid.uuid1().hex[-12:]}):
@@ -105,8 +105,8 @@ class Main(Ui):
         self.p.daemon = True
         
         del self.login_ui
-        database.c.execute(f"INSERT INTO admin_log_time (id_number,log_time ) \
-VALUES ({PH},{PH})", (self.id_number, datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")))
+        database.c.execute(f"INSERT INTO admin_log_time (id_number ) \
+VALUES ({PH})", (self.id_number,))
         database.conn.commit()
         return True
         
