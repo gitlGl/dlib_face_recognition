@@ -31,14 +31,14 @@ class ShowData(QWidget):
         self.btn_analyzeData = QPushButton(objectName="GreenButton")
         self.btn_analyzeData.setIcon(QIcon("resources/分析.svg"))
         self.btn_Search = QPushButton()
-        self.btn_Search = QPushButton(objectName="GreenButton")
+        self.btn_Search = QPushButton(objectName="GreenButton") # type: ignore
         self.btn_Search.setIcon(QIcon("resources/搜索.svg"))
 
         self.btn_analyzeData.setText("分析")
         self.btn_Search.setText("查询")
         self.label_tip.setText("时间范围：")
         self.btn_brow = QPushButton()
-        self.btn_brow = QPushButton(objectName="GreenButton")
+        self.btn_brow = QPushButton(objectName="GreenButton") # type: ignore
         self.btn_brow.setText("浏览")
         self.btn_brow.setIcon(QIcon("resources/浏览.svg"))
         self.btn_create_user = QPushButton()

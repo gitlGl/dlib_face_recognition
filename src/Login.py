@@ -219,7 +219,7 @@ class config():
     config = None#使用全局变量单例模式,保证数据一致性
     file_name = "config.ini"
     def __init__(self):
-        if  os.path.isfile(self.file_name):
+        if  os.path.exists(self.file_name):
             return
         config = configparser.ConfigParser()    #实例化一个对象
         config["rember_pwd"] = {  'flag':'0','pwd':'' }     # 类似于操作字典的形式
