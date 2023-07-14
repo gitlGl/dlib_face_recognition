@@ -102,6 +102,7 @@ class SigninPage(QWidget):
         user_name = self.signin_user_line.text()
         password = self.signin_pwd_line.text()
         password2 = self.signin_pwd2_line.text()
+        path = self.signin_vector_line.text()
             
 
         #检查输入信息格式
@@ -127,20 +128,19 @@ class SigninPage(QWidget):
             return
     
 
-        user_name = self.signin_user_line.text()
-        pass_word = self.signin_pwd_line.text()
-        path = self.signin_vector_line.text()
+       
+       
         if not checkPath(path):
             return
         salt = MyMd5.createSalt()
-        pass_word = MyMd5.createMd5(pass_word, salt,user_name)
+        password = MyMd5.createMd5(password, salt,user_name)
         creatuser = CreatUser()
         vector = creatuser.getVector(path)
         creatuser.insertImg(user_name,path,"admin")
 
         database.c.execute(
             f"INSERT INTO admin (id_number,password,salt,vector) \
-VALUES ({PH}, {PH},{PH},{PH})", (user_name, pass_word, salt, vector))
+VALUES ({PH}, {PH},{PH},{PH})", (user_name, password, salt, vector))
         QMessageBox.information(self, '信息',
                                 '注册成功!')
         database.conn.commit()
