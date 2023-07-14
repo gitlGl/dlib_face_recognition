@@ -140,7 +140,7 @@ class SigninPage(QWidget):
 
       
         verifye = self.verifye_line.text()
-        if '_' not in verifye:
+        if not '_'  in verifye:
             QMessageBox.critical(None, '警告', '验证码错误')
             return
         path = self.signin_vector_line.text()
@@ -170,14 +170,14 @@ class SigninPage(QWidget):
             return
        
         salt = MyMd5.createSalt()
-        pass_word = MyMd5.createMd5(pass_word, salt,user_name)
+        password = MyMd5.createMd5(password, salt,user_name)
         
        
         creatuser.insertImg(user_name, path, "admin")
 
         database.c.execute(
             f"INSERT INTO admin (id_number,password,salt,vector) \
-VALUES ({PH}, {PH},{PH},{PH})", (user_name, pass_word, salt, vector))
+VALUES ({PH}, {PH},{PH},{PH})", (user_name, password, salt, vector))
         QMessageBox.information(self, '信息',
                                 '注册成功!')
         database.conn.commit()
