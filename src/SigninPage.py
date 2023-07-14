@@ -94,36 +94,28 @@ class SigninPage(QWidget):
             return 
        
 
-       
-
     def pushButtonInit(self):
         self.signin_button.setEnabled(False)
         self.signin_button.clicked.connect(self.checkSigninFunc)
  #响应注册请求
     def checkSigninFunc(self):
-        
+        user_name = self.signin_user_line.text()
+        password = self.signin_pwd_line.text()
+        password2 = self.signin_pwd2_line.text()
+            
 
         #检查输入信息格式
-        if (not self.signin_user_line.text().isdigit()) or (
-            len(self.signin_user_line.text())>admin.id_length.value):
-
-            QMessageBox.critical(self, f'警告', f'用户名只能是数字且少于{admin.id_length.value}位!')
-
-            return
-        if self.signin_pwd_line.text() != self.signin_pwd2_line.text():
-            QMessageBox.critical(self, '警告',
-                                 '两个密码不同!')
-
+        if not user_name.isnumeric() or len(user_name) > admin.id_length.value:
+            QMessageBox.critical(self, '警告', f'用户名只能是数字且少于{admin.id_length.value}位!')
             return
 
-        if len(self.signin_pwd_line.text()) < admin.password_min_length.value or len(
-                self.signin_pwd_line.text()) > admin.password_max_length.value:
-            QMessageBox.critical(self, '警告', 
-            f' 密码长度>={admin.password_min_length.value}<{admin.password_max_length.value}!')
-
+        if password != password2:
+            QMessageBox.critical(self, '警告', '两个密码不同!')
             return
-    
-        user_name = self.signin_user_line.text()
+
+        if not admin.password_min_length.value <= len(password) <= admin.password_max_length.value:
+            QMessageBox.critical(self, '警告', f'密码长度必须在{admin.password_min_length.value}到{admin.password_max_length.value}之间!')
+            return
         database.c.execute(
             "select id_number from admin where id_number = {} ".format(
                 user_name))
