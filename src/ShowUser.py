@@ -25,6 +25,7 @@ class ShowUser(QWidget):
         self.VBoxLayout.addWidget(self.tableWidget)
         self.table_cloumn_name = table_cloumn_name
         if not information:
+            self.isNUll = False
             page_count = 30
             self.page = Page(table_name,self.table_cloumn_name,page_count=page_count)
             self.page.information_signal.connect(self.setInformation)
@@ -33,6 +34,7 @@ class ShowUser(QWidget):
                 self.close()
                 return
             self.VBoxLayout.addWidget(self.page)
+        else:self.isNUll = True
         self.setLayout(self.VBoxLayout)
         columncout = len(QTableWidget_column_name)
         self.tableWidget.setColumnCount(columncout)#根据数据量确定列数
@@ -41,17 +43,15 @@ class ShowUser(QWidget):
         
                
     def setInformation(self):
-        
-        self.information = self.page.information
+        if  not self.isNUll:
+            self.information = self.page.information
+        information = self.information
+       
       
         self.tableWidget.setRowCount(0)
         information = copy.deepcopy(self.information)
         for row1 ,i in enumerate(information):
-            if i["id_number"] == "12345678910":
-                self.information.pop(row1)
-                continue
             self.tableWidget.insertRow(row1)
-            
             for row2,cloumn in enumerate(self.table_cloumn_name):
                 item  = QTableWidgetItem((i[cloumn]))
                 self.tableWidget.setItem(row1, row2, item)
