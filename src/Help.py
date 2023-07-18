@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import  QDialog,QLabel
-from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import Qt
+from PySide6.QtWidgets import  QDialog,QLabel
+from PySide6.QtGui import QIcon
+from PySide6.QtCore import Qt
 class Help(QDialog):
     def __init__(self,):
         super().__init__()

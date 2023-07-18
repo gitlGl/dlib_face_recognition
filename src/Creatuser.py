@@ -4,14 +4,14 @@ from .GlobalVariable import models
 import xlrd, os
 from .GlobalVariable import database
 import cv2, pickle
-from PyQt5.QtCore import pyqtSignal,QObject
-from PyQt5.QtWidgets import QApplication
+from PySide6.QtCore import Signal,QObject
+from PySide6.QtWidgets import QApplication
 from .GlobalVariable import user ,admin 
 
 
 class CreatUser(QObject):
-    sig_progress = pyqtSignal(int)
-    sig_end = pyqtSignal(list)
+    sig_progress = Signal(int)
+    sig_end = Signal(list)
     def __init__(self):
         super().__init__()
     def getImg(self, img_path):

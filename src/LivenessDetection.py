@@ -1,5 +1,5 @@
 import cv2, numpy as np
-from PyQt5.QtCore import QThread
+from PySide6.QtCore import QThread
 from .GlobalVariable import models
 
 class LivenessDetection():

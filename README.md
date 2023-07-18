@@ -5,7 +5,7 @@
 3.批量用户导入数据库（将人脸向量特征序列化后存入sqlite3，dlib人脸特征向量为精度128位的浮点数，序列化后可能丢失精度，可使用专门的向量数据库库避免丢失精度。__后续使用orm替换裸写的sql语句，SQLAlchemy?SQLObject?Storm?peewee(用这个轻巧简洁)?pony(轻巧简洁)__<br>
 4.fps:10-15,cpu-i5-4210u,，gpu840m，编译测试过gpu加速，识别过程为少量计算，fps没有明显提高<br>
 5.识别过程用了多进程并行，开始时识别速度慢（进程启动速度慢），考虑到登录速度问题人脸识别登录没有使用多进程，登录失败三次后进行活体识别,用qt重构多线程并行，效果估计很好<br>
-6.ui框架为pyqt5<br>
+6.ui框架为PySide6<br>
 7.内存占用200-300m（主要是识别模型太大）<br>
 8.人脸跟踪是耗时操作，去掉绘制框可提高fps。<br>
 9.增加数据可视化功能<br>
@@ -19,9 +19,9 @@ dlib 19.8.1  python3.6(推荐使用miniconda管理版本)下可以直接pip安�
 numpy                   1.15.4 <br> 
 opencv-python           4.5.5.62<br>  
 psutil                  5.9.0 <br> 
-PyQt5                   5.15.6<br>               
+PySide6                   5.15.6<br>               
 xlrd                    1.2.0 <br> 
-PyQtChart               5.15.5<br>
+Chart               5.15.5<br>
 pycryptodome    3.16.0<br>
 ![](./Screenshot/登录.png) <br>
 ![](./Screenshot/登录2.png) <br>

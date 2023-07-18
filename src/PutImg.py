@@ -1,7 +1,7 @@
 import copy
-from PyQt5.QtCore import QTimer
+from PySide6.QtCore import QTimer
 import numpy as np
-from PyQt5.QtCore import pyqtSignal
+from PySide6.QtCore import Signal
 from .LivenessDetection import LivenessDetection
 from .Capture import Capture
 class PutImg(Capture):
@@ -9,8 +9,8 @@ class PutImg(Capture):
    用于启动普通识别模式
     """
 
-    emit_result = pyqtSignal(str)
-    emit_text = pyqtSignal(str)
+    emit_result = Signal(str)
+    emit_text = Signal(str)
 
     def __init__(self, Q_put, Q_get):
         super().__init__()

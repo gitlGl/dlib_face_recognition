@@ -1,8 +1,8 @@
 import gc,multiprocessing,psutil
-from PyQt5.QtWidgets import QMessageBox,QMenu
+from PySide6.QtWidgets import QMessageBox,QMenu
 from .Process import processStudentRg
-from PyQt5.QtCore import pyqtSlot, QTimer
-from PyQt5.QtGui import QIcon,QPixmap
+from PySide6.QtCore import Slot, QTimer
+from PySide6.QtGui import QIcon,QPixmap
 from .Help import Help
 from .AdminInformation  import AdminInformation
 from multiprocessing import Process, Queue
@@ -95,7 +95,7 @@ VALUES ({PH})", (self.id_number,))
         
     
     #登录成功后显示主界面
-   # @pyqtSlot(str)
+   # @Slot(str)
     def showParent(self,id_number):
         self.id_number = id_number
         distance = round(self.slider.value() * 0.05, 2)
@@ -110,7 +110,7 @@ VALUES ({PH})", (self.id_number,))
        
 
     #显示识别结果
-    @pyqtSlot(str)
+    @Slot(str)
     def showResult(self, str_result):
         self.rg_label.clear()
         self.rg_label.setText(str_result)
@@ -133,13 +133,13 @@ VALUES ({PH})", (self.id_number,))
         self.scale_value_label.setText(str(distance))
 
     #清理活体识别提示信息，设置提示信息
-    @pyqtSlot(str)
+    @Slot(str)
     def changeText(self, str):
         self.tips_label.clear()
         self.tips_label.setText(str)
 
     #帧显示视频流
-    #@pyqtSlot(list,QImage)
+    #@Slot(list,QImage)
     def setNormalImg(self, list):   
         self.picture_qlabel.setPixmap(QPixmap.fromImage(list[0])) #设置图片，图片跟随ui.qlabel大小缩放
         self.put_img.frame = list[1]#待识别帧

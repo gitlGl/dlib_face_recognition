@@ -1,8 +1,8 @@
-from PyQt5.QtWidgets import QMessageBox
+from PySide6.QtWidgets import QMessageBox
 from .GlobalVariable import database
 from .MyMd5 import MyMd5
 import os
-from PyQt5.QtWidgets import QFileDialog,QMessageBox
+from PySide6.QtWidgets import QFileDialog,QMessageBox
 from .GlobalVariable import models
 from .Creatuser import CreatUser
 from .GlobalVariable import user

@@ -1,9 +1,9 @@
 import sys
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import pyqtSignal
+from PySide6.QtWidgets import *
+from PySide6.QtCore import Signal
 from .GlobalVariable import database
 class Paging(QWidget):
-    page_number = pyqtSignal(int)
+    page_number = Signal(int)
     def __init__(self,total_page=20):
         super(Paging, self).__init__()
         self.total_page = total_page
@@ -99,7 +99,7 @@ class Paging(QWidget):
 
 
 class Page(Paging):
-    information_signal = pyqtSignal()
+    information_signal = Signal()
     def __init__(self,table,column,page_count=15,id_number=None,):
         super().__init__(Page.totalCount(table,page_count,id_number))
         self.page_count = page_count

@@ -1,9 +1,9 @@
-from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, \
+from PySide6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, \
     QVBoxLayout, QHBoxLayout, QMessageBox
-from PyQt5.QtCore import Qt
+from PySide6.QtCore import Qt
 from .GlobalVariable import database
 from .MyMd5 import MyMd5
-from PyQt5.QtGui import QIcon
+from PySide6.QtGui import QIcon
 from .Creatuser import CreatUser
 from .GlobalVariable import admin
 from .Check import getImgPath, checkPath

@@ -1,12 +1,12 @@
-from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import Qt,QPoint,pyqtSlot,QSize
-from  PyQt5.QtWidgets import QTableWidget,QTableWidgetItem,QVBoxLayout,QMenu,QHeaderView,QMessageBox, QDialog,QCheckBox
-from PyQt5 import QtWidgets
+from PySide6.QtGui import QIcon
+from PySide6.QtCore import Qt,QPoint,Slot,QSize
+from  PySide6.QtWidgets import QTableWidget,QTableWidgetItem,QVBoxLayout,QMenu,QHeaderView,QMessageBox, QDialog,QCheckBox
+from PySide6 import QtWidgets
 from .ImageView import ShowImage
 from .GlobalVariable import database
 from .Paging import Page
 import os
-from PyQt5.QtGui import QIcon
+from PySide6.QtGui import QIcon
 class ShowLog(QDialog):
     def __init__(self,id_number, QTableWidget_column_name,table_name, table_cloumn_name):
         super().__init__()
@@ -72,7 +72,7 @@ class ShowLog(QDialog):
         show_imag = ShowImage(imag_path,Qt.WhiteSpaceMode)
         show_imag.exec_()
 
-    @pyqtSlot(QPoint)
+    @Slot(QPoint)
     def contextMenu(self,pos):
         pop_menu = QMenu()
         #菜单事件信号

@@ -3,9 +3,9 @@ from .ImageView import ImageView
 from .GlobalVariable import database
 from .ImageView import ShowImage
 from .Creatuser import CreatUser
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QHBoxLayout, QLabel, QVBoxLayout, QGroupBox,QPushButton,\
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QIcon
+from PySide6.QtWidgets import QHBoxLayout, QLabel, QVBoxLayout, QGroupBox,QPushButton,\
 QMessageBox, QMenu,QWidget
 from .Check import getImgPath
 from .UpdateUser import UpdatePwd
@@ -70,8 +70,8 @@ class AdminInformation(QWidget):
         self.result = ShowLog(self.id_number,[ '用户ID', '登录时间',"图片" ],
         "admin",['id','id_number','log_time'])
         item = self.Vhlayout.itemAt(1)
-        self.Vhlayout.removeItem(self.Vhlayout.itemAt(1))
         item.widget().deleteLater()
+        self.Vhlayout.removeItem(item)
         self.Vhlayout.addWidget(self.result)
 
     def imgEvent(self,pos):
@@ -81,8 +81,8 @@ class AdminInformation(QWidget):
        action = pop_menu.exec_(self.mapToGlobal(pos))
        if action == pop_menu.actions()[0]:
            item = self.Vhlayout.itemAt(1)
-           self.Vhlayout.removeItem(self.Vhlayout.itemAt(1))
            item.widget().deleteLater()
+           self.Vhlayout.removeItem(item)
            img_path = "img_information/admin/{0}/{1}.jpg".format(str(self.id_number),str(self.id_number))
            show_imag = ShowImage(img_path,Qt.WhiteSpaceMode)
            self.Vhlayout.addWidget(show_imag)
@@ -103,8 +103,8 @@ class AdminInformation(QWidget):
         result = database.c.fetchall()
         show_admin_User = ShowAdminUser([ '用户ID', '密码',"图片" ],'admin',["id_number",'password'],result)
         item = self.Vhlayout.itemAt(1)
-        self.Vhlayout.removeItem(self.Vhlayout.itemAt(1))
         item.widget().deleteLater()
+        self.Vhlayout.removeItem(item)
         self.Vhlayout.addWidget(show_admin_User)
         pass
 #密码修改窗口

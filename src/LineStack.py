@@ -1,8 +1,8 @@
 
-from PyQt5.QtChart import QChartView, QChart, QLineSeries, QLegend,QCategoryAxis
-from PyQt5.QtCore import Qt, QPointF, QRectF, QPoint
-from PyQt5.QtGui import QPainter, QPen
-from PyQt5.QtWidgets import QGraphicsLineItem, QWidget,QHBoxLayout, QLabel, QVBoxLayout, QGraphicsProxyWidget
+from PySide6.QtCharts import QChartView, QChart, QLineSeries, QLegend,QCategoryAxis
+from PySide6.QtCore import Qt, QPointF, QRectF, QPoint
+from PySide6.QtGui import QPainter, QPen
+from PySide6.QtWidgets import QGraphicsLineItem, QWidget,QHBoxLayout, QLabel, QVBoxLayout, QGraphicsProxyWidget
 
 class ToolTipItem(QWidget):
 

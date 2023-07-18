@@ -2,7 +2,7 @@ dlib==19.8.1
 numpy==1.15.4
 opencv-python==4.5.5.62
 psutil==5.9.0
-PyQt5==5.15.6       
+PySide6==5.15.6       
 xlrd==1.2.0
-PyQtChart==5.15.5
+Chart==5.15.5
 pycryptodome==3.16.0

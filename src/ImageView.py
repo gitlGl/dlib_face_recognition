@@ -1,6 +1,6 @@
-from PyQt5.QtCore import QPointF, Qt, QRectF, QSizeF
-from PyQt5.QtGui import QPainter, QColor, QImage, QPixmap,QIcon
-from PyQt5.QtWidgets import QApplication, QGraphicsView, QGraphicsPixmapItem, QGraphicsScene,QHBoxLayout,QDialog
+from PySide6.QtCore import QPointF, Qt, QRectF, QSizeF
+from PySide6.QtGui import QPainter, QColor, QImage, QPixmap,QIcon
+from PySide6.QtWidgets import QApplication, QGraphicsView, QGraphicsPixmapItem, QGraphicsScene,QHBoxLayout,QDialog
 import os
 class ImageView(QGraphicsView):
     """图片查看控件"""
@@ -15,17 +15,17 @@ class ImageView(QGraphicsView):
         self.setBackground(background)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.setRenderHints(QPainter.Antialiasing | QPainter.HighQualityAntialiasing |
-                            QPainter.SmoothPixmapTransform)
-        self.setCacheMode(self.CacheBackground)
-        self.setViewportUpdateMode(self.SmartViewportUpdate)
+        self.setRenderHints(QPainter.Antialiasing | 
+                    QPainter.SmoothPixmapTransform)
+        #self.setCacheMode(self.CacheBackground)
+        self.setViewportUpdateMode(QGraphicsView.SmartViewportUpdate)
         self._item = QGraphicsPixmapItem()  # 放置图像
         self._item.setFlags(QGraphicsPixmapItem.ItemIsFocusable |
                             QGraphicsPixmapItem.ItemIsMovable)
         self._scene = QGraphicsScene(self)  # 场景
         self.setScene(self._scene)
         self._scene.addItem(self._item)
-        rect = QApplication.instance().desktop().availableGeometry(self)
+        rect = QApplication.instance().primaryScreen().availableGeometry()
         self.resize(int(rect.width() * 2 / 3), int(rect.height() * 2 / 3))
 
         self.pixmap = None

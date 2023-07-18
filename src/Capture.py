@@ -1,13 +1,13 @@
 import cv2
-from PyQt5.QtCore import QThread,pyqtSignal,QObject
+from PySide6.QtCore import QThread,Signal,QObject
 import numpy as np
-from PyQt5.QtGui import QImage
+from PySide6.QtGui import QImage
 from .GlobalVariable import models
 #from PIL import Image, ImageDraw, ImageFont
 from .conver import convertToQtFormat
 class Work(QObject):
   
-    emit_img = pyqtSignal(list)
+    emit_img = Signal(list)
     def __init__(self):
         super().__init__()
         self.Priority = QThread.HighestPriority

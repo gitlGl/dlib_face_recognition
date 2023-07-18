@@ -1,9 +1,9 @@
-from PyQt5.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication
 from src import Main
 import sys
 from qss import StyleSheet
-from PyQt5.QtGui import QFont
-from PyQt5 import QtCore
+from PySide6.QtGui import QFont
+from PySide6 import QtCore
 
 
 if __name__ == '__main__':

@@ -1,5 +1,5 @@
 import cv2
-from PyQt5.QtGui import QImage
+from PySide6.QtGui import QImage
 from src.GlobalVariable import models
 #转换位qt图像格式
 def convertToQtFormat(frame_show):

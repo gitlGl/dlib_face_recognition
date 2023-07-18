@@ -1,8 +1,8 @@
-from PyQt5.QtWidgets import QDialog, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QMessageBox, QFileDialog
+from PySide6.QtWidgets import QDialog, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QMessageBox, QFileDialog
 from .Database import PH
 from .GlobalVariable import database
-from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import Qt
+from PySide6.QtGui import QIcon
+from PySide6.QtCore import Qt
 from .Creatuser import CreatUser
 import os, shutil
 from .Check import getImgPath

@@ -1,15 +1,15 @@
-from PyQt5.QtWidgets import QWidget, QLabel,QVBoxLayout,QHBoxLayout
-from PyQt5.QtCore import pyqtSignal,Qt,QTimer, Qt
+from PySide6.QtWidgets import QWidget, QLabel,QVBoxLayout,QHBoxLayout
+from PySide6.QtCore import Signal,Qt,QTimer, Qt
 from .Capture import Capture
-from PyQt5.QtGui import QPixmap,QIcon
+from PySide6.QtGui import QPixmap,QIcon
 from .Face import AdminRgFace
 import cv2,copy
 from .GlobalVariable import models
-from PyQt5.QtWidgets import QGroupBox
+from PySide6.QtWidgets import QGroupBox
 from .LivenessDetection import LivenessDetection
 import time
 class FaceLoginPage(QWidget):
-    emit_show_parent = pyqtSignal(str)
+    emit_show_parent = Signal(str)
 
     def __init__(self) -> None:
         super().__init__()
@@ -115,7 +115,7 @@ class FaceLoginPage(QWidget):
         self.capture.close()
         super().closeEvent(event)
 
-    #@pyqtSlot(list,QImage)
+    #@Slot(list,QImage)
     def setNormalImg(self, list):
         self.picture_label.setPixmap(QPixmap.fromImage(list[0]))#设置图片
         self.capture.frame = list[1]#待识别帧
@@ -125,7 +125,7 @@ class FaceLoginPage(QWidget):
 
 
 # class FaceLoginPage(QWidget):
-#     emit_show_parent = pyqtSignal()
+#     emit_show_parent = Signal()
 #     def __init__(self) -> None:
 #         super().__init__()
 #         self.label = QLabel(self)
@@ -167,7 +167,7 @@ class FaceLoginPage(QWidget):
 #         self.capture.close()
 #         psutil.Process(self.p.pid).kill()
 
-#     @pyqtSlot(QImage)
+#     @Slot(QImage)
 #     def set_normal_img(self, image):
 #         self.label.setPixmap(QPixmap.fromImage(image))
 #         self.label.setScaledContents(True)

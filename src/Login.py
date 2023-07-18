@@ -1,10 +1,10 @@
 
-from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, \
+from PySide6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, \
     QVBoxLayout, QHBoxLayout, QMessageBox,QCheckBox
-from PyQt5.QtCore import pyqtSignal
+from PySide6.QtCore import Signal
 from .GlobalVariable import database
-from PyQt5.QtCore import pyqtSlot
-from PyQt5.QtGui import QIcon
+from PySide6.QtCore import Slot
+from PySide6.QtGui import QIcon
 import datetime,uuid
 from .FaceLoginPage import FaceLoginPage
 from .Check import checkUserId, checkUserPwd,verifyePwd
@@ -15,10 +15,10 @@ from Crypto.Util.Padding import pad, unpad
 import os
 import configparser
 from .Database import PH
-#from PyQt5 import QString
+#from PySide6 import QString
 class LoginUi(QWidget):
-    emitsingal = pyqtSignal(str)
-    emit_close = pyqtSignal()
+    emitsingal = Signal(str)
+    emit_close = Signal()
 
     def __init__(self):
         super().__init__()
@@ -187,7 +187,7 @@ VALUES ({PH})", (user_id, ))
         self.face_login_page = FaceLoginPage()
         self.face_login_page.emit_show_parent.connect(self.rev)
 #接受人脸识别登录成功信号，接收发送给主页面
-    @pyqtSlot(str)
+    @Slot(str)
     def rev(self,id_number):
        
         self.emitsingal.emit(id_number)

@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QHBoxLayout,QGroupBox,QCheckBox,QLabel,QSlider
-from PyQt5.QtCore import Qt,QObject
-from PyQt5.QtGui import QIcon,QFont,QPixmap
+from PySide6.QtWidgets import QWidget, QPushButton, QVBoxLayout, QHBoxLayout,QGroupBox,QCheckBox,QLabel,QSlider
+from PySide6.QtCore import Qt,QObject
+from PySide6.QtGui import QIcon,QFont,QPixmap
 
 class Ui(QWidget):
      def __init__(self):

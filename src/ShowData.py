@@ -1,13 +1,13 @@
 from .Creatuser import CreatUser
 from .GlobalVariable import database
 from .ShowUser import ShowStudentUser
-from PyQt5.QtCore import QDate, Qt
+from PySide6.QtCore import QDate, Qt
 import copy
 import os
 from datetime import datetime, timedelta
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLabel, QVBoxLayout, QLineEdit,\
+from PySide6.QtWidgets import QApplication
+from PySide6.QtGui import QIcon
+from PySide6.QtWidgets import QWidget, QHBoxLayout, QLabel, QVBoxLayout, QLineEdit,\
     QGroupBox, QPushButton, QFileDialog, QDateEdit, QMessageBox, QMenu, QProgressBar, QProgressDialog
 from .LineStack import ChartView
 from .Plugins import Plugins
@@ -103,8 +103,8 @@ class ShowData(QWidget):
         action = pop_menu.exec_(self.mapToGlobal(pos))
         if action:
             item = self.Vhlayout.itemAt(1)
-            self.Vhlayout.removeItem(item)
             item.widget().deleteLater()
+            self.Vhlayout.removeItem(item)
             self.Vhlayout.addWidget(controls_class[action.text()](self))
 
     def creatStudentUser(self):  # 批量创建用户
@@ -116,8 +116,8 @@ class ShowData(QWidget):
         self.ProgressBar = QtBoxStyleProgressBar()
 
         item = self.Vhlayout.itemAt(1)
-        self.Vhlayout.removeItem(item)
         item.widget().deleteLater()
+        self.Vhlayout.removeItem(item)
         QApplication.processEvents()
 
         self.Vhlayout.addWidget(self.ProgressBar)
@@ -135,8 +135,8 @@ class ShowData(QWidget):
 
     def showEerror(self, list_error):
         item = self.Vhlayout.itemAt(1)
-        self.Vhlayout.removeItem(item)
         item.widget().deleteLater()
+        self.Vhlayout.removeItem(item)
         if len(list_error) == 0:
             QMessageBox.information(self, 'Information',
                                     'Register Successfully')
@@ -177,8 +177,8 @@ class ShowData(QWidget):
         result = ShowStudentUser(['学号', '姓名', '性别', '密码', "图片"],
                                  "student", ["id_number", "user_name", "gender", "password"], result)
         item = self.Vhlayout.itemAt(1)
-        self.Vhlayout.removeItem(item)
         item.widget().deleteLater()
+        self.Vhlayout.removeItem(item)
         self.Vhlayout.addWidget(result)
         self.linnedit.clear()
         return
@@ -189,9 +189,8 @@ class ShowData(QWidget):
         result = ShowStudentUser(['学号', '姓名', '性别', '密码', "图片"],
                                  "student", ["id_number", "user_name", "gender", "password"])
         item = self.Vhlayout.itemAt(1)
-        self.Vhlayout.removeItem(item)
         item.widget().deleteLater()
-
+        self.Vhlayout.removeItem(item)
         self.Vhlayout.addWidget(result)
         QApplication.processEvents()
         return
@@ -199,8 +198,8 @@ class ShowData(QWidget):
     def analyzeData(self):
         # 根据输入时间范围决定X轴刻度间隔
         item = self.Vhlayout.itemAt(1)
-        self.Vhlayout.removeItem(item)
         item.widget().deleteLater()
+        self.Vhlayout.removeItem(item)
         if self.DateEdit1.date().daysTo(self.DateEdit2.date()) < 0:
             self.time1 = self.DateEdit2
             self.time2 = self.DateEdit1
@@ -245,8 +244,8 @@ class ShowData(QWidget):
        
         sql = "SELECT log_time ,gender FROM student_log_time   where log_time between  '{0}'   and '{1}' ;"
 
-        database.c.execute(sql.format(self.DateEdit1.date().toPyDate().strftime(
-            "%Y-%m-%d"), (self.DateEdit1.date().addDays(1).toPyDate()).strftime("%Y-%m-%d")))
+        database.c.execute(sql.format(self.DateEdit1.date().toPython().strftime(
+            "%Y-%m-%d"), (self.DateEdit1.date().addDays(1).toPython()).strftime("%Y-%m-%d")))
         reuslt = database.c.fetchall()
 
         for time in timestr:
@@ -282,12 +281,12 @@ class ShowData(QWidget):
         male_data = []
         sql = "SELECT log_time ,gender FROM student_log_time   where log_time between  '{0}'   and '{1}' ;"
 
-        result = database.c.execute(sql.format(self.time1.date().toPyDate().strftime(
-            "%Y-%m-%d"), self.time2.date().addDays(1).toPyDate().strftime("%Y-%m-%d")))
+        result = database.c.execute(sql.format(self.time1.date().toPython().strftime(
+            "%Y-%m-%d"), self.time2.date().addDays(1).toPython().strftime("%Y-%m-%d")))
         result = database.c.fetchall()
 
         result1 = [i for i in result if abs(
-            (i["log_time"].date() - self.time1.date().toPyDate()).days) < step]
+            (i["log_time"].date() - self.time1.date().toPython()).days) < step]
         count1 = len(result1)
         total_data .append(count1)
         count2 = len([i for i in result1 if i['gender'] == '女'])
@@ -300,7 +299,7 @@ class ShowData(QWidget):
         step_ = 0
         for i in range(days):
             result1 = [i for i in result if abs((i["log_time"].date(
-            ) - self.time1.date().addDays(step_ + step).toPyDate()).days) < step]
+            ) - self.time1.date().addDays(step_ + step).toPython()).days) < step]
             count1 = len(result1)
             total_data .append(count1)
             count2 = len([i for i in result1 if  i['gender'] == '女'])
@@ -325,10 +324,10 @@ class ShowData(QWidget):
         data_title = []
 
         step_ = step
-        data_title.append(self.time1.date().toPyDate().strftime("%Y-%m-%d"))
+        data_title.append(self.time1.date().toPython().strftime("%Y-%m-%d"))
         for i in range(abs(days)):
             data_title.append(self.time1.date().addDays(
-                step_).toPyDate().strftime("%Y-%m-%d"))
+                step_).toPython().strftime("%Y-%m-%d"))
             step_ = step_+step
 
         temdata = copy.deepcopy(total_data)

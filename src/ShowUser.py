@@ -1,7 +1,7 @@
-from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import Qt,QSize, QPoint,pyqtSlot
+from PySide6.QtGui import QIcon
+from PySide6.QtCore import Qt,QSize, QPoint,Slot
 from .ImageView import ShowImage
-from  PyQt5.QtWidgets import QWidget,QTableWidget,QTableWidgetItem,QVBoxLayout,QMenu,QHeaderView,QMessageBox,QAbstractItemView
+from  PySide6.QtWidgets import QWidget,QTableWidget,QTableWidgetItem,QVBoxLayout,QMenu,QHeaderView,QMessageBox,QAbstractItemView
 from .UpdateUser import UpdateUserData
 from .ShowLog import ShowLog
 from .Paging import Page
@@ -41,17 +41,14 @@ class ShowUser(QWidget):
         
                
     def setInformation(self):
-        if not self.information:
+        if  self.information:
+            information = self.information
+        else:
             self.information = self.page.information
-      
+            information = self.page.information
         self.tableWidget.setRowCount(0)
-        information = copy.deepcopy(self.information)
         for row1 ,i in enumerate(information):
-            if i["id_number"] == "12345678910":
-                self.information.pop(row1)
-                continue
             self.tableWidget.insertRow(row1)
-            
             for row2,cloumn in enumerate(self.table_cloumn_name):
                 item  = QTableWidgetItem((i[cloumn]))
                 self.tableWidget.setItem(row1, row2, item)
@@ -64,6 +61,7 @@ class ShowUser(QWidget):
             img_item.setIcon(QIcon(imag_path))
             img_item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
             self.tableWidget.setItem(row1, row2+1,img_item)
+            #self.tableWidget.setRowCount(row1)
            
 
 class ShowStudentUser(ShowUser):
@@ -91,7 +89,7 @@ class ShowStudentUser(ShowUser):
         self.tableWidget.item(row, 3).setText(password)
         self.tableWidget.item(row,4).setIcon(QIcon("img_information/{0}/{1}/{2}.jpg"
         .format(self.table_name,self.information[row]["id_number"],self.information[row]["id_number"])))#获取图片路径)
-    @pyqtSlot(QPoint)
+    @Slot(QPoint)
     def contextMenu(self,pos):
         pop_menu = QMenu()
         #菜单事件信号
@@ -174,7 +172,7 @@ class ShowAdminUser(ShowUser):
         self.tableWidget.item(row, 1).setText(password)
         self.tableWidget.item(row,2).setIcon(QIcon("img_information/admin/{0}/{1}.jpg"
         .format(self.information[row]["id_number"],self.information[row]["id_number"])))#获取图片路径)
-    @pyqtSlot(QPoint)
+    @Slot(QPoint)
     def contextMenu(self,pos):
         pop_menu = QMenu()
         #菜单事件信号
