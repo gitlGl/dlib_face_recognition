@@ -149,7 +149,6 @@ class Page(Paging):
         sql = self.sql.format(self.string,self.table,self.page_count,(signal-1)*self.page_count)
         database.c.execute(sql)
         self.information = database.c.fetchall()
-        print(self.information,"页数",(signal-1)*self.page_count)
         self.information_signal.emit()
         
 
