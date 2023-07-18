@@ -41,8 +41,8 @@ class ShowUser(QWidget):
         
                
     def setInformation(self):
-        if not self.information:
-            self.information = self.page.information
+        
+        self.information = self.page.information
       
         self.tableWidget.setRowCount(0)
         information = copy.deepcopy(self.information)
