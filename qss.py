@@ -175,6 +175,24 @@ QLineEdit:!enabled {
 
                
             }
+
+QCheckBox{
+    spacing: 5px;
+}
+QCheckBox::indicator {
+	width: 15px;
+	height: 15px;
+}
+QCheckBox::indicator:unchecked {
+    image: url(resources/checkbox-uncheck.svg);
+}
+QCheckBox::indicator:unchecked:hover {
+    image: url(resources/checkbox-uncheck.svg);
+}
+QCheckBox::indicator:checked {
+    image: url(resources/checkbox.svg);
+}
+
 """
 
  
