@@ -93,15 +93,24 @@ class ShowStudentUser(ShowUser):
         .format(self.table_name,self.information[row]["id_number"],self.information[row]["id_number"])))#获取图片路径)
     @pyqtSlot(QPoint)
     def contextMenu(self,pos):
-        pop_menu = QMenu()
-        #菜单事件信号
-        change_new_event = pop_menu.addAction("修改")
-        delete_event = pop_menu.addAction("删除")
-        imageView_event = pop_menu.addAction("查看图片")
-        log_event = pop_menu.addAction("查看日志")
         item = self.tableWidget.itemAt(pos)
         if item == None:
             return
+        selected_rows = set()
+        for r in self.tableWidget.selectedRanges():
+            selected_rows.update(range(r.topRow(), r.bottomRow() + 1))
+        selected_rows = list(selected_rows)
+        selected_rows.sort(reverse=True)
+        pop_menu = QMenu()
+        #菜单事件信号
+        delete_event = pop_menu.addAction("删除")
+        change_new_event = pop_menu.addAction("修改")
+        imageView_event = pop_menu.addAction("查看图片")
+        log_event = pop_menu.addAction("查看日志")
+        if len(selected_rows) > 1:
+            imageView_event.setEnabled(False)
+            change_new_event.setEnabled(False)
+            log_event.setEnabled(False)
         row = item.row()
         update_data = UpdateUserData(self.information[row])
         action = pop_menu.exec_(self.tableWidget.mapToGlobal(pos))#显示菜单列表，pos为菜单栏坐标位置
@@ -132,9 +141,10 @@ class ShowStudentUser(ShowUser):
             r = QMessageBox.warning(self, "注意", "删除可不能恢复了哦！", QMessageBox.Yes | QMessageBox.No)
             if r == QMessageBox.No:
                 return
-            update_data.delete(self.information[row]["id_number"])
-            self.tableWidget.removeRow(row) 
-            self.information.pop(row)#删除信息列表
+            for row in selected_rows:
+                update_data.delete(self.information[row]["id_number"])
+                self.tableWidget.removeRow(row) 
+                self.information.pop(row)#删除信息列表
             return
         if action == imageView_event:
             imag_path = "img_information/{0}/{1}/{2}.jpg".format(self.table_name,
@@ -176,16 +186,24 @@ class ShowAdminUser(ShowUser):
         .format(self.information[row]["id_number"],self.information[row]["id_number"])))#获取图片路径)
     @pyqtSlot(QPoint)
     def contextMenu(self,pos):
-        pop_menu = QMenu()
-        #菜单事件信号
-        change_new_event = pop_menu.addAction("修改")
-        delete_event = pop_menu.addAction("删除")
-        imageView_event = pop_menu.addAction("查看图片")
-        log_event = pop_menu.addAction("查看日志")
         item = self.tableWidget.itemAt(pos)
         if item == None:
             return
-        
+        selected_rows = set()
+        for r in self.tableWidget.selectedRanges():
+            selected_rows.update(range(r.topRow(), r.bottomRow() + 1))
+        selected_rows = list(selected_rows)
+        selected_rows.sort(reverse=True)
+        pop_menu = QMenu()
+        #菜单事件信号
+        delete_event = pop_menu.addAction("删除")
+        change_new_event = pop_menu.addAction("修改")
+        imageView_event = pop_menu.addAction("查看图片")
+        log_event = pop_menu.addAction("查看日志")
+        if len(selected_rows) > 1:
+            imageView_event.setEnabled(False)
+            change_new_event.setEnabled(False)
+            log_event.setEnabled(False) 
         row = item.row()
         update_data =UpdateAdminData(self.information[row])
         action = pop_menu.exec_(self.tableWidget.mapToGlobal(pos))#显示菜单列表，pos为菜单栏坐标位置
@@ -210,9 +228,13 @@ class ShowAdminUser(ShowUser):
             r = QMessageBox.warning(self, "注意", "删除可不能恢复了哦！", QMessageBox.Yes | QMessageBox.No)
             if r == QMessageBox.No:
                 return
-            update_data.delete(self.information[row]["id_number"])
-            self.tableWidget.removeRow(row) 
-            self.information.pop(row)#删除信息列表
+            for row in selected_rows:
+                if self.information[row]["id_number"] == "12345678910":
+                    QMessageBox.critical(self, '警告', '不能删除admin用户')
+                    continue
+                update_data.delete(self.information[row]["id_number"])
+                self.tableWidget.removeRow(row) 
+                self.information.pop(row)#删除信息列表
         if action == imageView_event:
             imag_path = "img_information/{0}/{1}/{2}.jpg".format(self.table_name,
             str(self.information[row]["id_number"]),str(self.information[row]["id_number"]))
