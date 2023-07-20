@@ -39,10 +39,16 @@ class Database():
             return d
 
         if type_database is 'sqlite3':
+            sqlite3.enable_callback_tracebacks(True)
+            def log_query(query):
+                print(query)
             self.conn = sqlite3.connect('resources/data.db',
                                         detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+            self.conn.set_trace_callback(log_query)
             self.conn.row_factory = dictFactory
+
             self.c = self.conn.cursor()
+           
 
            
         elif type_database is 'mysql':
@@ -62,8 +68,6 @@ class Database():
             self.conn.autocommit(False)
             self.c = self.conn.cursor()
 
-
-   
 
     def creatble(self):#528 李回复 2018035144217
         self.c.execute('''CREATE TABLE IF NOT EXISTS student
