@@ -74,17 +74,29 @@ class ShowLog(QDialog):
 
     @Slot(QPoint)
     def contextMenu(self,pos):
+        item = self.tableWidget.itemAt(pos)
+        if item == None:
+            return
+        selected_rows = set()
+        for r in self.tableWidget.selectedRanges():
+            selected_rows.update(range(r.topRow(), r.bottomRow() + 1))
+        selected_rows = list(selected_rows)
+        selected_rows.sort(reverse=True)
         pop_menu = QMenu()
         #菜单事件信号
         delete_event = pop_menu.addAction("删除")
         imageView_event = pop_menu.addAction("查看图片")
-        item = self.tableWidget.itemAt(pos)
-        if item == None:
-            return
+        if len(selected_rows) > 1:
+            imageView_event.setEnabled(False)
+       
         row = item.row()
         action = pop_menu.exec_(self.tableWidget.mapToGlobal(pos))#显示菜单列表，pos为菜单栏坐标位置
         if action == delete_event:
-            self.delete(row)
+            r = QMessageBox.warning(self, "注意", "删除可不能恢复了哦！", QMessageBox.Yes | QMessageBox.No)
+            if r == QMessageBox.No:
+                return
+            for row in selected_rows:
+                self.delete(row)
 
         if action == imageView_event:
             imag_path = "img_information/{0}/{1}/log/{2}.jpg".format(
@@ -93,9 +105,6 @@ class ShowLog(QDialog):
             show_imag.exec_()
 
     def delete(self,row):
-        r = QMessageBox.warning(self, "注意", "删除可不能恢复了哦！", QMessageBox.Yes | QMessageBox.No)
-        if r == QMessageBox.No:
-            return
         
         log_table = self.table_name + "_log_time"
         database.c.execute("delete from {0} where id  = {1}".format(
