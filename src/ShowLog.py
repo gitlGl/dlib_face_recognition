@@ -84,19 +84,21 @@ class ShowLog(QDialog):
         selected_rows.sort(reverse=True)
         pop_menu = QMenu()
         #菜单事件信号
-        delete_event = pop_menu.addAction("删除")
-        imageView_event = pop_menu.addAction("查看图片")
-        if len(selected_rows) > 1:
-            imageView_event.setEnabled(False)
+        delete_event = pop_menu.addAction("删除选中")
+        if len(selected_rows) == 1:
+            imageView_event = pop_menu.addAction("查看图片")
        
         row = item.row()
         action = pop_menu.exec_(self.tableWidget.mapToGlobal(pos))#显示菜单列表，pos为菜单栏坐标位置
+        if action == None:
+            return
         if action == delete_event:
             r = QMessageBox.warning(self, "注意", "删除可不能恢复了哦！", QMessageBox.Yes | QMessageBox.No)
             if r == QMessageBox.No:
                 return
             for row in selected_rows:
                 self.delete(row)
+            return
 
         if action == imageView_event:
             imag_path = "img_information/{0}/{1}/log/{2}.jpg".format(

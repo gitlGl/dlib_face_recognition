@@ -102,17 +102,25 @@ class ShowStudentUser(ShowUser):
         selected_rows.sort(reverse=True)
         pop_menu = QMenu()
         #菜单事件信号
-        delete_event = pop_menu.addAction("删除")
-        change_new_event = pop_menu.addAction("修改")
-        imageView_event = pop_menu.addAction("查看图片")
-        log_event = pop_menu.addAction("查看日志")
-        if len(selected_rows) > 1:
-            imageView_event.setEnabled(False)
-            change_new_event.setEnabled(False)
-            log_event.setEnabled(False)
+        delete_event = pop_menu.addAction("删除选中")
+        if len(selected_rows) == 1:
+            change_new_event = pop_menu.addAction("修改")
+            imageView_event = pop_menu.addAction("查看图片")
+            log_event = pop_menu.addAction("查看日志")
         row = item.row()
         update_data = UpdateUserData(self.information[row])
         action = pop_menu.exec_(self.tableWidget.mapToGlobal(pos))#显示菜单列表，pos为菜单栏坐标位置
+        if action == None:
+            return
+        if action == delete_event:
+            r = QMessageBox.warning(self, "注意", "删除可不能恢复了哦！", QMessageBox.Yes | QMessageBox.No)
+            if r == QMessageBox.No:
+                return
+            for row in selected_rows:
+                update_data.delete(self.information[row]["id_number"])
+                self.tableWidget.removeRow(row) 
+                self.information.pop(row)#删除信息列表
+            return
         if action == change_new_event:
             ok = update_data.exec_()
             if not ok:
@@ -136,15 +144,7 @@ class ShowStudentUser(ShowUser):
     .format(self.table_name,self.information[row]["id_number"],self.information[row]["id_number"])))#获取图片路径)
             return
 
-        if action == delete_event:
-            r = QMessageBox.warning(self, "注意", "删除可不能恢复了哦！", QMessageBox.Yes | QMessageBox.No)
-            if r == QMessageBox.No:
-                return
-            for row in selected_rows:
-                update_data.delete(self.information[row]["id_number"])
-                self.tableWidget.removeRow(row) 
-                self.information.pop(row)#删除信息列表
-            return
+        
         if action == imageView_event:
             imag_path = "img_information/{0}/{1}/{2}.jpg".format(self.table_name,
             str(self.information[row]["id_number"]),
@@ -195,17 +195,29 @@ class ShowAdminUser(ShowUser):
         selected_rows.sort(reverse=True)
         pop_menu = QMenu()
         #菜单事件信号
-        delete_event = pop_menu.addAction("删除")
-        change_new_event = pop_menu.addAction("修改")
-        imageView_event = pop_menu.addAction("查看图片")
-        log_event = pop_menu.addAction("查看日志")
-        if len(selected_rows) > 1:
-            imageView_event.setEnabled(False)
-            change_new_event.setEnabled(False)
-            log_event.setEnabled(False) 
+        delete_event = pop_menu.addAction("删除选中")
+        if len(selected_rows) == 1:
+            change_new_event = pop_menu.addAction("修改")
+            imageView_event = pop_menu.addAction("查看图片")
+            log_event = pop_menu.addAction("查看日志")
         row = item.row()
         update_data =UpdateAdminData(self.information[row])
         action = pop_menu.exec_(self.tableWidget.mapToGlobal(pos))#显示菜单列表，pos为菜单栏坐标位置
+        if action == None:
+            return
+        if action == delete_event:
+            r = QMessageBox.warning(self, "注意", "删除可不能恢复了哦！", QMessageBox.Yes | QMessageBox.No)
+            if r == QMessageBox.No:
+                return
+            for row in selected_rows:
+                if self.information[row]["id_number"] == "12345678910":
+                    QMessageBox.critical(self, '警告', '不能删除admin用户')
+                    continue
+                update_data.delete(self.information[row]["id_number"])
+                self.tableWidget.removeRow(row) 
+                self.information.pop(row)#删除信息列表
+            return
+        
         if action == change_new_event:
             ok = update_data.exec_()
             if not ok:
@@ -223,17 +235,7 @@ class ShowAdminUser(ShowUser):
             self.tableWidget.item(row,2).setIcon(QIcon("img_information/admin/{0}/{1}.jpg"
     .format(self.information[row]["id_number"],self.information[row]["id_number"])))#获取图片路径)
 
-        if action == delete_event:
-            r = QMessageBox.warning(self, "注意", "删除可不能恢复了哦！", QMessageBox.Yes | QMessageBox.No)
-            if r == QMessageBox.No:
-                return
-            for row in selected_rows:
-                if self.information[row]["id_number"] == "12345678910":
-                    QMessageBox.critical(self, '警告', '不能删除admin用户')
-                    continue
-                update_data.delete(self.information[row]["id_number"])
-                self.tableWidget.removeRow(row) 
-                self.information.pop(row)#删除信息列表
+       
         if action == imageView_event:
             imag_path = "img_information/{0}/{1}/{2}.jpg".format(self.table_name,
             str(self.information[row]["id_number"]),str(self.information[row]["id_number"]))
