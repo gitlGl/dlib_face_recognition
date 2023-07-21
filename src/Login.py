@@ -179,7 +179,7 @@ class LoginUi(QWidget):
             self.login_button.setText("登录")
             self.login_button.setEnabled(True)
             return
-        database.c.execute(f"INSERT INTO admin_log_time (id_number ) \
+        database.execute(f"INSERT INTO admin_log_time (id_number ) \
 VALUES ({PH})", (user_id, ))
 
 

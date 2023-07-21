@@ -25,10 +25,10 @@ def checkUserPwd(user_pwd):
     return True
 def verifyePwd(user_id,user_pwd,tabel_name):
    
-    database.c.execute(
+    user = database.execute(
                 "select id_number,salt, password  from {0} where id_number = {1} "
                 .format(tabel_name,user_id))
-    user = database.c.fetchall()
+   
 
     if len(user) != 1:
         return False              

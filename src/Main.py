@@ -105,9 +105,8 @@ class Main(Ui):
         self.p.daemon = True
         
         del self.login_ui
-        database.c.execute(f"INSERT INTO admin_log_time (id_number ) \
+        database.execute(f"INSERT INTO admin_log_time (id_number ) \
 VALUES ({PH})", (self.id_number,))
-        database.conn.commit()
         return True
         
     

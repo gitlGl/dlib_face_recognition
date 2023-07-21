@@ -128,10 +128,9 @@ class SigninPage(QWidget):
         if not admin.password_min_length.value <= len(password) <= admin.password_max_length.value:
             QMessageBox.critical(self, '警告', f'密码长度必须在{admin.password_min_length.value}到{admin.password_max_length.value}之间!')
             return
-        database.c.execute(
+        user = database.execute(
             "select id_number from admin where id_number = {} ".format(
                 user_name))
-        user = database.c.fetchall()
         if len(user) == 1:
             QMessageBox.critical(self, '警告',
                                     '该用户已被注册!')
@@ -144,7 +143,7 @@ class SigninPage(QWidget):
             QMessageBox.critical(None, '警告', '验证码错误')
             return
         path = self.signin_vector_line.text()
-        if not checkPath(path):
+        if not checkPath(path,self):
             return
         
         self.signin_button.setText('注册中...')
@@ -175,12 +174,11 @@ class SigninPage(QWidget):
        
         creatuser.insertImg(user_name, path, "admin")
 
-        database.c.execute(
+        database.execute(
             f"INSERT INTO admin (id_number,password,salt,vector) \
 VALUES ({PH}, {PH},{PH},{PH})", (user_name, password, salt, vector))
         QMessageBox.information(self, '信息',
                                 '注册成功!')
-        database.conn.commit()
         self.signin_user_line.clear()
         self.signin_pwd_line.clear()
         self.signin_pwd2_line.clear()

@@ -93,14 +93,11 @@ class AdminInformation(QWidget):
               creatuser = CreatUser()
               vector = creatuser.getVector(path)
               creatuser.insertImg(self.id_number,path,"admin")
-              database.c.execute(f"update admin set vector = {PH} where id_number = {0}".format(self.id_number),(vector,))
-              database.conn.commit()
-            
+              database.execute(f"update admin set vector = {PH} where id_number = {0}".format(self.id_number),(vector,))
               QMessageBox.information(self, 'Success', '修改成功')
    
     def root(self):
-        database.c.execute("select id_number,password from admin ")
-        result = database.c.fetchall()
+        result = database.execute("select id_number,password from admin ")
         show_admin_User = ShowAdminUser([ '用户ID', '密码',"图片" ],'admin',["id_number",'password'],result)
         item = self.Vhlayout.itemAt(1)
         self.Vhlayout.removeItem(self.Vhlayout.itemAt(1))
