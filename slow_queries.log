@@ -10,3 +10,327 @@ Execution time: 0.00015289999999978932 seconds
 2023-07-21 15:31:43:select id_number from student where id_number = 135144236 
 Execution time: 0.0001162000000007879 seconds
 
+2023-07-21 19:10:59:select id_number,salt, password  from admin where id_number = 12345678910 
+Execution time: 0.0001378999999999131 seconds
+
+2023-07-21 19:10:59:INSERT INTO admin_log_time (id_number ) VALUES ('12345678910')
+Execution time: 0.00015449999999983532 seconds
+
+2023-07-21 19:11:11:select id_number from admin where id_number = 1234567891 
+Execution time: 0.00010259999999995273 seconds
+
+2023-07-21 19:11:16:COMMIT
+Execution time: 0.0009288999999981229 seconds
+
+2023-07-21 19:11:26:select id_number from admin where id_number = 12345678910 
+Execution time: 0.00017449999999996635 seconds
+
+2023-07-21 19:11:34:COMMIT
+Execution time: 0.001023499999995181 seconds
+
+2023-07-21 19:12:06:select id_number from student where id_number = 135144232 
+Execution time: 0.00012190000001055523 seconds
+
+2023-07-21 19:12:34:select count(*)  from admin_log_time where id_number =12345678910 
+Execution time: 0.00011390000000233158 seconds
+
+2023-07-21 19:12:34:select id,id_number,log_time from admin_log_time where id_number =12345678910   limit 30 offset 0
+Execution time: 0.00015750000000025466 seconds
+
+2023-07-21 19:12:41:delete from admin_log_time where id  = 20
+Execution time: 0.00014620000000320488 seconds
+
+2023-07-21 19:12:41:delete from admin_log_time where id  = 18
+Execution time: 0.00011489999999980682 seconds
+
+2023-07-21 19:13:49:select id_number,salt, password  from admin where id_number = 12345678910 
+Execution time: 0.00021570000000004086 seconds
+
+2023-07-21 19:13:49:INSERT INTO admin_log_time (id_number ) VALUES ('12345678910')
+Execution time: 0.00020719999999974092 seconds
+
+2023-07-21 19:13:57:select id_number,password from admin 
+Execution time: 0.00010699999999985721 seconds
+
+2023-07-21 19:14:03:select id_number from admin where id_number = 1234567891 
+Execution time: 0.00013859999999965567 seconds
+
+2023-07-21 19:14:17:select id_number,salt, password  from admin where id_number = 12345678910 
+Execution time: 0.00018399999999996197 seconds
+
+2023-07-21 19:14:17:INSERT INTO admin_log_time (id_number ) VALUES ('12345678910')
+Execution time: 0.00017889999999987083 seconds
+
+2023-07-21 19:14:23:select id_number,password from admin 
+Execution time: 0.00010699999999985721 seconds
+
+2023-07-21 19:14:31:select id_number from admin where id_number = 1234567891 
+Execution time: 0.0001048000000025695 seconds
+
+2023-07-21 19:14:44:select id_number from admin where id_number = 123456789 
+Execution time: 0.00010639999999995098 seconds
+
+2023-07-21 19:15:47:select id_number,salt, password  from admin where id_number = 12345678910 
+Execution time: 0.00014619999999965216 seconds
+
+2023-07-21 19:15:47:INSERT INTO admin_log_time (id_number ) VALUES ('12345678910')
+Execution time: 0.00018590000000040519 seconds
+
+2023-07-21 19:15:51:select id_number,password from admin 
+Execution time: 0.00010750000000037119 seconds
+
+2023-07-21 19:16:00:select id_number from admin where id_number = 1234567891 
+Execution time: 0.00010999999999938836 seconds
+
+2023-07-21 19:16:28:select id_number from admin where id_number = 12345678910 
+Execution time: 0.00012279999999975644 seconds
+
+2023-07-21 19:17:07:select id_number,salt, password  from admin where id_number = 12345678910 
+Execution time: 0.0001988000000001655 seconds
+
+2023-07-21 19:17:07:INSERT INTO admin_log_time (id_number ) VALUES ('12345678910')
+Execution time: 0.00011530000000004037 seconds
+
+2023-07-21 19:17:28:select id_number from admin where id_number = 1234567891 
+Execution time: 0.00014239999999787756 seconds
+
+2023-07-21 19:17:47:COMMIT
+Execution time: 0.0008328999999989151 seconds
+
+2023-07-21 19:17:53:select id_number from admin where id_number = 12345678910 
+Execution time: 0.00011709999999709453 seconds
+
+2023-07-21 19:18:11:select id_number from admin where id_number = 123456789 
+Execution time: 0.00012140000001181761 seconds
+
+2023-07-21 19:18:17:COMMIT
+Execution time: 0.000980299999994827 seconds
+
+2023-07-21 19:19:22:COMMIT
+Execution time: 0.0009766999999953896 seconds
+
+2023-07-21 19:19:55:COMMIT
+Execution time: 0.0010060999999836895 seconds
+
+2023-07-21 19:21:02:INSERT INTO admin (id_number,password,salt,vector) VALUES ('12345678910', '067d19dd252ab8838d6769ebd3932c46','INvJxM',x'8003636e756d70792e636f72652e6d756c746961727261790a5f7265636f6e7374727563740a7100636e756d70790a6e6461727261790a71014b008571024301627103877104527105284b014b80857106636e756d70790a64747970650a71075802000000663871084b004b0187710952710a284b0358010000003c710b4e4e4e4affffffff4affffffff4b0074710c62894200040000000000e0c9cfbbbf000000e0b212c23f000000e05c90b63f0000004064efa9bf000000c06897c4bf00000060110d95bf000000c017c8b1bf000000a0841fc1bf000000c04d99c03f00000080b5e8b6bf000000a0af85d53f000000e06b69b5bf000000202b3bcfbf000000400db2b9bf000000404bbea5bf000000c0fdccc63f000000008bbfc9bf0000008040dac1bf00000000369f47bf00000040d35180bf000000c0742fa63f000000409c12a23f000000406380763f00000020d2d0a03f000000e06184b8bf0000008079ded5bf000000c0165da6bf000000008e34b3bf0000008009d7b13f000000007d36b9bf000000e005fdafbf000000c08283b73f000000e0ab3fc3bf000000c0baaab6bf00000020a7f6a93f00000040d055c53f000000803a90983f000000805e6178bf000000c0d515c83f000000400c81a3bf000000c04eebd0bf000000008811433f000000e01447b43f000000c03801ce3f000000e09501c13f000000e06913aa3f00000040a7fe903f000000204540c1bf00000000ce58bf3f000000400376c7bf000000008785b83f0000008030b9bc3f000000a02086c93f000000c08e5aa23f000000c04dbe863f0000002051f8c9bf000000c06380a0bf00000080225eb63f00000040f225c5bf0000008084e99cbf000000600ccebb3f000000800437b1bf000000c00b44ac3f00000000b789b0bf000000804d0eca3f00000060b916ac3f000000409860b6bf0000004074e5c2bf000000a09ef9c13f00000060c4a9bdbf000000a041dfbebf00000080923dc03f000000805068b8bf0000002099a6bdbf000000c03bdfd6bf000000005393863f000000208210de3f000000c044feab3f000000e01ef2c6bf000000e07c6d8bbf00000080e022a5bf0000002096eeb6bf000000e0f2a8ac3f000000c01d1abc3f00000000d2efa2bf000000c038398f3f000000405c77bebf00000000738f63bf000000208d3acb3f00000080e949b3bf00000000364193bf0000008000d6c33f00000000dcb9a23f00000000356fc23f000000e00f4ba13f000000002650b63f000000a0eca4acbf000000a0b9c5ac3f00000040b73fbbbf000000801b2d853f00000040100aa9bf000000c04f2aa9bf00000020d69a85bf000000402b93bb3f00000040f96dc8bf0000008059febd3f00000040748e9e3f00000080a39b93bf00000060b6b693bf000000a0f2b2aa3f00000000c52c9bbf00000000e64fb5bf00000020a887c23f00000000691ad3bf00000000af26c53f000000e0ce6cc73f000000c0cde3a23f0000004004e1c43f000000606a96b63f000000e0c61cb33f00000040c21c9a3f000000809102b4bf000000a0314ec3bf000000409308b7bf0000006079d8b03f000000e00257b1bf000000406013b23f000000c09925b13f710d74710e622e')
+Execution time: 0.0002063999999961652 seconds
+
+2023-07-21 19:22:06:select count(*)  from student 
+Execution time: 0.00010429999997541017 seconds
+
+2023-07-21 19:22:06:select id_number,user_name,gender,password from student   limit 30 offset 0
+Execution time: 0.00010459999998602143 seconds
+
+2023-07-21 19:22:23:select id_number from student where id_number = 111111111 
+Execution time: 0.00013069999999970605 seconds
+
+2023-07-21 19:22:49:INSERT INTO admin_log_time (id_number ) VALUES ('12345678910')
+Execution time: 0.00010710000000013764 seconds
+
+2023-07-21 19:23:16:select id_number,salt, password  from admin where id_number = 12345678910 
+Execution time: 0.0001774999999994975 seconds
+
+2023-07-21 19:23:16:INSERT INTO admin_log_time (id_number ) VALUES ('12345678910')
+Execution time: 0.00018319999999949488 seconds
+
+2023-07-21 19:23:20:select id_number,user_name,gender,password from student   limit 30 offset 0
+Execution time: 0.0001648999999996903 seconds
+
+2023-07-21 19:23:25:select id_number,user_name,gender,password from student   limit 30 offset 30
+Execution time: 0.00012990000000101531 seconds
+
+2023-07-21 19:23:25:select id_number,user_name,gender,password from student   limit 30 offset 60
+Execution time: 0.00014649999999960528 seconds
+
+2023-07-21 19:24:16:select id_number,salt, password  from admin where id_number = 12345678910 
+Execution time: 0.00014639999999976894 seconds
+
+2023-07-21 19:24:16:INSERT INTO admin_log_time (id_number ) VALUES ('12345678910')
+Execution time: 0.0010474000000000316 seconds
+
+2023-07-21 19:24:19:select count(*)  from student 
+Execution time: 0.00010460000000023228 seconds
+
+2023-07-21 19:24:19:select id_number,user_name,gender,password from student   limit 30 offset 0
+Execution time: 0.0001471000000003997 seconds
+
+2023-07-21 19:24:31:select id_number from student where id_number = 135144227 
+Execution time: 0.00010870000000196 seconds
+
+2023-07-21 19:25:41:select id_number,salt, password  from admin where id_number = 12345678910 
+Execution time: 0.00015190000000009363 seconds
+
+2023-07-21 19:25:41:INSERT INTO admin_log_time (id_number ) VALUES ('12345678910')
+Execution time: 0.00019279999999999298 seconds
+
+2023-07-21 19:25:45:select id_number,user_name,gender,password from student   limit 30 offset 0
+Execution time: 0.00015530000000030242 seconds
+
+2023-07-21 19:26:08:select id_number from student where id_number = 135144227 
+Execution time: 0.00011800000000050659 seconds
+
+2023-07-21 19:27:15:select id_number,salt, password  from admin where id_number = 12345678910 
+Execution time: 0.00015800000000032455 seconds
+
+2023-07-21 19:27:15:INSERT INTO admin_log_time (id_number ) VALUES ('12345678910')
+Execution time: 0.0001749000000001999 seconds
+
+2023-07-21 19:27:18:select id_number,user_name,gender,password from student   limit 30 offset 0
+Execution time: 0.0001395000000004032 seconds
+
+2023-07-21 19:27:29:select id_number from student where id_number = 135144231 
+Execution time: 0.00011920000000031905 seconds
+
+2023-07-21 19:27:57:select id_number,salt, password  from admin where id_number = 12345678910 
+Execution time: 0.00015650000000011488 seconds
+
+2023-07-21 19:27:57:INSERT INTO admin_log_time (id_number ) VALUES ('12345678910')
+Execution time: 0.00022559999999982594 seconds
+
+2023-07-21 19:28:35:select id_number,salt, password  from admin where id_number = 12345678910 
+Execution time: 0.0001731000000000371 seconds
+
+2023-07-21 19:28:35:INSERT INTO admin_log_time (id_number ) VALUES ('12345678910')
+Execution time: 0.0010428000000000104 seconds
+
+2023-07-21 19:28:50:select id_number from student where id_number = 135144237 
+Execution time: 0.00011759999999938486 seconds
+
+2023-07-21 19:31:24:select id_number from student where id_number = 135144243 
+Execution time: 0.0001431999999965683 seconds
+
+2023-07-21 19:32:04:select id_number from student where id_number = 135144231 
+Execution time: 0.00012760000001321714 seconds
+
+2023-07-21 19:33:29:select id_number,salt, password  from admin where id_number = 12345678910 
+Execution time: 0.00015130000000063148 seconds
+
+2023-07-21 19:33:29:INSERT INTO admin_log_time (id_number ) VALUES ('12345678910')
+Execution time: 0.0010403999999990532 seconds
+
+2023-07-21 19:33:34:select id_number,user_name,gender,password from student   limit 30 offset 0
+Execution time: 0.00010890000000074451 seconds
+
+2023-07-21 19:33:46:select id_number from student where id_number = 135144248888 
+Execution time: 0.00011619999999723518 seconds
+
+2023-07-21 19:48:08:select id_number,salt, password  from admin where id_number = 12345678910 
+Execution time: 0.00013509999999961053 seconds
+
+2023-07-21 19:48:08:INSERT INTO admin_log_time (id_number ) VALUES ('12345678910')
+Execution time: 0.00016709999999964253 seconds
+
+2023-07-21 19:48:13:select id_number,user_name,gender,password from student   limit 30 offset 0
+Execution time: 0.00016660000000001673 seconds
+
+2023-07-21 19:48:31:select id_number from student where id_number = 135144251 
+Execution time: 0.00010279999999696088 seconds
+
+2023-07-21 19:48:32:UPDATE student SET id_number = '135144251',user_name = '女女',gender = '男' WHERE id_number = '135144251'
+Execution time: 0.00025619999999904053 seconds
+
+2023-07-21 19:48:32:update student_log_time set id_number= 135144251 where id_number = 135144251
+Execution time: 0.00010629999999878237 seconds
+
+2023-07-21 19:48:46:select count(*)  from admin_log_time where id_number =12345678910 
+Execution time: 0.00014759999999824913 seconds
+
+2023-07-21 19:48:46:select id,id_number,log_time from admin_log_time where id_number =12345678910   limit 30 offset 0
+Execution time: 0.00012270000000569325 seconds
+
+2023-07-21 19:48:53:delete from admin_log_time where id  = 228
+Execution time: 0.00016240000000067312 seconds
+
+2023-07-21 19:48:53:delete from admin_log_time where id  = 226
+Execution time: 0.00011400000000350019 seconds
+
+2023-07-21 19:48:57:select id_number,password from admin 
+Execution time: 0.000126099999995688 seconds
+
+2023-07-21 19:49:04:update admin set id_number = 1234567891 where id_number = 12345678910
+Execution time: 0.00022389999999461452 seconds
+
+2023-07-21 19:49:04:update admin_log_time set id_number= 1234567891 where id_number = 12345678910
+Execution time: 0.00018289999999865358 seconds
+
+2023-07-21 19:49:11:select id_number from admin where id_number = 12345678910 
+Execution time: 0.00013049999999736883 seconds
+
+2023-07-21 19:54:12:select id_number,salt, password  from admin where id_number = 12345678910 
+Execution time: 0.00014469999999988659 seconds
+
+2023-07-21 19:54:12:INSERT INTO admin_log_time (id_number ) VALUES ('12345678910')
+Execution time: 0.00019120000000327764 seconds
+
+2023-07-21 19:54:19:select id_number,password from admin 
+Execution time: 0.00013039999999620022 seconds
+
+2023-07-21 19:55:53:select id_number from admin where id_number = 1234567891 
+Execution time: 0.00011000000000649379 seconds
+
+2023-07-21 19:55:54:update admin set id_number = 1234567891 where id_number = 12345678910
+Execution time: 0.0002223999999841908 seconds
+
+2023-07-21 19:55:54:update admin_log_time set id_number= 1234567891 where id_number = 12345678910
+Execution time: 0.00014880000000516702 seconds
+
+2023-07-21 19:56:02:select id_number from admin where id_number = 12345678910 
+Execution time: 0.0001073999999903208 seconds
+
+2023-07-21 19:56:04:update admin set id_number = 12345678910 where id_number = 1234567891
+Execution time: 0.00022549999999910142 seconds
+
+2023-07-21 19:56:04:update admin_log_time set id_number= 12345678910 where id_number = 1234567891
+Execution time: 0.0001015999999935957 seconds
+
+2023-07-21 19:56:22:update admin set id_number= '1234567891' ,vector = x'8003636e756d70792e636f72652e6d756c746961727261790a5f7265636f6e7374727563740a7100636e756d70790a6e6461727261790a71014b008571024301627103877104527105284b014b80857106636e756d70790a64747970650a71075802000000663871084b004b0187710952710a284b0358010000003c710b4e4e4e4affffffff4affffffff4b0074710c62894200040000000000407d5572bf00000000c991913f000000c07e82ad3f000000e00e0991bf00000080a63fc1bf000000a0312a83bf00000000feceafbf000000406d8fbabf000000203beebb3f000000e08d3fc2bf000000a0a602c23f000000a09fe896bf000000a0c2f8c5bf000000a013aea5bf000000c0160c9fbf000000606369c83f000000a040c5c1bf0000000068fec3bf000000c0dd1f95bf000000e024aaaebf00000000269a443f0000006062e7a23f000000e0fcfd7abf000000205baf7f3f0000008071a5c7bf000000e05dfad4bf00000040eb25b4bf000000e07f90afbf000000407b7f90bf00000020275791bf000000009cdab8bf000000c093f3c33f000000c0541cb8bf00000000c168683f00000020d6e4b33f0000006045e3ba3f0000000017d88ebf00000060a956bebf000000a05cffc63f00000000558c7c3f00000020a39ccfbf000000007bfa48bf000000201445b53f000000008f18ce3f000000c03463c23f000000e0753da0bf00000080a6cda03f00000060ce7cb1bf000000a0ffeac03f0000000083d9c8bf00000000c469763f00000040b1e4bc3f00000060c7c2953f000000a0d9d1ba3f000000009ac4533f00000060f187bcbf000000a04d50a23f0000004034fcc03f00000000382abebf00000020963a8fbf0000002048bca43f000000409ba5c3bf00000000744789bf000000206e4ec1bf00000060d63ecd3f000000403176ba3f000000c087fababf00000080f29cc0bf00000060324fb63f000000a0b69ac4bf000000e00e32c1bf000000c0461891bf000000a0e7bcc1bf000000a0a57fc2bf00000080798cd3bf00000000c4bd87bf0000006081a7d33f000000608a21c83f000000a041cbc6bf000000400786b03f0000004005dd8a3f000000808964943f000000c01b57c43f000000e04d78c63f000000001e87633f000000607684ab3f0000000099d99ebf00000040f82496bf00000060d2b5d13f000000804b01acbf000000803617a6bf000000607010c73f00000000476589bf00000060d473bc3f0000008012019b3f00000020ad6f5cbf000000807c95aabf000000e06617853f000000a0ddf1bfbf00000000c6779b3f000000a0c3cfa33f000000003deda8bf00000080f748963f00000040afdec03f00000000535fc5bf00000060651ac23f00000020cc7f76bf000000a03eeea23f00000020ba65b13f00000020afff903f000000004775b4bf000000002f02adbf00000040af4ac13f000000208e5bcbbf000000402968c63f000000202d62c83f000000002463b03f000000205375c33f00000080a852c03f000000a03e78ad3f000000c0ad84a8bf00000000ef6ca5bf00000060302bc9bf000000e02652a4bf000000e0943bc13f000000a0bdc2a7bf000000206fabb03f0000002030539a3f710d74710e622e' where id_number = 12345678910
+Execution time: 0.00016249999998763087 seconds
+
+2023-07-21 19:56:37:select count(*)  from admin_log_time where id_number =12345678910 
+Execution time: 0.0001573000000121283 seconds
+
+2023-07-21 19:56:37:select id,id_number,log_time from admin_log_time where id_number =12345678910   limit 30 offset 0
+Execution time: 0.00024830000000974906 seconds
+
+2023-07-21 19:56:42:delete from admin_log_time where id  = 229
+Execution time: 0.00014329999999063148 seconds
+
+2023-07-21 19:56:50:select id_number,user_name,gender,password from student   limit 30 offset 0
+Execution time: 0.0002504999999928259 seconds
+
+2023-07-21 19:56:58:select id_number from student where id_number = 135144249 
+Execution time: 0.0001309999999818956 seconds
+
+2023-07-21 19:57:00:UPDATE student SET id_number = '135144249',user_name = '李回女',gender = '男' WHERE id_number = '135144249'
+Execution time: 0.00012240000000929285 seconds
+
+2023-07-21 19:57:00:update student_log_time set id_number= 135144249 where id_number = 135144249
+Execution time: 0.00012129999998933272 seconds
+
+2023-07-21 19:57:09:select id_number from student where id_number = 135144240 
+Execution time: 0.00017990000000622786 seconds
+
+2023-07-21 19:57:11:UPDATE student SET id_number = '135144240',user_name = '李回女',gender = '男' WHERE id_number = '135144249'
+Execution time: 0.00022069999999985157 seconds
+
+2023-07-21 19:57:11:update student_log_time set id_number= 135144240 where id_number = 135144249
+Execution time: 0.00012580000000639302 seconds
+
+2023-07-21 19:57:19:UPDATE student SET id_number = '135144240',user_name = '李回',gender = '男' WHERE id_number = '135144240'
+Execution time: 0.00022419999999101492 seconds
+
+2023-07-21 19:57:19:update student_log_time set id_number= 135144240 where id_number = 135144240
+Execution time: 0.00020339999997531777 seconds
+
+2023-07-21 20:00:59:select id_number,salt, password  from admin where id_number = 12345678910 
+Execution time: 0.0001532000000015188 seconds
+
+2023-07-21 20:00:59:INSERT INTO admin_log_time (id_number ) VALUES ('12345678910')
+Execution time: 0.00019539999999906854 seconds
+
+2023-07-21 20:01:05:select id_number,user_name,gender,password from student   limit 30 offset 0
+Execution time: 0.00014130000000101006 seconds
+
+2023-07-21 20:01:42:delete from student where id_number = 135144254
+Execution time: 0.00012050000000130012 seconds
+
