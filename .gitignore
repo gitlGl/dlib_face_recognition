@@ -15,7 +15,9 @@ runtime/
 *.dat
 *.ttc
 .python-vers
-*.db
-*.db-journal
+*.db    
 *.log
+*.db_journal
+
+
 

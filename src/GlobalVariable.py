@@ -49,24 +49,19 @@ def log_query(self,sql):
 @log_slow_queries(0.0001) # Set threshold to 0.01 second
 def sqlite3_execute_query(self,query:str,args :tuple = ()):
     self.c.execute(query,args)
-    self.conn.commit()
+    #self.conn.commit()
     return self.c.fetchall()
    
-
-def execute_transaction(self,query:str,args :tuple = ()):
-    self.c.execute(query,args)
-    return self.c.fetchall()
 
 def mysql_execute_query(self,query,args :tuple = ()):
     self.c.execute(query,args)
     return self.c.fetchall()
    
 database = Database()
-database.execute_transaction = types.MethodType(execute_transaction,database)
+
 if type_database == "sqlite3" :
     execute_query = sqlite3_execute_query
     database.execute = types.MethodType(execute_query,database)
-    #database.execute_transaction = types.MethodType(execute_transaction,database)
     database.log_query = types.MethodType(log_query,database)
     database.conn.set_trace_callback(database.log_query)
 elif type_database == "mysql" :
