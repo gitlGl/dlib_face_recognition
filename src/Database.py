@@ -2,7 +2,7 @@
 import sys
 import configparser
 ##########兼容sqlite3和mysql
-type_database = 'mysql'
+type_database = 'sqlite3'
 if type_database is 'sqlite3':
     print('sqlite3 loaded')
     import sqlite3
