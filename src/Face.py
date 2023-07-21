@@ -31,12 +31,12 @@ class StudentRgFace():
         self.refreshthread.start()
        
         self.list_vector = []
-        database.c.execute("SELECT vector from student")
+        results = database.execute("SELECT vector from student")
         #使用列表生成进行序列化
-        self.list_vector = [pickle.loads(i['vector']) for i in database.c.fetchall()]
+        self.list_vector = [pickle.loads(i['vector']) for i in results]
         
-        database.c.execute("SELECT id_number from student")
-        self.list_idnumber = database.c.fetchall()
+        self.list_idnumber = database.execute("SELECT id_number from student")
+       
 
     def reset(self):
         self.face_data = np.random.random(128).astype('float64')
@@ -83,13 +83,13 @@ class AdminRgFace(Face):
     def rgFace(self, img, rgbImage, raw_face):
         face_data = Face.encodeFace(rgbImage, raw_face)
         list_vector = []
-        database.c.execute("SELECT vector from admin")# 查询数据库中的数据:
+        results = database.execute("SELECT vector from admin")# 查询数据库中的数据:
         
         #使用列表生成进行序列化
-        list_vector = [pickle.loads(i['vector']) for i in database.c.fetchall()]
+        list_vector = [pickle.loads(i['vector']) for i in results]
 
-        database.c.execute("SELECT id_number from admin")
-        list_id_number = database.c.fetchall()
+        list_id_number = database.execute("SELECT id_number from admin")
+       
         if len(list_vector) == 0:
             return False
         distances = Face.compareFaces(np.array(list_vector), face_data, axis=1)

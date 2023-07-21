@@ -20,10 +20,10 @@ def checkUserPwd(user_pwd):
     return True
 def verifyePwd(user_id,user_pwd,tabel_name):
    
-    database.c.execute(
+    user = database.execute(
                 "select id_number,salt, password  from {0} where id_number = {1} "
                 .format(tabel_name,user_id))
-    user = database.c.fetchall()
+   
 
     if len(user) != 1:
         return False              
@@ -64,4 +64,13 @@ def getImgPath(parent=None):
     if checkPath(path,parent):
         return path    
     return False
-# QMessageBox.information(parent, 'Information', '警告 username or Password')
+# QMessageBox.information(parent, 'Information', '警告 username or Password')\
+# messageBox = QMessageBox(QMessageBox.Warning, "警告", "向电网输出功率太大，请减小输出功率！")          
+# messageBox.setWindowIcon(QtGui.QIcon(":/newPrefix/logo.ico"))
+# Qyes = messageBox.addButton(self.tr("设置"), QMessageBox.YesRole)
+# Qno = messageBox.addButton(self.tr("忽略"), QMessageBox.NoRole)
+# messageBox.exec_()
+# if messageBox.clickedButton() == Qyes:
+#     print('ok')   
+# else:
+#     return

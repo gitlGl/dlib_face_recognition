@@ -5,21 +5,20 @@ class  studentlog():
     def __init__(self, id_number,img):
       
         #用户信息
-        database.c.execute(
+        item =  database.execute(
                 f"SELECT  id_number,gender,count,user_name from student where id_number = {PH} ",
                 (id_number, ))# 取出返回所有数据，fetchall返回类型是[()]
-        item =  database.c.fetchall()
-       
+        
         
         self.item = item[0]
         self.insertTime()
         self.insertImg(img)
         self.insertCout()
-        database.conn.commit()
+        
            
     #记录识别成功时间
     def insertTime(self):
-        database.c.execute(
+        database.execute(
             f"INSERT INTO student_log_time (id_number,gender ) VALUES ({PH}, {PH})",
             (self.item["id_number"],self.item["gender"],))
 
@@ -44,14 +43,14 @@ class  studentlog():
     def insertCout(self):
         if self.item["count"] == None:
             count = 1
-            database.c.execute(
+            database.execute(
             "UPDATE student SET count = {0} WHERE id_number = {1}".format(count,self.item["id_number"]),)
             
             return
            
     
         count = self.item["count"] + 1
-        database.c.execute(
+        database.execute(
         "UPDATE student SET count = {0} WHERE id_number = {1}".format(count,self.item["id_number"]),)
        
         return
@@ -61,19 +60,18 @@ class  adminlog():
       
         
         #用户信息
-        database.c.execute(
+        item =   database.execute(
                 f"SELECT  id_number from admin where id_number = {PH} ",
                 (id_number, ))# 取出返回所有数据，fetchall返回类型是[()]
-        item =  database.c.fetchall()
+        
         self.item = item[0]
         self.inserImg(img)
         self.insertTime()
-        database.conn.commit()
         
 
     def insertTime(self):
         
-        database.c.execute(
+        database.execute(
             f"INSERT INTO admin_log_time (id_number) \
       VALUES ({PH})",
             (self.item["id_number"],))

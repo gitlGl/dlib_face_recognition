@@ -40,16 +40,16 @@ class Database():
 
         if type_database is 'sqlite3':
             sqlite3.enable_callback_tracebacks(True)
-            def log_query(query):
-                print(query)
-            self.conn = sqlite3.connect('resources/data.db',
+
+            
+            self.conn = sqlite3.connect('resources/data.db', isolation_level = None,
                                         detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
-            self.conn.set_trace_callback(log_query)
+            
             self.conn.row_factory = dictFactory
 
             self.c = self.conn.cursor()
            
-
+        
            
         elif type_database is 'mysql':
             host,port,user,password,dbName,charset = configRead("config.ini")
@@ -64,10 +64,10 @@ class Database():
                 cursorclass=pymysql.cursors.DictCursor
 
             )
-            self.conn.autocommit(False)
+            #self.conn.autocommit(False)
             self.c = self.conn.cursor()
 
-
+        
     def creatble(self):#528 李回复 2018035144217
         self.c.execute('''CREATE TABLE IF NOT EXISTS student
        ( 
@@ -144,7 +144,8 @@ class Database():
                 self.c.execute("CREATE INDEX idx_id_number ON admin_log_time (id_number(50));")
             
 
-        self.conn.commit()  
+        self.conn.commit()
+          
     def __del__(self):
         self.conn.close()
         

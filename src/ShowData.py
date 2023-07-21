@@ -158,17 +158,17 @@ class ShowData(QWidget):
         search_content = self.linnedit.text()
         result = None
         if search_content.isdigit():
-            database.c.execute(
+            result =  database.execute(
                 "select id_number,user_name,gender,password from student where id_number = {}".format(search_content))
-            result = database.c.fetchall()
+            
             if len(result) == 0:
                 QMessageBox.critical(self, '警告', '用户不存在')
                 self.linnedit.clear()
                 return
         else:
-            database.c.execute(
+            result = database.execute(
                 "select id_number,user_name,gender,password from student where user_name like '%{}%'".format(search_content))
-            result = database.c.fetchall()
+           
             if len(result) == 0:
                 QMessageBox.critical(self, '警告', '用户不存在')
                 self.linnedit.clear()
@@ -244,10 +244,8 @@ class ShowData(QWidget):
        
         sql = "SELECT log_time ,gender FROM student_log_time   where log_time between  '{0}'   and '{1}' ;"
 
-        database.c.execute(sql.format(self.DateEdit1.date().toPython().strftime(
+        reuslt = database.execute(sql.format(self.DateEdit1.date().toPython().strftime(
             "%Y-%m-%d"), (self.DateEdit1.date().addDays(1).toPython()).strftime("%Y-%m-%d")))
-        reuslt = database.c.fetchall()
-
         for time in timestr:
             total_data.append(
                 len([i for i in reuslt if i['log_time'].strftime("%Y-%m-%d-%H")[-3:] == time]))
@@ -281,10 +279,9 @@ class ShowData(QWidget):
         male_data = []
         sql = "SELECT log_time ,gender FROM student_log_time   where log_time between  '{0}'   and '{1}' ;"
 
-        result = database.c.execute(sql.format(self.time1.date().toPython().strftime(
+        result = database.execute(sql.format(self.time1.date().toPython().strftime(
             "%Y-%m-%d"), self.time2.date().addDays(1).toPython().strftime("%Y-%m-%d")))
-        result = database.c.fetchall()
-
+       
         result1 = [i for i in result if abs(
             (i["log_time"].date() - self.time1.date().toPython()).days) < step]
         count1 = len(result1)

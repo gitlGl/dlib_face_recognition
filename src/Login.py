@@ -162,9 +162,9 @@ class LoginUi(QWidget):
             clear()
             return
         
-        database.c.execute(f"INSERT INTO admin_log_time (id_number ) \
+        database.execute(f"INSERT INTO admin_log_time (id_number ) \
 VALUES ({PH})", (user_id, ))
-        database.conn.commit()
+        
         time = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")
         
         if self.remember_password.isChecked():
