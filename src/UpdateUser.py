@@ -107,13 +107,15 @@ class UpdateUserData(QDialog):
         self.vector_button.clicked.connect(self.getPath)
 
     def delete(self, id):
+        database.execute_transaction("begin")
         path = "img_information/student/{0}".format(str(id))
         try:
-            database.c.execute(
+            database.execute_transaction(
                 "delete from student where id_number = {0}".format(id))
-            database.c.execute(
+            database.execute_transaction(
                 "delete from student_log_time where id_number = {0}".format(
                     id))
+            database.conn.commit()
         except:
             database.conn.rollback()
             QMessageBox.critical(self, '警告', "未知错误")
@@ -122,7 +124,7 @@ class UpdateUserData(QDialog):
         #删除用户日志信息文件
         if os.path.exists(path):
             shutil.rmtree(path)
-        database.conn.commit()
+        
 
     def update(self, id):
         user_name = self.user_name_line.text()
@@ -148,10 +150,10 @@ class UpdateUserData(QDialog):
             return False
 
         
-        database.c.execute(
+        result =  database.execute(
                     "select id_number from student where id_number = {} ".
                     format(id_number))
-        if len( database.c.fetchall()) == 1 and id != id_number:
+        if len( result) == 1 and id != id_number:
             QMessageBox.critical(self, '警告', ' 这个学号已经存在')
             return False
         if (len(password) < user.password_min_length.value or len(
@@ -166,42 +168,44 @@ class UpdateUserData(QDialog):
         if r == QMessageBox.No:
             return False
 
-        try:
+        try: 
+            database.execute_transaction("begin")
             if self.vector_line.text() == '':  #图片可以为不变更
                 if (password != self.information["password"]):
                     salt = MyMd5.createSalt()
                     password = MyMd5.createMd5(password, salt, id_number)
-                    database.c.execute(f"UPDATE student SET id_number = '{id_number}',user_name = '{user_name}',gender = '{gender}',password = {PH},salt = {PH} WHERE id_number = {id}"\
+                    database.execute_transaction(f"UPDATE student SET id_number = '{id_number}',user_name = '{user_name}',gender = '{gender}',password = {PH},salt = {PH} WHERE id_number = {id}"\
                ,(password,salt))
                 else:
-                    database.c.execute("UPDATE student SET id_number = '{0}',user_name = '{1}',gender = '{2}' WHERE id_number = '{3}'"\
+                    database.execute_transaction("UPDATE student SET id_number = '{0}',user_name = '{1}',gender = '{2}' WHERE id_number = '{3}'"\
                 .format(id_number,user_name,gender,id))
-                database.c.execute(
+                database.execute_transaction(
                     "update student_log_time set id_number= {0} where id_number = {1}"
                     .format(id_number, id))
-                database.conn.commit()
+             
             else:
                 path = self.vector_line.text()
-                if not checkPath(path):
+                if not checkPath(path,self):
                     return
                 vector =  CreatUser().getVector(path)
                 if (password != self.information["password"]):
                     salt = MyMd5.createSalt()
                     password = MyMd5.createMd5(password, salt, id_number)
-                    database.c.execute(
+                    database.execute_transaction(
                         f"update student set id_number= {PH},user_name = {PH},gender = {PH} ,vector = {PH},password = {PH},salt = {PH} where id_number = {id}",
                         (id_number, user_name, gender, vector, password, salt))
                 else:
-                    database.c.execute(
+                    database.execute_transaction(
                         f"update student set id_number= {PH},user_name = {PH},gender = {PH} ,vector = {PH} where id_number = {id}"
                         , (id_number, user_name, gender, vector))
 
-                database.c.execute(
+                database.execute_transaction(
                     "update student_log_time set id_number= {0} where id_number = {1}"
                     .format(id_number, id))
-                database.conn.commit()
+            database.conn.commit()
 
-        except:
+        except Exception as e:
+            print(e)
             database.conn.rollback()
             QMessageBox.critical(self, '警告', "未知错误")
             return False
@@ -316,12 +320,14 @@ class UpdateAdminData(QDialog):
         self.vector_button.clicked.connect(self.getPath)
 
     def delete(self, id):
+        database.execute_transaction("begin")
         path = "img_information/admin/{0}".format(str(id))
         try:
-            database.c.execute(
+            database.execute_transaction(
                 "delete from admin where id_number = {0}".format(id))
-            database.c.execute(
+            database.execute_transaction(
                 "delete from admin_log_time where id_number = {0}".format(id))
+            database.conn.commit()
         except:
             QMessageBox.critical(self, '警告', "未知错误")
             database.conn.rollback()
@@ -330,7 +336,7 @@ class UpdateAdminData(QDialog):
         #删除用户日志信息文件
         if os.path.exists(path):
             shutil.rmtree(path)
-        database.conn.commit()
+        
 
     def update(self, id):
         password = self.password_line.text()
@@ -343,10 +349,10 @@ class UpdateAdminData(QDialog):
             return False
 
         
-        database.c.execute(
+        result = database.execute(
                     "select id_number from admin where id_number = {} ".format(
                         id_number))
-        if len( database.c.fetchall()) == 1 and id != id_number:
+        if len( result) == 1 and id != id_number:
             QMessageBox.critical(self, '警告', ' 这个用户已存在')
             return False
         if (len(password) < admin.password_min_length.value or len(
@@ -361,38 +367,40 @@ class UpdateAdminData(QDialog):
         if r == QMessageBox.No:
             return False
         try:
+            database.execute_transaction("begin")
             if self.vector_line.text() == '':  #图片可以为不变更
                 if (password != self.information["password"]):
                     salt = MyMd5.createSalt()
                     password = MyMd5.createMd5(password, salt, id_number)
-                    database.c.execute(
+                    database.execute_transaction(
                         f"update admin set id_number = {PH},password = {PH},salt = {PH} where id_number = {id}"
                         , (id_number, password, salt))
                 else:
-                    database.c.execute(
+                    database.execute_transaction(
                         "update admin set id_number = {0} where id_number = {1}"
                         .format(id_number, id))
-                database.c.execute(
+                database.execute_transaction(
                     "update admin_log_time set id_number= {0} where id_number = {1}"
                     .format(id_number, id))
-                database.conn.commit()
+                
             else:
                 path = self.vector_line.text()
-                if not checkPath(path):
+                if not checkPath(path,self):
                     return
                 vector = CreatUser().getVector(path)
                 if (password != self.information["password"]):
                     salt = MyMd5.createSalt()
                     password = MyMd5.createMd5(password, salt, id_number)
-                    database.c.execute(
+                    database.execute_transaction(
                         f"update admin set id_number= {PH},password = {PH},salt = {PH} ,vector = {PH} where id_number = {id}"
                         , (id_number, password, salt, vector))
                 else:
-                    database.c.execute(
+                    database.execute_transaction(
                         f"update admin set id_number= {PH} ,vector = {PH} where id_number = {id}"
                         , (id_number, vector))
                 database.conn.commit()
-        except:
+        except Exception as e:
+            print(e)
             QMessageBox.critical(self, '警告', "未知错误")
             database.conn.rollback()
             return False
@@ -501,10 +509,9 @@ class UpdatePwd(QDialog):
             QMessageBox.critical(self, '警告', '新旧密码不能一致')
             return
 
-        item = database.c.execute(
+        item = database.execute(
             "select salt from admin where id_number = {0}".format(
-                self.id_number))
-        item = database.c.fetchone()
+                self.id_number))[0]
         result = verifyePwd(self.id_number, old_pwd, "admin")
         if not result:
             QMessageBox.critical(self, '警告', '旧密码错误')
@@ -512,11 +519,9 @@ class UpdatePwd(QDialog):
         new_pass_word = MyMd5.createMd5(new_pwd, item["salt"],
                                           self.id_number)
        
-        database.c.execute(
+        database.execute(
             f"update admin set password = '{new_pass_word}' where id_number = {self.id_number}")
                
-        database.conn.commit()
-       
         QMessageBox.information(self, 'Success', '修改成功')
         self.close()
         return

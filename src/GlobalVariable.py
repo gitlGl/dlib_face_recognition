@@ -22,38 +22,52 @@ class admin(Enum):
     password_max_length = 20
     password_min_length = 6
     
-def log_slow_query(query, execution_time):
+def log_slow_query(sql, execution_time):
     with open('slow_queries.log', 'a') as f:
-        f.write(f'Slow query: {query}\nExecution time: {execution_time} seconds\n\n')
+        f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))}:{sql}\nExecution time: {execution_time} seconds\n\n")
 
 def log_slow_queries(threshold):
     def decorator(func):
-        def wrapper(self,query):
-            start_time = time.time()
-            result = func(self,query)
-            execution_time = time.time() - start_time
+        def wrapper(self,query,args :tuple = ()):
+            start_time = time.perf_counter()
+            result = func(self,query,args)
+            execution_time = self.end_time - start_time
             if execution_time > threshold:
-                log_slow_query(func.__name__, execution_time)
+                log_slow_query(self.sql, execution_time)
+                
             return result
         return wrapper
     return decorator
 
-@log_slow_queries(1.0) # Set threshold to 1 second
-def sqlite3_execute_query(self,query):
-    self.c.execute(query)
-    results = self.c.fetchall()
-    self.conn.commit()
-    return results
+def log_query(self,sql):
+    self.end_time = time.perf_counter()
+    self.sql = sql
+    print(sql)
+                        
+    
 
-def mysql_execute_query(self,query):
-    self.c.execute(query)
-    results = self.c.fetchall()
+@log_slow_queries(0.0001) # Set threshold to 0.01 second
+def sqlite3_execute_query(self,query:str,args :tuple = ()):
+    self.c.execute(query,args)
     self.conn.commit()
-    return results
+    return self.c.fetchall()
+   
+
+def execute_transaction(self,query:str,args :tuple = ()):
+    self.c.execute(query,args)
+    return self.c.fetchall()
+
+def mysql_execute_query(self,query,args :tuple = ()):
+    self.c.execute(query,args)
+    return self.c.fetchall()
+   
 database = Database()
 if type_database == "sqlite3" :
     execute_query = sqlite3_execute_query
     database.execute = types.MethodType(execute_query,database)
+    database.execute_transaction = types.MethodType(execute_transaction,database)
+    database.log_query = types.MethodType(log_query,database)
+    database.conn.set_trace_callback(database.log_query)
 elif type_database == "mysql" :
     execute_query = mysql_execute_query
     database.execute = types.MethodType(execute_query,database)

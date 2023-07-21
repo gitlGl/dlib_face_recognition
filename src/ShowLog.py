@@ -109,18 +109,18 @@ class ShowLog(QDialog):
     def delete(self,row):
         
         log_table = self.table_name + "_log_time"
-        database.c.execute("delete from {0} where id  = {1}".format(
+        database.execute("delete from {0} where id  = {1}".format(
             log_table,self.information[row]["id"]))
         if self.table_name == "student":
-            database.c.execute(
+            item =  database.execute(
             "SELECT count,id_number from {0} where id_number = '{1}'".format(
                 self.table_name,str(self.information[row]["id_number"])))
-            item = database.c.fetchall()[0] # 取出返回所有数据，fetchall返回类型是[()]
+            item = item[0] # 取出返回所有数据，fetchall返回类型是[()]
             if item["count"] is not None:
-                database.c.execute(
+                database.execute(
         "UPDATE {0} SET count = {1} WHERE id_number = {2}".format(
                 self.table_name,item["count"]-1,item["id_number"]))
-        database.conn.commit()
+       
                 
         imag_path = "img_information/{0}/{1}/log/{2}.jpg".format(
             self.table_name,str(self.information[row]["id_number"]),str(self.information[row]["log_time"]))
