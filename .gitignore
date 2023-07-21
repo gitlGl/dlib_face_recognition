@@ -15,9 +15,10 @@ runtime/
 *.dat
 *.ttc
 .python-vers
-*.db    
-*.log
-*.db_journal
+*.db  
+*.log  
+slow_queries.log
+*.db-journal
 
 
 

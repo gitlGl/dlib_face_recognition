@@ -64,7 +64,7 @@ class Database():
                 cursorclass=pymysql.cursors.DictCursor
 
             )
-            #self.conn.autocommit(False)
+            self.conn.autocommit(False)
             self.c = self.conn.cursor()
 
         
