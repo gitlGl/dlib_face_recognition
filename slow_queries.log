@@ -1,0 +1,12 @@
+2023-07-21 15:31:17:select id_number,salt, password  from admin where id_number = 12345678910 
+Execution time: 0.00014199999999986446 seconds
+
+2023-07-21 15:31:19:INSERT INTO admin_log_time (id_number ) VALUES ('12345678910')
+Execution time: 0.00016360000000048558 seconds
+
+2023-07-21 15:31:22:select id_number,user_name,gender,password from student   limit 30 offset 0
+Execution time: 0.00015289999999978932 seconds
+
+2023-07-21 15:31:43:select id_number from student where id_number = 135144236 
+Execution time: 0.0001162000000007879 seconds
+
