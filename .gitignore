@@ -13,7 +13,11 @@ runtime/
 *.ini
 .python-version
 *.dat
-*.db
-*.xlsx
-*.ini
-*ttc
+*.ttc
+.python-vers
+*.db    
+*.log
+*.db_journal
+
+
+
