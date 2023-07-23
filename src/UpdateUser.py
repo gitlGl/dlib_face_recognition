@@ -1,13 +1,12 @@
-from PySide6.QtWidgets import QDialog, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QMessageBox, QFileDialog
+from PySide6.QtWidgets import QDialog, QLabel, QLineEdit, QPushButton, \
+QVBoxLayout, QHBoxLayout, QMessageBox
 from .Database import PH
 from .GlobalVariable import database
 from PySide6.QtGui import QIcon
 from PySide6.QtCore import Qt
-from .Creatuser import CreatUser
 import os, shutil
-from .Check import getImgPath
 from .MyMd5 import MyMd5
-from .Check import verifyePwd,checkPath
+from .Check import verifyePwd
 from .GlobalVariable import user,admin
 
 class UpdateUserData(QDialog):
@@ -29,18 +28,11 @@ class UpdateUserData(QDialog):
         self.user_name_line = QLineEdit(self)
         self.gender_line = QLineEdit(self)
         self.password_line = QLineEdit(self)
-        self.vector_button = QPushButton("图片:", self, objectName="GreenButton")
-        self.vector_button.setFlat(True)
-
-        self.vector_button.setIcon(QIcon("resources/文件.svg"))
-
-        self.vector_line = QLineEdit(self)
-        #self.ensure_button = QPushButton('确定修改', self,objectName="GreenButton")
 
         self.user_h_layout = QHBoxLayout()
         self.pwd_h_layout = QHBoxLayout()
         self.pwd2_h_layout = QHBoxLayout()
-        self.vector_h_layout = QHBoxLayout()
+        
         self.password_h_layout = QHBoxLayout()
         self.buttonBox_layout = QHBoxLayout()
         self.all_v_layout = QVBoxLayout()
@@ -92,19 +84,18 @@ class UpdateUserData(QDialog):
         self.password_h_layout.addSpacing(20)
         self.password_h_layout.addWidget(self.password_label)
         self.password_h_layout.addWidget(self.password_line)
-        self.vector_h_layout.addWidget(self.vector_button)
-        self.vector_h_layout.addWidget(self.vector_line)
+        
 
         self.all_v_layout.addLayout(self.user_h_layout)
         self.all_v_layout.addLayout(self.pwd_h_layout)
         self.all_v_layout.addLayout(self.pwd2_h_layout)
         self.all_v_layout.addLayout(self.password_h_layout)
-        self.all_v_layout.addLayout(self.vector_h_layout)
+       
         self.buttonBox_layout.addWidget(self.buttonBox1)
         self.buttonBox_layout.addWidget(self.buttonBox2)
         self.all_v_layout.addLayout(self.buttonBox_layout)
         self.setLayout(self.all_v_layout)
-        self.vector_button.clicked.connect(self.getPath)
+       
 
     def delete(self, id):
         database.execute("begin")
@@ -160,13 +151,10 @@ class UpdateUserData(QDialog):
             password) > user.password_max_length.value):
             if (password != self.information["password"]):
                 QMessageBox.critical(self, '警告',
-                                      f' 密码为{user.password_min_length.value}-{user.password_max_length.value}位!')
+                                      f' 密码为{user.password_min_length.value}\
+                                      -{user.password_max_length.value}位!')
                 return False
-        path = self.vector_line.text()
-        if path != '':
-            if not checkPath(path,self):
-                        
-                        return
+       
         r = QMessageBox.warning(self, "注意", "确认修改？",
                                 QMessageBox.Yes | QMessageBox.No)
         if r == QMessageBox.No:
@@ -174,36 +162,18 @@ class UpdateUserData(QDialog):
 
         try: 
             database.execute("begin")
-            if self.vector_line.text() == '':  #图片可以为不变更
-                if (password != self.information["password"]):
-                    salt = MyMd5.createSalt()
-                    password = MyMd5.createMd5(password, salt, id_number)
-                    database.execute(f"UPDATE student SET id_number = '{id_number}',user_name = '{user_name}',gender = '{gender}',password = {PH},salt = {PH} WHERE id_number = {id}"\
-               ,(password,salt))
-                else:
-                    database.execute("UPDATE student SET id_number = '{0}',user_name = '{1}',gender = '{2}' WHERE id_number = '{3}'"\
-                .format(id_number,user_name,gender,id))
-                database.execute(
-                    "update student_log_time set id_number= {0} where id_number = {1}"
-                    .format(id_number, id))
-             
+    
+            if (password != self.information["password"]):
+                salt = MyMd5.createSalt()
+                password = MyMd5.createMd5(password, salt, id_number)
+                database.execute(f"UPDATE student SET id_number = '{id_number}',user_name = '{user_name}',gender = '{gender}',password = {PH},salt = {PH} WHERE id_number = {id}"\
+        ,(password,salt))
             else:
-               
-                vector =  CreatUser().getVector(path)
-                if (password != self.information["password"]):
-                    salt = MyMd5.createSalt()
-                    password = MyMd5.createMd5(password, salt, id_number)
-                    database.execute(
-                        f"update student set id_number= {PH},user_name = {PH},gender = {PH} ,vector = {PH},password = {PH},salt = {PH} where id_number = {id}",
-                        (id_number, user_name, gender, vector, password, salt))
-                else:
-                    database.execute(
-                        f"update student set id_number= {PH},user_name = {PH},gender = {PH} ,vector = {PH} where id_number = {id}"
-                        , (id_number, user_name, gender, vector))
-
-                database.execute(
-                    "update student_log_time set id_number= {0} where id_number = {1}"
-                    .format(id_number, id))
+                database.execute("UPDATE student SET id_number = '{0}',user_name = '{1}',gender = '{2}' WHERE id_number = '{3}'"\
+            .format(id_number,user_name,gender,id))
+            database.execute(
+                "update student_log_time set id_number= {0} where id_number = {1}"
+                .format(id_number, id))
             database.conn.commit()
 
         except Exception as e:
@@ -232,16 +202,9 @@ class UpdateUserData(QDialog):
             else:
                 QMessageBox.critical(self, '警告', "该用户图片文件可能丢失！")
             os.rename(old_path, new_path)
-        if self.vector_line.text() != '': 
-            CreatUser().insertImg(id_number, self.vector_line.text(), "student")
         return True
 
-        #获取图片路径
-    def getPath(self):
-        path = getImgPath(self)
-        if path:
-            self.vector_line.setText(path)
-            return
+  
 
 
 class UpdateAdminData(QDialog):
@@ -259,13 +222,7 @@ class UpdateAdminData(QDialog):
 
         self.id_number_line = QLineEdit(self)
         self.password_line = QLineEdit(self)
-        self.vector_button = QPushButton("图片:", self, objectName="GreenButton")
-        self.vector_button.setFlat(True)
-
-        self.vector_button.setIcon(QIcon("resources/文件.svg"))
-
-        self.vector_line = QLineEdit(self)
-        #self.ensure_button = QPushButton('确定修改', self,objectName="GreenButton")
+        
 
         self.user_h_layout = QHBoxLayout()
         self.pwd_h_layout = QHBoxLayout()
@@ -308,9 +265,6 @@ class UpdateAdminData(QDialog):
         self.pwd_h_layout.addWidget(self.password_label)
         self.pwd_h_layout.addWidget(self.password_line)
 
-        self.vector_h_layout.addWidget(self.vector_button)
-        self.vector_h_layout.addWidget(self.vector_line)
-
         self.all_v_layout.addLayout(self.user_h_layout)
         self.all_v_layout.addLayout(self.pwd_h_layout)
         self.all_v_layout.addLayout(self.pwd2_h_layout)
@@ -319,8 +273,7 @@ class UpdateAdminData(QDialog):
         self.buttonBox_layout.addWidget(self.buttonBox2)
         self.all_v_layout.addLayout(self.buttonBox_layout)
         self.setLayout(self.all_v_layout)
-        self.vector_button.clicked.connect(self.getPath)
-
+      
     def delete(self, id):
         database.execute("begin")
         path = "img_information/admin/{0}".format(str(id))
@@ -363,10 +316,7 @@ class UpdateAdminData(QDialog):
                 QMessageBox.critical(self, '警告',
                                      ' Passwords is too short or too long!')
                 return False
-        path = self.vector_line.text()
-        if path != '':
-            if not checkPath(path,self):
-                        return
+      
 
         r = QMessageBox.warning(self, "注意", "确认修改？",
                                 QMessageBox.Yes | QMessageBox.No)
@@ -374,33 +324,22 @@ class UpdateAdminData(QDialog):
             return False
         try:
             database.execute("begin")
-            if self.vector_line.text() == '':  #图片可以为不变更
-                if (password != self.information["password"]):
-                    salt = MyMd5.createSalt()
-                    password = MyMd5.createMd5(password, salt, id_number)
-                    database.execute(
-                        f"update admin set id_number = {PH},password = {PH},salt = {PH} where id_number = {id}"
-                        , (id_number, password, salt))
-                else:
-                    database.execute(
-                        "update admin set id_number = {0} where id_number = {1}"
-                        .format(id_number, id))
+        
+            if (password != self.information["password"]):
+                salt = MyMd5.createSalt()
+                password = MyMd5.createMd5(password, salt, id_number)
                 database.execute(
-                    "update admin_log_time set id_number= {0} where id_number = {1}"
-                    .format(id_number, id))
-                
+                    f"update admin set id_number = {PH},password = {PH},salt = {PH} where id_number = {id}"
+                    , (id_number, password, salt))
             else:
-                vector = CreatUser().getVector(path)
-                if (password != self.information["password"]):
-                    salt = MyMd5.createSalt()
-                    password = MyMd5.createMd5(password, salt, id_number)
-                    database.execute(
-                        f"update admin set id_number= {PH},password = {PH},salt = {PH} ,vector = {PH} where id_number = {id}"
-                        , (id_number, password, salt, vector))
-                else:
-                    database.execute(
-                        f"update admin set id_number= {PH} ,vector = {PH} where id_number = {id}"
-                        , (id_number, vector))
+                database.execute(
+                    "update admin set id_number = {0} where id_number = {1}"
+                    .format(id_number, id))
+            database.execute(
+                "update admin_log_time set id_number= {0} where id_number = {1}"
+                .format(id_number, id))
+            
+            
             database.conn.commit()
         except Exception as e:
             print(e)
@@ -430,17 +369,7 @@ class UpdateAdminData(QDialog):
             else:
                 QMessageBox.critical(self, '警告', "该用户图片文件可能丢失！")
             os.rename(old_path, new_path)
-        if self.vector_line.text()!='':
-            CreatUser().insertImg(id_number, self.vector_line.text(), "admin")
         return True
-
-        #获取图片路径
-    def getPath(self):
-        path = getImgPath(self)
-        if path:
-            self.vector_line.setText(path)
-            return
-
 
 class UpdatePwd(QDialog):
     def __init__(self, id_number):

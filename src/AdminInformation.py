@@ -93,7 +93,7 @@ class AdminInformation(QWidget):
               creatuser = CreatUser()
               vector = creatuser.getVector(path)
               creatuser.insertImg(self.id_number,path,"admin")
-              database.execute(f"update admin set vector = {PH} where id_number = {0}".format(self.id_number),(vector,))
+              database.execute("update admin set vector = {0} where id_number = {1}".format(PH,self.id_number),(vector,))
               QMessageBox.information(self, 'Success', '修改成功')
    
     def root(self):

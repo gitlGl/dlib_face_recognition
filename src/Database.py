@@ -1,5 +1,4 @@
 #import sqlite3
-import sys
 import configparser
 ##########兼容sqlite3和mysql
 type_database = 'sqlite3'

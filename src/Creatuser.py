@@ -6,7 +6,7 @@ from .GlobalVariable import database
 import cv2, pickle
 from PySide6.QtCore import Signal,QObject
 from PySide6.QtWidgets import QApplication
-from .GlobalVariable import user ,admin 
+from .GlobalVariable import user 
 
 
 class CreatUser(QObject):

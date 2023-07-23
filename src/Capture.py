@@ -1,8 +1,6 @@
 import cv2
 from PySide6.QtCore import QThread,Signal,QObject
 import numpy as np
-from PySide6.QtGui import QImage
-from .GlobalVariable import models
 #from PIL import Image, ImageDraw, ImageFont
 from .conver import convertToQtFormat
 class Work(QObject):

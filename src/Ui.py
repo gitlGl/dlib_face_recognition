@@ -26,6 +26,7 @@ class Ui(QWidget):
         self.user_btn = QPushButton(objectName="GreenButton")
 
         self.open_capture_btn.setText("打开摄像头")
+        self.open_capture_btn.setObjectName("GreenButton")
         self.open_capture_btn.setIcon(QIcon("resources/摄像头_关闭.svg"))
         self.normal_rgface_btn.setText("普通识别")
         self.Liveness_rgface_btn.setText("活体识别")

@@ -7,7 +7,6 @@ import cv2,copy
 from .GlobalVariable import models
 from PySide6.QtWidgets import QGroupBox
 from .LivenessDetection import LivenessDetection
-import time
 class FaceLoginPage(QWidget):
     emit_show_parent = Signal(str)
 

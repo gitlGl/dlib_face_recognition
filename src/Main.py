@@ -12,7 +12,6 @@ from .ShowData import ShowData
 from .Login import LoginUi
 from  .Ui import Ui
 from .GlobalVariable import database
-import datetime
 from .Database import PH
 class Main(Ui):
     def __init__(self):

@@ -128,19 +128,13 @@ QPushButton#xxx
     background-color: #c8e6c9;
 }
 
-#GreenButton2 {
-    /*background-color: #4caf50;*/
-    height:15px; 
-    width: 30px;
-    border-radius: 5px; /*圆角*/
-}
+
 #GreenButton2:hover {
     background-color: #81c784;
 }
 #GreenButton2:pressed {
     background-color: #c8e6c9;
 }
-
 
 
 /**********输入框**********/
