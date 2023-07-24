@@ -4,27 +4,57 @@ from .MyMd5 import MyMd5
 import os
 from PySide6.QtWidgets import QFileDialog,QMessageBox
 from .GlobalVariable import models
-from .Creatuser import CreatUser
-from .GlobalVariable import user
-def checkUserId(user_id):
+#from .Creatuser import CreatUser
+from enum import Enum
+import cv2
+import numpy as np
+class user(Enum):
+    id_length = 13
+    password_max_length = 20
+    password_min_length = 6
+    name_length = 20
 
-    if not user_id.isdigit() or len(user_id) > 20:
-        return False
-    return True
-
-
-def checkUserPwd(user_pwd):
-    if len(user_pwd) < user.password_min_length.value or len(
-        user_pwd) > user.password_max_length.value:
+ #检查用户输入的数据是否合法
+       
+class verifyCellData():
+    def idNumber(parent,id_number,row_info):
+        if len(id_number) > 20 or (not id_number.isdigit()):
             return False
-    return True
+        result =  database.execute(
+                    "select id_number from student where id_number = {} ".
+                    format(id_number))
+        if len( result) == 1 and id_number != row_info['id_number']:
+            return False
+        return True
+    def userName(parent,user_name,row_info):
+        lenth = len(user_name)
+        if lenth > user.name_length.value or lenth == 0:
+            
+            return False
+        return True
+    def gneder(parent,gender,row_info):
+        if gender == "男" or gender == "女":
+            pass
+        else:
+            return False
+        return True
+   
+    def password(parent,password,row_info):
+        if (len(password) < user.password_min_length.value or len(
+            password) > user.password_max_length.value):
+            if (password != row_info['password']):
+                return False
+        return True
+          
+
+
+
+
 def verifyePwd(user_id,user_pwd,tabel_name):
    
     user = database.execute(
                 "select id_number,salt, password  from {0} where id_number = {1} "
                 .format(tabel_name,user_id))
-   
-
     if len(user) != 1:
         return False              
 
@@ -50,7 +80,7 @@ def checkPath(path,parent=None):
         return False
 
   
-    rgbImage = CreatUser().getImg(path)
+    rgbImage = getImg(path)
     
     faces = models.detector(rgbImage)
     if len(faces) != 1:
@@ -64,6 +94,14 @@ def getImgPath(parent=None):
     if checkPath(path,parent):
         return path    
     return False
+def getImg( img_path):
+        raw_data = np.fromfile(
+            img_path, dtype=np.uint8)  #先用numpy把图片文件存入内存：raw_data，把图片数据看做是纯字节数据
+        rgbImage = cv2.imdecode(raw_data, cv2.IMREAD_COLOR)  #从内存数据读入图片
+
+        #rgbImage = cv2.cvtColor(rgbImage, cv2.COLOR_BGR2RGB)
+        return rgbImage
+
 # QMessageBox.information(parent, 'Information', '警告 username or Password')\
 # messageBox = QMessageBox(QMessageBox.Warning, "警告", "向电网输出功率太大，请减小输出功率！")          
 # messageBox.setWindowIcon(QtGui.QIcon(":/newPrefix/logo.ico"))

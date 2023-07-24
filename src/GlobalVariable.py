@@ -11,16 +11,8 @@ class models():
     encoder = dlib.face_recognition_model_v1(
                 "resources/dlib_face_recognition_resnet_model_v1.dat")
     
-class user(Enum):
-    id_length = 10
-    password_max_length = 20
-    password_min_length = 6
-    name_length = 20
 
-class admin(Enum):
-    id_length = 13
-    password_max_length = 20
-    password_min_length = 6
+
     
 def log_slow_query(sql, execution_time):
     with open('slow_queries.log', 'a') as f:

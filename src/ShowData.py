@@ -1,6 +1,6 @@
 from .Creatuser import CreatUser
 from .GlobalVariable import database
-from .ShowUser import ShowStudentUser
+from .ShowUser import ShowUser
 from PySide6.QtCore import QDate, Qt
 import copy
 import os
@@ -173,8 +173,7 @@ class ShowData(QWidget):
                 self.linnedit.clear()
                 return
 
-        result = ShowStudentUser(['学号', '姓名', '性别', '密码', "图片"],
-                                 "student", ["id_number", "user_name", "gender", "password"], result)
+        result = ShowUser("student", result)
         item = self.Vhlayout.itemAt(1)
         item.widget().deleteLater()
         self.Vhlayout.removeItem(item)
@@ -185,8 +184,7 @@ class ShowData(QWidget):
     # 浏览所有用户
     def browse(self):
 
-        result = ShowStudentUser(['学号', '姓名', '性别', '密码', "图片"],
-                                 "student", ["id_number", "user_name", "gender", "password"])
+        result = ShowUser("student")
         item = self.Vhlayout.itemAt(1)
         item.widget().deleteLater()
         self.Vhlayout.removeItem(item)

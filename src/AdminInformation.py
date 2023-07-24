@@ -9,7 +9,7 @@ from PySide6.QtWidgets import QHBoxLayout, QLabel, QVBoxLayout, QGroupBox,QPushB
 QMessageBox, QMenu,QWidget
 from .Check import getImgPath
 from .UpdateUser import UpdatePwd
-from .ShowUser import ShowAdminUser
+from .ShowUser import ShowUser
 from .Database import PH
 class AdminInformation(QWidget):
     def __init__(self,id_number):
@@ -98,7 +98,7 @@ class AdminInformation(QWidget):
    
     def root(self):
         result = database.execute("select id_number,password from admin ")
-        show_admin_User = ShowAdminUser([ '用户ID', '密码',"图片" ],'admin',["id_number",'password'],result)
+        show_admin_User = ShowUser('admin',result)
         item = self.Vhlayout.itemAt(1)
         item.widget().deleteLater()
         self.Vhlayout.removeItem(item)

@@ -3,11 +3,12 @@ from PySide6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, \
     QVBoxLayout, QHBoxLayout, QMessageBox,QCheckBox
 from PySide6.QtCore import Signal
 from .GlobalVariable import database
+from .Check import user
 from PySide6.QtCore import Slot
 from PySide6.QtGui import QIcon
 import datetime,uuid
 from .FaceLoginPage import FaceLoginPage
-from .Check import checkUserId, checkUserPwd,verifyePwd
+from .Check import verifyePwd
 from .SigninPage import SigninPage
 import configparser,base64
 from Crypto.Cipher import AES
@@ -149,10 +150,11 @@ class LoginUi(QWidget):
         user_id = self.user_line.text()
         user_pwd = self.pwd_line.text()
 
-        if not checkUserId(user_id):
+        if not user_id.isdigit() or len(user_id) > user.id_length.value:
            QMessageBox.critical(self, '警告', '用户名只能为数字，且不能超过20个数字')
            return
-        if not checkUserPwd(user_pwd):
+        if len(user_pwd) < user.password_min_length.value or len(
+        user_pwd) > user.password_max_length.value:
             QMessageBox.critical(self,'警告', '密码长度大于6位小于13位')
             return
     

@@ -121,6 +121,7 @@ class Page(Paging):
         if self.id_number:#显示用户log数据
             self.sql =  "select {0} from {1} where id_number ={2}   limit {3} offset {4}"
             sql = self.sql.format(self.string,self.table,self.id_number,self.page_count,0)
+            print('测试：',sql)
             self.information = database.execute(sql)
             return
         #显示用户

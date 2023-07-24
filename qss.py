@@ -20,7 +20,7 @@ QTableWidget
 }
 QTableWidget::item
 {
-    color:rgb(111, 156, 207);
+   /* color:rgb(111, 156, 207);*/
     background: rgb(224, 238, 255);
     text-align:center;
 }

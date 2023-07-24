@@ -5,11 +5,9 @@ from .GlobalVariable import database
 from .MyMd5 import MyMd5
 from PySide6.QtGui import QIcon
 from .Creatuser import CreatUser
-from .GlobalVariable import admin
 from .Check import getImgPath, checkPath
-import uuid
 from .Database import PH
-
+from .Check import user
 class SigninPage(QWidget):
     def __init__(self):
         super(SigninPage, self).__init__()
@@ -106,21 +104,21 @@ class SigninPage(QWidget):
             
 
         #检查输入信息格式
-        if not user_name.isnumeric() or len(user_name) > admin.id_length.value:
-            QMessageBox.critical(self, '警告', f'用户名只能是数字且少于{admin.id_length.value}位!')
+        if not user_name.isnumeric() or len(user_name) > user.id_length.value:
+            QMessageBox.critical(self, '警告', f'用户名只能是数字且少于{user.id_length.value}位!')
             return
 
         if password != password2:
             QMessageBox.critical(self, '警告', '两个密码不同!')
             return
 
-        if not admin.password_min_length.value <= len(password) <= admin.password_max_length.value:
-            QMessageBox.critical(self, '警告', f'密码长度必须在{admin.password_min_length.value}到{admin.password_max_length.value}之间!')
+        if not user.password_min_length.value <= len(password) <= user.password_max_length.value:
+            QMessageBox.critical(self, '警告', f'密码长度必须在{user.password_min_length.value}到{user.password_max_length.value}之间!')
             return
-        user = database.execute(
+        user_ = database.execute(
             "select id_number from admin where id_number = {} ".format(
                 user_name))
-        if len(user) == 1:
+        if len(user_) == 1:
             QMessageBox.critical(self, '警告',
                                     '该用户已被注册!')
 

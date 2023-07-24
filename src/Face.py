@@ -163,7 +163,7 @@ class AdminRgFace(Face):
 #         else:
 #             admin = Database()
 #             list_vector = []
-#             for i in admin.c.execute("SELECT vector from admin"):
+#             for i in user.c.execute("SELECT vector from admin"):
 #                 i = np.loads(i[0])
 #                 list_vector.append(i)
 #             if len(list_vector) == 0:
@@ -176,7 +176,7 @@ class AdminRgFace(Face):
 #                 self.face_data = face_data
 #                 tembyte = np.ndarray.dumps(list_vector[min_distance])
 #                 adminlog(tembyte,img,admin)
-#                 admin.conn.close()
+#                 user.conn.close()
 #                 return "验证成功"
 #             else:
 #                 return  "验证失败"
