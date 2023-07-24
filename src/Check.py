@@ -6,7 +6,7 @@ from PySide6.QtWidgets import QFileDialog,QMessageBox
 from .GlobalVariable import models
 #from .Creatuser import CreatUser
 from enum import Enum
-import cv2
+import cv2,re
 import numpy as np
 class user(Enum):
     id_length = 13
@@ -44,6 +44,9 @@ class verifyCellData():
             password) > user.password_max_length.value):
             if (password != row_info['password']):
                 return False
+        pattern = r'^[a-zA-Z0-9@#$%^&+=]+$'
+        if not re.match(pattern, password):
+            return False
         return True
           
 

@@ -8,6 +8,7 @@ import os, shutil
 from .MyMd5 import MyMd5
 from .Check import verifyePwd
 from .Check import user
+import re
 
 class UpdatePwd(QDialog):
     def __init__(self, id_number):
@@ -74,7 +75,11 @@ class UpdatePwd(QDialog):
             QMessageBox.critical(self, '警告', 
                                  f'密码长度不能小于{user.password_min_length.value}位或大于{user.password_max_length.value}位')
             return
-
+        pattern = r'^[a-zA-Z0-9@#$%^&+=]+$'
+        if not re.match(pattern, new_pwd):
+            QMessageBox.critical(self, '警告', '密码为6-13位数字，字母，特殊符号字符')
+            return
+            
         if old_pwd == new_pwd:
             QMessageBox.critical(self, '警告', '新旧密码不能一致')
             return

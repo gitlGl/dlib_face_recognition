@@ -17,12 +17,12 @@ class ShowUser(QWidget):
         super().__init__()
         self.table_name = table_name
         self.information = information
-        self.column = ['','pwd','','pwd']
         if self.table_name == "admin":
             self.verifyCellData:list = [verifyCellData.idNumber,verifyCellData.password]
             self.table_cloumn_name = ["id_number",'password']
             self.log_column_name = ['id','id_number','log_time']
             self.QTableWidget_column_name = [ '用户ID', '密码',"图片" ]
+            self.column = 1
         else:
             self.verifyCellData:list = [ verifyCellData.idNumber,verifyCellData.userName,
                                         verifyCellData.gneder,
@@ -30,6 +30,7 @@ class ShowUser(QWidget):
             self.table_cloumn_name = ["id_number", "user_name", "gender", "password"]
             self.log_column_name = ['id','id_number','log_time']
             self.QTableWidget_column_name = [ '学号', '姓名', '性别', '密码',"图片" ]
+            self.column = 3
         
         
         self.tableWidget = QTableWidget(self)
@@ -120,7 +121,7 @@ class ShowUser(QWidget):
             self.tableWidget.item(row, column).setForeground(Qt.red)
             self.tableWidget.cellChanged.connect(self.on_cell_changed)#单元格变更槽函数
             return
-        if self.column[column] == 'pwd':
+        if self.column == column:
             salt = MyMd5.createSalt()
             password = MyMd5.createMd5(text, salt,id_number)
             database.execute("update {0} set {1} = '{2}',salt = '{3}' where id_number = {4}"

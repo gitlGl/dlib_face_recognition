@@ -1,7 +1,7 @@
 from .MyMd5 import MyMd5
 import numpy as np
 from .GlobalVariable import models
-import xlrd, os
+import xlrd, os,re
 from .GlobalVariable import database
 import cv2, pickle
 from PySide6.QtCore import Signal,QObject
@@ -94,8 +94,13 @@ class CreatUser(QObject):
 
                 lenth = len(str(list1[3]))
                 if lenth > user.password_max_length.value or lenth < user.password_min_length.value:
-                    list_problem.append("第{0}行第4列,密码为6-13位字符: ".format(i) +
-                                        str(list1[3]))
+                    list_problem.append("第{0}行第4列,密码为6-13位数字，字母，特殊符号字符: ".format(i) +
+                                                    str(list1[3]))
+                    continue
+                pattern = r'^[a-zA-Z0-9@#$%^&+=]+$'
+                if not re.match(pattern, str(list1[3])):
+                    list_problem.append("第{0}行第4列,密码为6-13位数字，字母，特殊符号字符: ".format(i) +
+                                                    str(list1[3]))
                     continue
 
                 list1[3] = str(list1[3])
