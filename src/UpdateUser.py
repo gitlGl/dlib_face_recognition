@@ -9,6 +9,8 @@ from .MyMd5 import MyMd5
 from .Check import verifyePwd
 from .Check import user
 import re
+from PySide6.QtGui import QRegularExpressionValidator
+from PySide6.QtCore import QRegularExpression
 
 class UpdatePwd(QDialog):
     def __init__(self, id_number):
@@ -23,8 +25,21 @@ class UpdatePwd(QDialog):
         self.new_pwd3_label = QLabel('确认密码:', self)
         #self.new_pwd3_label.setStyleSheet("font-size:9pt;font-weight:35;")
         self.old_pwd_line = QLineEdit(self)
+        validator = QRegularExpressionValidator(QRegularExpression(user.reg_pwd.value))
+        self.old_pwd_line.setValidator(validator)
+        self.old_pwd_line.setMaxLength(20)
+        self.old_pwd_line.setPlaceholderText("密码不大于{0}位".format(user.password_max_length.value))
+
+       
         self.new_pwd2_line = QLineEdit(self)
+        validator = QRegularExpressionValidator(QRegularExpression(user.reg_pwd.value))
+        self.new_pwd2_line.setValidator(validator)
+        self.new_pwd2_line.setMaxLength(20)
+
         self.new_pwd3_line = QLineEdit(self)
+        validator = QRegularExpressionValidator(QRegularExpression(user.reg_pwd.value))
+        self.new_pwd3_line.setValidator(validator)
+        self.new_pwd3_line.setMaxLength(20)
 
         self.pwd_h_layout = QHBoxLayout()
         self.pwd2_h_layout = QHBoxLayout()
@@ -77,7 +92,7 @@ class UpdatePwd(QDialog):
             return
         pattern = r'^[a-zA-Z0-9@#$%^&+=]+$'
         if not re.match(pattern, new_pwd):
-            QMessageBox.critical(self, '警告', '密码为6-13位数字，字母，特殊符号字符')
+            QMessageBox.critical(self, '警告', f'密码为字母数字、特殊字符!且不大于{user.password_max_length.value}位')
             return
             
         if old_pwd == new_pwd:

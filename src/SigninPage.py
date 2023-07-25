@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, \
     QVBoxLayout, QHBoxLayout, QMessageBox
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt,QRegularExpression
 from .GlobalVariable import database
 from .MyMd5 import MyMd5
 from PySide6.QtGui import QIcon
@@ -8,6 +8,8 @@ from .Creatuser import CreatUser
 from .Check import getImgPath, checkPath
 from .Database import PH
 from .Check import user
+
+from PySide6.QtGui import QRegularExpressionValidator
 class SigninPage(QWidget):
     def __init__(self):
         super(SigninPage, self).__init__()
@@ -20,8 +22,25 @@ class SigninPage(QWidget):
         self.signin_pwd2_label = QLabel('确认密码:', self)
 
         self.signin_user_line = QLineEdit(self)
+        validator = QRegularExpressionValidator(QRegularExpression("[0-9]*"))
+        self.signin_user_line.setValidator(validator)
+        self.signin_user_line.setMaxLength(user.id_length.value)
+        self.signin_user_line.setPlaceholderText("请输入数字,不大于{0}位".format(user.id_length.value))
+
+        
         self.signin_pwd_line = QLineEdit(self)
+        validator = QRegularExpressionValidator(QRegularExpression(user.reg_pwd.value))
+        self.signin_pwd_line.setValidator(validator)
+        self.signin_pwd_line.setMaxLength(20)
+        self.signin_pwd_line.setPlaceholderText("请输入密码,不大于{0}位".format(user.password_max_length.value))
+
         self.signin_pwd2_line = QLineEdit(self)
+        validator = QRegularExpressionValidator(QRegularExpression(user.reg_pwd.value))
+        self.signin_pwd2_line.setValidator(validator)
+        self.signin_pwd2_line.setMaxLength(20)
+
+
+
         self.signin_vector_button = QPushButton("图片:",self,objectName="GreenButton")
         self.signin_vector_button.setFlat(True)
 

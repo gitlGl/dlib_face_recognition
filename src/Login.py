@@ -1,7 +1,7 @@
 
 from PySide6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, \
-    QVBoxLayout, QHBoxLayout, QMessageBox,QCheckBox
-from PySide6.QtCore import Signal
+    QVBoxLayout, QHBoxLayout, QMessageBox,QCheckBox,QLineEdit
+from PySide6.QtCore import Signal,QRegularExpression
 from .GlobalVariable import database
 from .Check import user
 from PySide6.QtCore import Slot
@@ -16,6 +16,7 @@ from Crypto.Util.Padding import pad, unpad
 import os
 import configparser
 from .Database import PH
+from PySide6.QtGui import  QRegularExpressionValidator
 #from PySide6 import QString
 class LoginUi(QWidget):
     emitsingal = Signal(str)
@@ -29,7 +30,17 @@ class LoginUi(QWidget):
         self.user_label = QLabel('Username:', self)
         self.pwd_label = QLabel('Password:', self)
         self.user_line = QLineEdit(self)
+        validator =QRegularExpressionValidator(QRegularExpression("[0-9]*"))
+        self.user_line.setValidator(validator)
+        self.user_line.setMaxLength(20)
+        self.user_line.setPlaceholderText("请输入数字,不大于{0}位".format(user.id_length.value))
+
         self.pwd_line = QLineEdit(self)
+        validator = QRegularExpressionValidator(QRegularExpression(user.reg_pwd.value))
+        self.pwd_line.setValidator(validator)
+        self.pwd_line.setMaxLength(20)
+        self.pwd_line.setPlaceholderText("请输入密码,不大于{0}位".format(user.password_max_length.value))
+
         self.login_button = QPushButton('登录', self,objectName="GreenButton")
         self.signin_button = QPushButton('注册', self,objectName="GreenButton")
         self.remember_password = QCheckBox("记住密码")
@@ -109,8 +120,6 @@ class LoginUi(QWidget):
         self.setLayout(self.v_layout)
 
     def lineeditInit(self):
-        self.user_line.setPlaceholderText('请输入用户名')
-        self.pwd_line.setPlaceholderText('请输入用户密码')
         self.pwd_line.setEchoMode(QLineEdit.Password)
 
         self.user_line.textChanged.connect(self.checkInputFunc)
@@ -151,16 +160,17 @@ class LoginUi(QWidget):
         user_pwd = self.pwd_line.text()
 
         if not user_id.isdigit() or len(user_id) > user.id_length.value:
-           QMessageBox.critical(self, '警告', '用户名只能为数字，且不能超过20个数字')
+           QMessageBox.critical(self, '警告', f'学号为{user.id_length.value}个有效字符')
            return
         if len(user_pwd) < user.password_min_length.value or len(
         user_pwd) > user.password_max_length.value:
-            QMessageBox.critical(self,'警告', '密码长度大于6位小于13位')
+            QMessageBox.critical(self,'警告', f'密码为{user.password_min_length.value}-{user.password_max_length.value}位,字母数字、特殊字符!')
             return
     
         result = verifyePwd(user_id,user_pwd,"admin")
         if not result:
             QMessageBox.warning(self, '警告', '账号或密码错误，请重新输入')
+            
             clear()
             return
         
@@ -232,10 +242,10 @@ class  configRemberPwd(config):
                 return False
             return True
 
-    def check(self,user_id) -> bool:
+    def check(self,user_id,pwd=None) -> bool:
         if not self.checkFlag():
             return False
-        if self.result['id_number'] != user_id:
+        if self.result['id_number'] != user_id or self.result['password'] != pwd:
             return False
         if self.checkTime():
             return True

@@ -8,17 +8,19 @@ from .GlobalVariable import models
 from enum import Enum
 import cv2,re
 import numpy as np
+from PySide6.QtCore import QRegularExpression
 class user(Enum):
     id_length = 13
     password_max_length = 20
     password_min_length = 6
     name_length = 20
+    reg_pwd = "[A-Za-z0-9!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]*"
 
  #检查用户输入的数据是否合法
        
 class verifyCellData():
     def idNumber(parent,id_number,row_info):
-        if len(id_number) > 20 or (not id_number.isdigit()):
+        if len(id_number) > user.id_length.value or (not id_number.isdigit()):
             return False
         result =  database.execute(
                     "select id_number from student where id_number = {} ".
