@@ -1,6 +1,7 @@
-from PySide6.QtGui import QIcon
+from PySide6.QtGui import QIcon, QPixmap
 from PySide6.QtCore import Qt,QPoint,Slot,QSize
-from  PySide6.QtWidgets import QTableWidget,QTableWidgetItem,QVBoxLayout,QMenu,QHeaderView,QMessageBox, QDialog,QCheckBox
+from  PySide6.QtWidgets import QTableWidget,QTableWidgetItem,QVBoxLayout,QMenu,\
+QHeaderView,QMessageBox, QDialog,QCheckBox,QLabel
 from PySide6 import QtWidgets
 from .ImageView import ShowImage
 from .GlobalVariable import database
@@ -59,10 +60,12 @@ class ShowLog(QDialog):
                 
             
             imag_path = "img_information/{0}/{1}/log/{2}.jpg".format(self.table_name,i["id_number"],i["log_time"])
-            img_item =  QTableWidgetItem()
-            img_item.setIcon(QIcon(imag_path))
-            self.tableWidget.setItem(row, row2+1,img_item)
-            self.tableWidget.setIconSize(QSize(60, 100))
+            img_item =  QLabel()
+            img_item.setPixmap(QPixmap(imag_path))
+            img_item.setScaledContents(True)
+            self.tableWidget.setCellWidget(row, row2+1,img_item)
+           
+            
             
       
            
