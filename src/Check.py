@@ -48,7 +48,41 @@ class verifyCellData():
         if not re.match(pattern, password):
             return False
         return True
-          
+    user_name_info = lambda parent:QMessageBox.critical(parent, '警告', f'用户名为{user.name_length.value}个有效字符')
+    gender_info = lambda parent: QMessageBox.critical(parent, '警告', '性别为男或女')
+    id_number_info = lambda parent: QMessageBox.critical(parent, '警告', f'学号为{user.id_length.value}个有效字符,或已存在')
+    password_info = lambda parent: QMessageBox.critical(parent, '警告', f'密码为{user.password_min_length.value}-{user.password_max_length.value}位,字母数字、特殊字符!')
+
+#  #检查输入信息
+#         lenth = len(user_name)
+#         if lenth > user.name_length.value or lenth == 0:
+
+#              QMessageBox.critical(self, '警告', f'用户名为{user.name_length.value}个有效字符')
+#              return False
+       
+#         if gender == "男" or gender == "女":
+#             pass
+#         else:
+#             QMessageBox.critical(self, '警告', 'gender is only 男 or 女')
+#             return False
+
+#         if len(id_number) > 20 or (not id_number.isdigit()):
+#             QMessageBox.critical(self, '警告',
+#                                  'id_number is only digit or is too long!')
+#             return False
+
+        
+#         result =  database.execute(
+#                     "select id_number from student where id_number = {} ".
+#                     format(id_number))
+#         if len( result) == 1 and id != id_number:
+#             QMessageBox.critical(self, '警告', ' 这个学号已经存在')
+#             return False
+#         if (len(password) < user.password_min_length.value or len(
+#             password) > user.password_max_length.value):
+#             if (password != self.information["password"]):
+#                 QMessageBox.critical(self, '警告',
+#                                       f' 密码为{user.password_min_length.value}-{user.password_max_length.value}位!')      
 
 
 

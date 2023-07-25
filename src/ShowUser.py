@@ -18,15 +18,18 @@ class ShowUser(QWidget):
         self.table_name = table_name
         self.information = information
         if self.table_name == "admin":
-            self.verifyCellData:list = [verifyCellData.idNumber,verifyCellData.password]
+            self.verifyCellDataFn:list = [verifyCellData.idNumber,verifyCellData.password]
+            self.verifyCellDataLambda:list = [verifyCellData.id_number_info,verifyCellData.password_info]
             self.table_cloumn_name = ["id_number",'password']
             self.log_column_name = ['id','id_number','log_time']
             self.QTableWidget_column_name = [ '用户ID', '密码',"图片" ]
             self.column = 1
         else:
-            self.verifyCellData:list = [ verifyCellData.idNumber,verifyCellData.userName,
+            self.verifyCellDataFn:list = [ verifyCellData.idNumber,verifyCellData.userName,
                                         verifyCellData.gneder,
                                        verifyCellData.password]
+            self.verifyCellDataLambda:list = [verifyCellData.id_number_info,verifyCellData.user_name_info,
+                                              verifyCellData.gender_info,verifyCellData.password_info]
             self.table_cloumn_name = ["id_number", "user_name", "gender", "password"]
             self.log_column_name = ['id','id_number','log_time']
             self.QTableWidget_column_name = [ '学号', '姓名', '性别', '密码',"图片" ]
@@ -66,6 +69,10 @@ class ShowUser(QWidget):
         self.setInformation()
         
     def setInformation(self):
+        try:
+            self.tableWidget.cellChanged.disconnect(self.on_cell_changed)#单元格变更槽函数
+        except:
+            pass
         if  not self.isNUll:
             self.information = self.page.information
         information = self.information
@@ -101,7 +108,7 @@ class ShowUser(QWidget):
         sender = QObject.sender(self).parent()#获取信号发送者的对象
         path = getImgPath(self)
         id_number = sender.id_number
-        print(path)
+        
         if path:
             creatuser = CreatUser()
             vector = creatuser.getVector(path)
@@ -114,11 +121,12 @@ class ShowUser(QWidget):
     def on_cell_changed(self,row, column):
         id_number = self.information[row]["id_number"]
         text = self.tableWidget.item(row, column).text()
-        if not self.verifyCellData[column](
+        if not self.verifyCellDataFn[column](
             self,text,self.information[row]):
             self.tableWidget.cellChanged.disconnect(self.on_cell_changed)#单元格变更槽函数
             self.tableWidget.item(row, column).setText("格式错误-"+text)
             self.tableWidget.item(row, column).setForeground(Qt.red)
+            self.verifyCellDataLambda[column](self)
             self.tableWidget.cellChanged.connect(self.on_cell_changed)#单元格变更槽函数
             return
         if self.column == column:
