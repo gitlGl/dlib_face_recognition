@@ -1,7 +1,8 @@
-import sys
-from PySide6.QtWidgets import *
+from PySide6.QtWidgets import QWidget,QPushButton,\
+QHBoxLayout,QVBoxLayout,QLabel,QLineEdit,QMessageBox
 from PySide6.QtCore import Signal
 from .GlobalVariable import database
+from PySide6.QtGui import QIntValidator
 class Paging(QWidget):
     page_number = Signal(int)
     def __init__(self,total_page=20):
@@ -23,6 +24,8 @@ class Paging(QWidget):
         self.totalPage = QLabel("共" + str(self.total_page) + "页")
         skipLable_0 = QLabel("跳到")
         self.skip_page = QLineEdit(objectName="QLineEdit2")
+        self.skip_page.setMaxLength(4)
+        self.skip_page.setValidator(QIntValidator())
         skip_label_1 = QLabel("页")
         confirm_skip = QPushButton("确定",objectName="GreenButton")
         home_page.clicked.connect(self.homeTotalPage)
@@ -153,6 +156,7 @@ class Page(Paging):
 
         
     #计算页数,静态函数
+    @staticmethod
     def totalCount(table,page_count,id_number=None):
         if id_number:
             count =  database.execute(

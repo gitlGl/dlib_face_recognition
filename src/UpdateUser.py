@@ -90,7 +90,7 @@ class UpdatePwd(QDialog):
             QMessageBox.critical(self, '警告', 
                                  f'密码长度不能小于{user.password_min_length.value}位或大于{user.password_max_length.value}位')
             return
-        pattern = r'^[a-zA-Z0-9@#$%^&+=]+$'
+        pattern =  user.reg_pwd.value
         if not re.match(pattern, new_pwd):
             QMessageBox.critical(self, '警告', f'密码为字母数字、特殊字符!且不大于{user.password_max_length.value}位')
             return

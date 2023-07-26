@@ -97,7 +97,7 @@ class CreatUser(QObject):
                     list_problem.append("第{0}行第4列,密码为6-13位数字，字母，特殊符号字符: ".format(i) +
                                                     str(list1[3]))
                     continue
-                pattern = r'^[a-zA-Z0-9@#$%^&+=]+$'
+                pattern = user.reg_pwd.value
                 if not re.match(pattern, str(list1[3])):
                     list_problem.append("第{0}行第4列,密码为6-13位数字，字母，特殊符号字符: ".format(i) +
                                                     str(list1[3]))
