@@ -135,6 +135,8 @@ class ShowUser(QWidget):
             database.execute("update {0} set {1} = '{2}',salt = '{3}' where id_number = {4}"
                                 .format(self.table_name,         
                             self.table_cloumn_name[column],password,salt,id_number))
+            self.information[row][self.table_cloumn_name[column]] = text
+           
             return
         if column == 0 and self.table_name == "admin" :
             if id_number == '12345678910':
@@ -144,6 +146,7 @@ class ShowUser(QWidget):
                 self.tableWidget.cellChanged.connect(self.on_cell_changed)#单元格变更槽函数
                 return
             self.changeIdNumber(text,id_number)
+            self.information[row][self.table_cloumn_name[column]] = text
             return
         
         qcolor = QColor(111, 156, 207)
@@ -151,6 +154,7 @@ class ShowUser(QWidget):
         database.execute("update {0} set {1} = '{2}' where id_number = {3}"
                          .format(self.table_name,
                                  self.table_cloumn_name[column],text,id_number))
+        self.information[row][self.table_cloumn_name[column]] = text
 
     def changeIdNumber(self,id_number,old_id_number):
         try: 
@@ -193,7 +197,9 @@ class ShowUser(QWidget):
         return True
 
 
-    
+    def Refresh(self):
+        self.page.page_number.emit(int(self.page.cur_page.text()))
+        self.setInformation()
     def onTableWidgetCellDoubleClicked(self, row):
         imag_path = "img_information/{0}/{1}/{2}.jpg".format(self.table_name,
                 self.information[row]["id_number"],
@@ -219,13 +225,18 @@ class ShowUser(QWidget):
         pop_menu = QMenu()
         #菜单事件信号
         delete_event = pop_menu.addAction("删除选中")
+        refresh = pop_menu.addAction("刷新全页")
         if len(selected_rows) == 1:
             imageView_event = pop_menu.addAction("查看图片")
             log_event = pop_menu.addAction("查看日志")
+
         row = item.row()
         
         action = pop_menu.exec_(self.tableWidget.mapToGlobal(pos))#显示菜单列表，pos为菜单栏坐标位置
         if action == None:
+            return
+        if action == refresh:
+            self.Refresh()
             return
         if action == delete_event:
             r = QMessageBox.warning(self, "注意", "删除可不能恢复了哦！", QMessageBox.Yes | QMessageBox.No)
