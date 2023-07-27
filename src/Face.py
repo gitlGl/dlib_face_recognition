@@ -7,11 +7,13 @@ import pickle
 
 class Face():  #基类，包含人脸编码，人脸识别
     #为人脸编码
+    @staticmethod
     def encodeFace(rgbImage, raw_face):
         return np.array(
             models.encoder.compute_face_descriptor(rgbImage, raw_face))
 
     #计算人脸相似度，flaot值越小越相似
+    @staticmethod
     def compareFaces(face_encoding, test_encoding, axis=0):
         return np.linalg.norm(face_encoding - test_encoding, axis=axis)#计算欧式距离
 
@@ -75,7 +77,7 @@ class StudentRgFace():
         return "验证失败"
 
 
-class AdminRgFace(Face):
+class AdminRgFace():
     def __init__(self):
         super().__init__()
         self.value = 0.5

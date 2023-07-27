@@ -7,44 +7,51 @@ import cv2, pickle
 from PySide6.QtCore import Signal,QObject
 from PySide6.QtWidgets import QApplication
 from .Check import user 
-
-
+import multiprocessing, time
+def worker(num):
+   
+        print('Worker %d started' % num)
+        CreatUser.getVector("C:/Users/Administrator/Pictures/Camera Roll/1.jpg")
+        print('Worker %d finished' % num)
+        time.sleep  (1000)
+        return
 class CreatUser(QObject):
     sig_progress = Signal(int)
     sig_end = Signal(list)
     def __init__(self):
         super().__init__()
-    def getImg(self, img_path):
+    @staticmethod
+    def getImg(img_path):
         raw_data = np.fromfile(
             img_path, dtype=np.uint8)  #先用numpy把图片文件存入内存：raw_data，把图片数据看做是纯字节数据
         rgbImage = cv2.imdecode(raw_data, cv2.IMREAD_COLOR)  #从内存数据读入图片
 
         #rgbImage = cv2.cvtColor(rgbImage, cv2.COLOR_BGR2RGB)
         return rgbImage
-
-    def insertImg(self, id_number, img_path, fuck):
+    @staticmethod
+    def insertImg(id_number, img_path, fuck):
         path = "img_information/" + fuck + "/" + str(id_number)
         if not os.path.exists(path):  # 判断是否存在文件夹如果不存在则创建为文件夹
             os.makedirs(path)
-        rgbImage = self.getImg(img_path)
+        rgbImage =  CreatUser.getImg(img_path)
         cv2.imwrite(
             "img_information/" + fuck + "/" + str(id_number) + "/" +
             str(id_number) + ".jpg", rgbImage)
-
-    def getVector(self, img_path):
+    @staticmethod
+    def getVector(img_path):
         """
         读取照片，获取人脸编码信息，把照片存储起来
         返回128维人脸编码信息
         """
-        rgbImage = self.getImg(img_path)
+        rgbImage =  CreatUser.getImg(img_path)
         face = models.detector(rgbImage)[0]
         frame = models.predictor(rgbImage, face)
         face_data = np.array(
             models.encoder.compute_face_descriptor(rgbImage, frame))
         face_data = pickle.dumps(face_data)
         return face_data
-
-    def creatUser(self, path):
+    
+    def creatUser(self,path):
         book = xlrd.open_workbook(path)
         sheets = book.sheets()
         list_problem = []
@@ -127,7 +134,7 @@ class CreatUser(QObject):
 
                     ##opencv 不支持中文路径,用python图片库读取图片
 
-                rgbImage = self.getImg(list1[4])
+                rgbImage =  CreatUser.getImg(list1[4])
                 #rgbImage = cv2.cvtColor(rgbImage, cv2.COLOR_BGR2RGB)
                 faces = models.detector(rgbImage)
                 if len(faces) != 1:
@@ -139,14 +146,14 @@ class CreatUser(QObject):
                     "id_number", "user_name", "gender", "password", "img_path"
                 ]
                 dic = dict(zip(list2, list1))
-                information = self.setInformation(dic)
-                self.insertUser(information)
+                information = CreatUser.setInformation(dic)
+                CreatUser.insertUser(information)
         self.sig_progress.emit(100)
         self.sig_end.emit(list_problem)
 
         return list_problem
-
-    def setInformation(self, part_information):
+    @staticmethod
+    def setInformation( part_information):
         information = {}
         information["user_name"] = part_information["user_name"]
         information["gender"] = part_information["gender"]
@@ -155,12 +162,12 @@ class CreatUser(QObject):
         information["password"] = MyMd5.createMd5(
             part_information["password"], information["salt"],
             part_information["id_number"])
-        information["vector"] = self.getVector(part_information["img_path"])
-        self.insertImg(part_information["id_number"],
+        information["vector"] = CreatUser.getVector(part_information["img_path"])
+        CreatUser.insertImg(part_information["id_number"],
                        part_information["img_path"], "student")
         return information
-
-    def insertUser(self, information):
+    @staticmethod
+    def insertUser(information):
         database.insertUser(information["id_number"], information["user_name"],
                             information["gender"], information["password"],
                             information["vector"], information["salt"])

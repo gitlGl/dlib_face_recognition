@@ -110,9 +110,8 @@ class ShowUser(QWidget):
         id_number = sender.id_number
         
         if path:
-            creatuser = CreatUser()
-            vector = creatuser.getVector(path)
-            creatuser.insertImg(id_number,path,self.table_name)
+            vector = CreatUser.getVector(path)
+            CreatUser.insertImg(id_number,path,self.table_name)
             database.execute("update {0} set vector = {1} where id_number = {2}"
                              .format(self.table_name,PH,id_number),(vector,))
             QMessageBox.information(self, 'Success', '修改成功')

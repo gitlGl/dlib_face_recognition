@@ -150,9 +150,8 @@ class SigninPage(QWidget):
             return
         salt = MyMd5.createSalt()
         password = MyMd5.createMd5(password, salt,user_name)
-        creatuser = CreatUser()
-        vector = creatuser.getVector(path)
-        creatuser.insertImg(user_name,path,"admin")
+        vector = CreatUser.getVector(path)
+        CreatUser.insertImg(user_name,path,"admin")
 
         database.execute(
             f"INSERT INTO admin (id_number,password,salt,vector) \
