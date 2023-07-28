@@ -121,6 +121,7 @@ class ShowData(QWidget):
             self.pool.stop()
             self.showEerror(self.list_problem)
             self.timer.stop()
+            self.pool = None
         
     def buttonCreate(self):
         path, _ = QFileDialog.getOpenFileName(self, "选择文件", "c:\\",
