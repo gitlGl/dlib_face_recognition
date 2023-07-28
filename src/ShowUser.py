@@ -57,7 +57,7 @@ class ShowUser(QWidget):
             self.page = Page(table_name,self.table_cloumn_name,page_count=page_count)
             self.page.information_signal.connect(self.setInformation)
             if  not self.page.information:
-                QMessageBox.critical(self, '警告', '不存在用户或记录')
+                QMessageBox.information(self, '警告', '不存在用户或记录')
                 self.close()
                 return
             self.VBoxLayout.addWidget(self.page)

@@ -23,7 +23,7 @@ class ShowLog(QDialog):
         self.page = Page(self.table_name+"_log_time",table_cloumn_name,
         page_count=self.page_count,id_number = id_number)
         if  not self.page.information:
-            QMessageBox.critical(self, '警告', '不存在用户或记录')
+            QMessageBox.information(self, '警告', '不存在用户或记录')
             self.close()
             return
         self.page.information_signal.connect(self.setInformation)

@@ -1,13 +1,13 @@
 from .MyMd5 import MyMd5
 import numpy as np
 from .GlobalVariable import models
-import xlrd, os,re
+import os,re
 from .GlobalVariable import database
 import cv2, pickle
 from PySide6.QtCore import Signal,QObject
 from PySide6.QtWidgets import QApplication
 from .Check import user 
-import multiprocessing, time
+import time
 def worker(num):
    
         print('Worker %d started' % num)
@@ -50,104 +50,105 @@ class CreatUser(QObject):
             models.encoder.compute_face_descriptor(rgbImage, frame))
         face_data = pickle.dumps(face_data)
         return face_data
+    @staticmethod
+    def checkInsert(row,row_user_data,list_problem):
+ #判断用户名是否符合格式要求
+            if type(row_user_data[0]) == float:
+                row_user_data[0] = int(row_user_data[0])
+
+            if (not str(row_user_data[0]).isdigit()) or len(
+                str(row_user_data[0])) == user.id_length.value:
+                list_problem.append(
+                    f"第{0}行第1列,用户id为{user.id_length.value}位数字 ".format(row) +
+                                    str(row_user_data[0]))
+                return
+            user_ = database.execute(
+                "select id_number from student where id_number = {} ".
+                format(str(row_user_data[0])))
+            if len(user_) == 1:
+                list_problem.append("第{0}行第1列,用户已存在: ".format(row) +
+                                    str(row_user_data[0]))
+                return
+
+            row_user_data[0] = str(row_user_data[0])
+
+            #判断用户姓名是否符合格式要求
+            lenth = len(str(row_user_data[1]))
+            if lenth > 16 or lenth == 0:
+
+                list_problem.append("第{0}行第2列,姓名为16个字符以下: ".format(row) +
+                                    str(row_user_data[1]))
+                return
+            row_user_data[1] = str(row_user_data[1])
+
+            #判断用户性别格式
+            if str(row_user_data[2]) != "男" and str(row_user_data[2]) != "女":
+                list_problem.append("第{0}行第3列,性别为男或女: ".format(row) +
+                                    str(row_user_data[2]))
+                return
+            row_user_data[2] = str(row_user_data[2])
+            #判断密码是否符合格式要求
+
+            lenth = len(str(row_user_data[3]))
+            if lenth > user.password_max_length.value or lenth < user.password_min_length.value:
+                list_problem.append("第{0}行第4列,密码为6-13位数字，字母，特殊符号字符: ".format(row) +
+                                                str(row_user_data[3]))
+                return
+            pattern = user.reg_pwd.value
+            if not re.match(pattern, str(row_user_data[3])):
+                list_problem.append("第{0}行第4列,密码为6-13位数字，字母，特殊符号字符: ".format(row) +
+                                                str(row_user_data[3]))
+                return
+
+            row_user_data[3] = str(row_user_data[3])
+
+            #判断路径是否存在
+            row_user_data[4] = str(row_user_data[4])
+            path = row_user_data[4]
+            if (not os.path.isfile(path)) or (os.path.getsize(path) >
+                                                1024000):  #文件小于10mb
+                string = "第{0}行第5列，不存在该路径或文件或文件过大，文件小于10mb ".format(
+                    row) + str(row_user_data[4])
+                list_problem.append(string)
+                return
+            if not path.endswith('.jpg'):
+                string = "第{0}行第4列，文件为jpg图片".format(row) + str(row_user_data[4])
+                list_problem.append(string)
+                return
+
+            data = open(path, "rb").read(32)
+            if not (data[6:10] in (b'JFIF', b'Exif')):
+                string = "第{0}行第4列，文件为jpg图片".format(row) + str(row_user_data[4])
+                list_problem.append(string)
+                return
+
+                ##opencv 不支持中文路径,用python图片库读取图片
+
+            rgbImage =  CreatUser.getImg(row_user_data[4])
+            #rgbImage = cv2.cvtColor(rgbImage, cv2.COLOR_BGR2RGB)
+            faces = models.detector(rgbImage)
+            if len(faces) != 1:
+                string = "第{0}行第5列，文件不存在人脸或多个人脸 ".format(row) + str(row_user_data[4])
+                list_problem.append(string)
+                return
+
+            list2 = [
+                "id_number", "user_name", "gender", "password", "img_path"
+            ]
+            dic = dict(zip(list2, row_user_data))
+            information = CreatUser.setInformation(dic)
+            CreatUser.insertUser(information)
+            return list_problem
     
-    def creatUser(self,path):
-        book = xlrd.open_workbook(path)
-        sheets = book.sheets()
+    def creatUser(self,user_sheet):
         list_problem = []
-
-        for sheet in sheets:
-            rows = sheet.nrows
-            for i in range(1, rows):
-                QApplication.processEvents()
-                self.sig_progress.emit(int(i/rows*100)) 
-                list1 = sheet.row_values(rowx=i)
-                #判断用户名是否符合格式要求
-                if type(list1[0]) == float:
-                    list1[0] = int(list1[0])
-
-                if (not str(list1[0]).isdigit()) or len(
-                    str(list1[0])) == user.id_length.value:
-                    list_problem.append(
-                        f"第{0}行第1列,用户id为{user.id_length.value}位数字 ".format(i) +
-                                        str(list1[0]))
-                    continue
-                user_ = database.execute(
-                    "select id_number from student where id_number = {} ".
-                    format(str(list1[0])))
-                if len(user_) == 1:
-                    list_problem.append("第{0}行第1列,用户已存在: ".format(i) +
-                                        str(list1[0]))
-                    continue
-
-                list1[0] = str(list1[0])
-
-                #判断用户姓名是否符合格式要求
-                lenth = len(str(list1[1]))
-                if lenth > 16 or lenth == 0:
-
-                    list_problem.append("第{0}行第2列,姓名为16个字符以下: ".format(i) +
-                                        str(list1[1]))
-                    continue
-                list1[1] = str(list1[1])
-
-                #判断用户性别格式
-                if str(list1[2]) != "男" and str(list1[2]) != "女":
-                    list_problem.append("第{0}行第3列,性别为男或女: ".format(i) +
-                                        str(list1[2]))
-                    continue
-                list1[2] = str(list1[2])
-                #判断密码是否符合格式要求
-
-                lenth = len(str(list1[3]))
-                if lenth > user.password_max_length.value or lenth < user.password_min_length.value:
-                    list_problem.append("第{0}行第4列,密码为6-13位数字，字母，特殊符号字符: ".format(i) +
-                                                    str(list1[3]))
-                    continue
-                pattern = user.reg_pwd.value
-                if not re.match(pattern, str(list1[3])):
-                    list_problem.append("第{0}行第4列,密码为6-13位数字，字母，特殊符号字符: ".format(i) +
-                                                    str(list1[3]))
-                    continue
-
-                list1[3] = str(list1[3])
-
-                #判断路径是否存在
-                list1[4] = str(list1[4])
-                path = list1[4]
-                if (not os.path.isfile(path)) or (os.path.getsize(path) >
-                                                  1024000):  #文件小于10mb
-                    string = "第{0}行第5列，不存在该路径或文件或文件过大，文件小于10mb ".format(
-                        i) + str(list1[4])
-                    list_problem.append(string)
-                    continue
-                if not path.endswith('.jpg'):
-                    string = "第{0}行第4列，文件为jpg图片".format(i) + str(list1[4])
-                    list_problem.append(string)
-                    continue
-
-                data = open(path, "rb").read(32)
-                if not (data[6:10] in (b'JFIF', b'Exif')):
-                    string = "第{0}行第4列，文件为jpg图片".format(i) + str(list1[4])
-                    list_problem.append(string)
-                    continue
-
-                    ##opencv 不支持中文路径,用python图片库读取图片
-
-                rgbImage =  CreatUser.getImg(list1[4])
-                #rgbImage = cv2.cvtColor(rgbImage, cv2.COLOR_BGR2RGB)
-                faces = models.detector(rgbImage)
-                if len(faces) != 1:
-                    string = "第{0}行第5列，文件不存在人脸或多个人脸 ".format(i) + str(list1[4])
-                    list_problem.append(string)
-                    continue
-
-                list2 = [
-                    "id_number", "user_name", "gender", "password", "img_path"
-                ]
-                dic = dict(zip(list2, list1))
-                information = CreatUser.setInformation(dic)
-                CreatUser.insertUser(information)
+        rows = user_sheet.nrows
+        for row in range(1, rows):
+            QApplication.processEvents()
+            self.sig_progress.emit(int(row/rows*100)) 
+            row_user_data = user_sheet.row_values(rowx=row)
+            CreatUser.checkInsert(row,row_user_data,list_problem)
+           
         self.sig_progress.emit(100)
         self.sig_end.emit(list_problem)
 
