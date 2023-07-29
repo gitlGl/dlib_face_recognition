@@ -151,7 +151,7 @@ class ShowData(QWidget):
         except:
             QMessageBox.warning(self, '提示', 'Excel 文件中没有名为 "user" 的 sheet')
             return
-        if self.user_sheet.nrows > 30:#如果数据量小于30条，就不用多进程了,魔术数字
+        if self.user_sheet.nrows < 30:#如果数据量小于30条，就不用多进程了,魔术数字
             self.creatUser(self.user_sheet)
         else:
             self.creatUserMultiprocessing()
