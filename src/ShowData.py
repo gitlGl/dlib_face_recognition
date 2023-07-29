@@ -10,11 +10,13 @@ from PySide6.QtWidgets import QWidget, QHBoxLayout, QLabel, QVBoxLayout, QLineEd
     QGroupBox, QPushButton, QFileDialog, QDateEdit, QMessageBox, QMenu, QProgressBar
 from .LineStack import ChartView
 from .Plugins import Plugins
-
+from PySide6.QtCore import Signal,QObject
 
 
 class ShowData(QWidget):
     group_count = 10
+    sig_progress = Signal(int)
+    sig_end = Signal(list)
     def __init__(self):
         super().__init__()
         # self.setGeometry(300, 300,480, 600)
@@ -138,8 +140,6 @@ class ShowData(QWidget):
                 self.list_problem = None
                 self.results = None
                 self.pool = None
-                
-    
             
     def buttonCreate(self):
         path, _ = QFileDialog.getOpenFileName(self, "选择文件", "c:\\",
@@ -152,12 +152,11 @@ class ShowData(QWidget):
         except:
             QMessageBox.warning(self, '提示', 'Excel 文件中没有名为 "user" 的 sheet')
             return
-        if self.user_sheet.nrows < 30:
+        if self.user_sheet.nrows < 30:#如果数据量小于30条，就不用多进程了,魔术数字
             self.creatUser(self.user_sheet)
         else:
             self.creatUserMultiprocessing()
             
-           
     def creatUserMultiprocessing(self):
         self.creatProgressBar()
         
@@ -213,14 +212,21 @@ class ShowData(QWidget):
         QApplication.processEvents()
 
     def creatUser(self,user_sheet):  # 批量创建用户
-        
         self.creatProgressBar()
-        creat_student_user = CreatUser()
-        creat_student_user.sig_end.connect(self.showEerror)
-        creat_student_user.sig_progress.connect(self.ProgressBar.setValue)
-        QApplication.processEvents()
         self.setEnabled(False)
-        list_error = creat_student_user.creatUser(user_sheet)
+        list_problem = []
+        rows = user_sheet.nrows
+        self.sig_end.connect(self.showEerror)
+        self.sig_progress.connect(self.ProgressBar.setValue)
+        for row in range(1, rows):
+            QApplication.processEvents()
+            self.sig_progress.emit(int(row/rows*100)) 
+            row_user_data = user_sheet.row_values(rowx=row)
+            CreatUser.checkInsert(row,row_user_data,list_problem)
+           
+        self.sig_progress.emit(100)
+        self.sig_end.emit(list_problem)
+        QApplication.processEvents()
         self.setEnabled(True)
 
     def showEerror(self, list_error):

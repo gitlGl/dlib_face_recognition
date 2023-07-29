@@ -4,22 +4,8 @@ from .GlobalVariable import models
 import os,re
 from .GlobalVariable import database
 import cv2, pickle
-from PySide6.QtCore import Signal,QObject
-from PySide6.QtWidgets import QApplication
 from .Check import user 
-import time
-def worker(num):
-   
-        print('Worker %d started' % num)
-        CreatUser.getVector("C:/Users/Administrator/Pictures/Camera Roll/1.jpg")
-        print('Worker %d finished' % num)
-        time.sleep  (1000)
-        return
-class CreatUser(QObject):
-    sig_progress = Signal(int)
-    sig_end = Signal(list)
-    def __init__(self):
-        super().__init__()
+class CreatUser():
     @staticmethod
     def getImg(img_path):
         raw_data = np.fromfile(
@@ -140,19 +126,7 @@ class CreatUser(QObject):
             CreatUser.insertUser(information)
             return list_problem
     
-    def creatUser(self,user_sheet):
-        list_problem = []
-        rows = user_sheet.nrows
-        for row in range(1, rows):
-            QApplication.processEvents()
-            self.sig_progress.emit(int(row/rows*100)) 
-            row_user_data = user_sheet.row_values(rowx=row)
-            CreatUser.checkInsert(row,row_user_data,list_problem)
-           
-        self.sig_progress.emit(100)
-        self.sig_end.emit(list_problem)
-
-        return list_problem
+ 
     @staticmethod
     def setInformation( part_information):
         information = {}
