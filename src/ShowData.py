@@ -15,8 +15,7 @@ from PySide6.QtCore import Signal,QObject
 
 class ShowData(QWidget):
     group_count = 10
-    sig_progress = Signal(int)
-    sig_end = Signal(list)
+  
     def __init__(self):
         super().__init__()
         # self.setGeometry(300, 300,480, 600)
@@ -152,7 +151,7 @@ class ShowData(QWidget):
         except:
             QMessageBox.warning(self, '提示', 'Excel 文件中没有名为 "user" 的 sheet')
             return
-        if self.user_sheet.nrows < 30:#如果数据量小于30条，就不用多进程了,魔术数字
+        if self.user_sheet.nrows > 30:#如果数据量小于30条，就不用多进程了,魔术数字
             self.creatUser(self.user_sheet)
         else:
             self.creatUserMultiprocessing()
@@ -216,16 +215,15 @@ class ShowData(QWidget):
         self.setEnabled(False)
         list_problem = []
         rows = user_sheet.nrows
-        self.sig_end.connect(self.showEerror)
-        self.sig_progress.connect(self.ProgressBar.setValue)
+       
         for row in range(1, rows):
             QApplication.processEvents()
-            self.sig_progress.emit(int(row/rows*100)) 
+            self.ProgressBar.setValue(int(row/rows*100)) 
             row_user_data = user_sheet.row_values(rowx=row)
             CreatUser.checkInsert(row,row_user_data,list_problem)
            
-        self.sig_progress.emit(100)
-        self.sig_end.emit(list_problem)
+        self.ProgressBar.setValue(100)
+        self.showEerror(list_problem)
         QApplication.processEvents()
         self.setEnabled(True)
 
