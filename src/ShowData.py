@@ -119,7 +119,7 @@ class ShowData(QWidget):
                 else :
                     CreatUser.checkInsert(key*ShowData.group_count+index,data,list_problem)
             return [len(item),list_problem]
-    def getResult(self):
+    def refreshProgressBar(self):
         for result in self.results:
             if not result.ready():
                 return 
@@ -153,60 +153,53 @@ class ShowData(QWidget):
             QMessageBox.warning(self, '提示', 'Excel 文件中没有名为 "user" 的 sheet')
             return
         if self.user_sheet.nrows < 30:
-            self.creatStudentUser(self.user_sheet)
+            self.creatUser(self.user_sheet)
         else:
-            self.ProgressBar = QtBoxStyleProgressBar()
-            item = self.Vhlayout.itemAt(1)
-            item.widget().deleteLater()
-            self.Vhlayout.removeItem(item)
-            QApplication.processEvents()
-
-            self.Vhlayout.addWidget(self.ProgressBar)
-            qlabel_ = QLabel()
-            self.Vhlayout.addWidget(qlabel_)
-            QApplication.processEvents()
-           
-            #data_dict = {}
-            # group_count =  int(user_sheet.nrows/10)
-            # remainder  = user_sheet.nrows%10
-            # for count in range(group_count):
-            #     for row in range(10):
-            #         data_dict[count] = ()
-            #         if count*10+row == 0:
-            #             continue
-            #         data_dict[count].append(user_sheet.row_values(count*10+row))
-            # if remainder != 0:
-            #     
-            #     for row in range(remainder):
-            #         data_dict[group_count-1].append(user_sheet.row_values(group_count*10+row))
-            #把数据分组，每组10个，最后一组不足10个的也算一组   
-            group_count = self.user_sheet.nrows // ShowData.group_count
-            remainder = self.user_sheet.nrows % ShowData.group_count
-
-            data_dict = {count: [self.user_sheet.row_values(count*ShowData.group_count+row) for 
-                                 row in range(ShowData.group_count) if count*ShowData.group_count+row != 0]
-                    for count in range(group_count)}
-            if remainder != 0:
-               
-                data_dict[group_count-1].extend(
-                    [self.user_sheet.row_values(group_count*ShowData.group_count+row) for row in range(remainder)])
-            self.timer = QTimer()
-            self.nrow = 0
-            self.list_problem = []
-            self.results = []
-            self.pool =  multiprocessing.Pool(3) 
-            for key,value in data_dict.items():
-                result  =self.pool.apply_async(self.run,args =({key:value},) )
-                self.results.append(result)
-            self.pool.close()
-           
+            self.creatUserMultiprocessing()
             
-            self.timer.timeout.connect(self.getResult)
-            self.timer.start(200)
-
-    def creatStudentUser(self,user_sheet):  # 批量创建用户
+           
+    def creatUserMultiprocessing(self):
+        self.creatProgressBar()
         
+        #data_dict = {}
+        # group_count =  int(user_sheet.nrows/10)
+        # remainder  = user_sheet.nrows%10
+        # for count in range(group_count):
+        #     for row in range(10):
+        #         data_dict[count] = ()
+        #         if count*10+row == 0:
+        #             continue
+        #         data_dict[count].append(user_sheet.row_values(count*10+row))
+        # if remainder != 0:
+        #     
+        #     for row in range(remainder):
+        #         data_dict[group_count-1].append(user_sheet.row_values(group_count*10+row))
+        #把数据分组，每组10个，最后一组不足10个的也算一组   
+        group_count = self.user_sheet.nrows // ShowData.group_count
+        remainder = self.user_sheet.nrows % ShowData.group_count
 
+        data_dict = {count: [self.user_sheet.row_values(count*ShowData.group_count+row) for 
+                            row in range(ShowData.group_count) if count*ShowData.group_count+row != 0]
+                for count in range(group_count)}
+        if remainder != 0:
+            data_dict[group_count-1].extend(
+                [self.user_sheet.row_values(group_count*ShowData.group_count+row) for row in range(remainder)])
+            
+        self.timer = QTimer()
+        self.nrow = 0
+        self.list_problem = []
+        self.results = []
+        self.pool =  multiprocessing.Pool(3) 
+        for key,value in data_dict.items():
+            result  =self.pool.apply_async(self.run,args =({key:value},) )
+            self.results.append(result)
+        self.pool.close()
+    
+        
+        self.timer.timeout.connect(self.refreshProgressBar)
+        self.timer.start(100)
+        
+    def creatProgressBar(self):  # 创建进度条
         self.ProgressBar = QtBoxStyleProgressBar()
 
         item = self.Vhlayout.itemAt(1)
@@ -219,6 +212,9 @@ class ShowData(QWidget):
         self.Vhlayout.addWidget(qlabel_)
         QApplication.processEvents()
 
+    def creatUser(self,user_sheet):  # 批量创建用户
+        
+        self.creatProgressBar()
         creat_student_user = CreatUser()
         creat_student_user.sig_end.connect(self.showEerror)
         creat_student_user.sig_progress.connect(self.ProgressBar.setValue)
@@ -455,6 +451,8 @@ class QtBoxStyleProgressBar(QProgressBar):
         self.setFormat("加载中请勿关闭窗口，loading {}%.....".format(value))
         super().setValue(value)
         return
+    
+#利用管道通信实现进程池例子    
 # class Worker:
 #     group_conut = 10
 #     def __init__(self, task_queue, result_queue):
@@ -478,9 +476,6 @@ class QtBoxStyleProgressBar(QProgressBar):
 #                     else :
 #                         CreatUser.checkInsert(key*ShowData.group_count+index,data,list_problem)
 #                 self.result_queue.put([len(item),list_problem])
-          
-           
-
 # class ProcessPool:
 #     def __init__(self, num_processes):
 #         self.num_processes = num_processes
