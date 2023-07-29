@@ -10,7 +10,11 @@ from PySide6.QtWidgets import QWidget, QHBoxLayout, QLabel, QVBoxLayout, QLineEd
     QGroupBox, QPushButton, QFileDialog, QDateEdit, QMessageBox, QMenu, QProgressBar
 from .LineStack import ChartView
 from .Plugins import Plugins
+
+
+
 class ShowData(QWidget):
+    group_count = 10
     def __init__(self):
         super().__init__()
         # self.setGeometry(300, 300,480, 600)
@@ -104,25 +108,39 @@ class ShowData(QWidget):
             self.Vhlayout.removeItem(item)
             self.Vhlayout.addWidget(controls_class[action.text()](self))
 
-    
-   
+    @staticmethod
+    def run(data_dict):
+        print("run")
+        list_problem = []
+        for key,item in data_dict.items():
+            for index,data in enumerate(item):
+                if key == 0 and index == 0:
+                    CreatUser.checkInsert(1,data,list_problem)
+                else :
+                    CreatUser.checkInsert(key*ShowData.group_count+index,data,list_problem)
+            return [len(item),list_problem]
     def getResult(self):
-        
-        result  = self.pool.get_result()
-        if result is None:
-            return
-        self.nrow = self.nrow + result[0]
-        self.list_problem.extend(result[1])
+        for result in self.results:
+            if not result.ready():
+                return 
+            item = result.get()
+            self.results.remove(result)
+          
+            self.nrow = self.nrow + item[0]
+            self.list_problem.extend(item[1])
 
-        self.ProgressBar.setValue(int(self.nrow/self.user_sheet.nrows*100))
-        QApplication.processEvents()
+            self.ProgressBar.setValue(int(self.nrow/self.user_sheet.nrows*100))
+            QApplication.processEvents()
 
-        if self.nrow == self.user_sheet.nrows-1:
-            self.pool.stop()
-            self.showEerror(self.list_problem)
-            self.timer.stop()
-            self.pool = None
-        
+            if self.nrow == self.user_sheet.nrows-1:
+                self.timer.stop()
+                self.showEerror(self.list_problem)
+                self.list_problem = None
+                self.results = None
+                self.pool = None
+                
+    
+            
     def buttonCreate(self):
         path, _ = QFileDialog.getOpenFileName(self, "选择文件", "c:\\",
                                               "files(*.xlsx )")
@@ -162,23 +180,26 @@ class ShowData(QWidget):
             #     for row in range(remainder):
             #         data_dict[group_count-1].append(user_sheet.row_values(group_count*10+row))
             #把数据分组，每组10个，最后一组不足10个的也算一组   
-            group_count = self.user_sheet.nrows // Worker.group_conut
-            remainder = self.user_sheet.nrows % Worker.group_conut
+            group_count = self.user_sheet.nrows // ShowData.group_count
+            remainder = self.user_sheet.nrows % ShowData.group_count
 
-            self.data_dict = {count: [self.user_sheet.row_values(count*Worker.group_conut+row) for 
-                                 row in range(Worker.group_conut) if count*Worker.group_conut+row != 0]
+            data_dict = {count: [self.user_sheet.row_values(count*ShowData.group_count+row) for 
+                                 row in range(ShowData.group_count) if count*ShowData.group_count+row != 0]
                     for count in range(group_count)}
             if remainder != 0:
                
-                self.data_dict[group_count-1].extend(
-                    [self.user_sheet.row_values(group_count*Worker.group_conut+row) for row in range(remainder)])
+                data_dict[group_count-1].extend(
+                    [self.user_sheet.row_values(group_count*ShowData.group_count+row) for row in range(remainder)])
             self.timer = QTimer()
             self.nrow = 0
             self.list_problem = []
-            self.pool = ProcessPool(3)
-            self.pool.start()
-            for key,value in self.data_dict.items():
-                self.pool.submit({key:value})
+            self.results = []
+            self.pool =  multiprocessing.Pool(3) 
+            for key,value in data_dict.items():
+                result  =self.pool.apply_async(self.run,args =({key:value},) )
+                self.results.append(result)
+            self.pool.close()
+           
             
             self.timer.timeout.connect(self.getResult)
             self.timer.start(200)
@@ -434,58 +455,58 @@ class QtBoxStyleProgressBar(QProgressBar):
         self.setFormat("加载中请勿关闭窗口，loading {}%.....".format(value))
         super().setValue(value)
         return
-class Worker:
-    group_conut = 10
-    def __init__(self, task_queue, result_queue):
-        self.task_queue = task_queue
-        self.result_queue = result_queue
+# class Worker:
+#     group_conut = 10
+#     def __init__(self, task_queue, result_queue):
+#         self.task_queue = task_queue
+#         self.result_queue = result_queue
     
-    def run(self):
-        while True:
-            # 从任务队列中获取任务
-            data_dict = self.task_queue.get()
+#     def run(self):
+#         while True:
+#             # 从任务队列中获取任务
+#             data_dict = self.task_queue.get()
                          
-            if data_dict is None:
-                # 如果获取到的任务为 None，表示任务已经完成，退出循环
-                break
+#             if data_dict is None:
+#                 # 如果获取到的任务为 None，表示任务已经完成，退出循环
+#                 break
             
-            list_problem = []
-            for key,item in data_dict.items():
-                for index,data in enumerate(item):
-                    if key == 0 and index == 0:
-                        CreatUser.checkInsert(1,data,list_problem)
-                    else :
-                        CreatUser.checkInsert(key*Worker.group_conut+index,data,list_problem)
-                self.result_queue.put([len(item),list_problem])
+#             list_problem = []
+#             for key,item in data_dict.items():
+#                 for index,data in enumerate(item):
+#                     if key == 0 and index == 0:
+#                         CreatUser.checkInsert(1,data,list_problem)
+#                     else :
+#                         CreatUser.checkInsert(key*ShowData.group_count+index,data,list_problem)
+#                 self.result_queue.put([len(item),list_problem])
           
            
 
-class ProcessPool:
-    def __init__(self, num_processes):
-        self.num_processes = num_processes
-        self.task_queue = multiprocessing.Queue()
-        self.result_queue = multiprocessing.Queue()
-        self.workers = []
+# class ProcessPool:
+#     def __init__(self, num_processes):
+#         self.num_processes = num_processes
+#         self.task_queue = multiprocessing.Queue()
+#         self.result_queue = multiprocessing.Queue()
+#         self.workers = []
     
-    def start(self):
-        # 创建多个进程并启动
-        for i in range(self.num_processes):
-            worker = Worker(self.task_queue, self.result_queue)
-            process = multiprocessing.Process(target=worker.run)
-            process.start()
-            self.workers.append((worker, process))
+#     def start(self):
+#         # 创建多个进程并启动
+#         for i in range(self.num_processes):
+#             worker = Worker(self.task_queue, self.result_queue)
+#             process = multiprocessing.Process(target=worker.run)
+#             process.start()
+#             self.workers.append((worker, process))
     
-    def stop(self):
-        # 向任务队列中添加 None，表示任务已经完成
-        for i in range(self.num_processes):
-            self.task_queue.put(None)
+#     def stop(self):
+#         # 向任务队列中添加 None，表示任务已经完成
+#         for i in range(self.num_processes):
+#             self.task_queue.put(None)
     
-    def submit(self, task):
-        # 向任务队列中添加任务
-        self.task_queue.put(task)
+#     def submit(self, task):
+#         # 向任务队列中添加任务
+#         self.task_queue.put(task)
     
-    def get_result(self):
-        # 从结果队列中获取结果
-        if self.result_queue.empty():
-            return None
-        return self.result_queue.get()
+#     def get_result(self):
+#         # 从结果队列中获取结果
+#         if self.result_queue.empty():
+#             return None
+#         return self.result_queue.get()
