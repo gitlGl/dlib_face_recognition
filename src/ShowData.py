@@ -112,10 +112,7 @@ class ShowData(QWidget):
     def run(data_dict):
         list_problem = []
         for key,item in data_dict.items():
-            for index,data in enumerate(item):
-                if key == 0 and index == 0:
-                    CreatUser.checkInsert(1,data,list_problem)
-                else :
+            for index,data in enumerate(item,start=2):
                     CreatUser.checkInsert(key*Setting.group_count+index,data,list_problem)
             return [len(item),list_problem]
     def refreshProgressBar(self):
@@ -161,20 +158,20 @@ class ShowData(QWidget):
     def creatUserMultiprocessing(self):
         self.creatProgressBar()
         self.setEnabled(False)
-        
+
+        data = [self.user_sheet.row_values(i) for i in range(1, self.user_sheet.nrows)]
         data_dict = {}
-        total_group = self.user_sheet.nrows // Setting.group_count
-        remainder = self.user_sheet.nrows % Setting.group_count
+
+        lenth = len(data)   
+        total_group = lenth // Setting.group_count
+        remainder = lenth % Setting.group_count
         for num in range(total_group):
             data_dict[num] = []
             for row in range(Setting.group_count):
-                if num*Setting.group_count+row == 0:
-                    continue
-                data_dict[num].append(self.user_sheet.row_values(num*Setting.group_count+row))
+                data_dict[num].append(data[num*Setting.group_count+row])
         if remainder != 0:
-            
             for row in range(remainder):
-                data_dict[total_group-1].append(self.user_sheet.row_values(total_group*Setting.group_count+row))
+                data_dict[total_group-1].append(data[total_group*Setting.group_count+row])
        
             
         self.timer = QTimer()
