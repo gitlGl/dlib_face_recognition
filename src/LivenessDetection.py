@@ -1,16 +1,13 @@
 import cv2, numpy as np
 from PySide6.QtCore import QThread
-from .GlobalVariable import models
-
+from . import Setting
+from .Setting import models
 class LivenessDetection():
     def __init__(self):
         super().__init__()
         self.img1 = np.random.randint(255, size=(900, 800, 3), dtype=np.uint8)
         self.img2 = np.random.randint(255, size=(900, 800, 3), dtype=np.uint8)
       
-        self.EYE_AR_THRESH = 0.05  #小于0.3时认为是闭眼状态
-        self.MAR_THRESH = 0.5  #大于于0.5时认为是张嘴状态
-
         #68个人脸特征中眼睛的位置
 
         self.FACIAL_LANDMARKS_IDXS = {
@@ -61,7 +58,8 @@ class LivenessDetection():
             list.append(self.computEye(rgbImage1, rect1))
             list.append(self.computEye(rgbImage2, rect2))
             result = abs(list[0] - list[1])
-            if result >= self.EYE_AR_THRESH:
+            print(Setting.EYE_AR_THRESH)
+            if result >= Setting.EYE_AR_THRESH:
 
                 return True
         return False
@@ -97,6 +95,6 @@ class LivenessDetection():
             shape = self.shape2np(shape)  #68个人脸特征坐标
             mouth = shape[self.mStart:self.mEnd]
             mouth = self.mouthAspectRatio(mouth)
-            if mouth >  self.MAR_THRESH:
+            if mouth >  Setting.MAR_THRESH:
                 return True
         return False

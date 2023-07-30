@@ -1,13 +1,13 @@
 from PySide6.QtWidgets import QDialog, QLabel, QLineEdit, QPushButton, \
 QVBoxLayout, QHBoxLayout, QMessageBox
 from .Database import PH
-from .GlobalVariable import database
+from .Setting import database
 from PySide6.QtGui import QIcon
 from PySide6.QtCore import Qt
 import os, shutil
 from .MyMd5 import MyMd5
 from .Check import verifyePwd
-from .Check import user
+from .Setting import user
 import re
 from PySide6.QtGui import QRegularExpressionValidator
 from PySide6.QtCore import QRegularExpression

@@ -1,23 +1,15 @@
 from PySide6.QtWidgets import QMessageBox
-from .GlobalVariable import database
+from .Setting import database
 from .MyMd5 import MyMd5
 import os
 from PySide6.QtWidgets import QFileDialog,QMessageBox
-from .GlobalVariable import models
+from .Setting import models
 #from .Creatuser import CreatUser
-from enum import Enum
-import cv2,re
-import numpy as np
-from PySide6.QtCore import QRegularExpression
-class user(Enum):
-    id_length = 13
-    password_max_length = 20
-    password_min_length = 6
-    name_length = 20
-    reg_pwd = "[A-Za-z0-9!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]*"
+import re
+from .Setting import user
 
  #检查用户输入的数据是否合法
-       
+from .Creatuser import CreatUser
 class verifyCellData():
     def idNumber(parent,id_number,row_info):
         if len(id_number) > user.id_length.value or (not id_number.isdigit()):
@@ -55,36 +47,6 @@ class verifyCellData():
     id_number_info = lambda parent: QMessageBox.critical(parent, '警告', f'学号为{user.id_length.value}个有效字符,或已存在')
     password_info = lambda parent: QMessageBox.critical(parent, '警告', f'密码为{user.password_min_length.value}-{user.password_max_length.value}位,字母数字、特殊字符!')
 
-#  #检查输入信息
-#         lenth = len(user_name)
-#         if lenth > user.name_length.value or lenth == 0:
-
-#              QMessageBox.critical(self, '警告', f'用户名为{user.name_length.value}个有效字符')
-#              return False
-       
-#         if gender == "男" or gender == "女":
-#             pass
-#         else:
-#             QMessageBox.critical(self, '警告', 'gender is only 男 or 女')
-#             return False
-
-#         if len(id_number) > 20 or (not id_number.isdigit()):
-#             QMessageBox.critical(self, '警告',
-#                                  'id_number is only digit or is too long!')
-#             return False
-
-        
-#         result =  database.execute(
-#                     "select id_number from student where id_number = {} ".
-#                     format(id_number))
-#         if len( result) == 1 and id != id_number:
-#             QMessageBox.critical(self, '警告', ' 这个学号已经存在')
-#             return False
-#         if (len(password) < user.password_min_length.value or len(
-#             password) > user.password_max_length.value):
-#             if (password != self.information["password"]):
-#                 QMessageBox.critical(self, '警告',
-#                                       f' 密码为{user.password_min_length.value}-{user.password_max_length.value}位!')      
 
 
 
@@ -119,7 +81,7 @@ def checkPath(path,parent=None):
         return False
 
   
-    rgbImage = getImg(path)
+    rgbImage = CreatUser.getImg(path)
     
     faces = models.detector(rgbImage)
     if len(faces) != 1:
@@ -133,21 +95,3 @@ def getImgPath(parent=None):
     if checkPath(path,parent):
         return path    
     return False
-def getImg( img_path):
-        raw_data = np.fromfile(
-            img_path, dtype=np.uint8)  #先用numpy把图片文件存入内存：raw_data，把图片数据看做是纯字节数据
-        rgbImage = cv2.imdecode(raw_data, cv2.IMREAD_COLOR)  #从内存数据读入图片
-
-        #rgbImage = cv2.cvtColor(rgbImage, cv2.COLOR_BGR2RGB)
-        return rgbImage
-
-# QMessageBox.information(parent, 'Information', '警告 username or Password')\
-# messageBox = QMessageBox(QMessageBox.Warning, "警告", "向电网输出功率太大，请减小输出功率！")          
-# messageBox.setWindowIcon(QtGui.QIcon(":/newPrefix/logo.ico"))
-# Qyes = messageBox.addButton(self.tr("设置"), QMessageBox.YesRole)
-# Qno = messageBox.addButton(self.tr("忽略"), QMessageBox.NoRole)
-# messageBox.exec_()
-# if messageBox.clickedButton() == Qyes:
-#     print('ok')   
-# else:
-#     return

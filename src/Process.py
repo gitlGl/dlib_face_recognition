@@ -1,13 +1,12 @@
 import cv2,dlib
-from .GlobalVariable import models
+from .Setting import models
 from .Face import StudentRgFace
 import time
 
 #此用于面部特征计算进程
 def processStudentRg(Q1, Q2, share):
     face_rg = StudentRgFace()
-    process_exit = 10
-    while share.value < process_exit:
+    while share.value < 10:#作为进程退出的标志
         while not Q1.empty():
             rgbImage = Q1.get()
             img = rgbImage

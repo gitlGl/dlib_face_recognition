@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import QWidget, QPushButton, QVBoxLayout, QHBoxLayout,QGroupBox,QCheckBox,QLabel,QSlider
 from PySide6.QtCore import Qt,QObject
 from PySide6.QtGui import QIcon,QFont,QPixmap
+from . import Setting
 
 class Ui(QWidget):
      def __init__(self):
@@ -55,7 +56,7 @@ class Ui(QWidget):
         self.scale_value_label.setFixedSize(30, 20)
         self.scale_value_label.setFont(QFont("Arial", 10))
         self.scale_value_label.setAlignment(Qt.AlignCenter)
-        self.scale_value_label.setText("0.4")
+        self.scale_value_label.setText(str(Setting.user_threshold))
         self.slider = QSlider(Qt.Horizontal)
         self.slider.setTickPosition(QSlider.TicksBelow)
         self.slider.setMaximum(12)

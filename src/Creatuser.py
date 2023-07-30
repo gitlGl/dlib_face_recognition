@@ -1,10 +1,10 @@
 from .MyMd5 import MyMd5
 import numpy as np
-from .GlobalVariable import models
+from .Setting import models
 import os,re
-from .GlobalVariable import database
+from .Setting import database
 import cv2, pickle
-from .Check import user 
+from .Setting import user 
 class CreatUser():
     @staticmethod
     def getImg(img_path):

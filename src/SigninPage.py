@@ -1,13 +1,13 @@
 from PySide6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, \
     QVBoxLayout, QHBoxLayout, QMessageBox
 from PySide6.QtCore import Qt,QRegularExpression
-from .GlobalVariable import database
+from .Setting import database
 from .MyMd5 import MyMd5
 from PySide6.QtGui import QIcon
 from .Creatuser import CreatUser
 from .Check import getImgPath, checkPath
 from .Database import PH
-from .Check import user
+from .Setting import user
 
 from PySide6.QtGui import QRegularExpressionValidator
 class SigninPage(QWidget):

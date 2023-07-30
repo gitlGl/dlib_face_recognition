@@ -4,8 +4,8 @@ from .Login import *
 from .Help import *
 from .ImageView import *
 from .ImageView import *
-from .GlobalVariable import *
-from .GlobalVariable import *
+from .Setting import *
+from .Setting import *
 from  .Check import *
 from .SigninPage import *
 from .conver import *

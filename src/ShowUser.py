@@ -8,7 +8,7 @@ from .Paging import Page
 from .Database import PH
 from .Creatuser import CreatUser
 from .Check import getImgPath
-from .GlobalVariable import database
+from .Setting import database
 from .Check import verifyCellData
 from .MyMd5 import MyMd5
 import os ,shutil 

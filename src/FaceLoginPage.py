@@ -4,7 +4,7 @@ from .Capture import Capture
 from PySide6.QtGui import QPixmap,QIcon
 from .Face import AdminRgFace
 import cv2,copy
-from .GlobalVariable import models
+from .Setting import models
 from PySide6.QtWidgets import QGroupBox
 from .LivenessDetection import LivenessDetection
 class FaceLoginPage(QWidget):

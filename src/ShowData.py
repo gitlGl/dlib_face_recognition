@@ -1,5 +1,5 @@
 from .Creatuser import CreatUser
-from .GlobalVariable import database
+from .Setting import database
 from .ShowUser import ShowUser
 from PySide6.QtCore import QDate, Qt,QTimer
 import copy,multiprocessing
@@ -10,11 +10,10 @@ from PySide6.QtWidgets import QWidget, QHBoxLayout, QLabel, QVBoxLayout, QLineEd
     QGroupBox, QPushButton, QFileDialog, QDateEdit, QMessageBox, QMenu, QProgressBar
 from .LineStack import ChartView
 from .Plugins import Plugins
-from PySide6.QtCore import Signal,QObject
-
+from . import Setting
 
 class ShowData(QWidget):
-    group_count = 10
+    
   
     def __init__(self):
         super().__init__()
@@ -118,7 +117,7 @@ class ShowData(QWidget):
                 if key == 0 and index == 0:
                     CreatUser.checkInsert(1,data,list_problem)
                 else :
-                    CreatUser.checkInsert(key*ShowData.group_count+index,data,list_problem)
+                    CreatUser.checkInsert(key*Setting.group_count+index,data,list_problem)
             return [len(item),list_problem]
     def refreshProgressBar(self):
         for result in self.results:
@@ -151,7 +150,7 @@ class ShowData(QWidget):
         except:
             QMessageBox.warning(self, '提示', 'Excel 文件中没有名为 "user" 的 sheet')
             return
-        if self.user_sheet.nrows < 30:#如果数据量小于30条，就不用多进程了,魔术数字
+        if self.user_sheet.nrows < Setting.count_max:#如果数据量小于30条，就不用多进程了,魔术数字
             self.creatUser(self.user_sheet)
         else:
             self.creatUserMultiprocessing()
@@ -172,22 +171,24 @@ class ShowData(QWidget):
         #     
         #     for row in range(remainder):
         #         data_dict[group_count-1].append(user_sheet.row_values(group_count*10+row))
-        #把数据分组，每组10个，最后一组不足10个的也算一组   
-        group_count = self.user_sheet.nrows // ShowData.group_count
-        remainder = self.user_sheet.nrows % ShowData.group_count
+        #把数据分组，每组10个，最后一组不足10个的也算一组  
+        # 
+       
+        count = self.user_sheet.nrows // Setting.group_count
+        remainder = self.user_sheet.nrows % count
 
-        data_dict = {count: [self.user_sheet.row_values(count*ShowData.group_count+row) for 
-                            row in range(ShowData.group_count) if count*ShowData.group_count+row != 0]
-                for count in range(group_count)}
+        data_dict = {count: [self.user_sheet.row_values(count*count+row) for 
+                            row in range(count) if count*count+row != 0]
+                for count in range(count)}
         if remainder != 0:
-            data_dict[group_count-1].extend(
-                [self.user_sheet.row_values(group_count*ShowData.group_count+row) for row in range(remainder)])
+            data_dict[count-1].extend(
+                [self.user_sheet.row_values(count*count+row) for row in range(remainder)])
             
         self.timer = QTimer()
         self.nrow = 0
         self.list_problem = []
         self.results = []
-        self.pool =  multiprocessing.Pool(3) 
+        self.pool =  multiprocessing.Pool(Setting.processes) 
         for key,value in data_dict.items():
             result  =self.pool.apply_async(self.run,args =({key:value},) )
             self.results.append(result)
@@ -478,7 +479,7 @@ class QtBoxStyleProgressBar(QProgressBar):
 #                     if key == 0 and index == 0:
 #                         CreatUser.checkInsert(1,data,list_problem)
 #                     else :
-#                         CreatUser.checkInsert(key*ShowData.group_count+index,data,list_problem)
+#                         CreatUser.checkInsert(key*group_count+index,data,list_problem)
 #                 self.result_queue.put([len(item),list_problem])
 # class ProcessPool:
 #     def __init__(self, num_processes):

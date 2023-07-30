@@ -2,8 +2,8 @@
 from PySide6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, \
     QVBoxLayout, QHBoxLayout, QMessageBox,QCheckBox,QLineEdit
 from PySide6.QtCore import Signal,QRegularExpression
-from .GlobalVariable import database
-from .Check import user
+from .Setting import database
+from .Setting import user
 from PySide6.QtCore import Slot
 from PySide6.QtGui import QIcon
 import datetime,uuid
@@ -207,15 +207,6 @@ VALUES ({PH})", (user_id, ))
 class config():
     config = None#使用全局变量单例模式,保证数据一致性
     file_name = "config.ini"
-    def __init__(self):
-        if  os.path.exists(self.file_name):
-            return
-        config = configparser.ConfigParser()    #实例化一个对象
-        config["rember_pwd"] = {  'flag':'0','pwd':'' }     # 类似于操作字典的形式
-        config["aotu_login"] = {'flag':'0','login_states':''}
-        with open(self.file_name, "w", encoding="utf-8") as f:
-            config.write(f)
-
     def __del__(self):
         if config.config != None:
             config.config = None#释放全局变量，降低内存占用

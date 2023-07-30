@@ -1,6 +1,6 @@
 import cv2
 from PySide6.QtGui import QImage
-from src.GlobalVariable import models
+from src.Setting import models
 #转换位qt图像格式
 def convertToQtFormat(frame_show):
     #print("子线程",QThread.currentThreadId())

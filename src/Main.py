@@ -11,16 +11,18 @@ from .Login import LoginUi
 from .ShowData import ShowData
 from .Login import LoginUi
 from  .Ui import Ui
-from .GlobalVariable import database
+from . import Setting
+from .Setting import database
 from .Database import PH
+
+from .SettingUI import SettingsWindow
 class Main(Ui):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
         self.Q_put = Queue()  # put_img
         self.Q_get = Queue()
-        self.process_exit = 100
-        self.share = multiprocessing.Value("f", 0.4)
+        self.share = multiprocessing.Value("f", Setting.user_threshold)
         self.put_img = PutImg(self.Q_put, self.Q_get)
         self.put_img.emit_result.connect(self.showResult)
         self.put_img.emit_text.connect(self.changeText)
@@ -36,14 +38,15 @@ class Main(Ui):
         if(self.showError()):
              return
         pop_menu = QMenu(self)
-        pop_menu.addAction("用户信息")
-        pop_menu.addAction("退出登录")
+        user_info = pop_menu.addAction("用户信息")
+        setting = pop_menu.addAction("设置信息")
+        exit = pop_menu.addAction("退出登录")
         action = pop_menu.exec_(self.mapToGlobal(pos))
-        if action == pop_menu.actions()[0]:
+        if action == user_info:
             self.admin_information = AdminInformation(self.id_number)
             self.admin_information.show()
             return
-        if action == pop_menu.actions()[1]:
+        if action == exit:
             if self.put_img.work.cap is not None:#判断摄像头状态
                 if self.put_img.work_thread.isRunning():
                     QMessageBox.information(self, 'Information', '请先关闭摄像头')
@@ -51,7 +54,7 @@ class Main(Ui):
             if self.p.is_alive():
                 #if  self.flag == False:
                 psutil.Process(self.p.pid).resume()
-                self.share.value = self.process_exit
+                self.share.value = Setting.process_exit
             self.normal_rgface_btn.setChecked(False)
             self.Liveness_rgface_btn.setChecked(False)
             self.normal_rgface_btn.setEnabled(True)
@@ -64,6 +67,11 @@ class Main(Ui):
             self.login_ui.show()
             self.login_ui.config_auto_login.setStates('')
             self.login_ui.config_auto_login.setFlag('0')
+        if action == setting:
+            self.setting = SettingsWindow(self)
+            self.setting.show()
+            
+            
         
     def showError(self):
         if(self.put_img.work_thread.isRunning()):
@@ -129,6 +137,7 @@ VALUES ({PH})", (self.id_number,))
         distance = round(self.slider.value() * 0.05, 2)
         self.share.value = distance
         self.scale_value_label.setText(str(distance))
+        Setting.user_threshold = distance
 
     #清理活体识别提示信息，设置提示信息
     @Slot(str)

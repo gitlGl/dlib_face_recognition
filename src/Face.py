@@ -1,9 +1,10 @@
-from .GlobalVariable import database
+from .Setting import database
 from .Log import adminlog, studentlog
-from .GlobalVariable import models
+from .Setting import models
 import numpy as np
 from threading import Timer
 import pickle
+from . import Setting
 
 class Face():  #基类，包含人脸编码，人脸识别
     #为人脸编码
@@ -80,8 +81,7 @@ class StudentRgFace():
 class AdminRgFace():
     def __init__(self):
         super().__init__()
-        self.value = 0.5
-
+        
     def rgFace(self, img, rgbImage, raw_face):
         face_data = Face.encodeFace(rgbImage, raw_face)
         list_vector = []
@@ -97,7 +97,7 @@ class AdminRgFace():
         distances = Face.compareFaces(np.array(list_vector), face_data, axis=1)
         min_distance = np.argmin(distances)
         print("距离", distances[min_distance])
-        if distances[min_distance] < self.value:
+        if distances[min_distance] < Setting.admin_threshold:
             
             log = adminlog(list_id_number[min_distance]["id_number"], img)
             id_number = list_id_number[min_distance]["id_number"]#返回管理员的id_number

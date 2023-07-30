@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QWidget,QPushButton,\
 QHBoxLayout,QVBoxLayout,QLabel,QLineEdit,QMessageBox
 from PySide6.QtCore import Signal
-from .GlobalVariable import database
+from .Setting import database
 from PySide6.QtGui import QIntValidator
 class Paging(QWidget):
     page_number = Signal(int)
