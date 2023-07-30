@@ -169,7 +169,6 @@ class ShowUser(QWidget):
             database.conn.commit()
 
         except Exception as e:
-                print(e)
                 database.conn.rollback()
                 QMessageBox.critical(self, '警告', "未知错误")
                 return False

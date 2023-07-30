@@ -58,7 +58,6 @@ class LivenessDetection():
             list.append(self.computEye(rgbImage1, rect1))
             list.append(self.computEye(rgbImage2, rect2))
             result = abs(list[0] - list[1])
-            print(Setting.EYE_AR_THRESH)
             if result >= Setting.EYE_AR_THRESH:
 
                 return True

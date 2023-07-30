@@ -110,7 +110,6 @@ class ShowData(QWidget):
 
     @staticmethod
     def run(data_dict):
-        print("run")
         list_problem = []
         for key,item in data_dict.items():
             for index,data in enumerate(item):
