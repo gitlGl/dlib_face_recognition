@@ -7,12 +7,13 @@ from .ImageView import ShowImage
 from .Setting import database
 from .Paging import Page
 import os
+from . import Setting
 from PySide6.QtGui import QIcon
 class ShowLog(QDialog):
     def __init__(self,id_number, QTableWidget_column_name,table_name, table_cloumn_name):
         super().__init__()
         self.id_number = id_number
-        self.page_count = 30
+        self.page_count = Setting.page_count
         self.table_name = table_name
         self.setWindowFlags(Qt.WindowMinMaxButtonsHint | Qt.WindowCloseButtonHint)
         self.setWindowTitle("学生日志")

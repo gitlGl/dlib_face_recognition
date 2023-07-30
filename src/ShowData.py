@@ -131,9 +131,14 @@ class ShowData(QWidget):
 
             self.ProgressBar.setValue(int(self.nrow/self.user_sheet.nrows*100))
             QApplication.processEvents()
+            
+            print(self.nrow)
 
             if self.nrow == self.user_sheet.nrows-1:
+                print("结束")
+               
                 self.timer.stop()
+                self.setEnabled(True)
                 self.showEerror(self.list_problem)
                 self.list_problem = None
                 self.results = None
@@ -157,32 +162,22 @@ class ShowData(QWidget):
             
     def creatUserMultiprocessing(self):
         self.creatProgressBar()
+        self.setEnabled(False)
         
-        #data_dict = {}
-        # group_count =  int(user_sheet.nrows/10)
-        # remainder  = user_sheet.nrows%10
-        # for count in range(group_count):
-        #     for row in range(10):
-        #         data_dict[count] = ()
-        #         if count*10+row == 0:
-        #             continue
-        #         data_dict[count].append(user_sheet.row_values(count*10+row))
-        # if remainder != 0:
-        #     
-        #     for row in range(remainder):
-        #         data_dict[group_count-1].append(user_sheet.row_values(group_count*10+row))
-        #把数据分组，每组10个，最后一组不足10个的也算一组  
-        # 
-       
-        count = self.user_sheet.nrows // Setting.group_count
-        remainder = self.user_sheet.nrows % count
-
-        data_dict = {count: [self.user_sheet.row_values(count*count+row) for 
-                            row in range(count) if count*count+row != 0]
-                for count in range(count)}
+        data_dict = {}
+        total_group = self.user_sheet.nrows // Setting.group_count
+        remainder = self.user_sheet.nrows % Setting.group_count
+        for num in range(total_group):
+            data_dict[num] = []
+            for row in range(Setting.group_count):
+                if num*Setting.group_count+row == 0:
+                    continue
+                data_dict[num].append(self.user_sheet.row_values(num*Setting.group_count+row))
         if remainder != 0:
-            data_dict[count-1].extend(
-                [self.user_sheet.row_values(count*count+row) for row in range(remainder)])
+            
+            for row in range(remainder):
+                data_dict[total_group-1].append(self.user_sheet.row_values(total_group*Setting.group_count+row))
+       
             
         self.timer = QTimer()
         self.nrow = 0
@@ -200,7 +195,6 @@ class ShowData(QWidget):
         
     def creatProgressBar(self):  # 创建进度条
         self.ProgressBar = QtBoxStyleProgressBar()
-
         item = self.Vhlayout.itemAt(1)
         item.widget().deleteLater()
         self.Vhlayout.removeItem(item)

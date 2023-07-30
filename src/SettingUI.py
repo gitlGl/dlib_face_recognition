@@ -51,6 +51,14 @@ class SettingsWindow(QMainWindow):
         
         form_layout.addRow(self.is_multiprocessing_label, self.is_multiprocessing_spinbox)
 
+        # 每页显示设置项
+        self.page_count_label = QLabel('Page Count:')
+        self.page_count_spinbox = QSpinBox()
+        self.page_count_spinbox.setMinimum(1)
+        self.page_count_spinbox.setMaximum(100)
+        self.page_count_spinbox.setValue(Setting.page_count)
+        
+        form_layout.addRow(self.page_count_label, self.page_count_spinbox)
         # 创建人脸识别设置组
         face_recognition_group = QGroupBox('Face Recognition')
         layout.addWidget(face_recognition_group)
@@ -161,6 +169,7 @@ class SettingsWindow(QMainWindow):
         Setting.EYE_AR_THRESH = float(self.eye_ar_thresh_spinbox.value())
         Setting.MAR_THRESH = float(self.mar_thresh_spinbox.value())
         Setting.processes = int(self.processes_spinbox.value())
+        Setting.page_count = int(self.page_count_spinbox.value())
         # 保存设置到文件
         cfg = configparser.ConfigParser() 
         cfg.read('config.ini')
@@ -171,6 +180,7 @@ class SettingsWindow(QMainWindow):
         cfg.set('setting', 'EYE_AR_THRESH', str(Setting.EYE_AR_THRESH))
         cfg.set('setting', 'MAR_THRESH', str(Setting.MAR_THRESH))
         cfg.set('setting', 'processes', str(Setting.processes))
+        cfg.set('setting', 'page_count', str(Setting.page_count))
         with open('config.ini', 'w') as f:
             cfg.write(f)
         QMessageBox.information(self, '提示', '保存成功！')

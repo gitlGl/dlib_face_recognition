@@ -34,7 +34,8 @@ if not  os.path.exists(file_name):
             'group_count' : '10',
             'count_max' : '30',
             'processes' : '3',
-            'process_exit' : '100'
+            'process_exit' : '100',
+            'page_count' : '30'
 
             }
    
@@ -54,13 +55,15 @@ def configRead(filePath:str):
         count_max=cfg.getint('setting','count_max')
         processes=cfg.getint('setting','processes')
         process_exit=cfg.getint('setting','process_exit')
-        return admin_threshold,user_threshold,EYE_AR_THRESH,MAR_THRESH,group_count,count_max,processes,process_exit
+        page_count=cfg.getint('setting','page_count')
+        return admin_threshold,user_threshold,EYE_AR_THRESH,MAR_THRESH,\
+               group_count,count_max,processes,process_exit,page_count
        
     else:
         return None,None,None,None,None,None,None
 
 admin_threshold,user_threshold,EYE_AR_THRESH,MAR_THRESH,group_count,\
-count_max,processes,process_exit = configRead("config.ini")
+count_max,processes,process_exit,page_count = configRead("config.ini")
 
 # process_exit = 100#进程退出码
 # group_count = 10#每组人数

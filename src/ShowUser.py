@@ -12,6 +12,7 @@ from .Setting import database
 from .Check import verifyCellData
 from .MyMd5 import MyMd5
 import os ,shutil 
+from . import Setting
 class ShowUser(QWidget):
     def __init__(self,table_name:str,information=None ):
         super().__init__()
@@ -53,7 +54,7 @@ class ShowUser(QWidget):
        
         if not information:
             self.isNUll = False
-            page_count = 30
+            page_count = Setting.page_count
             self.page = Page(table_name,self.table_cloumn_name,page_count=page_count)
             self.page.information_signal.connect(self.setInformation)
             if  not self.page.information:
