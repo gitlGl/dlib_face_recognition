@@ -119,28 +119,27 @@ class ShowData(QWidget):
                     CreatUser.checkInsert(key*Setting.group_count+index,data,list_problem)
             return [len(item),list_problem]
     def refreshProgressBar(self):
-        lenth = len(self.results)
-        if lenth == 0:
-            self.timer.stop()
-            self.setEnabled(True)
-            self.showEerror(self.list_problem)
-            self.list_problem = None
-            self.results = None
-            self.pool = None
-            return
-        randomint = random.randint(0, lenth -1)
-        result = self.results[randomint]
-        if not result.ready():
-            return
-        item = result.get()
-        self.results.remove(result)
-        
-        self.nrow = self.nrow + item[0]
-        self.list_problem.extend(item[1])
+        for  index,result in enumerate(self.results):
+            if index == Setting.processes:
+                return
+            if not result.ready():
+                continue 
+            item = result.get()
+            self.results.remove(result)
+          
+            self.nrow = self.nrow + item[0]
+            self.list_problem.extend(item[1])
 
-        self.ProgressBar.setValue(int(self.nrow/self.user_sheet.nrows*100))
-        QApplication.processEvents()
-
+            self.ProgressBar.setValue(int(self.nrow/self.user_sheet.nrows*100))
+            QApplication.processEvents()
+            
+            if self.nrow == self.user_sheet.nrows-1:
+                self.timer.stop()
+                self.setEnabled(True)
+                self.showEerror(self.list_problem)
+                self.list_problem = None
+                self.results = None
+                self.pool = None
       
             
     def buttonCreate(self):

@@ -273,7 +273,7 @@ class ShowUser(QWidget):
      
     def delete(self, id):
         database.execute("begin")
-        path = "img_information/admin/{0}".format(str(id))
+        path = "img_information/{0}/{1}".format(self.table_name,str(id))
         try:
             database.execute(
                 "delete from {0} where id_number = {1}".format(self.table_name,id))
