@@ -11,7 +11,7 @@ from PySide6.QtWidgets import QWidget, QHBoxLayout, QLabel, QVBoxLayout, QLineEd
 from .LineStack import ChartView
 from .Plugins import Plugins
 from . import Setting
-
+import random
 class ShowData(QWidget):
     
   
@@ -119,29 +119,29 @@ class ShowData(QWidget):
                     CreatUser.checkInsert(key*Setting.group_count+index,data,list_problem)
             return [len(item),list_problem]
     def refreshProgressBar(self):
-        for result in self.results:
-            if not result.ready():
-                return 
-            item = result.get()
-            self.results.remove(result)
-          
-            self.nrow = self.nrow + item[0]
-            self.list_problem.extend(item[1])
+        lenth = len(self.results)
+        if lenth == 0:
+            self.timer.stop()
+            self.setEnabled(True)
+            self.showEerror(self.list_problem)
+            self.list_problem = None
+            self.results = None
+            self.pool = None
+            return
+        randomint = random.randint(0, lenth -1)
+        result = self.results[randomint]
+        if not result.ready():
+            return
+        item = result.get()
+        self.results.remove(result)
+        
+        self.nrow = self.nrow + item[0]
+        self.list_problem.extend(item[1])
 
-            self.ProgressBar.setValue(int(self.nrow/self.user_sheet.nrows*100))
-            QApplication.processEvents()
-            
-            print(self.nrow)
+        self.ProgressBar.setValue(int(self.nrow/self.user_sheet.nrows*100))
+        QApplication.processEvents()
 
-            if self.nrow == self.user_sheet.nrows-1:
-                print("结束")
-               
-                self.timer.stop()
-                self.setEnabled(True)
-                self.showEerror(self.list_problem)
-                self.list_problem = None
-                self.results = None
-                self.pool = None
+      
             
     def buttonCreate(self):
         path, _ = QFileDialog.getOpenFileName(self, "选择文件", "c:\\",
