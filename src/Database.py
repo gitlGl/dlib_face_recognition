@@ -113,10 +113,14 @@ class Database():
 
     def insertUser(self, id_number, user_name,gender, password, vector,
                     salt):
-        self.c.execute(
-            f"INSERT INTO student (id_number,user_name,gender,password ,vector,salt) \
-      VALUES ({PH},{PH}, {PH}, {PH} , {PH},{PH})",
-            (id_number, user_name,gender, password,  vector, salt))
+        try:
+            self.c.execute(
+                f"INSERT INTO student (id_number,user_name,gender,password ,vector,salt) \
+        VALUES ({PH},{PH}, {PH}, {PH} , {PH},{PH})",
+                (id_number, user_name,gender, password,  vector, salt))
+        except sqlite3.IntegrityError:
+            print('主键重复')#此处应该把异常抛出，让调用者处理，或者写入日志
+            return False#避免多进程环境下主键唯一重复错误，插入失败
         self.conn.commit()
     def creatIndex(self):
         if type_database is 'sqlite3':

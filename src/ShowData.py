@@ -109,12 +109,11 @@ class ShowData(QWidget):
             self.Vhlayout.addWidget(controls_class[action.text()](self))
 
     @staticmethod
-    def run(data_dict):
+    def run(num,data):
         list_problem = []
-        for key,item in data_dict.items():
-            for index,data in enumerate(item,start=2):
-                    CreatUser.checkInsert(key*Setting.group_count+index,data,list_problem)
-            return [len(item),list_problem]
+        for index, item in enumerate(data,start=2):
+                CreatUser.checkInsert(num*Setting.group_count+index,item,list_problem)
+        return [len(data),list_problem]
     def refreshProgressBar(self):
         for  index,result in enumerate(self.results):
             if index == Setting.processes:
@@ -160,31 +159,25 @@ class ShowData(QWidget):
         self.setEnabled(False)
 
         data = [self.user_sheet.row_values(i) for i in range(1, self.user_sheet.nrows)]
-        data_dict = {}
+        group_count = Setting.group_count
 
         lenth = len(data)   
-        total_group = lenth // Setting.group_count
-        remainder = lenth % Setting.group_count
-        for num in range(total_group):
-            data_dict[num] = []
-            for row in range(Setting.group_count):
-                data_dict[num].append(data[num*Setting.group_count+row])
-        if remainder != 0:
-            for row in range(remainder):
-                data_dict[total_group-1].append(data[total_group*Setting.group_count+row])
-       
-            
+        total_group = lenth // group_count
+        self.results = []
+
+        self.pool =  multiprocessing.Pool(Setting.processes) 
+        for  num in range(total_group):
+            result  =self.pool.apply_async(self.run,args =
+                                            (num,data[num* group_count:(num+1)*group_count]) )
+            self.results.append(result)
+        result  =self.pool.apply_async(self.run,args = 
+                                       (total_group,data[total_group*(group_count):]) )
+        self.results.append(result)
+        self.pool.close()
+    
         self.timer = QTimer()
         self.nrow = 0
         self.list_problem = []
-        self.results = []
-        self.pool =  multiprocessing.Pool(Setting.processes) 
-        for key,value in data_dict.items():
-            result  =self.pool.apply_async(self.run,args =({key:value},) )
-            self.results.append(result)
-        self.pool.close()
-    
-        
         self.timer.timeout.connect(self.refreshProgressBar)
         self.timer.start(100)
         

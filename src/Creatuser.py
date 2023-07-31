@@ -124,6 +124,10 @@ class CreatUser():
             dic = dict(zip(list2, row_user_data))
             information = CreatUser.setInformation(dic)
             CreatUser.insertUser(information)
+            
+            CreatUser.insertImg(dic["id_number"],
+                      dic["img_path"], "student")
+        
             return list_problem
     
  
