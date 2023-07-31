@@ -142,8 +142,6 @@ class CreatUser():
             part_information["password"], information["salt"],
             part_information["id_number"])
         information["vector"] = CreatUser.getVector(part_information["img_path"])
-        CreatUser.insertImg(part_information["id_number"],
-                       part_information["img_path"], "student")
         return information
     @staticmethod
     def insertUser(information):

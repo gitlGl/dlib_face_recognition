@@ -149,7 +149,7 @@ class ShowData(QWidget):
         except:
             QMessageBox.warning(self, '提示', 'Excel 文件中没有名为 "user" 的 sheet')
             return
-        if self.user_sheet.nrows < Setting.count_max:#如果数据量小于30条，就不用多进程了,魔术数字
+        if self.user_sheet.nrows > Setting.count_max:#如果数据量小于30条，就不用多进程了,魔术数字
             self.creatUser(self.user_sheet)
         else:
             self.creatUserMultiprocessing()
@@ -203,7 +203,7 @@ class ShowData(QWidget):
             QApplication.processEvents()
             self.ProgressBar.setValue(int(row/rows*100)) 
             row_user_data = user_sheet.row_values(rowx=row)
-            CreatUser.checkInsert(row,row_user_data,list_problem)
+            CreatUser.checkInsert(row+1,row_user_data,list_problem)
            
         self.ProgressBar.setValue(100)
         self.showEerror(list_problem)
