@@ -1,7 +1,7 @@
 from .MyMd5 import MyMd5
 import numpy as np
 from .Setting import models
-import os,re
+import os,re,sqlite3
 from .Setting import database
 import cv2, pickle
 from .Setting import user 
@@ -123,7 +123,12 @@ class CreatUser():
             ]
             dic = dict(zip(list2, row_user_data))
             information = CreatUser.setInformation(dic)
-            CreatUser.insertUser(information)
+            try:
+                CreatUser.insertUser(information)
+            except sqlite3.IntegrityError:
+                list_problem.append("第{0}行第1列,表中数据学号可能重复，请检查: ".format(row) +
+                                    str(row_user_data[0]))
+                return
             
             CreatUser.insertImg(dic["id_number"],
                       dic["img_path"], "student")
