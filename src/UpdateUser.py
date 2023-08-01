@@ -6,7 +6,7 @@ from PySide6.QtGui import QIcon
 from PySide6.QtCore import Qt
 import os, shutil
 from .MyMd5 import MyMd5
-from .Check import verifyePwd
+from .Check import verify
 from .Setting import user
 import re
 from PySide6.QtGui import QRegularExpressionValidator
@@ -102,7 +102,7 @@ class UpdatePwd(QDialog):
         item = database.execute(
             "select salt from admin where id_number = {0}".format(
                 self.id_number))[0]
-        result = verifyePwd(self.id_number, old_pwd, "admin")
+        result = verify.verifyePwd(self.id_number, old_pwd, "admin")
         if not result:
             QMessageBox.critical(self, '警告', '旧密码错误')
             return

@@ -7,7 +7,7 @@ from .ShowLog import ShowLog
 from .Paging import Page
 from .Database import PH
 from .Creatuser import CreatUser
-from .Check import getImgPath
+from .Check import verify
 from .Setting import database
 from .Check import verifyCellData
 from .MyMd5 import MyMd5
@@ -107,7 +107,7 @@ class ShowUser(QWidget):
         self.tableWidget.cellChanged.connect(self.on_cell_changed)#单元格变更槽函数
     def handle_button_click(self):
         sender = QObject.sender(self).parent()#获取信号发送者的对象
-        path = getImgPath(self)
+        path = verify.getImgPath(self)
         id_number = sender.id_number
         
         if path:

@@ -8,7 +8,7 @@ from PySide6.QtCore import Slot
 from PySide6.QtGui import QIcon
 import datetime,uuid
 from .FaceLoginPage import FaceLoginPage
-from .Check import verifyePwd
+from .Check import verify
 from .SigninPage import SigninPage
 import configparser,base64
 from Crypto.Cipher import AES
@@ -167,7 +167,7 @@ class LoginUi(QWidget):
             QMessageBox.critical(self,'警告', f'密码为{user.password_min_length.value}-{user.password_max_length.value}位,字母数字、特殊字符!')
             return
     
-        result = verifyePwd(user_id,user_pwd,"admin")
+        result = verify.verifyePwd(user_id,user_pwd,"admin")
         if not result:
             QMessageBox.warning(self, '警告', '账号或密码错误，请重新输入')
             

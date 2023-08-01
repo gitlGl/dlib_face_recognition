@@ -5,7 +5,7 @@ from .Setting import database
 from .MyMd5 import MyMd5
 from PySide6.QtGui import QIcon
 from .Creatuser import CreatUser
-from .Check import getImgPath, checkPath
+from .Check import verify
 from .Database import PH
 from .Setting import user
 
@@ -105,7 +105,7 @@ class SigninPage(QWidget):
         #self.signin_vector_line.setText(path)
         #self.signin_vector_line.clear()
     def getPath(self):
-        path = getImgPath(self)
+        path = verify.getImgPath(self)
         if path :
             self.signin_vector_line.setText(path)
             return 
@@ -146,7 +146,7 @@ class SigninPage(QWidget):
 
        
        
-        if not checkPath(path,self):
+        if not verify.checkPath(path,self):
             return
         salt = MyMd5.createSalt()
         password = MyMd5.createMd5(password, salt,user_name)
