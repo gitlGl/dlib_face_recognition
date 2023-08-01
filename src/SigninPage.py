@@ -2,10 +2,10 @@ from PySide6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, \
     QVBoxLayout, QHBoxLayout, QMessageBox
 from PySide6.QtCore import Qt,QRegularExpression
 from .Setting import database
-from .MyMd5 import MyMd5
+from . import encryption
 from PySide6.QtGui import QIcon
-from .Creatuser import CreatUser
-from .Check import verify
+from . import CreatUser
+from  . import Check
 from .Database import PH
 from .Setting import user
 
@@ -105,7 +105,7 @@ class SigninPage(QWidget):
         #self.signin_vector_line.setText(path)
         #self.signin_vector_line.clear()
     def getPath(self):
-        path = verify.getImgPath(self)
+        path = Check.getImgPath(self)
         if path :
             self.signin_vector_line.setText(path)
             return 
@@ -124,7 +124,7 @@ class SigninPage(QWidget):
 
         #检查输入信息格式
         if not user_name.isnumeric() or len(user_name) > user.id_length.value:
-            QMessageBox.critical(self, '警告', f'用户名只能是数字且少于{user.id_length.value}位!')
+            Check.id_number_info(self)
             return
 
         if password != password2:
@@ -132,7 +132,7 @@ class SigninPage(QWidget):
             return
 
         if not user.password_min_length.value <= len(password) <= user.password_max_length.value:
-            QMessageBox.critical(self, '警告', f'密码长度必须在{user.password_min_length.value}到{user.password_max_length.value}之间!')
+            Check.password_info(self)
             return
         user_ = database.execute(
             "select id_number from admin where id_number = {} ".format(
@@ -146,10 +146,10 @@ class SigninPage(QWidget):
 
        
        
-        if not verify.checkPath(path,self):
+        if not Check.checkPath(path,self):
             return
-        salt = MyMd5.createSalt()
-        password = MyMd5.createMd5(password, salt,user_name)
+        salt = encryption.createSalt()
+        password = encryption.createMd5(password, salt,user_name)
         vector = CreatUser.getVector(path)
         CreatUser.insertImg(user_name,path,"admin")
 

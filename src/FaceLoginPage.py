@@ -4,9 +4,9 @@ from .Capture import Capture
 from PySide6.QtGui import QPixmap,QIcon
 from .Face import AdminRgFace
 import cv2,copy
-from .Setting import models
+from .Setting import predictor,detector,encoder
 from PySide6.QtWidgets import QGroupBox
-from .LivenessDetection import LivenessDetection
+from . import LivenessDetection
 class FaceLoginPage(QWidget):
     emit_show_parent = Signal(str)
 
@@ -48,9 +48,9 @@ class FaceLoginPage(QWidget):
     def getResult(self):
         self.get_result_timer.stop()
         rgbImage = cv2.cvtColor(self.capture.frame, cv2.COLOR_BGR2RGB)
-        location_faces = models.detector(rgbImage)
+        location_faces = detector(rgbImage)
         if len(location_faces) == 1:
-            raw_face = models.predictor(rgbImage, location_faces[0])
+            raw_face = predictor(rgbImage, location_faces[0])
             result = self.face_rg.rgFace(self.capture.frame, rgbImage,
                                           raw_face)
             if result:
@@ -89,9 +89,9 @@ class FaceLoginPage(QWidget):
             self.flag = False
             rgbImage = cv2.cvtColor(self.capture.frame, cv2.COLOR_BGR2RGB)
             
-            location_faces = models.detector(rgbImage)
+            location_faces = detector(rgbImage)
             if len(location_faces) == 1:
-                raw_face = models.predictor(rgbImage, location_faces[0])
+                raw_face = predictor(rgbImage, location_faces[0])
                 result = self.face_rg.rgFace(self.capture.frame, rgbImage,
                                     raw_face)
                             

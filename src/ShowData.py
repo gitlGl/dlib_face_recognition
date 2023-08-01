@@ -1,4 +1,4 @@
-from .Creatuser import CreatUser
+from . import CreatUser
 from .Setting import database
 from .ShowUser import ShowUser
 from PySide6.QtCore import QDate, Qt,QTimer

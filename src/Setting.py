@@ -3,6 +3,12 @@ import dlib,time,types,os,configparser
 from enum import Enum
 from .Database import Database,type_database
 
+predictor = dlib.shape_predictor(
+    "resources/shape_predictor_68_face_landmarks.dat")  # 4 获取人脸关键点检测模型
+detector = dlib.get_frontal_face_detector()  # 获取人脸模型
+encoder = dlib.face_recognition_model_v1(
+            "resources/dlib_face_recognition_resnet_model_v1.dat")
+
 class user(Enum):
     id_length = 13
     password_max_length = 20
@@ -74,14 +80,6 @@ count_max,processes,process_exit,page_count = configRead("config.ini")
 # EYE_AR_THRESH = 0.05#眼睛长宽比
 # MAR_THRESH = 0.5#嘴巴长宽比    
 
-class models():
-    def __init__(self):
-        pass
-    predictor = dlib.shape_predictor(
-        "resources/shape_predictor_68_face_landmarks.dat")  # 4 获取人脸关键点检测模型
-    detector = dlib.get_frontal_face_detector()  # 获取人脸模型
-    encoder = dlib.face_recognition_model_v1(
-                "resources/dlib_face_recognition_resnet_model_v1.dat")
 
     
 def log_slow_query(sql, execution_time):

@@ -2,12 +2,12 @@ from .ShowLog import ShowLog
 from .ImageView import ImageView
 from .Setting import database
 from .ImageView import ShowImage
-from .Creatuser import CreatUser
+from . import CreatUser
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QHBoxLayout, QLabel, QVBoxLayout, QGroupBox,QPushButton,\
 QMessageBox, QMenu,QWidget
-from .Check import verify
+from . import Check
 from .UpdateUser import UpdatePwd
 from .ShowUser import ShowUser
 from .Database import PH
@@ -88,7 +88,7 @@ class AdminInformation(QWidget):
            self.Vhlayout.addWidget(show_imag)
        elif action == pop_menu.actions()[1]:
 
-           path = verify.getImgPath(self)
+           path = Check.getImgPath(self)
            if path:
               vector = CreatUser.getVector(path)
               CreatUser.insertImg(self.id_number,path,"admin")

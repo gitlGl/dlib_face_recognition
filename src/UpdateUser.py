@@ -1,12 +1,10 @@
 from PySide6.QtWidgets import QDialog, QLabel, QLineEdit, QPushButton, \
 QVBoxLayout, QHBoxLayout, QMessageBox
-from .Database import PH
 from .Setting import database
 from PySide6.QtGui import QIcon
 from PySide6.QtCore import Qt
-import os, shutil
-from .MyMd5 import MyMd5
-from .Check import verify
+from . import encryption
+from . import Check
 from .Setting import user
 import re
 from PySide6.QtGui import QRegularExpressionValidator
@@ -92,7 +90,7 @@ class UpdatePwd(QDialog):
             return
         pattern =  user.reg_pwd.value
         if not re.match(pattern, new_pwd):
-            QMessageBox.critical(self, '警告', f'密码为字母数字、特殊字符!且不大于{user.password_max_length.value}位')
+            Check.password_info(self)
             return
             
         if old_pwd == new_pwd:
@@ -102,11 +100,11 @@ class UpdatePwd(QDialog):
         item = database.execute(
             "select salt from admin where id_number = {0}".format(
                 self.id_number))[0]
-        result = verify.verifyePwd(self.id_number, old_pwd, "admin")
+        result = Check.verifyePwd(self.id_number, old_pwd, "admin")
         if not result:
             QMessageBox.critical(self, '警告', '旧密码错误')
             return
-        new_pass_word = MyMd5.createMd5(new_pwd, item["salt"],
+        new_pass_word = encryption.createMd5(new_pwd, item["salt"],
                                           self.id_number)
        
         database.execute(

@@ -6,11 +6,10 @@ from PySide6.QtWidgets import QVBoxLayout,QMenu,QHeaderView,QMessageBox,QPushBut
 from .ShowLog import ShowLog
 from .Paging import Page
 from .Database import PH
-from .Creatuser import CreatUser
-from .Check import verify
+from . import CreatUser
+from . import Check
 from .Setting import database
-from .Check import verifyCellData
-from .MyMd5 import MyMd5
+from . import encryption
 import os ,shutil 
 from . import Setting
 class ShowUser(QWidget):
@@ -19,18 +18,18 @@ class ShowUser(QWidget):
         self.table_name = table_name
         self.information = information
         if self.table_name == "admin":
-            self.verifyCellDataFn:list = [verifyCellData.idNumber,verifyCellData.password]
-            self.verifyCellDataLambda:list = [verifyCellData.id_number_info,verifyCellData.password_info]
+            self.verifyCellDataFn:list = [Check.idNumber,Check.password]
+            self.verifyCellDataLambda:list = [Check.id_number_info,Check.password_info]
             self.table_cloumn_name = ["id_number",'password']
             self.log_column_name = ['id','id_number','log_time']
             self.QTableWidget_column_name = [ '用户ID', '密码',"图片" ]
             self.column = 1
         else:
-            self.verifyCellDataFn:list = [ verifyCellData.idNumber,verifyCellData.userName,
-                                        verifyCellData.gneder,
-                                       verifyCellData.password]
-            self.verifyCellDataLambda:list = [verifyCellData.id_number_info,verifyCellData.user_name_info,
-                                              verifyCellData.gender_info,verifyCellData.password_info]
+            self.verifyCellDataFn:list = [ Check.idNumber,Check.userName,
+                                        Check.gneder,
+                                       Check.password]
+            self.verifyCellDataLambda:list = [Check.id_number_info,Check.user_name_info,
+                                              Check.gender_info,Check.password_info]
             self.table_cloumn_name = ["id_number", "user_name", "gender", "password"]
             self.log_column_name = ['id','id_number','log_time']
             self.QTableWidget_column_name = [ '学号', '姓名', '性别', '密码',"图片" ]
@@ -107,7 +106,7 @@ class ShowUser(QWidget):
         self.tableWidget.cellChanged.connect(self.on_cell_changed)#单元格变更槽函数
     def handle_button_click(self):
         sender = QObject.sender(self).parent()#获取信号发送者的对象
-        path = verify.getImgPath(self)
+        path = Check.getImgPath(self)
         id_number = sender.id_number
         
         if path:
@@ -122,7 +121,7 @@ class ShowUser(QWidget):
         id_number = self.information[row]["id_number"]
         text = self.tableWidget.item(row, column).text()
         if not self.verifyCellDataFn[column](
-            self,text,self.information[row]):
+                text,self.information[row]):
             self.tableWidget.cellChanged.disconnect(self.on_cell_changed)#单元格变更槽函数
             self.tableWidget.item(row, column).setText("格式错误-"+text)
             self.tableWidget.item(row, column).setForeground(Qt.red)
@@ -130,8 +129,8 @@ class ShowUser(QWidget):
             self.tableWidget.cellChanged.connect(self.on_cell_changed)#单元格变更槽函数
             return
         if self.column == column:
-            salt = MyMd5.createSalt()
-            password = MyMd5.createMd5(text, salt,id_number)
+            salt = encryption.createSalt()
+            password = encryption.createMd5(text, salt,id_number)
             database.execute("update {0} set {1} = '{2}',salt = '{3}' where id_number = {4}"
                                 .format(self.table_name,         
                             self.table_cloumn_name[column],password,salt,id_number))

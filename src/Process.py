@@ -1,5 +1,5 @@
 import cv2,dlib
-from .Setting import models
+from .Setting import predictor,detector
 from .Face import StudentRgFace
 import time
 
@@ -11,9 +11,9 @@ def processStudentRg(Q1, Q2, share):
             rgbImage = Q1.get()
             img = rgbImage
             rgbImage = cv2.cvtColor(rgbImage, cv2.COLOR_BGR2RGB)
-            location_faces = models.detector(rgbImage)
+            location_faces = detector(rgbImage)
             if len(location_faces) == 1:
-                raw_face = models.predictor(rgbImage, location_faces[0])
+                raw_face = predictor(rgbImage, location_faces[0])
                 #rgbImage = dlib.get_face_chip(rgbImage, face)
             
                 result = face_rg.rg(img, rgbImage, raw_face, share)
@@ -29,7 +29,7 @@ def processStudentRg(Q1, Q2, share):
 #             img = Q1.get()
 #             rgbImage = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 #             gray = cv2.cvtColor(rgbImage, cv2.COLOR_RGB2GRAY)
-#             location_faces = models.detector(gray)
+#             location_faces = detector(gray)
 #             if len(location_faces) == 1:
-#                 raw_face = models.predictor(gray, location_faces[0])
+#                 raw_face = predictor(gray, location_faces[0])
 #                 result = face_rg.rg_face(img, rgbImage, raw_face,share)

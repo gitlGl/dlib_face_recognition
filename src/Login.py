@@ -6,17 +6,15 @@ from .Setting import database
 from .Setting import user
 from PySide6.QtCore import Slot
 from PySide6.QtGui import QIcon
-import datetime,uuid
+import datetime
 from .FaceLoginPage import FaceLoginPage
-from .Check import verify
+from . import Check
 from .SigninPage import SigninPage
-import configparser,base64
-from Crypto.Cipher import AES
-from Crypto.Util.Padding import pad, unpad
-import os
+import configparser
 import configparser
 from .Database import PH
 from PySide6.QtGui import  QRegularExpressionValidator
+from .encryption import *
 #from PySide6 import QString
 class LoginUi(QWidget):
     emitsingal = Signal(str)
@@ -160,14 +158,14 @@ class LoginUi(QWidget):
         user_pwd = self.pwd_line.text()
 
         if not user_id.isdigit() or len(user_id) > user.id_length.value:
-           QMessageBox.critical(self, '警告', f'学号为{user.id_length.value}个有效字符')
+           Check.id_number_info(self)
            return
         if len(user_pwd) < user.password_min_length.value or len(
         user_pwd) > user.password_max_length.value:
-            QMessageBox.critical(self,'警告', f'密码为{user.password_min_length.value}-{user.password_max_length.value}位,字母数字、特殊字符!')
+            Check.password_info(self)
             return
     
-        result = verify.verifyePwd(user_id,user_pwd,"admin")
+        result = Check.verifyePwd(user_id,user_pwd,"admin")
         if not result:
             QMessageBox.warning(self, '警告', '账号或密码错误，请重新输入')
             
@@ -310,27 +308,4 @@ class  configAotuLogin(config):
         with open(self.file_name, "w", encoding="utf-8") as f:
             config.config.write(f)
     
-class aes():
-    Key = uuid.uuid1().hex[-12:][1:6]+'abc'
-    mac_address = uuid.uuid1().hex[-12:]
-    days = 3
-    def encrypt(data,mac_address):
-       
-        key = pad(mac_address.encode("utf8"),AES.block_size)
-        cipher = AES.new(key,AES.MODE_ECB)
-        plaintext = data.encode('utf8')
-        msg = cipher.encrypt(pad(plaintext,AES.block_size))
-        result = str(base64.b64encode(msg).decode('utf8'))
-        return result
 
-    def decrypt(data,mac_address):
-       
-        key = pad(mac_address.encode("utf8"),AES.block_size)
-        cipher = AES.new(key,AES.MODE_ECB)
-        try:
-            plaintext = base64.b64decode(data.encode("utf8"))
-            msg = unpad(cipher.decrypt(plaintext),AES.block_size)
-            result = str(msg.decode('utf8'))
-            return result
-        except:
-            return False

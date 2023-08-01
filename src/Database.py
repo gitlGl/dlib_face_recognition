@@ -14,8 +14,8 @@ elif type_database is 'mysql':
     PH = '%s'
     Auto = 'AUTO_INCREMENT'
     time =  'DEFAULT CURRENT_TIMESTAMP'
-
 #######
+
 def configRead(filePath:str):
     cfg = configparser.ConfigParser() 
     cfg.read(filePath)
@@ -39,17 +39,10 @@ class Database():
 
         if type_database is 'sqlite3':
             sqlite3.enable_callback_tracebacks(True)
-
-            
             self.conn = sqlite3.connect('resources/data.db', isolation_level = None,
                                         detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
-            
             self.conn.row_factory = dictFactory
-
             self.c = self.conn.cursor()
-           
-        
-           
         elif type_database is 'mysql':
             host,port,user,password,dbName,charset = configRead("config.ini")
            
@@ -118,8 +111,6 @@ class Database():
             f"INSERT INTO student (id_number,user_name,gender,password ,vector,salt) \
     VALUES ({PH},{PH}, {PH}, {PH} , {PH},{PH})",
             (id_number, user_name,gender, password,  vector, salt))
-
-            
            
         self.conn.commit()
     def creatIndex(self):
@@ -146,9 +137,7 @@ class Database():
             if self.c.fetchone()['COUNT(*)'] == 0:
                 self.c.execute("CREATE INDEX idx_id_number ON admin_log_time (id_number(50));")
             
-
         self.conn.commit()
-          
     def __del__(self):
         self.conn.close()
         
