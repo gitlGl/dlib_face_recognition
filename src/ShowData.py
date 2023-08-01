@@ -11,10 +11,7 @@ from PySide6.QtWidgets import QWidget, QHBoxLayout, QLabel, QVBoxLayout, QLineEd
 from .LineStack import ChartView
 from .Plugins import Plugins
 from . import Setting
-import random
 class ShowData(QWidget):
-    
-  
     def __init__(self):
         super().__init__()
         # self.setGeometry(300, 300,480, 600)
@@ -415,25 +412,8 @@ class QtBoxStyleProgressBar(QProgressBar):
         # self.setWindowModality(Qt.WindowModal)
         self.setRange(0, 100)
         self.setValue(0)
-        self.setStyleSheet("""
-        QProgressBar::chunk
-            {
-                border-radius:5px;
-                background:qlineargradient(spread:pad,x1:0,y1:0,x2:1,y2:0,stop:0 #01FAFF,stop:1  #26B4FF);
-            }
-            QProgressBar
-            {
-                height:22px;
-                text-align:center;/*文本位置*/
-                font-size:14px;
-                color:white;
-                border-radius:5px;
-                background: #1D5573 ;
-            }
-       
-
-        """)
-
+        self.setObjectName("QProgressBar1")
+        
     def setValue(self, value: int) -> None:
         self.setFormat("加载中请勿关闭窗口，loading {}%.....".format(value))
         super().setValue(value)

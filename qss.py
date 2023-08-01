@@ -137,6 +137,26 @@ QPushButton#xxx
 }
 
 
+
+    #QProgressBar1::chunk
+        {
+            border-radius:5px;
+            background:qlineargradient(spread:pad,x1:0,y1:0,x2:1,y2:0,stop:0 #01FAFF,stop:1  #26B4FF);
+        }
+
+        #QProgressBar1
+        {
+            height:22px;
+            text-align:center;/*文本位置*/
+            font-size:14px;
+            color:white;
+            border-radius:5px;
+            background: #1D5573 ;
+        }
+       
+
+     
+
 /**********输入框**********/
 QLineEdit {
         border-radius: 4px;

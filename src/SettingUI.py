@@ -115,9 +115,7 @@ class SettingsWindow(QMainWindow):
 
         # 设置样式
         self.setStyleSheet('''
-            QWidget {
-                background: rgb(232, 241, 252);
-            }
+           
             QLabel {
                 color: rgb(111, 156, 207);
             }
@@ -138,6 +136,9 @@ class SettingsWindow(QMainWindow):
             }
             QPushButton:hover {
                 background-color: rgb(90, 130, 175);
+            }
+            QPushButton:pressed {
+                background-color: rgb(120, 130, 175);
             }
             QGroupBox {
                 border: 1px solid rgb(111, 156, 207);
