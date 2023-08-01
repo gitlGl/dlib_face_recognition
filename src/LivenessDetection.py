@@ -3,31 +3,25 @@ from PySide6.QtCore import QThread
 from . import Setting
 from .Setting import models
 class LivenessDetection():
-    def __init__(self):
-        super().__init__()
-        self.img1 = np.random.randint(255, size=(900, 800, 3), dtype=np.uint8)
-        self.img2 = np.random.randint(255, size=(900, 800, 3), dtype=np.uint8)
-      
-        #68个人脸特征中眼睛的位置
+    #68个人脸特征中眼睛的位置
+    FACIAL_LANDMARKS_IDXS = {
+                    "mouth": (48, 68),
+                    "inner_mouth": (60, 68),
+                    "right_eyebrow": (17, 22),
+                    "left_eyebrow": (22, 27),
+                    "right_eye" : (36, 42),
+                    "left_eye" : (42, 48),
+                    "nose" : (27, 36),
+                    "jaw": (0, 17)
 
-        self.FACIAL_LANDMARKS_IDXS = {
-	"mouth": (48, 68),
-	"inner_mouth": (60, 68),
-	"right_eyebrow": (17, 22),
-	"left_eyebrow": (22, 27),
-	"right_eye" : (36, 42),
-	"left_eye" : (42, 48),
-	"nose" : (27, 36),
-	"jaw": (0, 17)
-}
+                    }
+    lStart, lEnd = FACIAL_LANDMARKS_IDXS["left_eye"]
+    rStart, rEnd = FACIAL_LANDMARKS_IDXS["right_eye"]
 
+    mStart, mEnd = FACIAL_LANDMARKS_IDXS["mouth"]
 
-        self.lStart, self.lEnd = self.FACIAL_LANDMARKS_IDXS["left_eye"]
-        self.rStart, self.rEnd = self.FACIAL_LANDMARKS_IDXS["right_eye"]
-        #68个人脸特征中嘴巴的位置
-        self.mStart, self.mEnd = self.FACIAL_LANDMARKS_IDXS["mouth"]
-
-    def eyeAspectRatio(self, eye):
+    @staticmethod
+    def eyeAspectRatio(eye):
         """
         计算眼睛大小
         """
@@ -38,16 +32,16 @@ class LivenessDetection():
         ear = (A + B) / (2.0 * C)  #眼睛大小值
         return ear
 
-    #计算嘴巴张开大小
-    def mouthAspectRatio(self, mouth):
+    @staticmethod
+    def mouthAspectRatio(mouth):
         A = np.linalg.norm(mouth[2]-mouth[9])  # 51, 59
         B = np.linalg.norm(mouth[4]-mouth[7])  # 53, 57
         C = np.linalg.norm(mouth[0]-mouth[6])  # 49, 55
         mar = (A + B) / (2.0 * C)  #嘴巴大小值
 
         return mar
-
-    def compare2faces(self, list_img):  #对比两张人脸照片对比是否发生眨眼。两张照片眼睛距离大于0.05时认为发生眨眼
+    @staticmethod
+    def compare2faces(list_img):  #对比两张人脸照片对比是否发生眨眼。两张照片眼睛距离大于0.05时认为发生眨眼
 
         rgbImage1 = cv2.cvtColor(list_img[0], cv2.COLOR_BGR2RGB)
         rgbImage2 = cv2.cvtColor(list_img[1], cv2.COLOR_BGR2RGB)
@@ -55,14 +49,15 @@ class LivenessDetection():
         rect2 = models.detector(rgbImage2, 0)
         list = []
         if (len(rect1) == 1) and (len(rect2)) == 1:
-            list.append(self.computEye(rgbImage1, rect1))
-            list.append(self.computEye(rgbImage2, rect2))
+            list.append(LivenessDetection.computEye(rgbImage1, rect1))
+            list.append(LivenessDetection.computEye(rgbImage2, rect2))
             result = abs(list[0] - list[1])
             if result >= Setting.EYE_AR_THRESH:
-
                 return True
         return False
-    def shape2np(self,shape, dtype="int"):
+    
+    @staticmethod
+    def shape2np(shape, dtype="int"):
         # initialize the list of (x, y)-coordinates
         coords = np.zeros((shape.num_parts, 2), dtype=dtype)
 
@@ -74,26 +69,27 @@ class LivenessDetection():
         # return the list of (x, y)-coordinates
         return coords
     #判断是否眨眼
-    def computEye(self, rgbImage, rect):
+    @staticmethod
+    def computEye(rgbImage, rect):
         shape = models.predictor(rgbImage, rect[0])
-        
-        shape = self.shape2np(shape)  #68个人脸特征坐标
-        leftEye = shape[self.lStart:self.lEnd]
-        rightEye = shape[self.rStart:self.rEnd]
-        leftEAR = self.eyeAspectRatio(leftEye)
-        rightEAR = self.eyeAspectRatio(rightEye)
+        shape = LivenessDetection.shape2np(shape)  #68个人脸特征坐标
+        leftEye = shape[LivenessDetection.lStart:LivenessDetection.lEnd]
+        rightEye = shape[LivenessDetection.rStart:LivenessDetection.rEnd]
+        leftEAR = LivenessDetection.eyeAspectRatio(leftEye)
+        rightEAR = LivenessDetection.eyeAspectRatio(rightEye)
         ear = (leftEAR + rightEAR) / 2.0  # 两个眼睛大小平均值
         return ear
 
     #判断是否张开嘴巴
-    def computMouth(self, img):
+    @staticmethod
+    def computMouth(img):
         rgbImage = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         rect = models.detector(rgbImage, 0)
         if (len(rect) == 1):
             shape = models.predictor(rgbImage, rect[0])
-            shape = self.shape2np(shape)  #68个人脸特征坐标
-            mouth = shape[self.mStart:self.mEnd]
-            mouth = self.mouthAspectRatio(mouth)
+            shape = LivenessDetection.shape2np(shape)  #68个人脸特征坐标
+            mouth = shape[LivenessDetection.mStart:LivenessDetection.mEnd]
+            mouth = LivenessDetection.mouthAspectRatio(mouth)
             if mouth >  Setting.MAR_THRESH:
                 return True
         return False

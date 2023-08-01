@@ -16,7 +16,6 @@ class PutImg(Capture):
         super().__init__()
 
         self.list_img = []
-        self.livecheck  = LivenessDetection()
         self.timer_collectFrame = QTimer()
         self.timer_collectFrame.timeout.connect(self.collectFrame)
         self.timer_getResult = QTimer()
@@ -43,7 +42,7 @@ class PutImg(Capture):
         self.timer_collectFrame.stop()
         if not self.flag:
             img = copy.deepcopy(self.frame)
-            flag = self.livecheck.computMouth(img)
+            flag = LivenessDetection.computMouth(img)
             if flag:
                 self.flag = True
                 self.emit_text.emit("提示：请看镜头眨眼睛")
@@ -54,7 +53,7 @@ class PutImg(Capture):
             self.list_img.append(self.frame)
         else:
             list_img = copy.deepcopy(self.list_img)
-            flag = self.livecheck.compare2faces(list_img)
+            flag = LivenessDetection.compare2faces(list_img)
             if flag:
                 self.flag = False
                 self.Q_put.put(self.list_img[0])
