@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QDialog, QLabel, QLineEdit, QPushButton, \
 QVBoxLayout, QHBoxLayout, QMessageBox
-from .Setting import database
+from .Database import database
 from PySide6.QtGui import QIcon
 from PySide6.QtCore import Qt
 from . import encryption

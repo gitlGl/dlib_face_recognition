@@ -2,9 +2,11 @@ from . import encryption
 import numpy as np
 from .Setting import predictor,detector,encoder
 import os,re,sqlite3
-from .Setting import database
+from .Database import database
 import cv2, pickle
 from .Setting import user 
+from . import encryption
+from .Database import PH
 
 def getImg(img_path):
     raw_data = np.fromfile(
@@ -117,40 +119,35 @@ def checkInsert(row,row_user_data,list_problem):
             list_problem.append(string)
             return
 
-        list2 = [
-            "id_number", "user_name", "gender", "password", "img_path"
-        ]
-        dic = dict(zip(list2, row_user_data))
-        information = setInformation(dic)
+        list2 = ["id_number", "user_name", "gender", "password", "img_path"]
+        dic_user = dict(zip(list2, row_user_data))
+
+        img_path = dic_user.pop("img_path")
+        dic_user["salt"] = encryption.createSalt()
+        dic_user["password"] = encryption.createMd5(
+            dic_user["password"],dic_user["salt"],
+            dic_user["id_number"])
+        dic_user["vector"] = getVector(img_path)
+       
         try:
-            insertUser(information)
+            database.execute(
+            f"INSERT INTO student (id_number,user_name,gender,password ,salt,vector) \
+    VALUES ({PH},{PH}, {PH}, {PH} , {PH},{PH})",tuple(dic_user.values()))
+           
         except sqlite3.IntegrityError:
             list_problem.append("第{0}行第1列,表中数据学号可能重复，请检查: ".format(row) +
                                 str(row_user_data[0]))
             return
         
-        insertImg(dic["id_number"],
-                    dic["img_path"], "student")
+        insertImg(dic_user["id_number"],
+                    img_path, "student")
     
         return list_problem
 
 
-def setInformation( part_information):
-    information = {}
-    information["user_name"] = part_information["user_name"]
-    information["gender"] = part_information["gender"]
-    information['salt'] = encryption.createSalt()
-    information["id_number"] = part_information["id_number"]
-    information["password"] = encryption.createMd5(
-        part_information["password"], information["salt"],
-        part_information["id_number"])
-    information["vector"] = getVector(part_information["img_path"])
-    return information
 
-def insertUser(information):
-    database.insertUser(information["id_number"], information["user_name"],
-                        information["gender"], information["password"],
-                        information["vector"], information["salt"])
+
+
 
 
 

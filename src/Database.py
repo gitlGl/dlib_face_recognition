@@ -1,34 +1,21 @@
-#import sqlite3
-import configparser
 ##########兼容sqlite3和mysql
-type_database = 'sqlite3' # 'sqlite3' or 'mysql
+from .Setting import type_database,connect_user
+import types,time
 if type_database is 'sqlite3':
     print('sqlite3 loaded')
     import sqlite3
     PH = '?'
     Auto = 'AUTOINCREMENT'
-    time =  "DATETIME DEFAULT (datetime('now','localtime'))"
+    time_ =  "DATETIME DEFAULT (datetime('now','localtime'))"
 elif type_database is 'mysql':
     print('mysql  loaded')
     import pymysql
     PH = '%s'
     Auto = 'AUTO_INCREMENT'
-    time =  'DEFAULT CURRENT_TIMESTAMP'
+    time_ =  'DEFAULT CURRENT_TIMESTAMP'
 #######
 
-def configRead(filePath:str):
-    cfg = configparser.ConfigParser() 
-    cfg.read(filePath)
-    if "sql" in cfg.sections():
-        host=cfg.get('sql','host')
-        port=cfg.getint('sql','port')
-        user=cfg.get('sql','user')
-        passwd=cfg.get('sql','password')
-        dbName=cfg.get('sql','db_name')
-        charset=cfg.get('sql','charset')
-        return host,port,user,passwd,dbName,charset
-    else:
-        return None,None,None,None,None,None,None
+
 class Database():
     def __init__(self):
         def dictFactory(cursor, row):#重定义row_factory函数查询返回数据类型是字典形式
@@ -39,22 +26,13 @@ class Database():
 
         if type_database is 'sqlite3':
             sqlite3.enable_callback_tracebacks(True)
-            self.conn = sqlite3.connect('resources/data.db', isolation_level = None,
+            self.conn = sqlite3.connect(connect_user, isolation_level = None,
                                         detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
             self.conn.row_factory = dictFactory
             self.c = self.conn.cursor()
         elif type_database is 'mysql':
-            host,port,user,password,dbName,charset = configRead("config.ini")
-           
-            self.conn = pymysql.connect(
-                host=host,
-                port=port,
-                user=user,
-                passwd=password,
-                db=dbName,
-                charset=charset,
+            self.conn = pymysql.connect(**connect_user,
                 cursorclass=pymysql.cursors.DictCursor
-
             )
             self.conn.autocommit(False)
             self.c = self.conn.cursor()
@@ -79,7 +57,7 @@ class Database():
         id_number              CHAR(50)    NOT NULL ,
         gender           char(4)    NOT NULL,
  
-        log_time TIMESTAMP  {time}
+        log_time TIMESTAMP  {time_}
       
         );''')
         #id_number 字段应使用外键约束保证数据一致性
@@ -99,20 +77,12 @@ class Database():
         id INTEGER PRIMARY KEY {Auto},
         id_number             CHAR(50)    NOT NULL ,
       
-        log_time TIMESTAMP {time}
+        log_time TIMESTAMP {time_}
         );''')
         self.creatIndex()
         #id_number 字段应使用外键约束保证数据一致性 
 
-    def insertUser(self, id_number, user_name,gender, password, vector,
-                    salt):
-       
-        self.c.execute(
-            f"INSERT INTO student (id_number,user_name,gender,password ,vector,salt) \
-    VALUES ({PH},{PH}, {PH}, {PH} , {PH},{PH})",
-            (id_number, user_name,gender, password,  vector, salt))
-           
-        self.conn.commit()
+    
     def creatIndex(self):
         if type_database is 'sqlite3':
                 self.c.execute("CREATE INDEX IF NOT EXISTS idx_id_number_student ON student_log_time (id_number);")
@@ -144,6 +114,58 @@ class Database():
 
 
 
+def log_slow_query(sql, execution_time):
+    with open('slow_queries.log', 'a') as f:
+        f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))}:{sql}\nExecution time: {execution_time} seconds\n\n")
+
+def log_slow_queries(threshold):
+    def decorator(func):
+        def wrapper(self,query,args :tuple = ()):
+            start_time = time.perf_counter()
+            result = func(self,query,args)
+            execution_time = self.end_time - start_time
+            if execution_time > threshold:
+                log_slow_query(self.sql, execution_time)
+                
+            return result
+        return wrapper
+    return decorator
+
+def log_query(self,sql):
+    self.end_time = time.perf_counter()
+    self.sql = sql
+    print(sql)
+                        
+    
+
+@log_slow_queries(0.0001) # Set threshold to 0.01 second
+def sqlite3_execute_query(self,query:str,args :tuple = ()):
+    self.c.execute(query,args)
+    #self.conn.commit()
+    return self.c.fetchall()
+   
+
+def mysql_execute_query(self,query,args :tuple = ()):
+    self.c.execute(query,args)
+    return self.c.fetchall()
+   
+database = Database()
+
+if type_database == "sqlite3" :
+    execute_query = sqlite3_execute_query
+    database.execute = types.MethodType(execute_query,database)
+    database.log_query = types.MethodType(log_query,database)
+    database.conn.set_trace_callback(database.log_query)
+elif type_database == "mysql" :
+    execute_query = mysql_execute_query
+    database.execute = types.MethodType(execute_query,database)
+database.creatble()
+
+# mysqld慢查询日志配置
+# slow_query_log = ON
+# long_query_time = 1
+# log_output = FILE
+# slow_query_log_file = C:\ProgramData\MySQL\MySQL Server X.X\data\slow_queries.log
 
 
 

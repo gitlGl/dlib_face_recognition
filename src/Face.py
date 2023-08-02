@@ -1,4 +1,4 @@
-from .Setting import database
+from .Database import database
 from .Log import adminlog, studentlog
 from .Setting import predictor,detector,encoder
 import numpy as np

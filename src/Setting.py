@@ -1,7 +1,6 @@
 from enum import Enum
-import dlib,time,types,os,configparser
+import dlib,os,configparser
 from enum import Enum
-from .Database import Database,type_database
 
 predictor = dlib.shape_predictor(
     "resources/shape_predictor_68_face_landmarks.dat")  # 4 获取人脸关键点检测模型
@@ -17,6 +16,32 @@ class user(Enum):
     reg_pwd = "[A-Za-z0-9!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]*"
 
 
+type_database = 'sqlite3' # 'sqlite3' or 'mysql
+
+def configRead(filePath:str):
+    cfg = configparser.ConfigParser() 
+    connect_user = []
+    cfg.read(filePath)
+    if "sql" in cfg.sections():
+        connect_user['host'] = cfg.get('sql','host')
+        connect_user['port'] = cfg.getint('sql','port')
+        connect_user['user'] = cfg.get('sql','user')
+        connect_user['password'] = cfg.get('sql','password')
+        connect_user['db_name'] = cfg.get('sql','db_name')
+        connect_user['charset'] = cfg.get('sql','charset')
+       
+        return connect_user
+    else:
+        return None
+    
+if type_database is 'sqlite3':
+    connect_user = 'resources/data.db'
+else:
+    connect_user = configRead("config.ini")
+    if connect_user is None:
+        raise Exception("数据库配置文件错误")
+    else:
+        connect_user = connect_user
 
 file_name = "config.ini"
 if not  os.path.exists(file_name):
@@ -82,55 +107,3 @@ count_max,processes,process_exit,page_count = configRead("config.ini")
 
 
     
-def log_slow_query(sql, execution_time):
-    with open('slow_queries.log', 'a') as f:
-        f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))}:{sql}\nExecution time: {execution_time} seconds\n\n")
-
-def log_slow_queries(threshold):
-    def decorator(func):
-        def wrapper(self,query,args :tuple = ()):
-            start_time = time.perf_counter()
-            result = func(self,query,args)
-            execution_time = self.end_time - start_time
-            if execution_time > threshold:
-                log_slow_query(self.sql, execution_time)
-                
-            return result
-        return wrapper
-    return decorator
-
-def log_query(self,sql):
-    self.end_time = time.perf_counter()
-    self.sql = sql
-    print(sql)
-                        
-    
-
-@log_slow_queries(0.0001) # Set threshold to 0.01 second
-def sqlite3_execute_query(self,query:str,args :tuple = ()):
-    self.c.execute(query,args)
-    #self.conn.commit()
-    return self.c.fetchall()
-   
-
-def mysql_execute_query(self,query,args :tuple = ()):
-    self.c.execute(query,args)
-    return self.c.fetchall()
-   
-database = Database()
-
-if type_database == "sqlite3" :
-    execute_query = sqlite3_execute_query
-    database.execute = types.MethodType(execute_query,database)
-    database.log_query = types.MethodType(log_query,database)
-    database.conn.set_trace_callback(database.log_query)
-elif type_database == "mysql" :
-    execute_query = mysql_execute_query
-    database.execute = types.MethodType(execute_query,database)
-database.creatble()
-
-# mysqld慢查询日志配置
-# slow_query_log = ON
-# long_query_time = 1
-# log_output = FILE
-# slow_query_log_file = C:\ProgramData\MySQL\MySQL Server X.X\data\slow_queries.log

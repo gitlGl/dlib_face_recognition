@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import QMessageBox
-from .Setting import database
+from .Database import database
 from . import encryption
 import os
 from PySide6.QtWidgets import QFileDialog,QMessageBox

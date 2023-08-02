@@ -1,4 +1,4 @@
-from .Setting import database
+from .Database import database
 import datetime,cv2,os
 from .Database import PH
 class  studentlog():

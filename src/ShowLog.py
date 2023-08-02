@@ -4,7 +4,7 @@ from  PySide6.QtWidgets import QTableWidget,QTableWidgetItem,QVBoxLayout,QMenu,\
 QHeaderView,QMessageBox, QDialog,QCheckBox,QLabel
 from PySide6 import QtWidgets
 from .ImageView import ShowImage
-from .Setting import database
+from .Database import database
 from .Paging import Page
 import os
 from . import Setting

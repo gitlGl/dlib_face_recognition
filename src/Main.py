@@ -12,7 +12,7 @@ from .ShowData import ShowData
 from .Login import LoginUi
 from  .Ui import Ui
 from . import Setting
-from .Setting import database
+from .Database import database
 from .Database import PH
 
 from .SettingUI import SettingsWindow

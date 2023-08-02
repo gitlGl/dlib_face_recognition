@@ -8,7 +8,7 @@ from .Paging import Page
 from .Database import PH
 from . import CreatUser
 from . import Check
-from .Setting import database
+from .Database import database
 from . import encryption
 import os ,shutil 
 from . import Setting

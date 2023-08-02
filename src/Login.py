@@ -2,7 +2,7 @@
 from PySide6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, \
     QVBoxLayout, QHBoxLayout, QMessageBox,QCheckBox,QLineEdit
 from PySide6.QtCore import Signal,QRegularExpression
-from .Setting import database
+from .Database import database
 from .Setting import user
 from PySide6.QtCore import Slot
 from PySide6.QtGui import QIcon

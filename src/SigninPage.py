@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, \
     QVBoxLayout, QHBoxLayout, QMessageBox
 from PySide6.QtCore import Qt,QRegularExpression
-from .Setting import database
+from .Database import database
 from . import encryption
 from PySide6.QtGui import QIcon
 from . import CreatUser
