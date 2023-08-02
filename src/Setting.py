@@ -16,18 +16,18 @@ class user(Enum):
     reg_pwd = "[A-Za-z0-9!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]*"
 
 
-type_database = 'sqlite3' # 'sqlite3' or 'mysql
+type_database = 'mysql' # 'sqlite3' or 'mysql
 
 def configRead(filePath:str):
     cfg = configparser.ConfigParser() 
-    connect_user = []
+    connect_user = {}
     cfg.read(filePath)
     if "sql" in cfg.sections():
         connect_user['host'] = cfg.get('sql','host')
         connect_user['port'] = cfg.getint('sql','port')
         connect_user['user'] = cfg.get('sql','user')
         connect_user['password'] = cfg.get('sql','password')
-        connect_user['db_name'] = cfg.get('sql','db_name')
+        connect_user['db'] = cfg.get('sql','db_name')
         connect_user['charset'] = cfg.get('sql','charset')
        
         return connect_user
