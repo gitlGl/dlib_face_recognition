@@ -11,6 +11,8 @@ from PySide6.QtWidgets import QWidget, QHBoxLayout, QLabel, QVBoxLayout, QLineEd
 from .LineStack import ChartView
 from .Plugins import Plugins
 from . import Setting
+from .Setting import type_database
+from . CreatUser import insert,insertProcess,insertImg
 class ShowData(QWidget):
     def __init__(self):
         super().__init__()
@@ -106,10 +108,19 @@ class ShowData(QWidget):
             self.Vhlayout.addWidget(controls_class[action.text()](self))
 
     @staticmethod
-    def run(num,data):
+    def run(num,data,insert,lock = None):
         list_problem = []
         for index, item in enumerate(data,start=2):
-                CreatUser.checkInsert(num*Setting.group_count+index,item,list_problem)
+                row = num*Setting.group_count+index
+                try: 
+                    isdata = CreatUser.checkInsert(row,item,list_problem)
+                    if isdata is not None:
+                        tuple_dta,img_path,id_number = isdata
+                        if insert(list_problem,tuple_dta,row,lock):
+                            insertImg(id_number,img_path,'student')
+                except Exception as e:
+                    print(e)
+                    break
         return [len(data),list_problem]
     def refreshProgressBar(self):
         for  index,result in enumerate(self.results):
@@ -163,13 +174,24 @@ class ShowData(QWidget):
         self.results = []
 
         self.pool =  multiprocessing.Pool(Setting.processes) 
-        for  num in range(total_group):
-            result  =self.pool.apply_async(self.run,args =
-                                            (num,data[num* group_count:(num+1)*group_count]) )
+        if type_database == 'sqlite3':
+            self.lock = multiprocessing.Manager().Lock()
+            for  num in range(total_group):
+                result  =self.pool.apply_async(self.run,args =(num,
+                                    data[num* group_count:(num+1)*group_count],insertProcess,self.lock) )
+                self.results.append(result)
+            result  =self.pool.apply_async(self.run,args = (total_group,data[total_group*(group_count):],
+                                                            insertProcess, self.lock))
             self.results.append(result)
-        result  =self.pool.apply_async(self.run,args = 
-                                       (total_group,data[total_group*(group_count):]) )
-        self.results.append(result)
+        else:
+            for  num in range(total_group):
+                result  =self.pool.apply_async(self.run,args =
+                                                (num,data[num* group_count:(num+1)*group_count],insert) )
+                self.results.append(result)
+            result = self.pool.apply_async(self.run,args = 
+                                        (total_group,data[total_group*(group_count):],insert))
+            self.results.append(result)
+
         self.pool.close()
     
         self.timer = QTimer()
@@ -200,7 +222,11 @@ class ShowData(QWidget):
             QApplication.processEvents()
             self.ProgressBar.setValue(int(row/rows*100)) 
             row_user_data = user_sheet.row_values(rowx=row)
-            CreatUser.checkInsert(row+1,row_user_data,list_problem)
+            isdata = CreatUser.checkInsert(row+1,row_user_data,list_problem)
+            if isdata is not None:
+                tuple_dta,img_path,id_number = isdata
+                if CreatUser.insert(list_problem,tuple_dta,row):
+                    insertImg(id_number,img_path,'student')
            
         self.ProgressBar.setValue(100)
         self.showEerror(list_problem)
@@ -208,6 +234,7 @@ class ShowData(QWidget):
         self.setEnabled(True)
 
     def showEerror(self, list_error):
+        CreatUser.Toinsert = CreatUser.insert
         item = self.Vhlayout.itemAt(1)
         item.widget().deleteLater()
         self.Vhlayout.removeItem(item)

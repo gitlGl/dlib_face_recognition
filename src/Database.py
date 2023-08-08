@@ -34,7 +34,7 @@ class Database():
             self.conn = pymysql.connect(**connect_user,
                 cursorclass=pymysql.cursors.DictCursor
             )
-            self.conn.autocommit(False)
+            self.conn.autocommit(True)
             self.c = self.conn.cursor()
 
         

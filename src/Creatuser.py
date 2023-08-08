@@ -8,6 +8,7 @@ from .Setting import user
 from . import encryption
 from .Database import PH
 
+
 def getImg(img_path):
     raw_data = np.fromfile(
         img_path, dtype=np.uint8)  #先用numpy把图片文件存入内存：raw_data，把图片数据看做是纯字节数据
@@ -128,24 +129,37 @@ def checkInsert(row,row_user_data,list_problem):
             dic_user["password"],dic_user["salt"],
             dic_user["id_number"])
         dic_user["vector"] = getVector(img_path)
+        return tuple(dic_user.values()),img_path,dic_user["id_number"]
        
-        try:
-            database.execute(
+       
+
+
+def insert(list_problem, row_user_data,row,lock = None):
+    try:
+        database.execute(
             f"INSERT INTO student (id_number,user_name,gender,password ,salt,vector) \
-    VALUES ({PH},{PH}, {PH}, {PH} , {PH},{PH})",tuple(dic_user.values()))
+    VALUES ({PH},{PH}, {PH}, {PH} , {PH},{PH})",row_user_data)
            
-        except sqlite3.IntegrityError:
-            list_problem.append("第{0}行第1列,表中数据学号可能重复，请检查: ".format(row) +
+    except sqlite3.IntegrityError:
+        list_problem.append("第{0}行第1列,表中数据学号可能重复，请检查: ".format(row) +
                                 str(row_user_data[0]))
-            return
+        return False
+    return True
         
-        insertImg(dic_user["id_number"],
-                    img_path, "student")
-    
-        return list_problem
-
-
-
+def insertProcess(list_problem, row_user_data,row,lock = None):
+    lock.acquire()
+    try:
+        database.execute(
+            f"INSERT INTO student (id_number,user_name,gender,password ,salt,vector) \
+    VALUES ({PH},{PH}, {PH}, {PH} , {PH},{PH})",row_user_data)
+           
+    except sqlite3.IntegrityError:
+        list_problem.append("第{0}行第1列,表中数据学号可能重复，请检查: ".format(row) +
+                                str(row_user_data[0]))
+        lock.release()
+        return False
+    lock.release()
+    return True
 
 
 
