@@ -1,13 +1,13 @@
 ##########兼容sqlite3和mysql
 from .Setting import type_database,connect_user
 import types,time
-if type_database is 'sqlite3':
+if type_database == 'sqlite3':
     print('sqlite3 loaded')
     import sqlite3
     PH = '?'
     Auto = 'AUTOINCREMENT'
     time_ =  "DATETIME DEFAULT (datetime('now','localtime'))"
-elif type_database is 'mysql':
+elif type_database == 'mysql':
     print('mysql  loaded')
     import pymysql
     PH = '%s'
@@ -24,13 +24,13 @@ class Database():
                 d[col[0]] = row[idx]
             return d
 
-        if type_database is 'sqlite3':
+        if type_database == 'sqlite3':
             sqlite3.enable_callback_tracebacks(True)
             self.conn = sqlite3.connect(connect_user, isolation_level = None,
                                         detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
             self.conn.row_factory = dictFactory
             self.c = self.conn.cursor()
-        elif type_database is 'mysql':
+        elif type_database == 'mysql':
             self.conn = pymysql.connect(**connect_user,
                 cursorclass=pymysql.cursors.DictCursor
             )
@@ -84,11 +84,11 @@ class Database():
 
     
     def creatIndex(self):
-        if type_database is 'sqlite3':
+        if type_database == 'sqlite3':
                 self.c.execute("CREATE INDEX IF NOT EXISTS idx_id_number_student ON student_log_time (id_number);")
                 self.c.execute("CREATE INDEX IF NOT EXISTS idx_id_number_admin ON admin_log_time (id_number);")
                 self.conn.commit() 
-        elif type_database is 'mysql':
+        elif type_database == 'mysql':
             self.c.execute('''
                         SELECT COUNT(*) FROM information_schema.statistics
                         WHERE table_schema = 'face_recognition'

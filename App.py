@@ -5,10 +5,10 @@ from qss import StyleSheet
 from PySide6.QtGui import QFont
 from PySide6 import QtCore
 
-
+import lancedb
 if __name__ == '__main__':
-    QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
-    QApplication.setHighDpiScaleFactorRoundingPolicy(QtCore.Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
+    # QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
+    # QApplication.setHighDpiScaleFactorRoundingPolicy(QtCore.Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
     app = QApplication(sys.argv)
     translator = QtCore.QTranslator()
     translator.load("resources/widgets_zh_CN_all.qm")#加载中文文件
@@ -17,7 +17,7 @@ if __name__ == '__main__':
     app.setFont(f)
     app.setStyleSheet(StyleSheet)   
     ui = Main()
-    app.exec_()
+    app.exec()
 
 
 
