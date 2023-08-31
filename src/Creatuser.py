@@ -1,14 +1,11 @@
 from . import encryption
 import numpy as np
 from .Setting import predictor,detector,encoder
-import os,re,sqlite3
+import os,re
 from .Database import database
 import cv2, pickle
 from .Setting import user 
 from . import encryption
-from .Database import PH
-
-
 def getImg(img_path):
     raw_data = np.fromfile(
         img_path, dtype=np.uint8)  #先用numpy把图片文件存入内存：raw_data，把图片数据看做是纯字节数据
@@ -123,49 +120,15 @@ def checkInsert(row,row_user_data,list_problem):
         list2 = ["id_number", "user_name", "gender", "password", "img_path"]
         dic_user = dict(zip(list2, row_user_data))
 
-        img_path = dic_user.pop("img_path")
+        
         dic_user["salt"] = encryption.createSalt()
         dic_user["password"] = encryption.createMd5(
             dic_user["password"],dic_user["salt"],
             dic_user["id_number"])
-        dic_user["vector"] = getVector(img_path)
-        return tuple(dic_user.values()),img_path,dic_user["id_number"]
+        dic_user["vector"] = getVector(dic_user['img_path'])
+        return dic_user
        
        
-
-
-def insert(list_problem, row_user_data,row,lock = None):
-    try:
-        database.execute(
-            f"INSERT INTO student (id_number,user_name,gender,password ,salt,vector) \
-    VALUES ({PH},{PH}, {PH}, {PH} , {PH},{PH})",row_user_data)
-           
-    except sqlite3.IntegrityError:
-        list_problem.append("第{0}行第1列,表中数据学号可能重复，请检查: ".format(row) +
-                                str(row_user_data[0]))
-        return False
-    return True
-        
-def insertProcess(list_problem, row_user_data,row,lock = None):
-    lock.acquire()
-    try:
-        database.execute(
-            f"INSERT INTO student (id_number,user_name,gender,password ,salt,vector) \
-    VALUES ({PH},{PH}, {PH}, {PH} , {PH},{PH})",row_user_data)
-           
-    except sqlite3.IntegrityError:
-        list_problem.append("第{0}行第1列,表中数据学号可能重复，请检查: ".format(row) +
-                                str(row_user_data[0]))
-        lock.release()
-        return False
-    lock.release()
-    return True
-
-
-
-
-
-
 # def get_path():
 #     path, _ = QFileDialog.getOpenFileName(
 #         None, "选择文件", "c:\\", "Image files(*.jpg *.gif *.svg)")

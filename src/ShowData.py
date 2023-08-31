@@ -1,5 +1,5 @@
 from . import CreatUser
-from .Database import database
+from .Database import database,PH
 from .ShowUser import ShowUser
 from PySide6.QtCore import QDate, Qt,QTimer
 import copy,multiprocessing
@@ -12,7 +12,8 @@ from .LineStack import ChartView
 from .Plugins import Plugins
 from . import Setting
 from .Setting import type_database
-from . CreatUser import insert,insertProcess,insertImg
+from . CreatUser import insertImg
+import gc
 class ShowData(QWidget):
     def __init__(self):
         super().__init__()
@@ -108,20 +109,35 @@ class ShowData(QWidget):
             self.Vhlayout.addWidget(controls_class[action.text()](self))
 
     @staticmethod
-    def run(num,data,insert,lock = None):
+    def run(num,data,lock = None):
         list_problem = []
+        user_data = {}
         for index, item in enumerate(data,start=2):
                 row = num*Setting.group_count+index
-                try: 
-                    isdata = CreatUser.checkInsert(row,item,list_problem)
-                    if isdata is not None:
-                        tuple_dta,img_path,id_number = isdata
-                        if insert(list_problem,tuple_dta,row,lock):
-                            insertImg(id_number,img_path,'student')
-                except Exception as e:
-                    print(e)
-                    break
+                dic_data = CreatUser.checkInsert(row,item,list_problem)
+
+                if dic_data is not None:
+                    user_data[row] = dic_data
+                        
+        if type_database == 'sqlite3':
+            lock.acquire()
+        for row ,dic_data in user_data.items():
+            img_path = dic_data.pop('img_path')
+            tuple_data = tuple(dic_data.values())
+            try:
+                database.execute(
+                    f"INSERT INTO student (id_number,user_name,gender,password ,salt,vector) \
+            VALUES ({PH},{PH}, {PH}, {PH} , {PH},{PH})",tuple_data)
+                insertImg(dic_data['id_number'],img_path,'student')
+            except Exception as e:
+                list_problem.append("第{0}行第1列,表中数据学号可能重复，请检查: ".format(row) +
+                                    dic_data['id_number'])
+        if type_database == 'sqlite3':
+            lock.release()
+       
         return [len(data),list_problem]
+    
+    
     def refreshProgressBar(self):
         for  index,result in enumerate(self.results):
             if index == Setting.processes:
@@ -138,12 +154,14 @@ class ShowData(QWidget):
             QApplication.processEvents()
             
             if self.nrow == self.user_sheet.nrows-1:
+                self.lock = None
                 self.timer.stop()
                 self.setEnabled(True)
                 self.showEerror(self.list_problem)
                 self.list_problem = None
                 self.results = None
                 self.pool = None
+                gc.collect()
       
             
     def buttonCreate(self):
@@ -178,18 +196,18 @@ class ShowData(QWidget):
             self.lock = multiprocessing.Manager().Lock()
             for  num in range(total_group):
                 result  =self.pool.apply_async(self.run,args =(num,
-                                    data[num* group_count:(num+1)*group_count],insertProcess,self.lock) )
+                                    data[num* group_count:(num+1)*group_count],self.lock) )
                 self.results.append(result)
             result  =self.pool.apply_async(self.run,args = (total_group,data[total_group*(group_count):],
-                                                            insertProcess, self.lock))
+                                                           self.lock))
             self.results.append(result)
         else:
             for  num in range(total_group):
                 result  =self.pool.apply_async(self.run,args =
-                                                (num,data[num* group_count:(num+1)*group_count],insert) )
+                                                (num,data[num* group_count:(num+1)*group_count]) )
                 self.results.append(result)
             result = self.pool.apply_async(self.run,args = 
-                                        (total_group,data[total_group*(group_count):],insert))
+                                        (total_group,data[total_group*(group_count):]))
             self.results.append(result)
 
         self.pool.close()
@@ -234,7 +252,7 @@ class ShowData(QWidget):
         self.setEnabled(True)
 
     def showEerror(self, list_error):
-        CreatUser.Toinsert = CreatUser.insert
+       
         item = self.Vhlayout.itemAt(1)
         item.widget().deleteLater()
         self.Vhlayout.removeItem(item)

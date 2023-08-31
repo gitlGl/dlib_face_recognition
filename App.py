@@ -5,7 +5,6 @@ from qss import StyleSheet
 from PySide6.QtGui import QFont
 from PySide6 import QtCore
 
-import lancedb
 if __name__ == '__main__':
     # QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
     # QApplication.setHighDpiScaleFactorRoundingPolicy(QtCore.Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
