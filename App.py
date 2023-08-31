@@ -4,8 +4,15 @@ import sys
 from qss import StyleSheet
 from PySide6.QtGui import QFont
 from PySide6 import QtCore
-
+from src import database
 import lancedb
+from src import getVector
+# face_data = getVector('C:/Users/Administrator/Pictures/Camera Roll/8.jpg')
+# print(face_data)
+# result = database.vector_tbl.search(face_data).limit(1)
+
+# print(result)
+
 if __name__ == '__main__':
     # QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
     # QApplication.setHighDpiScaleFactorRoundingPolicy(QtCore.Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)

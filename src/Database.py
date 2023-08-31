@@ -1,6 +1,8 @@
 ##########兼容sqlite3和mysql
 from .Setting import type_database,connect_user
 import types,time
+import pyarrow as pa
+import lancedb
 if type_database == 'sqlite3':
     print('sqlite3 loaded')
     import sqlite3
@@ -17,7 +19,17 @@ elif type_database == 'mysql':
 
 
 class Database():
+    schema = pa.schema([pa.field("idNumber",pa.string()),pa.field("vector", pa.list_(pa.float64(), list_size=128))])
+    vector_db = lancedb.connect("resources/data_vector")
+    try:
+        vector_tbl = vector_db.create_table("vector", schema=schema)
+    except Exception as e:
+        vector_tbl = vector_db.open_table("vector")
+        print(e)
+
+    
     def __init__(self):
+        
         def dictFactory(cursor, row):#重定义row_factory函数查询返回数据类型是字典形式
             d = {}
             for idx, col in enumerate(cursor.description):
@@ -134,7 +146,7 @@ def log_slow_queries(threshold):
 def log_query(self,sql):
     self.end_time = time.perf_counter()
     self.sql = sql
-    print(sql)
+    #print(sql)
                         
     
 

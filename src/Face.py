@@ -45,6 +45,7 @@ class StudentRgFace():
     def rg(self, img, rgbImage, raw_face,
            share):  #优化识别流程，识别成功后避免同一人频繁识别，频繁记录数据
         face_data = encodeFace(rgbImage, raw_face)
+        
         flag = compareFaces(face_data, self.face_data, axis=0)#计算欧式距离
         if flag < share.value:
             return self.former_result

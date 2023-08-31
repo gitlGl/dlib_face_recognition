@@ -7,6 +7,7 @@ import cv2, pickle
 from .Setting import user 
 from . import encryption
 from .Database import PH
+import pandas as pd
 
 
 def getImg(img_path):
@@ -36,7 +37,7 @@ def getVector(img_path):
     frame = predictor(rgbImage, face)
     face_data = np.array(
         encoder.compute_face_descriptor(rgbImage, frame))
-    face_data = pickle.dumps(face_data)
+    #face_data = pickle.dumps(face_data)
     return face_data
 
 def checkInsert(row,row_user_data,list_problem):
@@ -123,43 +124,16 @@ def checkInsert(row,row_user_data,list_problem):
         list2 = ["id_number", "user_name", "gender", "password", "img_path"]
         dic_user = dict(zip(list2, row_user_data))
 
-        img_path = dic_user.pop("img_path")
+        
         dic_user["salt"] = encryption.createSalt()
         dic_user["password"] = encryption.createMd5(
             dic_user["password"],dic_user["salt"],
             dic_user["id_number"])
-        dic_user["vector"] = getVector(img_path)
-        return tuple(dic_user.values()),img_path,dic_user["id_number"]
+        dic_user["vector"] = getVector(dic_user['img_path'])
+        return dic_user
        
        
 
-
-def insert(list_problem, row_user_data,row,lock = None):
-    try:
-        database.execute(
-            f"INSERT INTO student (id_number,user_name,gender,password ,salt,vector) \
-    VALUES ({PH},{PH}, {PH}, {PH} , {PH},{PH})",row_user_data)
-           
-    except sqlite3.IntegrityError:
-        list_problem.append("第{0}行第1列,表中数据学号可能重复，请检查: ".format(row) +
-                                str(row_user_data[0]))
-        return False
-    return True
-        
-def insertProcess(list_problem, row_user_data,row,lock = None):
-    lock.acquire()
-    try:
-        database.execute(
-            f"INSERT INTO student (id_number,user_name,gender,password ,salt,vector) \
-    VALUES ({PH},{PH}, {PH}, {PH} , {PH},{PH})",row_user_data)
-           
-    except sqlite3.IntegrityError:
-        list_problem.append("第{0}行第1列,表中数据学号可能重复，请检查: ".format(row) +
-                                str(row_user_data[0]))
-        lock.release()
-        return False
-    lock.release()
-    return True
 
 
 

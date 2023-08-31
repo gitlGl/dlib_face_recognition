@@ -19,6 +19,6 @@ runtime/
 *.log  
 slow_queries.log
 *.db-journal
-
+resources/data_vector
 
 

@@ -5,3 +5,4 @@ xlrd==1.2.0
 Chart==0.2.3
 pycryptodome==3.16.0
 lancedb==0.2.2
+pymysql==1.1.0
