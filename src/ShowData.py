@@ -1,5 +1,5 @@
 from . import CreatUser
-from .Database import database,PH
+from .Database import database
 from .ShowUser import ShowUser
 from PySide6.QtCore import QDate, Qt,QTimer
 import copy,multiprocessing
@@ -12,7 +12,7 @@ from .LineStack import ChartView
 from .Plugins import Plugins
 from . import Setting
 from .Setting import type_database
-from . CreatUser import insertImg
+from . CreatUser import run,insertImg
 import gc
 class ShowData(QWidget):
     def __init__(self):
@@ -108,34 +108,7 @@ class ShowData(QWidget):
             self.Vhlayout.removeItem(item)
             self.Vhlayout.addWidget(controls_class[action.text()](self))
 
-    @staticmethod
-    def run(num,data,lock = None):
-        list_problem = []
-        user_data = {}
-        for index, item in enumerate(data,start=2):
-                row = num*Setting.group_count+index
-                dic_data = CreatUser.checkInsert(row,item,list_problem)
 
-                if dic_data is not None:
-                    user_data[row] = dic_data
-                        
-        if type_database == 'sqlite3':
-            lock.acquire()
-        for row ,dic_data in user_data.items():
-            img_path = dic_data.pop('img_path')
-            tuple_data = tuple(dic_data.values())
-            try:
-                database.execute(
-                    f"INSERT INTO student (id_number,user_name,gender,password ,salt,vector) \
-            VALUES ({PH},{PH}, {PH}, {PH} , {PH},{PH})",tuple_data)
-                insertImg(dic_data['id_number'],img_path,'student')
-            except Exception as e:
-                list_problem.append("第{0}行第1列,表中数据学号可能重复，请检查: ".format(row) +
-                                    dic_data['id_number'])
-        if type_database == 'sqlite3':
-            lock.release()
-       
-        return [len(data),list_problem]
     
     
     def refreshProgressBar(self):
@@ -195,18 +168,18 @@ class ShowData(QWidget):
         if type_database == 'sqlite3':
             self.lock = multiprocessing.Manager().Lock()
             for  num in range(total_group):
-                result  =self.pool.apply_async(self.run,args =(num,
+                result  =self.pool.apply_async(run,args =(num,
                                     data[num* group_count:(num+1)*group_count],self.lock) )
                 self.results.append(result)
-            result  =self.pool.apply_async(self.run,args = (total_group,data[total_group*(group_count):],
+            result  =self.pool.apply_async(run,args = (total_group,data[total_group*(group_count):],
                                                            self.lock))
             self.results.append(result)
         else:
             for  num in range(total_group):
-                result  =self.pool.apply_async(self.run,args =
+                result  =self.pool.apply_async(run,args =
                                                 (num,data[num* group_count:(num+1)*group_count]) )
                 self.results.append(result)
-            result = self.pool.apply_async(self.run,args = 
+            result = self.pool.apply_async(run,args = 
                                         (total_group,data[total_group*(group_count):]))
             self.results.append(result)
 

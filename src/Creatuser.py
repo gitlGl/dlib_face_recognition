@@ -2,10 +2,12 @@ from . import encryption
 import numpy as np
 from .Setting import predictor,detector,encoder
 import os,re
-from .Database import database
+from .Database import database,PH
 import cv2, pickle
 from .Setting import user 
 from . import encryption
+from .Setting import type_database
+from . import Setting
 def getImg(img_path):
     raw_data = np.fromfile(
         img_path, dtype=np.uint8)  #先用numpy把图片文件存入内存：raw_data，把图片数据看做是纯字节数据
@@ -127,8 +129,37 @@ def checkInsert(row,row_user_data,list_problem):
             dic_user["id_number"])
         dic_user["vector"] = getVector(dic_user['img_path'])
         return dic_user
-       
-       
+
+
+def run(num,data,lock = None):
+    list_problem = []
+    user_data = {}
+    lst_data = []
+    for index, item in enumerate(data,start=2):
+            row = num*Setting.group_count+index
+            dic_data = checkInsert(row,item,list_problem)
+
+            if dic_data is not None:
+                lst_data.append((dic_data['id_number'],dic_data.pop('img_path')))
+                user_data[row] = tuple(dic_data.values())
+                    
+    if type_database == 'sqlite3':
+        lock.acquire()
+    for row ,tuple_data in user_data.items():
+        try:
+            database.execute(
+                f"INSERT INTO student (id_number,user_name,gender,password ,salt,vector) \
+        VALUES ({PH},{PH}, {PH}, {PH} , {PH},{PH})",tuple_data)
+        except Exception as e:
+            list_problem.append("第{0}行第1列,表中数据学号可能重复，请检查: ".format(row) +
+                                tuple_data[0])#元组第一个元素是id_number
+    if type_database == 'sqlite3':
+        lock.release()
+
+    for id_number,img_path in lst_data:
+        insertImg(id_number,img_path,'student')
+
+    return [len(data),list_problem]  
 # def get_path():
 #     path, _ = QFileDialog.getOpenFileName(
 #         None, "选择文件", "c:\\", "Image files(*.jpg *.gif *.svg)")
