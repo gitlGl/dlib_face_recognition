@@ -105,5 +105,9 @@ count_max,processes,process_exit,page_count = configRead("config.ini")
 # EYE_AR_THRESH = 0.05#眼睛长宽比
 # MAR_THRESH = 0.5#嘴巴长宽比    
 
+# 错误： git SSL certificate problem: unable to get local issuer certificate
+# 这个问题是由于没有配置信任的服务器HTTPS验证。默认，cURL被设为不信任任何CAs，就是说，它不信任任何服务器验证。
 
-    
+# 只需要执行下面命令就可以解决：
+
+# git config --global http.sslVerify false

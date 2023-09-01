@@ -1,5 +1,5 @@
 from . import CreatUser
-from .Database import database
+from .Database import database,PH
 from .ShowUser import ShowUser
 from PySide6.QtCore import QDate, Qt,QTimer
 import copy,multiprocessing
@@ -168,10 +168,10 @@ class ShowData(QWidget):
         if type_database == 'sqlite3':
             self.lock = multiprocessing.Manager().Lock()
             for  num in range(total_group):
-                result  =self.pool.apply_async(run,args =(num,
+                result = self.pool.apply_async(run,args =(num,
                                     data[num* group_count:(num+1)*group_count],self.lock) )
                 self.results.append(result)
-            result  =self.pool.apply_async(run,args = (total_group,data[total_group*(group_count):],
+            result = self.pool.apply_async(run,args = (total_group,data[total_group*(group_count):],
                                                            self.lock))
             self.results.append(result)
         else:
@@ -213,11 +213,16 @@ class ShowData(QWidget):
             QApplication.processEvents()
             self.ProgressBar.setValue(int(row/rows*100)) 
             row_user_data = user_sheet.row_values(rowx=row)
-            isdata = CreatUser.checkInsert(row+1,row_user_data,list_problem)
-            if isdata is not None:
-                tuple_dta,img_path,id_number = isdata
-                if CreatUser.insert(list_problem,tuple_dta,row):
-                    insertImg(id_number,img_path,'student')
+            dic_data = CreatUser.checkInsert(row+1,row_user_data,list_problem)
+            if dic_data is not None:
+                img_path = dic_data.pop('img_path')
+                
+                database.execute(
+                    f"INSERT INTO student (id_number,user_name,gender,password ,salt,vector) \
+            VALUES ({PH},{PH}, {PH}, {PH} , {PH},{PH})",tuple(dic_data.values()))
+
+                    
+                insertImg(dic_data['id_number'],img_path,'student')
            
         self.ProgressBar.setValue(100)
         self.showEerror(list_problem)
