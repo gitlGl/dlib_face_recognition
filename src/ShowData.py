@@ -256,7 +256,7 @@ class ShowData(QWidget):
         result = None
         if search_content.isdigit():
             result =  database.execute(
-                "select id_number,user_name,gender,password from student where id_number = {}".format(search_content))
+                "select id_number,user_name,gender,password from student where id_number = {0}".format(search_content))
             
             if len(result) == 0:
                 QMessageBox.critical(self, '警告', '用户不存在')
@@ -264,7 +264,7 @@ class ShowData(QWidget):
                 return
         else:
             result = database.execute(
-                "select id_number,user_name,gender,password from student where user_name like '%{}%'".format(search_content))
+                "select id_number,user_name,gender,password from student where user_name like '%{0}%'".format(search_content))
            
             if len(result) == 0:
                 QMessageBox.critical(self, '警告', '用户不存在')

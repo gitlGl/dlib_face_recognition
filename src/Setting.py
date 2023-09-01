@@ -16,7 +16,7 @@ class user(Enum):
     reg_pwd = "[A-Za-z0-9!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]*"
 
 
-type_database = 'mysql' # 'sqlite3' or 'mysql
+type_database = 'sqlite3' # 'sqlite3' or 'mysql
 
 def configRead(filePath:str):
     cfg = configparser.ConfigParser() 

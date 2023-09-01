@@ -160,6 +160,11 @@ def run(num,data,lock = None):
         insertImg(id_number,img_path,'student')
 
     return [len(data),list_problem]  
+
+
+
+
+
 # def get_path():
 #     path, _ = QFileDialog.getOpenFileName(
 #         None, "选择文件", "c:\\", "Image files(*.jpg *.gif *.svg)")

@@ -139,13 +139,13 @@ def log_query(self,sql):
     
 
 @log_slow_queries(0.0001) # Set threshold to 0.01 second
-def sqlite3_execute_query(self,query:str,args :tuple = ()):
+def sqlite3_execute_query(self,query:str,args :tuple = None):
     self.c.execute(query,args)
     #self.conn.commit()
     return self.c.fetchall()
    
 
-def mysql_execute_query(self,query,args :tuple = ()):
+def mysql_execute_query(self,query,args :tuple = None):
     self.c.execute(query,args)
     return self.c.fetchall()
    
