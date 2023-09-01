@@ -3,10 +3,11 @@ from PySide6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, \
     QVBoxLayout, QHBoxLayout, QMessageBox,QCheckBox,QLineEdit
 from PySide6.QtCore import Signal,QRegularExpression
 from .Database import database
-from .Setting import user
+from .Setting import user,isVerifyeRemote
 from PySide6.QtCore import Slot
 from PySide6.QtGui import QIcon
 import datetime
+from PySide6.QtWidgets import QApplication
 from .FaceLoginPage import FaceLoginPage
 from . import Check
 from .SigninPage import SigninPage
@@ -15,6 +16,7 @@ import configparser
 from .Database import PH
 from PySide6.QtGui import  QRegularExpressionValidator
 from .encryption import *
+from .Check import Req
 #from PySide6 import QString
 class LoginUi(QWidget):
     emitsingal = Signal(str)
@@ -171,7 +173,9 @@ class LoginUi(QWidget):
             
             clear()
             return
-        
+        if isVerifyeRemote :
+            if not self.verifyeLogin():
+                return 
         database.execute(f"INSERT INTO admin_log_time (id_number ) \
 VALUES ({PH})", (user_id, ))
         
@@ -191,7 +195,26 @@ VALUES ({PH})", (user_id, ))
 
         self.emitsingal.emit(user_id)
         self.close()
-           
+
+
+    def  verifyeLogin(self):
+               
+        self.login_button.setText("登录中...")
+        QApplication.processEvents()
+        self.login_button.setEnabled(False)
+        try:
+            if not  Req({'flag':'login',"mac_address":uuid.uuid1().hex[-12:]}):
+                QMessageBox.critical(self, '警告', "设备与账号不匹配")
+                self.login_button.setText("登录")
+                self.login_button.setEnabled(True)
+                return False
+        except:
+            QMessageBox.critical(self, '警告', "网络错误")
+            self.login_button.setText("登录")
+            self.login_button.setEnabled(True)
+            return False
+        return True
+          
  #self.emitsingal.emit(item["id_number"])
     def faceLogin(self):
         self.face_login_page = FaceLoginPage()

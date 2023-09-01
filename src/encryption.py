@@ -22,7 +22,14 @@ def createMd5(password, salt,id_number):#随机盐加三位用户id混淆
     md5 = hashlib.md5()
     md5.update((password + salt[1:4] + id_number[-4:-1]).encode("utf-8"))
     return md5.hexdigest()
+def createMd5Verifye(password, id_number):#随机盐加三位用户id混淆
+    md5 = hashlib.md5()
+    if type(password) != str:
 
+        md5.update(password )
+        return md5.hexdigest()
+    md5.update((password + id_number[-4:-1]).encode("utf-8"))
+    return md5.hexdigest()
 class aes():
     Key = uuid.uuid1().hex[-12:][1:6]+'abc'
     mac_address = uuid.uuid1().hex[-12:]
