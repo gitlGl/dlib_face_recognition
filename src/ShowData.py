@@ -164,25 +164,19 @@ class ShowData(QWidget):
         total_group = lenth // group_count
         self.results = []
 
-        self.pool =  multiprocessing.Pool(Setting.processes) 
+        self.pool =  multiprocessing.Pool(Setting.processes)
+        self.lock = None 
         if type_database == 'sqlite3':
             self.lock = multiprocessing.Manager().Lock()
-            for  num in range(total_group):
-                result = self.pool.apply_async(run,args =(num,
-                                    data[num* group_count:(num+1)*group_count],self.lock) )
-                self.results.append(result)
-            result = self.pool.apply_async(run,args = (total_group,data[total_group*(group_count):],
-                                                           self.lock))
+            
+        for  num in range(total_group):
+            result = self.pool.apply_async(run,args =(num,
+                                data[num* group_count:(num+1)*group_count],self.lock) )
             self.results.append(result)
-        else:
-            for  num in range(total_group):
-                result  =self.pool.apply_async(run,args =
-                                                (num,data[num* group_count:(num+1)*group_count]) )
-                self.results.append(result)
-            result = self.pool.apply_async(run,args = 
-                                        (total_group,data[total_group*(group_count):]))
-            self.results.append(result)
-
+        result = self.pool.apply_async(run,args = (total_group,data[total_group*(group_count):],
+                                                        self.lock))
+        self.results.append(result)
+       
         self.pool.close()
     
         self.timer = QTimer()
