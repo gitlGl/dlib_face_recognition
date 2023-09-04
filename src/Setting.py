@@ -17,7 +17,7 @@ class user(Enum):
 
 
 type_database = 'mysql' # 'sqlite3' or 'mysql
-isVerifyeRemote = False
+isVerifyeRemote = True
 
 def configRead(filePath:str):
     cfg = configparser.ConfigParser() 
