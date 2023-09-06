@@ -89,6 +89,8 @@ class SigninPage(QWidget):
         if isVerifyeRemote:
             self.verifye_label = QLabel('验证码:', self)
             self.verifye_line = QLineEdit(self)
+            validator = QRegularExpressionValidator(QRegularExpression("^[_0-9]*$"))
+            self.verifye_line.setValidator( validator)
             self.verifye_lyout = QHBoxLayout()
             self.verifye_lyout.addSpacing(12)
             self.verifye_lyout.addWidget(self.verifye_label)
@@ -114,10 +116,17 @@ class SigninPage(QWidget):
     def checkInputFunc(self):
         if self.signin_user_line.text() and self.signin_pwd_line.text(
         ) and self.signin_pwd2_line.text() and self.signin_vector_line.text():
-            self.signin_button.setEnabled(True)
+            
+            if isVerifyeRemote:
+                if self.verifye_line.text():
+                    self.signin_button.setEnabled(True)
+                else: self.signin_button.setEnabled(False)
+                    
+            else:
+                self.signin_button.setEnabled(True)
         else:
             self.signin_button.setEnabled(False)
-
+       
         #self.signin_vector_line.setText(path)
         #self.signin_vector_line.clear()
     def getPath(self):
