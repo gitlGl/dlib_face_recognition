@@ -12,9 +12,11 @@ from .Database import database
 from . import encryption
 import os ,shutil 
 from . import Setting
+from PySide6.QtGui import QIcon
 class ShowUser(QWidget):
     def __init__(self,table_name:str,information=None ):
         super().__init__()
+        self.setWindowIcon(QIcon('resources/数据.svg'))
         self.table_name = table_name
         self.information = information
         if self.table_name == "admin":
@@ -57,7 +59,7 @@ class ShowUser(QWidget):
             self.page = Page(table_name,self.table_cloumn_name,page_count=page_count)
             self.page.information_signal.connect(self.setInformation)
             if  not self.page.information:
-                QMessageBox.information(self, '警告', '不存在用户或记录')
+                QMessageBox.information(self, '提示', '不存在用户或记录')
                 self.close()
                 return
             self.VBoxLayout.addWidget(self.page)
