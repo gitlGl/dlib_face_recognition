@@ -5,7 +5,7 @@ import uuid
 import base64
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
-
+from .logger import logger
 #密码加密
 
 def createSalt(length=6):
@@ -55,5 +55,6 @@ class aes():
             msg = unpad(cipher.decrypt(plaintext),AES.block_size)
             result = str(msg.decode('utf8'))
             return result
-        except:
+        except Exception as e:
+            logger.error(e)
             return False

@@ -13,6 +13,7 @@ from . import encryption
 import os ,shutil 
 from . import Setting
 from PySide6.QtGui import QIcon
+from .logger import logger
 class ShowUser(QWidget):
     def __init__(self,table_name:str,information=None ):
         super().__init__()
@@ -68,13 +69,12 @@ class ShowUser(QWidget):
         columncout = len(self.QTableWidget_column_name)
         self.tableWidget.setColumnCount(columncout)#根据数据量确定列数
         self.tableWidget.setHorizontalHeaderLabels(self.QTableWidget_column_name)
+        self.isCellChange = False#用于判断是否需要断开cellChange槽函数链接
         self.setInformation()
-        
+       
     def setInformation(self):
-        try:
+        if self.isCellChange:
             self.tableWidget.cellChanged.disconnect(self.on_cell_changed)#单元格变更槽函数
-        except:
-            pass
         if  not self.isNUll:
             self.information = self.page.information
         information = self.information
@@ -106,6 +106,7 @@ class ShowUser(QWidget):
             # img_item.button.clicked.connect(partial(self.handle_button_click,id_number = idnumber))#通过偏函数传递正确的id_number 
             img_item.button.clicked.connect(self.handle_button_click)
         self.tableWidget.cellChanged.connect(self.on_cell_changed)#单元格变更槽函数
+        self.isCellChange = True
     def handle_button_click(self):
         sender = QObject.sender(self).parent()#获取信号发送者的对象
         path = Check.getImgPath(self)
@@ -170,6 +171,7 @@ class ShowUser(QWidget):
             database.conn.commit()
 
         except Exception as e:
+                logger.error(e)
                 database.conn.rollback()
                 QMessageBox.critical(self, '警告', "未知错误")
                 return False
@@ -281,10 +283,11 @@ class ShowUser(QWidget):
             database.execute(
                 "delete from {0} where id_number = {1}".format(self.table_name+"_log_time",id))
             database.conn.commit()
-        except:
-            QMessageBox.critical(self, '警告', "未知错误")
-            database.conn.rollback()
-            return
+        except Exception as e:
+                logger.error(e)
+                database.conn.rollback()
+                QMessageBox.critical(self, '警告', "未知错误")
+                return False
 
         #删除用户日志信息文件
         if os.path.exists(path):

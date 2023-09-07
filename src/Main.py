@@ -14,7 +14,7 @@ from  .Ui import Ui
 from . import Setting
 from .Database import database
 from .Database import PH
-
+import configparser
 from .SettingUI import SettingsWindow
 class Main(Ui):
     def __init__(self):
@@ -138,6 +138,12 @@ VALUES ({PH})", (self.id_number,))
         self.share.value = distance
         self.scale_value_label.setText(str(distance))
         Setting.user_threshold = distance
+        cfg = configparser.ConfigParser() 
+        cfg.read('config.ini')
+        cfg.set('setting', 'user_threshold', str(Setting.user_threshold))
+        with open('config.ini', 'w') as f:
+            cfg.write(f)
+       
 
     #清理活体识别提示信息，设置提示信息
     @Slot(str)

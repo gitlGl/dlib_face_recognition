@@ -8,7 +8,7 @@ import re
 from .Setting import user
 from . import CreatUser
 import http.client,pickle
-
+from .logger import logger
 
 def idNumber(id_number,row_info):
     if len(id_number) > user.id_length.value or (not id_number.isdigit()):
@@ -110,6 +110,7 @@ def checkVerifye(data):
     
         else:
             return '验证码错误'
-    except:
-        return '网络错误'
+    except Exception as e:
+        logger.error(e)
+        return '网络错误或服务器错误'
     

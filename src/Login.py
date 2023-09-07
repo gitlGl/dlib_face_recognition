@@ -17,6 +17,7 @@ from .Database import PH
 from PySide6.QtGui import  QRegularExpressionValidator
 from .encryption import *
 from .Check import Req
+from .logger import logger
 #from PySide6 import QString
 class LoginUi(QWidget):
     emitsingal = Signal(str)
@@ -208,8 +209,9 @@ VALUES ({PH})", (user_id, ))
                 self.login_button.setText("登录")
                 self.login_button.setEnabled(True)
                 return False
-        except:
-            QMessageBox.critical(self, '警告', "网络错误")
+        except Exception as e:
+            logger.error(e)
+            QMessageBox.critical(self, '警告', "网络错误或服务器错误")
             self.login_button.setText("登录")
             self.login_button.setEnabled(True)
             return False
