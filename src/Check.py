@@ -5,7 +5,7 @@ import os
 from PySide6.QtWidgets import QFileDialog,QMessageBox
 from .Setting import detector
 import re
-from .Setting import user
+from .Setting import user,ip,port
 from . import CreatUser
 import http.client,pickle
 from .logger import logger
@@ -95,7 +95,7 @@ def getImgPath(parent=None):
 
  #客户端请求
 def Req(data):
-    conn = http.client.HTTPConnection("localhost", 8888,timeout=5)
+    conn = http.client.HTTPConnection(ip, port,timeout=5)
     data_tem = pickle.dumps(data)
     conn.request("POST", "", data_tem)
     response = conn.getresponse()
