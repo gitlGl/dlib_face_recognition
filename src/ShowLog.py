@@ -65,10 +65,7 @@ class ShowLog(QDialog):
             img_item.setPixmap(QPixmap(imag_path))
             img_item.setScaledContents(True)
             self.tableWidget.setCellWidget(row, row2+1,img_item)
-           
-            
-            
-      
+              
            
     def onTableWidgetCellDoubleClicked(self, row, column):#双击槽函数 self.tableWidget.cellDoubleClicked.connect()
         imag_path = "img_information/{0}/{1}/log/{2}.jpg".format(

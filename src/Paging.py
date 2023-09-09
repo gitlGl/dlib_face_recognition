@@ -187,8 +187,5 @@ class Page(Paging):
             return int(total_page)
     
 
-# app = QApplication(sys.argv)
-# window = PageSudentLog()
-# window.show()
-# sys.exit(app.exec_())
+
 

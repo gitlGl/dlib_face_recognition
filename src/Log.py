@@ -14,16 +14,12 @@ class  studentlog():
         self.insertTime()
         self.insertImg(img)
         self.insertCout()
-        
-           
+            
     #记录识别成功时间
     def insertTime(self):
         database.execute(
             f"INSERT INTO student_log_time (id_number,gender ) VALUES ({PH}, {PH})",
             (self.item["id_number"],self.item["gender"],))
-
-       
-        
 
 
     #记录识别成功时照片
@@ -48,7 +44,6 @@ class  studentlog():
             
             return
            
-    
         count = self.item["count"] + 1
         database.execute(
         "UPDATE student SET count = {0} WHERE id_number = {1}".format(count,self.item["id_number"]),)
@@ -75,9 +70,7 @@ class  adminlog():
             f"INSERT INTO admin_log_time (id_number) \
       VALUES ({PH})",
             (self.item["id_number"],))
-
-       
-       
+  
 
     def inserImg(self, img):
     

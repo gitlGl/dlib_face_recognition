@@ -46,11 +46,7 @@ class ShowUser(QWidget):
 
         #self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)#禁止用户编辑单元格
         self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)#表示均匀拉直表头
-        # self.qlineedit = QLineEdit()
-        # self.qlineedit.setPlaceholderText('Please enter your usernumber')
-        # self
         
-        #self.tableWidget.cellDoubleClicked.connect(self.onTableWidgetCellDoubleClicked)
         self.VBoxLayout = QVBoxLayout()
         self.VBoxLayout.addWidget(self.tableWidget)
        
@@ -96,14 +92,7 @@ class ShowUser(QWidget):
             
     
             self.tableWidget.setCellWidget(row1, row2+1,img_item)
-            
-            # def returnSlot(id_number):
-            #     def wrapper():
-            #         self.handle_button_click(id_number)
-            #     return wrapper
-            # 
-            #img_item.button.clicked.connect(returnSlot(id_number))通过闭包传递正确的id_number 
-            # img_item.button.clicked.connect(partial(self.handle_button_click,id_number = idnumber))#通过偏函数传递正确的id_number 
+        
             img_item.button.clicked.connect(self.handle_button_click)
         self.tableWidget.cellChanged.connect(self.on_cell_changed)#单元格变更槽函数
         self.isCellChange = True

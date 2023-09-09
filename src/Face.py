@@ -146,40 +146,4 @@ class AdminRgFace():
 # #         vec_dim = 128
 # #         self.faiss_index = faiss.IndexFlatL2(vec_dim)  # 使用欧式距离作为度量  
 # #         self.faiss_index.add(np.array(self.list_vector).astype('float32'))
-# class AdminRgFace(Face):
-#     def __init__(self):
-#         super().__init__()
-#         self.face_data = np.random.random(128).astype('float32')
-#         self.refreshthread = Timer(10, self.reset)
-#         self.refreshthread.setDaemon(True)
-#         self.refreshthread.start()
-#     def rg_face(self,img, rgbImage, raw_face,share):
-#         face_data = self.encodeface(rgbImage, raw_face)
-#         flag = self.compare_faces(face_data, self.face_data, axis=0)
-#         if flag < 0.6:return ""
-#         else:
-#             admin = Database()
-#             list_vector = []
-#             for i in user.c.execute("SELECT vector from admin"):
-#                 i = np.loads(i[0])
-#                 list_vector.append(i)
-#             if len(list_vector) == 0:
-#                 return False
-#             distances = self.compare_faces(np.array(list_vector), face_data, axis=1)
-#             min_distance = np.argmin(distances)
-#             print("距离",distances[min_distance])
-#             if distances[min_distance] < 0.4:
-#                 share.value = True
-#                 self.face_data = face_data
-#                 tembyte = np.ndarray.dumps(list_vector[min_distance])
-#                 adminlog(tembyte,img,admin)
-#                 user.conn.close()
-#                 return "验证成功"
-#             else:
-#                 return  "验证失败"
 
-#     def reset(self):
-#         self.face_data = np.random.random(128).astype('float32')
-#         self.refreshthread = Timer(10, self.reset)
-#         self.refreshthread.setDaemon(True)
-#         self.refreshthread.start()
