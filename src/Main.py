@@ -12,8 +12,7 @@ from .ShowData import ShowData
 from .Login import LoginUi
 from  .Ui import Ui
 from . import Setting
-from .Database import database
-from .Database import PH
+from .Database import database,PH
 import configparser
 from .SettingUI import SettingsWindow
 class Main(Ui):

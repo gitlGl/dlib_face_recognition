@@ -1,7 +1,7 @@
 from PySide6.QtGui import QIcon, QPixmap
-from PySide6.QtCore import Qt,QPoint,Slot,QSize
+from PySide6.QtCore import Qt,QPoint,Slot
 from  PySide6.QtWidgets import QTableWidget,QTableWidgetItem,QVBoxLayout,QMenu,\
-QHeaderView,QMessageBox, QDialog,QCheckBox,QLabel
+QHeaderView,QMessageBox, QDialog,QLabel
 from PySide6 import QtWidgets
 from .ImageView import ShowImage
 from .Database import database

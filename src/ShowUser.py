@@ -1,18 +1,16 @@
 from PySide6.QtCore import Qt,QPoint,Slot,QObject
 from .ImageView import ShowImage
-from  PySide6.QtWidgets import QWidget,QTableWidget,QTableWidgetItem
-from PySide6.QtGui import QPixmap, QColor
-from PySide6.QtWidgets import QVBoxLayout,QMenu,QHeaderView,QMessageBox,QPushButton,QHBoxLayout,QLabel
+from  PySide6.QtWidgets import QWidget,QTableWidget,QTableWidgetItem,\
+QVBoxLayout,QMenu,QHeaderView,QMessageBox,QPushButton,QHBoxLayout,QLabel
+from PySide6.QtGui import QPixmap, QColor, QIcon
 from .ShowLog import ShowLog
 from .Paging import Page
-from .Database import PH
 from . import CreatUser
 from . import Check
-from .Database import database
+from .Database import database,PH
 from . import encryption
 import os ,shutil 
 from . import Setting
-from PySide6.QtGui import QIcon
 from .logger import logger
 class ShowUser(QWidget):
     def __init__(self,table_name:str,information=None ):

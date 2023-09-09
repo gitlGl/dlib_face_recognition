@@ -1,20 +1,18 @@
 
 from PySide6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, \
-    QVBoxLayout, QHBoxLayout, QMessageBox,QCheckBox,QLineEdit
-from PySide6.QtCore import Signal,QRegularExpression
+    QVBoxLayout, QHBoxLayout, QMessageBox,QCheckBox,QLineEdit, QApplication
+from PySide6.QtCore import Signal,QRegularExpression,Slot
 from .Database import database
 from .Setting import user,isVerifyeRemote
 from PySide6.QtCore import Slot
-from PySide6.QtGui import QIcon
 import datetime
-from PySide6.QtWidgets import QApplication
 from .FaceLoginPage import FaceLoginPage
 from . import Check
 from .SigninPage import SigninPage
 import configparser
 import configparser
 from .Database import PH
-from PySide6.QtGui import  QRegularExpressionValidator
+from PySide6.QtGui import  QRegularExpressionValidator,QIcon
 from .encryption import *
 from .Check import Req
 from .logger import logger

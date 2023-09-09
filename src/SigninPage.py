@@ -1,17 +1,15 @@
 from PySide6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, \
-    QVBoxLayout, QHBoxLayout, QMessageBox
+    QVBoxLayout, QHBoxLayout, QMessageBox,QApplication
 from PySide6.QtCore import Qt,QRegularExpression
 from .Database import database
 from . import encryption
-from PySide6.QtGui import QIcon
+from PySide6.QtGui import QIcon,QRegularExpressionValidator
 from . import CreatUser
 from  . import Check
 from .Database import PH
 from .Setting import user,isVerifyeRemote
 from .Check import *
-from PySide6.QtGui import QRegularExpressionValidator
 from .encryption import *
-from PySide6.QtWidgets import QApplication
 from .CreatUser import *
 class SigninPage(QWidget):
     def __init__(self):

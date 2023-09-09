@@ -1,13 +1,12 @@
 from . import encryption
 import numpy as np
-from .Setting import predictor,detector,encoder
+from .Setting import predictor,detector,type_database,user ,encoder
 import os,re
 from .Database import database,PH
 import cv2, pickle
-from .Setting import user 
 from . import encryption
-from .Setting import type_database
 from . import Setting
+
 def getImg(img_path):
     raw_data = np.fromfile(
         img_path, dtype=np.uint8)  #先用numpy把图片文件存入内存：raw_data，把图片数据看做是纯字节数据

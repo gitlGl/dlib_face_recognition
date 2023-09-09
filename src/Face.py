@@ -1,6 +1,6 @@
 from .Database import database
 from .Log import adminlog, studentlog
-from .Setting import predictor,detector,encoder
+from .Setting import encoder
 import numpy as np
 from threading import Timer
 import pickle

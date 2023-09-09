@@ -1,12 +1,12 @@
-from PySide6.QtWidgets import QWidget, QLabel,QVBoxLayout,QHBoxLayout
+from PySide6.QtWidgets import QWidget, QLabel,QVBoxLayout,QHBoxLayout, QGroupBox
 from PySide6.QtCore import Signal,Qt,QTimer, Qt
 from .Capture import Capture
 from PySide6.QtGui import QPixmap,QIcon
 from .Face import AdminRgFace
 import cv2,copy
-from .Setting import predictor,detector,encoder
-from PySide6.QtWidgets import QGroupBox
+from .Setting import predictor,detector
 from . import LivenessDetection
+
 class FaceLoginPage(QWidget):
     emit_show_parent = Signal(str)
 

@@ -1,6 +1,5 @@
 from enum import Enum
 import dlib,os,configparser
-from enum import Enum
 
 predictor = dlib.shape_predictor(
     "resources/shape_predictor_68_face_landmarks.dat")  # 4 获取人脸关键点检测模型

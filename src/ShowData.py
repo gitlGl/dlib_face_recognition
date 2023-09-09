@@ -4,10 +4,9 @@ from .ShowUser import ShowUser
 from PySide6.QtCore import QDate, Qt,QTimer
 import copy,multiprocessing
 import os,xlrd
-from PySide6.QtWidgets import QApplication
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QWidget, QHBoxLayout, QLabel, QVBoxLayout, QLineEdit,\
-    QGroupBox, QPushButton, QFileDialog, QDateEdit, QMessageBox, QMenu, QProgressBar
+    QGroupBox, QPushButton, QFileDialog, QDateEdit, QMessageBox, QMenu, QProgressBar,QApplication
 from .LineStack import ChartView
 from .Plugins import Plugins
 from . import Setting

@@ -1,11 +1,9 @@
-from PySide6.QtWidgets import QMessageBox
+from PySide6.QtWidgets import QMessageBox,QFileDialog
 from .Database import database
 from . import encryption
 import os
-from PySide6.QtWidgets import QFileDialog,QMessageBox
-from .Setting import detector
+from .Setting import detector, user,ip,port
 import re
-from .Setting import user,ip,port
 from . import CreatUser
 import http.client,pickle
 from .logger import logger

@@ -1,7 +1,6 @@
 import copy
-from PySide6.QtCore import QTimer
+from PySide6.QtCore import QTimer,Signal
 import numpy as np
-from PySide6.QtCore import Signal
 from . import LivenessDetection
 from .Capture import Capture
 class PutImg(Capture):

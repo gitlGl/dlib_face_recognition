@@ -1,6 +1,6 @@
 from .ShowLog import ShowLog
 from .ImageView import ImageView
-from .Database import database
+from .Database import database,PH
 from .ImageView import ShowImage
 from . import CreatUser
 from PySide6.QtCore import Qt
@@ -10,7 +10,7 @@ QMessageBox, QMenu,QWidget
 from . import Check
 from .UpdateUser import UpdatePwd
 from .ShowUser import ShowUser
-from .Database import PH
+
 class AdminInformation(QWidget):
     def __init__(self,id_number):
         super().__init__()

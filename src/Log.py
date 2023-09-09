@@ -1,6 +1,6 @@
-from .Database import database
+from .Database import database,PH
 import datetime,cv2,os
-from .Database import PH
+
 class  studentlog():
     def __init__(self, id_number,img):
       
