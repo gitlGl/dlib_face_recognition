@@ -6,14 +6,15 @@ from PySide6.QtGui import QFont
 from PySide6 import QtCore
 
 #方便启动远程验证时进行测试
-import Server,os
+import os
 from src import isVerifyeRemote
-if isVerifyeRemote:
-    os.system('start python Server.py')  
+
 
 if __name__ == '__main__':
     # QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
     # QApplication.setHighDpiScaleFactorRoundingPolicy(QtCore.Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
+    if isVerifyeRemote:
+        os.system('start python Server.py')  
     app = QApplication(sys.argv)
     translator = QtCore.QTranslator()
     translator.load("resources/widgets_zh_CN_all.qm")#加载中文文件

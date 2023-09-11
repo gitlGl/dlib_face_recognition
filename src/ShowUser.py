@@ -127,8 +127,8 @@ class ShowUser(QWidget):
             self.information[row][self.table_cloumn_name[column]] = text
            
             return
-        if column == 0 and self.table_name == "admin" :
-            if id_number == '12345678910':
+        if column == 0:
+            if self.table_name == "admin" and id_number == '12345678910':
                 QMessageBox.critical(self, '警告', '不能修改admin用户')
                 self.tableWidget.cellChanged.disconnect(self.on_cell_changed)#单元格变更槽函数
                 self.tableWidget.item(row, column).setText(id_number)
