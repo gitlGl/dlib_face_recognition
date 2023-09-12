@@ -115,7 +115,7 @@ class Database():
 
 
 def log_slow_query(sql, execution_time):
-    with open('slow_queries.log', 'a') as f:
+    with open('slow_queries.log', 'a',encoding= 'utf-8') as f:
         f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))}:{sql}\nExecution time: {execution_time} seconds\n\n")
 
 def log_slow_queries(threshold):

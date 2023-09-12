@@ -182,7 +182,7 @@ class SettingsWindow(QMainWindow):
         cfg.set('setting', 'MAR_THRESH', str(Setting.MAR_THRESH))
         cfg.set('setting', 'processes', str(Setting.processes))
         cfg.set('setting', 'page_count', str(Setting.page_count))
-        with open('config.ini', 'w') as f:
+        with open('config.ini', 'w',encoding= 'utf-8') as f:
             cfg.write(f)
         QMessageBox.information(self, '提示', '保存成功！')
         self.close()

@@ -140,7 +140,7 @@ VALUES ({PH})", (self.id_number,))
         cfg = configparser.ConfigParser() 
         cfg.read('config.ini')
         cfg.set('setting', 'user_threshold', str(Setting.user_threshold))
-        with open('config.ini', 'w') as f:
+        with open('config.ini', 'w',encoding = 'utf-8') as f:
             cfg.write(f)
        
 
