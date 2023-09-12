@@ -6,7 +6,7 @@ def setup_logger():
     logger.setLevel(logging.ERROR)#全局等级设置
 
     # 创建文件处理器
-    file_handler = logging.FileHandler('error.log')
+    file_handler = logging.FileHandler('error.log',encoding = 'utf-8')
     file_handler.setLevel(logging.ERROR)#输出文件等级设置
 
     # 创建日志格式器
