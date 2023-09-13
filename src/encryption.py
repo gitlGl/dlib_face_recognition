@@ -42,7 +42,7 @@ class aes():
         cipher = AES.new(key,AES.MODE_ECB)
         plaintext = data.encode('utf8')
         msg = cipher.encrypt(pad(plaintext,AES.block_size))
-        result = str(base64.b64encode(msg).decode('utf8'))
+        result = base64.b64encode(msg).decode('utf8')
         return result
         
     @staticmethod
@@ -53,7 +53,7 @@ class aes():
         try:
             plaintext = base64.b64decode(data.encode("utf8"))
             msg = unpad(cipher.decrypt(plaintext),AES.block_size)
-            result = str(msg.decode('utf8'))
+            result = msg.decode('utf8')
             return result
         except Exception as e:
             logger.error(e)
