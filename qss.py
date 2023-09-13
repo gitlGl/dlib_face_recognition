@@ -1,3 +1,6 @@
+
+from src import resources_dir
+resources_dir = resources_dir.replace('\\','/')
 StyleSheet = """
 QWidget {
         background: rgb(232, 241, 252);
@@ -198,18 +201,18 @@ QCheckBox::indicator {
 	height: 15px;
 }
 QCheckBox::indicator:unchecked {
-    image: url(resources/checkbox-uncheck.svg);
+    image: url(%scheckbox-uncheck.svg);
 }
 QCheckBox::indicator:unchecked:hover {
-    image: url(resources/checkbox-uncheck.svg);
+    image: url(%scheckbox-uncheck.svg);
 }
 QCheckBox::indicator:checked {
-    image: url(resources/checkbox.svg);
+    image: url(%scheckbox.svg);
 }
 
-"""
+"""%(resources_dir,resources_dir,resources_dir)
 
- 
+
 
 
 # sql2 = "SELECT gender where gender = 1 in (select gender as gender FROM student_log_time where log_time between '2022-03-18'  and '2022-03-19') ;"

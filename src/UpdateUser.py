@@ -9,14 +9,14 @@ from .Setting import user
 import re
 from PySide6.QtGui import QRegularExpressionValidator
 from PySide6.QtCore import QRegularExpression
-
+from .Setting import resources_dir
 class UpdatePwd(QDialog):
     def __init__(self, id_number):
         super().__init__()
         self.setWindowFlags(Qt.WindowMinMaxButtonsHint
                             | Qt.WindowCloseButtonHint)
         self.setWindowTitle('修改密码')
-        self.setWindowIcon(QIcon('resources/修改密码.svg'))
+        self.setWindowIcon(QIcon(resources_dir + '修改密码.svg'))
         self.id_number = id_number
         self.old_pwd_label = QLabel('旧密码:', self)
         self.new_pwd2_label = QLabel('新密码:', self)

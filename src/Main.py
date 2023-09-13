@@ -15,6 +15,7 @@ from . import Setting
 from .Database import database,PH
 import configparser
 from .SettingUI import SettingsWindow
+from .Setting import resources_dir
 class Main(Ui):
     def __init__(self):
         super().__init__()
@@ -217,7 +218,7 @@ VALUES ({PH})", (self.id_number,))
         self.open_capture_btn.clicked.disconnect(self.open)
         self.open_capture_btn.clicked.connect(self.close)
         self.open_capture_btn.setText("关闭摄像头")
-        self.open_capture_btn.setIcon(QIcon("resources/摄像头.svg"))
+        self.open_capture_btn.setIcon(QIcon(resources_dir + "摄像头.svg"))
         self.put_img.SetCap()
         self.put_img.work_thread.start()
         if not self.p.is_alive():
@@ -255,7 +256,7 @@ VALUES ({PH})", (self.id_number,))
         self.open_capture_btn.clicked.connect(self.open)
         self.open_capture_btn.clicked.disconnect(self.close)
         self.open_capture_btn.setText("打开摄像头")
-        self.open_capture_btn.setIcon(QIcon("resources/摄像头_关闭.svg"))
+        self.open_capture_btn.setIcon(QIcon(resources_dir + "摄像头_关闭.svg"))
         self.put_img.close()  # 关闭摄像头
         #self.qlabel4.setPixmap(QPixmap("./resources/摄像头.svg"))
 

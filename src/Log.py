@@ -1,6 +1,6 @@
 from .Database import database,PH
 import datetime,cv2,os
-
+from .Setting import img_dir
 class  studentlog():
     def __init__(self, id_number,img):
       
@@ -27,7 +27,7 @@ class  studentlog():
         """
         向数据库插入识时照片
         """
-        path ="img_information/" +"student/" +str(self.item["id_number"])+"/log"
+        path = img_dir +  +"student/" +str(self.item["id_number"])+"/log"
         if not os.path.exists(path):  # 判断是否存在文件夹如果不存在则创建为文件夹
             os.makedirs(path)
         cv2.imwrite(
@@ -74,7 +74,7 @@ class  adminlog():
 
     def inserImg(self, img):
     
-        path ="img_information/" +"admin/" +str(self.item["id_number"])+"/log"
+        path = img_dir  +"admin/" +str(self.item["id_number"])+"/log"
         if not os.path.exists(path):  # 判断是否存在文件夹如果不存在则创建为文件夹
             os.makedirs(path)
         cv2.imwrite(

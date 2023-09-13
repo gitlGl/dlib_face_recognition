@@ -1,6 +1,17 @@
 from enum import Enum
 import dlib,os,configparser
 
+import os
+
+# 获取当前脚本文件的路径
+current_file_path = os.path.abspath(__file__)
+
+# 获取上两级目录的路径
+base_dir = os.path.dirname(os.path.dirname(current_file_path))
+resources_dir = base_dir + '\\resources\\'
+img_dir = base_dir + '\\img_information\\'
+
+print(resources_dir)
 predictor = dlib.shape_predictor(
     "resources/shape_predictor_68_face_landmarks.dat")  # 4 获取人脸关键点检测模型
 detector = dlib.get_frontal_face_detector()  # 获取人脸模型

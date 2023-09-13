@@ -12,10 +12,11 @@ from . import encryption
 import os ,shutil 
 from . import Setting
 from .logger import logger
+from .Setting import resources_dir,img_dir
 class ShowUser(QWidget):
     def __init__(self,table_name:str,information=None ):
         super().__init__()
-        self.setWindowIcon(QIcon('resources/数据.svg'))
+        self.setWindowIcon(QIcon(resources_dir + '数据.svg'))
         self.table_name = table_name
         self.information = information
         if self.table_name == "admin":
@@ -84,7 +85,7 @@ class ShowUser(QWidget):
                 item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
 
             id_number = i["id_number"]
-            imag_path = "img_information/{0}/{1}/{2}.jpg".format(
+            imag_path = img_dir + "{0}/{1}/{2}.jpg".format(
                 self.table_name,id_number,id_number)#获取图片路径
             img_item = EditableIconWidget('变更',imag_path,id_number,parent=self.tableWidget)
             
@@ -164,21 +165,21 @@ class ShowUser(QWidget):
                 return False
 
                 ##更改用户文件信息
-        old_path = "img_information/student/{0}/".format(old_id_number)
-        new_path = "img_information/student/{0}/".format(id_number)
+        old_path = img_dir + "student/{0}/".format(old_id_number)
+        new_path = img_dir + "student/{0}/".format(id_number)
         #更改后变更用户日志信息文件夹
         if not os.path.exists(old_path) and not os.path.exists(new_path):  #判断是否存在文件夹如果不存在则创建为文件夹
             os.makedirs(new_path)
-            os.makedirs("img_information/student/{0}/log".format(
+            os.makedirs(img_dir + "student/{0}/log".format(
                 id_number))
             QMessageBox.critical(self, '警告', "该用户图片文件可能丢失！")
-            #shutil.rmtree("img_information/student/{0}".format(str(id)))
+            #shutil.rmtree(img_dir + "student/{0}".format(str(id)))
         else:
-            img_path = "img_information/student/{0}/{1}.jpg".format(
+            img_path = img_dir + "student/{0}/{1}.jpg".format(
                 old_id_number, old_id_number)
             if os.path.isfile(img_path):
                 os.rename(
-                    img_path, "img_information/student/{0}/{1}.jpg".format(
+                    img_path, img_dir + "student/{0}/{1}.jpg".format(
                         old_id_number, id_number))
             else:
                 QMessageBox.critical(self, '警告', "该用户图片文件可能丢失！")
@@ -190,7 +191,7 @@ class ShowUser(QWidget):
         self.page.page_number.emit(int(self.page.cur_page.text()))
         self.setInformation()
     def onTableWidgetCellDoubleClicked(self, row):
-        imag_path = "img_information/{0}/{1}/{2}.jpg".format(self.table_name,
+        imag_path = img_dir + "{0}/{1}/{2}.jpg".format(self.table_name,
                 self.information[row]["id_number"],
                 self.information[row]["id_number"])
         show_imag = ShowImage(imag_path,Qt.WhiteSpaceMode)
@@ -243,7 +244,7 @@ class ShowUser(QWidget):
        
                  
         if action == imageView_event:
-            imag_path = "img_information/{0}/{1}/{2}.jpg".format(self.table_name,
+            imag_path = img_dir + "{0}/{1}/{2}.jpg".format(self.table_name,
             self.information[row]["id_number"],
             self.information[row]["id_number"])
             show_imag = ShowImage(imag_path,Qt.WhiteSpaceMode)
@@ -263,7 +264,7 @@ class ShowUser(QWidget):
      
     def delete(self, id):
         database.execute("begin")
-        path = "img_information/{0}/{1}".format(self.table_name,str(id))
+        path = img_dir + "{0}/{1}".format(self.table_name,str(id))
         try:
             database.execute(
                 "delete from {0} where id_number = {1}".format(self.table_name,id))

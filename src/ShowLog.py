@@ -9,6 +9,7 @@ from .Paging import Page
 import os
 from . import Setting
 from PySide6.QtGui import QIcon
+from .Setting import resources_dir,img_dir
 class ShowLog(QDialog):
     def __init__(self,id_number, QTableWidget_column_name,table_name, table_cloumn_name):
         super().__init__()
@@ -17,7 +18,7 @@ class ShowLog(QDialog):
         self.table_name = table_name
         self.setWindowFlags(Qt.WindowMinMaxButtonsHint | Qt.WindowCloseButtonHint)
         self.setWindowTitle("学生日志")
-        self.setWindowIcon(QIcon("resources/日志.svg"))
+        self.setWindowIcon(QIcon(resources_dir + "日志.svg"))
         self.resize(300,400)
         self.tableWidget = QTableWidget(self)
         self.table_cloumn_name = table_cloumn_name
@@ -60,7 +61,7 @@ class ShowLog(QDialog):
                 item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
                 
             
-            imag_path = "img_information/{0}/{1}/log/{2}.jpg".format(self.table_name,i["id_number"],i["log_time"])
+            imag_path = img_dir + "{0}/{1}/log/{2}.jpg".format(self.table_name,i["id_number"],i["log_time"])
             img_item =  QLabel()
             img_item.setPixmap(QPixmap(imag_path))
             img_item.setScaledContents(True)
@@ -68,7 +69,7 @@ class ShowLog(QDialog):
               
            
     def onTableWidgetCellDoubleClicked(self, row, column):#双击槽函数 self.tableWidget.cellDoubleClicked.connect()
-        imag_path = "img_information/{0}/{1}/log/{2}.jpg".format(
+        imag_path = img_dir + "{0}/{1}/log/{2}.jpg".format(
             self.table_name,str(self.information[row]["id_number"]),str(self.information[row]["log_time"]))
         show_imag = ShowImage(imag_path,Qt.WhiteSpaceMode)
         show_imag.exec_()
@@ -102,7 +103,7 @@ class ShowLog(QDialog):
             return
 
         if action == imageView_event:
-            imag_path = "img_information/{0}/{1}/log/{2}.jpg".format(
+            imag_path = img_dir + "{0}/{1}/log/{2}.jpg".format(
                 self.table_name,str(self.information[row]["id_number"]),str(self.information[row]["log_time"]))
             show_imag = ShowImage(imag_path,Qt.WhiteSpaceMode)
             show_imag.exec_()
@@ -123,7 +124,7 @@ class ShowLog(QDialog):
                 self.table_name,item["count"]-1,item["id_number"]))
        
                 
-        imag_path = "img_information/{0}/{1}/log/{2}.jpg".format(
+        imag_path = img_dir + "{0}/{1}/log/{2}.jpg".format(
             self.table_name,str(self.information[row]["id_number"]),str(self.information[row]["log_time"]))
         if os.path.isfile(imag_path):
             os.remove(imag_path)

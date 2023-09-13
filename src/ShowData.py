@@ -13,12 +13,13 @@ from . import Setting
 from .Setting import type_database
 from . CreatUser import run,insertImg
 import gc
+from .Setting import resources_dir
 class ShowData(QWidget):
     def __init__(self):
         super().__init__()
         # self.setGeometry(300, 300,480, 600)
         self.setWindowTitle('数据')
-        self.setWindowIcon(QIcon('resources/数据.svg'))
+        self.setWindowIcon(QIcon(resources_dir + '数据.svg'))
         self.setWindowModality(Qt.ApplicationModal)
         self.Hlayout = QHBoxLayout()
         self.Vhlayout = QVBoxLayout()
@@ -30,10 +31,10 @@ class ShowData(QWidget):
         self.label_tip = QLabel()
         self.btn_analyzeData = QPushButton("分析")
         self.btn_analyzeData = QPushButton(objectName="GreenButton")
-        self.btn_analyzeData.setIcon(QIcon("resources/分析.svg"))
+        self.btn_analyzeData.setIcon(QIcon(resources_dir + "分析.svg"))
         self.btn_Search = QPushButton()
         self.btn_Search = QPushButton(objectName="GreenButton") # type: ignore
-        self.btn_Search.setIcon(QIcon("resources/搜索.svg"))
+        self.btn_Search.setIcon(QIcon(resources_dir + "搜索.svg"))
 
         self.btn_analyzeData.setText("分析")
         self.btn_Search.setText("查询")
@@ -41,15 +42,15 @@ class ShowData(QWidget):
         self.btn_brow = QPushButton()
         self.btn_brow = QPushButton(objectName="GreenButton") # type: ignore
         self.btn_brow.setText("浏览")
-        self.btn_brow.setIcon(QIcon("resources/浏览.svg"))
+        self.btn_brow.setIcon(QIcon(resources_dir + "浏览.svg"))
         self.btn_create_user = QPushButton()
         self.btn_create_user = QPushButton(objectName="GreenButton")
-        self.btn_create_user.setIcon(QIcon("resources/文件.svg"))
+        self.btn_create_user.setIcon(QIcon(resources_dir + "文件.svg"))
         self.btn_create_user.setText("批量创建用户")
         self.btn_plugin = QPushButton()
         self.btn_plugin = QPushButton(objectName="GreenButton")
         self.btn_plugin.setText("插件")
-        self.btn_plugin.setIcon(QIcon("resources/插件.svg"))
+        self.btn_plugin.setIcon(QIcon(resources_dir + "插件.svg"))
 
         # self.grou.setFixedSize(self.width(), 40)
         # self.grou.move(0,0)

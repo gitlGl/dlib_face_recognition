@@ -2,6 +2,7 @@ from PySide6.QtCore import QPointF, Qt, QRectF, QSizeF
 from PySide6.QtGui import QPainter, QColor, QImage, QPixmap,QIcon
 from PySide6.QtWidgets import QApplication, QGraphicsView, QGraphicsPixmapItem, QGraphicsScene,QHBoxLayout,QDialog
 import os
+from .Setting import resources_dir
 class ImageView(QGraphicsView):
     """图片查看控件"""
 
@@ -122,7 +123,7 @@ class ShowImage(QDialog):
     def __init__(self,image ,background) :
         super().__init__()
         self.setWindowTitle("图片查看")
-        self.setWindowIcon(QIcon("resources/图片.svg"))
+        self.setWindowIcon(QIcon(resources_dir + "图片.svg"))
         self.setWindowFlags(Qt.WindowMinMaxButtonsHint | Qt.WindowCloseButtonHint)
         
         self.view = ImageView(image,background)

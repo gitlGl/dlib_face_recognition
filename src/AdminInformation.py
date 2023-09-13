@@ -10,7 +10,7 @@ QMessageBox, QMenu,QWidget
 from . import Check
 from .UpdateUser import UpdatePwd
 from .ShowUser import ShowUser
-
+from .Setting import resources_dir,img_dir
 class AdminInformation(QWidget):
     def __init__(self,id_number):
         super().__init__()
@@ -18,7 +18,7 @@ class AdminInformation(QWidget):
         #self.setGeometry(400, 400,500, 480)
         self.resize(480, 600)
         self.setWindowTitle('用户信息')
-        self.setWindowIcon(QIcon('resources/用户信息.svg'))
+        self.setWindowIcon(QIcon( resources_dir + '用户信息.svg'))
         self.setWindowModality(Qt.ApplicationModal)
         
 
@@ -28,7 +28,7 @@ class AdminInformation(QWidget):
         #self.linnedit.setFixedSize(400,15)
         
         self.grou = QGroupBox(self)
-        self.img = ImageView("resources/bg.jpg",Qt.black)
+        self.img = ImageView(resources_dir + "bg.jpg",Qt.black)
         self.id_label = QLabel(self)
         self.id_label.setText("用户ID：{}".format(self.id_number))
         self.face_picture_btn1 = QPushButton()
@@ -83,7 +83,7 @@ class AdminInformation(QWidget):
            item = self.Vhlayout.itemAt(1)
            item.widget().deleteLater()
            self.Vhlayout.removeItem(item)
-           img_path = "img_information/admin/{0}/{1}.jpg".format(str(self.id_number),str(self.id_number))
+           img_path = img_dir + "/admin/{0}/{1}.jpg".format(str(self.id_number),str(self.id_number))
            show_imag = ShowImage(img_path,Qt.WhiteSpaceMode)
            self.Vhlayout.addWidget(show_imag)
        elif action == pop_menu.actions()[1]:

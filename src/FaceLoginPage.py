@@ -6,14 +6,14 @@ from .Face import AdminRgFace
 import cv2,copy
 from .Setting import predictor,detector
 from . import LivenessDetection
-
+from .Setting import resources_dir
 class FaceLoginPage(QWidget):
     emit_show_parent = Signal(str)
 
     def __init__(self) -> None:
         super().__init__()
         self.setWindowTitle("人脸识别登录")
-        self.setWindowIcon(QIcon("resources/人脸识别.svg"))
+        self.setWindowIcon(QIcon(resources_dir + "人脸识别.svg"))
 
         self.Hlayout = QHBoxLayout()
         self.Vlayout = QVBoxLayout(self)

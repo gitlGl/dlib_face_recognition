@@ -11,13 +11,14 @@ from .Setting import user,isVerifyeRemote
 from .Check import *
 from .encryption import *
 from .CreatUser import *
+from .Setting import resources_dir
 class SigninPage(QWidget):
     def __init__(self):
         super(SigninPage, self).__init__()
         #self.setWindowFlags(Qt.WindowMinMaxButtonsHint | Qt.WindowCloseButtonHint)
         self.setWindowModality(Qt.ApplicationModal)
         self.setWindowTitle('注册')
-        self.setWindowIcon(QIcon('resources/注册.svg'))
+        self.setWindowIcon(QIcon(resources_dir + '注册.svg'))
         self.signin_user_label = QLabel('输入用户:', self)
         self.signin_pwd_label = QLabel('输入密码:', self)
         self.signin_pwd2_label = QLabel('确认密码:', self)
@@ -45,7 +46,7 @@ class SigninPage(QWidget):
         self.signin_vector_button = QPushButton("图片:",self,objectName="GreenButton")
         self.signin_vector_button.setFlat(True)
 
-        self.signin_vector_button.setIcon(QIcon("resources/文件.svg"))
+        self.signin_vector_button.setIcon(QIcon(resources_dir + "文件.svg"))
 
         self.signin_vector_line = QLineEdit(self)
         self.signin_button = QPushButton('注册', self,objectName="GreenButton")

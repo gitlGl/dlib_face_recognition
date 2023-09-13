@@ -16,6 +16,7 @@ from PySide6.QtGui import  QRegularExpressionValidator,QIcon
 from .encryption import *
 from .Check import Req
 from .logger import logger
+from .Setting import resources_dir
 #from PySide6 import QString
 class LoginUi(QWidget):
     emitsingal = Signal(str)
@@ -24,7 +25,7 @@ class LoginUi(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('登录')
-        self.setWindowIcon(QIcon( 'resources/登录.svg'))
+        self.setWindowIcon(QIcon( resources_dir + '登录.svg'))
         self.resize(400, 300)
         self.user_label = QLabel('Username:', self)
         self.pwd_label = QLabel('Password:', self)

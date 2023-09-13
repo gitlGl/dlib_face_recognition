@@ -6,6 +6,7 @@ from .Database import database,PH
 import cv2, pickle
 from . import encryption
 from . import Setting
+from .Setting import img_dir
 
 def getImg(img_path):
     raw_data = np.fromfile(
@@ -16,12 +17,12 @@ def getImg(img_path):
     return rgbImage
 
 def insertImg(id_number, img_path, fuck):
-    path = "img_information/" + fuck + "/" + str(id_number)
+    path = img_dir + fuck + "/" + str(id_number)
     if not os.path.exists(path):  # 判断是否存在文件夹如果不存在则创建为文件夹
         os.makedirs(path)
     rgbImage =  getImg(img_path)
     cv2.imwrite(
-        "img_information/" + fuck + "/" + str(id_number) + "/" +
+        img_dir +  fuck + "/" + str(id_number) + "/" +
         str(id_number) + ".jpg", rgbImage)
 
 def getVector(img_path):

@@ -1,11 +1,12 @@
 from PySide6.QtWidgets import  QDialog,QLabel
 from PySide6.QtGui import QIcon
 from PySide6.QtCore import Qt
+from .Setting import resources_dir
 class Help(QDialog):
     def __init__(self,):
         super().__init__()
         self.setWindowTitle("帮助")
-        self.setWindowIcon(QIcon("resources/帮助.svg"))
+        self.setWindowIcon(QIcon(resources_dir + "帮助.svg"))
         self.setWindowFlags(Qt.WindowMinMaxButtonsHint | Qt.WindowCloseButtonHint)
         self.qlabel = QLabel(self)
         self.qlabel.setText("""
