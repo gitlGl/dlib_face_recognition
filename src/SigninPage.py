@@ -12,6 +12,10 @@ from .Check import *
 from .encryption import *
 from .CreatUser import *
 from .Setting import resources_dir
+from PySide6.QtCore import QUrl, Slot
+from PySide6.QtNetwork import QNetworkAccessManager, QNetworkRequest, QNetworkReply
+if isVerifyeRemote:
+    from .Setting import ip,port
 class SigninPage(QWidget):
     def __init__(self):
         super(SigninPage, self).__init__()
@@ -140,26 +144,26 @@ class SigninPage(QWidget):
         self.signin_button.clicked.connect(self.checkSigninFunc)
  #响应注册请求
     def checkSigninFunc(self):
-        user_name = self.signin_user_line.text()
-        password = self.signin_pwd_line.text()
-        password2 = self.signin_pwd2_line.text()
-        path = self.signin_vector_line.text()
+        self.user_name = self.signin_user_line.text()
+        self.password = self.signin_pwd_line.text()
+        self.password2 = self.signin_pwd2_line.text()
+        self.path = self.signin_vector_line.text()
             
         #检查输入信息格式
-        if not user_name.isnumeric() or len(user_name) > user.id_length.value:
+        if not self.user_name.isnumeric() or len(self.user_name) > user.id_length.value:
             Check.id_number_info(self)
             return
 
-        if password != password2:
+        if self.password != self.password2:
             QMessageBox.critical(self, '警告', '两个密码不同!')
             return
 
-        if not user.password_min_length.value <= len(password) <= user.password_max_length.value:
+        if not user.password_min_length.value <= len(self.password) <= user.password_max_length.value:
             Check.password_info(self)
             return
         user_ = database.execute(
             "select id_number from admin where id_number = {} ".format(
-                user_name))
+                self.user_name))
         if len(user_) == 1:
             QMessageBox.critical(self, '警告',
                                     '该用户已被注册!')
@@ -167,20 +171,23 @@ class SigninPage(QWidget):
             return
     
        
-        if not Check.checkPath(path,self):
+        if not Check.checkPath(self.path,self):
             return
         if isVerifyeRemote:
-            if not self.verifyeSignin():
-                return
+            self.verifyeSignin()
+        else:self.insertUser()
+         
 
+
+    def insertUser(self):
         salt = encryption.createSalt()
-        password = createMd5(password, salt,user_name)
-        vector = CreatUser.getVector(path)
-        CreatUser.insertImg(user_name,path,"admin")
+        self.password = createMd5(self.password, salt,self.user_name)
+        vector = CreatUser.getVector(self.path)
+        CreatUser.insertImg(self.user_name,self.path,"admin")
 
         database.execute(
             f"INSERT INTO admin (id_number,password,salt,vector) \
-VALUES ({PH}, {PH},{PH},{PH})", (user_name, password, salt, vector))
+VALUES ({PH}, {PH},{PH},{PH})", (self.user_name, self.password, salt, vector))
         QMessageBox.information(self, '信息',
                                 '注册成功!')
         self.signin_user_line.clear()
@@ -190,7 +197,30 @@ VALUES ({PH}, {PH},{PH},{PH})", (user_name, password, salt, vector))
        
         self.close()
         return
-            
+    
+    def handle_response(self,reply):  
+
+        data = reply.readAll()
+        flag = pickle.loads(data) 
+        print("Response:",flag)
+        if not flag:
+            logger.error(reply.error())
+            QMessageBox.critical(self, '警告', "网络错误或服务器错误")
+            self.signin_button.setText('注册')
+            self.signin_button.setEnabled(True)
+            return
+        self.insertUser()
+        
+        #reply.deleteLater()
+
+    @Slot(QNetworkReply.NetworkError)
+    def on_error_occurred(self,code):
+        logger.error(code.name)
+        QMessageBox.critical(self, '警告', "网络错误或服务器错误")
+        self.signin_button.setText('注册')
+        self.signin_button.setEnabled(True)
+        print("Network error occurred:", code)
+    
     def verifyeSignin(self):
         verifye = self.verifye_line.text()
         if not '_'  in verifye:
@@ -200,24 +230,29 @@ VALUES ({PH}, {PH},{PH},{PH})", (user_name, password, salt, vector))
         if not checkPath(path,self):
             return False
         
-        self.signin_button.setText('注册中...')
-        self.signin_button.setEnabled(False)
-        QApplication.processEvents()
-        
-        
         vector = getVector(path)
         verifye_md5 = createMd5Verifye(verifye, uuid.uuid1().hex[-12:])
         vector_md5 = createMd5Verifye(vector, uuid.uuid1().hex[-12:])
         private_verifye = aes.encrypt(verifye_md5, verifye)
         private_vector = aes.encrypt(vector_md5, verifye)#使用验证码加密
 
-      
+        self.manager = QNetworkAccessManager()
+        url = f"http://{ip}:{port}"  # 请求的URL
+        self.request = QNetworkRequest(QUrl(url))
+        self.request.setHeader(QNetworkRequest.ContentTypeHeader, "application/x-www-form-urlencoded")
+
+        # 发送POST请求
+              
         data = {'id':verifye.split("_")[1],'verifye': private_verifye, 'vector': private_vector,"flag":'resgister'
         ,"mac_address":uuid.uuid1().hex[-12:]}
-        flag = checkVerifye(data)
-        if  flag != True:
-            QMessageBox.critical(self, '警告', flag)
-            self.signin_button.setText('注册')
-            self.signin_button.setEnabled(True)
-            return False
-        return True
+        data = pickle.dumps(data)
+        self.reply = self.manager.post(self.request, data)
+
+        self.reply.finished.connect(lambda: self.handle_response(self.reply))
+        self.reply.errorOccurred.connect(self.on_error_occurred)
+        self.signin_button.setText('注册中...')
+        self.signin_button.setEnabled(False)
+        QApplication.processEvents()
+
+      
+          

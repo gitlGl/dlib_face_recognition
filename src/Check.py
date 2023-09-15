@@ -2,11 +2,11 @@ from PySide6.QtWidgets import QMessageBox,QFileDialog
 from .Database import database
 from . import encryption
 import os
-from .Setting import detector, user,ip,port
+from .Setting import detector, user
 import re
 from . import CreatUser
-import http.client,pickle
-from .logger import logger
+
+
 
 def idNumber(id_number,row_info):
     if len(id_number) > user.id_length.value or (not id_number.isdigit()):
@@ -91,24 +91,5 @@ def getImgPath(parent=None):
     return False
  
 
- #客户端请求
-def Req(data):
-    conn = http.client.HTTPConnection(ip, port,timeout=5)
-    data_tem = pickle.dumps(data)
-    conn.request("POST", "", data_tem)
-    response = conn.getresponse()
-    rev_data = response.read()
-    conn.close()
-    return pickle.loads(rev_data)
-#校对验证码
-def checkVerifye(data):
-    try:
-        if Req(data):
-            return True
-    
-        else:
-            return '验证码错误'
-    except Exception as e:
-        logger.error(e)
-        return '网络错误或服务器错误'
+
     

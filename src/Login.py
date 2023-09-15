@@ -4,7 +4,7 @@ from PySide6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, \
 from PySide6.QtCore import Signal,QRegularExpression,Slot
 from .Database import database
 from .Setting import user,isVerifyeRemote
-from PySide6.QtCore import Slot
+from PySide6.QtCore import Slot,QUrl
 import datetime
 from .FaceLoginPage import FaceLoginPage
 from . import Check
@@ -14,10 +14,13 @@ import configparser
 from .Database import PH
 from PySide6.QtGui import  QRegularExpressionValidator,QIcon
 from .encryption import *
-from .Check import Req
 from .logger import logger
 from .Setting import resources_dir
+from PySide6.QtNetwork import QNetworkAccessManager, QNetworkRequest, QNetworkReply
 #from PySide6 import QString
+import pickle
+if isVerifyeRemote:
+    from .Setting import ip,port
 class LoginUi(QWidget):
     emitsingal = Signal(str)
     emit_close = Signal()
@@ -148,74 +151,96 @@ class LoginUi(QWidget):
             self.config_rember_pwd.setFlag("0")
             self.config_rember_pwd.setPwd('')
 
-           
-        
+ 
     #响应登录请求
     def checkLoginFunc(self):
         def clear():
             self.pwd_line.clear()
             self.user_line.clear()
 
-        user_id = self.user_line.text()
-        user_pwd = self.pwd_line.text()
+        self.user_id = self.user_line.text()
+        self.user_pwd = self.pwd_line.text()
 
-        if not user_id.isdigit() or len(user_id) > user.id_length.value:
+        if not self.user_id.isdigit() or len(self.user_id) > user.id_length.value:
            Check.id_number_info(self)
            return
-        if len(user_pwd) < user.password_min_length.value or len(
-        user_pwd) > user.password_max_length.value:
+        if len(self.user_pwd) < user.password_min_length.value or len(
+        self.user_pwd) > user.password_max_length.value:
             Check.password_info(self)
             return
     
-        result = Check.verifyePwd(user_id,user_pwd,"admin")
+        result = Check.verifyePwd(self.user_id,self.user_pwd,"admin")
         if not result:
             QMessageBox.warning(self, '警告', '账号或密码错误，请重新输入')
             
             clear()
             return
         if isVerifyeRemote :
-            if not self.verifyeLogin():
-                return 
+            self.manager = QNetworkAccessManager()
+
+            url = f"http://{ip}:{port}"  # 请求的URL
+            self.request = QNetworkRequest(QUrl(url))
+            self.request.setHeader(QNetworkRequest.ContentTypeHeader, "application/x-www-form-urlencoded")
+
+            # 发送POST请求
+            data = pickle.dumps({'flag':'login',"mac_address":uuid.uuid1().hex[-12:]})
+            self.reply = self.manager.post(self.request, data)
+
+            self.reply.finished.connect(lambda: self.handle_response(self.reply))
+            self.reply.errorOccurred.connect(self.on_error_occurred)
+                         
+            self.login_button.setText("登录中...")
+            QApplication.processEvents()
+            self.login_button.setEnabled(False)
+        
+
+        else : self.insertUser()
+ 
+    def insertUser(self):    
         database.execute(f"INSERT INTO admin_log_time (id_number ) \
-VALUES ({PH})", (user_id, ))
+VALUES ({PH})", (self.user_id, ))
         
         time = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")
         
         if self.remember_password.isChecked():
             
-            if not self.config_rember_pwd.check(user_id): 
-                self.config_rember_pwd.setPwd(aes.encrypt(str({"password":user_pwd,"id_number":user_id,"time":time}),
+            if not self.config_rember_pwd.check(self.user_id): 
+                self.config_rember_pwd.setPwd(aes.encrypt(str({"password":self.user_pwd,"id_number":self.user_id,"time":time}),
                                                     aes.Key))
             self.config_rember_pwd.setFlag("1")
         if self.auto_login.isChecked():
-            if not self.config_auto_login.check(user_id):
-                self.config_auto_login.setStates(aes.encrypt(str({"mac_address":aes.mac_address,"id_number":user_id,"time":time}),
+            if not self.config_auto_login.check(self.user_id):
+                self.config_auto_login.setStates(aes.encrypt(str({"mac_address":aes.mac_address,"id_number":self.user_id,"time":time}),
                                                               aes.Key))#aes不能解密加密自身
             self.config_auto_login.setFlag("1")
 
-        self.emitsingal.emit(user_id)
+        self.emitsingal.emit(self.user_id)
         self.close()
 
 
-    def  verifyeLogin(self):
-               
-        self.login_button.setText("登录中...")
-        QApplication.processEvents()
-        self.login_button.setEnabled(False)
-        try:
-            if not  Req({'flag':'login',"mac_address":uuid.uuid1().hex[-12:]}):
-                QMessageBox.critical(self, '警告', "设备与账号不匹配")
-                self.login_button.setText("登录")
-                self.login_button.setEnabled(True)
-                return False
-        except Exception as e:
-            logger.error(e)
+    
+    def handle_response(self,reply):  
+
+        data = reply.readAll()
+        flag = pickle.loads(data) 
+        print("Response:",flag)
+        if not flag:
+            logger.error(reply.error())
             QMessageBox.critical(self, '警告', "网络错误或服务器错误")
             self.login_button.setText("登录")
             self.login_button.setEnabled(True)
-            return False
-        return True
-          
+            return
+        self.insertUser()
+        
+        #reply.deleteLater()
+
+    @Slot(QNetworkReply.NetworkError)
+    def on_error_occurred(self,code):
+        logger.error(code.name)
+        QMessageBox.critical(self, '警告', "网络错误或服务器错误")
+        self.login_button.setText("登录")
+        print("Network error occurred:", code)
+    
  #self.emitsingal.emit(item["id_number"])
     def faceLogin(self):
         self.face_login_page = FaceLoginPage()
