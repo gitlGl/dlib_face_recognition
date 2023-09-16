@@ -16,7 +16,7 @@ from PySide6.QtGui import  QRegularExpressionValidator,QIcon
 from .encryption import *
 from .logger import logger
 from .Setting import resources_dir
-from PySide6.QtNetwork import QNetworkAccessManager, QNetworkRequest, QNetworkReply
+from PySide6.QtNetwork import QNetworkAccessManager, QNetworkRequest
 #from PySide6 import QString
 import pickle
 if isVerifyeRemote:
@@ -187,8 +187,7 @@ class LoginUi(QWidget):
             self.reply = self.manager.post(self.request, data)
 
             self.reply.finished.connect(lambda: self.handle_response(self.reply))
-            self.reply.errorOccurred.connect(self.on_error_occurred)
-                         
+          
             self.login_button.setText("登录中...")
             QApplication.processEvents()
             self.login_button.setEnabled(False)
@@ -219,14 +218,20 @@ VALUES ({PH})", (self.user_id, ))
 
 
     
-    def handle_response(self,reply):  
+    def handle_response(self,reply):
+        if reply.error().value:  
+            logger.error(reply.error())
+            QMessageBox.critical(self, '警告', "网络错误")
+            self.login_button.setText("登录")
+            self.login_button.setEnabled(True)
+            return
 
         data = reply.readAll()
         flag = pickle.loads(data) 
         print("Response:",flag)
         if not flag:
             logger.error(reply.error())
-            QMessageBox.critical(self, '警告', "网络错误或服务器错误")
+            QMessageBox.critical(self, '警告', "账号与设备不匹配")
             self.login_button.setText("登录")
             self.login_button.setEnabled(True)
             return
@@ -234,12 +239,6 @@ VALUES ({PH})", (self.user_id, ))
         
         #reply.deleteLater()
 
-    @Slot(QNetworkReply.NetworkError)
-    def on_error_occurred(self,code):
-        logger.error(code.name)
-        QMessageBox.critical(self, '警告', "网络错误或服务器错误")
-        self.login_button.setText("登录")
-        print("Network error occurred:", code)
     
  #self.emitsingal.emit(item["id_number"])
     def faceLogin(self):
@@ -248,8 +247,11 @@ VALUES ({PH})", (self.user_id, ))
 #接受人脸识别登录成功信号，接收发送给主页面
     @Slot(str)
     def rev(self,id_number):
-       
-        self.emitsingal.emit(id_number)
+        self.face_login_page.close()
+        if id_number == True:
+            self.emitsingal.emit(id_number)
+            return
+        QMessageBox.critical(self, '警告', "网络错误或服务器错误")
 
 class config():
     config = None#使用全局变量单例模式,保证数据一致性

@@ -4,14 +4,35 @@ from .Capture import Capture
 from PySide6.QtGui import QPixmap,QIcon
 from .Face import AdminRgFace
 import cv2,copy
-from .Setting import predictor,detector
+from .Setting import predictor,detector,isVerifyeRemote
 from . import LivenessDetection
 from .Setting import resources_dir
+from PySide6.QtCore import QUrl, Slot
+from PySide6.QtNetwork import QNetworkAccessManager, QNetworkRequest, QNetworkReply
+import pickle
+import uuid
+from .logger import logger
+if isVerifyeRemote:
+    from .Setting import ip,port
 class FaceLoginPage(QWidget):
     emit_show_parent = Signal(str)
 
     def __init__(self) -> None:
         super().__init__()
+        self.manager = QNetworkAccessManager()
+
+        url = f"http://{ip}:{port}"  # 请求的URL
+        self.request = QNetworkRequest(QUrl(url))
+        self.request.setHeader(QNetworkRequest.ContentTypeHeader, "application/x-www-form-urlencoded")
+
+        # 发送POST请求
+        data = pickle.dumps({'flag':'login',"mac_address":uuid.uuid1().hex[-12:]})
+        self.reply = self.manager.post(self.request, data)
+
+        self.reply.finished.connect(lambda: self.handle_response(self.reply))
+       
+       
+    
         self.setWindowTitle("人脸识别登录")
         self.setWindowIcon(QIcon(resources_dir + "人脸识别.svg"))
 
@@ -39,12 +60,32 @@ class FaceLoginPage(QWidget):
         self.get_frame_timer =QTimer()
         self.get_frame_timer.timeout.connect(self.collectFrame)
         self.get_result_timer.timeout.connect(self.getResult)
-        self.get_result_timer.start(500)
+       
         self.count = 0
         self.list_img = []
         self.flag = False
         self.show()
+    def handle_response(self,reply): 
+        if reply.error().value:
+            self.emit_show_parent.emit(False)
+            return
+           
+        data = reply.readAll()
+        flag = pickle.loads(data) 
+        print("Response:",flag)
+        if not flag:
+            logger.error(reply.error())
+            self.emit_show_parent.emit(False)
+            self.close()
+            return
+        self.get_result_timer.start(500)
+      
+        
+        #reply.deleteLater()
 
+   
+       
+        
     def getResult(self):
         self.get_result_timer.stop()
         rgbImage = cv2.cvtColor(self.capture.frame, cv2.COLOR_BGR2RGB)
@@ -56,7 +97,7 @@ class FaceLoginPage(QWidget):
             if result:
                 self.capture.close()
                 self.emit_show_parent.emit(result)
-                self.close
+                self.close()
                 return
         
             self.groupbox.show()

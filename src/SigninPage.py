@@ -198,14 +198,20 @@ VALUES ({PH}, {PH},{PH},{PH})", (self.user_name, self.password, salt, vector))
         self.close()
         return
     
-    def handle_response(self,reply):  
+    def handle_response(self,reply): 
+        if reply.error().value:  
+            logger.error(reply.error())
+            QMessageBox.critical(self, '警告', "网络错误")
+            self.signin_button.setText('注册')
+            self.signin_button.setEnabled(True)
+            return 
 
         data = reply.readAll()
         flag = pickle.loads(data) 
         print("Response:",flag)
         if not flag:
             logger.error(reply.error())
-            QMessageBox.critical(self, '警告', "网络错误或服务器错误")
+            QMessageBox.critical(self, '警告', "验证码错误")
             self.signin_button.setText('注册')
             self.signin_button.setEnabled(True)
             return
@@ -213,13 +219,6 @@ VALUES ({PH}, {PH},{PH},{PH})", (self.user_name, self.password, salt, vector))
         
         #reply.deleteLater()
 
-    @Slot(QNetworkReply.NetworkError)
-    def on_error_occurred(self,code):
-        logger.error(code.name)
-        QMessageBox.critical(self, '警告', "网络错误或服务器错误")
-        self.signin_button.setText('注册')
-        self.signin_button.setEnabled(True)
-        print("Network error occurred:", code)
     
     def verifyeSignin(self):
         verifye = self.verifye_line.text()
@@ -249,7 +248,6 @@ VALUES ({PH}, {PH},{PH},{PH})", (self.user_name, self.password, salt, vector))
         self.reply = self.manager.post(self.request, data)
 
         self.reply.finished.connect(lambda: self.handle_response(self.reply))
-        self.reply.errorOccurred.connect(self.on_error_occurred)
         self.signin_button.setText('注册中...')
         self.signin_button.setEnabled(False)
         QApplication.processEvents()
