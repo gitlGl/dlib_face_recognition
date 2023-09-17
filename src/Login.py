@@ -3,7 +3,7 @@ from PySide6.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, \
     QVBoxLayout, QHBoxLayout, QMessageBox,QCheckBox,QLineEdit, QApplication
 from PySide6.QtCore import Signal,QRegularExpression,Slot
 from .Database import database
-from .Setting import user,isVerifyeRemote
+from .Setting import user,isVerifyeRemote,file_name
 from PySide6.QtCore import Slot,QUrl
 import datetime
 from .FaceLoginPage import FaceLoginPage
@@ -255,7 +255,7 @@ VALUES ({PH})", (self.user_id, ))
 
 class config():
     config = None#使用全局变量单例模式,保证数据一致性
-    file_name = "config.ini"
+   
     def __del__(self):
         if config.config != None:
             config.config = None#释放全局变量，降低内存占用
@@ -266,7 +266,8 @@ class  configRemberPwd(config):
         if config.config == None:
             config.config = configparser.ConfigParser()
             # 打开 ini 文件
-            config.config.read(self.file_name, encoding="utf-8")
+            config.config.read(file_name, encoding="utf-8")
+       
         if  config.config["rember_pwd"]['flag'] == '1':
             result = aes.decrypt(config.config["rember_pwd"]["pwd"],
                                       aes.Key)
@@ -292,12 +293,12 @@ class  configRemberPwd(config):
         return False
     def setFlag(self,flag):
         config.config["rember_pwd"]["flag"] = flag
-        with open(self.file_name, "w", encoding="utf-8") as f:
+        with open(file_name, "w", encoding="utf-8") as f:
             config.config.write(f)
 
     def setPwd(self,pwd):
         config.config["rember_pwd"]["pwd"] = pwd
-        with open(self.file_name, "w", encoding="utf-8") as f:
+        with open(file_name, "w", encoding="utf-8") as f:
             config.config.write(f)
     
   
@@ -310,7 +311,7 @@ class  configAotuLogin(config):
         if config.config == None:
             config.config = configparser.ConfigParser()
             # 打开 ini 文件
-            config.config.read(self.file_name, encoding="utf-8") 
+            config.config.read(file_name, encoding="utf-8") 
         if  config.config["aotu_login"]['flag'] == '1':
             result = aes.decrypt(config.config["aotu_login"]["login_states"],
                                       aes.Key)
@@ -351,12 +352,12 @@ class  configAotuLogin(config):
 
     def setFlag(self,flag):
         config.config["aotu_login"]["flag"] = flag
-        with open(self.file_name, "w", encoding="utf-8") as f:
+        with open(file_name, "w", encoding="utf-8") as f:
             config.config.write(f)
 
     def setStates(self,states):
         config.config["aotu_login"]["login_states"] = states
-        with open(self.file_name, "w", encoding="utf-8") as f:
+        with open(file_name, "w", encoding="utf-8") as f:
             config.config.write(f)
     
 

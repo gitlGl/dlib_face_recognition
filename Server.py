@@ -16,7 +16,7 @@
 from peewee import *
 import configparser
 from http.server import HTTPServer, BaseHTTPRequestHandler
-import pickle
+import pickle,os
 from src import aes,createMd5Verifye
 
 def configRead(filePath:str):
@@ -32,9 +32,9 @@ def configRead(filePath:str):
         return host,port,user,passwd,dbName,charset
     else:
         return None,None,None,None,None,None,None
-
-
-host,port,user,password,dbName,charset = configRead("config.ini")
+current_file_path = os.path.abspath(__file__)
+base_dir = os.path.dirname(current_file_path)
+host,port,user,password,dbName,charset = configRead(base_dir + "\\config.ini")
 
 RemoteDatabase = MySQLDatabase(
 

@@ -13,7 +13,7 @@ from . import Setting
 from .Setting import type_database
 from . CreatUser import run,insertImg
 import gc
-from .Setting import resources_dir
+from .Setting import resources_dir,base_dir
 class ShowData(QWidget):
     def __init__(self):
         super().__init__()
@@ -96,7 +96,7 @@ class ShowData(QWidget):
 
     # 插件菜单
     def posMenu(self, pos):  # pos是按钮坐标
-        path = os.path.abspath("./src/plugins")  # 获取绝对路径
+        path = os.path.abspath(base_dir + "\\src\\plugins")  # 获取绝对路径
         controls_class = Plugins(path).load_plugins()
         pop_menu = QMenu()
         for label, clazz in controls_class.items():

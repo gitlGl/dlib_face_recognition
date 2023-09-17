@@ -13,10 +13,10 @@ img_dir = base_dir + '\\img_information\\'
 
 print(resources_dir)
 predictor = dlib.shape_predictor(
-    "resources/shape_predictor_68_face_landmarks.dat")  # 4 获取人脸关键点检测模型
+    resources_dir + "shape_predictor_68_face_landmarks.dat")  # 4 获取人脸关键点检测模型
 detector = dlib.get_frontal_face_detector()  # 获取人脸模型
 encoder = dlib.face_recognition_model_v1(
-            "resources/dlib_face_recognition_resnet_model_v1.dat")
+            resources_dir + "dlib_face_recognition_resnet_model_v1.dat")
 
 class user(Enum):
     id_length = 13
@@ -32,32 +32,8 @@ if isVerifyeRemote:
     ip = "localhost"
     port = 8888
 
-def configRead(filePath:str):
-    cfg = configparser.ConfigParser() 
-    connect_user = {}
-    cfg.read(filePath)
-    if "sql" in cfg.sections():
-        connect_user['host'] = cfg.get('sql','host')
-        connect_user['port'] = cfg.getint('sql','port')
-        connect_user['user'] = cfg.get('sql','user')
-        connect_user['password'] = cfg.get('sql','password')
-        connect_user['db'] = cfg.get('sql','db_name')
-        connect_user['charset'] = cfg.get('sql','charset')
-       
-        return connect_user
-    else:
-        return None
-    
-if type_database == 'sqlite3':
-    connect_user = 'resources/data.db'
-else:
-    connect_user = configRead("config.ini")
-    if connect_user is None:
-        raise Exception("数据库配置文件错误")
-    else:
-        connect_user = connect_user
-
-file_name = "config.ini"
+file_name = base_dir +  "\\config.ini"
+print(file_name)
 if not  os.path.exists(file_name):
       
     config = configparser.ConfigParser()    #实例化一个对象
@@ -86,7 +62,34 @@ if not  os.path.exists(file_name):
    
 
     with open(file_name, "w", encoding="utf-8") as f:
-        config.write(f)
+        config.write(f)   
+
+def configRead(filePath:str):
+    cfg = configparser.ConfigParser() 
+    connect_user = {}
+    cfg.read(filePath)
+    if "sql" in cfg.sections():
+        connect_user['host'] = cfg.get('sql','host')
+        connect_user['port'] = cfg.getint('sql','port')
+        connect_user['user'] = cfg.get('sql','user')
+        connect_user['password'] = cfg.get('sql','password')
+        connect_user['db'] = cfg.get('sql','db_name')
+        connect_user['charset'] = cfg.get('sql','charset')
+       
+        return connect_user
+    else:
+        return None
+    
+if type_database == 'sqlite3':
+    connect_user = file_name
+else:
+    connect_user = configRead(file_name)
+    if connect_user is None:
+        raise Exception("数据库配置文件错误")
+    else:
+        connect_user = connect_user
+
+
 
 def configRead(filePath:str):
     cfg = configparser.ConfigParser() 
@@ -108,7 +111,7 @@ def configRead(filePath:str):
         return None,None,None,None,None,None,None
 
 admin_threshold,user_threshold,EYE_AR_THRESH,MAR_THRESH,group_count,\
-count_max,processes,process_exit,page_count = configRead("config.ini")
+count_max,processes,process_exit,page_count = configRead(file_name)
 
 # process_exit = 100#进程退出码
 # group_count = 10#每组人数
