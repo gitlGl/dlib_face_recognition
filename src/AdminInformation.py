@@ -10,7 +10,12 @@ QMessageBox, QMenu,QWidget
 from . import Check
 from .UpdateUser import UpdatePwd
 from .ShowUser import ShowUser
-from .Setting import resources_dir,img_dir
+from .Setting import resources_dir,img_dir,isVerifyeRemote
+from PySide6.QtCore import QCoreApplication, QUrl, Slot, QByteArray
+from PySide6.QtNetwork import QNetworkAccessManager, QNetworkRequest, QNetworkReply
+import pickle ,uuid
+if isVerifyeRemote:
+    from .Setting import ip,port
 class AdminInformation(QWidget):
     def __init__(self,id_number):
         super().__init__()
@@ -49,12 +54,20 @@ class AdminInformation(QWidget):
         self.Hlayout.addWidget(self.face_picture_btn1)
         self.Hlayout.addWidget(self.update_pwd_btn)
         self.Hlayout.addWidget(self.login_log_btn)
-        if self.id_number == "12345678910" :
-           self.user_admin_btn = QPushButton()
-           self.user_admin_btn = QPushButton(objectName="GreenButton")
-           self.user_admin_btn.setText("用户管理")
-           self.user_admin_btn.clicked.connect(self.root)
-           self.Hlayout.addWidget(self.user_admin_btn)
+        if isVerifyeRemote:
+            self.manager = QNetworkAccessManager()
+
+            url = f"http://{ip}:{port}"  # 请求的URL
+            self.request = QNetworkRequest(QUrl(url))
+            self.request.setHeader(QNetworkRequest.ContentTypeHeader, "application/x-www-form-urlencoded")
+
+            # 发送POST请求
+            data = pickle.dumps({'flag':'is_admin'})
+            self.reply = self.manager.post(self.request, data)
+
+            self.reply.finished.connect(lambda: self.handle_response(self.reply))
+
+           
         self.grou.setLayout(self.Hlayout)
         self.Vhlayout.addWidget(self.grou)
         self.qlabel_ = QLabel(self)
@@ -63,6 +76,21 @@ class AdminInformation(QWidget):
         self.grou.setMaximumSize(600,40)
         self.resize(480, 600)
         self.setLayout(self.Vhlayout)
+         
+    def handle_response(self,reply): 
+        if reply.error().value:
+            return
+        
+        data = reply.readAll()
+        flag = pickle.loads(data)
+        if self.id_number == flag:
+           self.user_admin_btn = QPushButton()
+           self.user_admin_btn = QPushButton(objectName="GreenButton")
+           self.user_admin_btn.setText("用户管理")
+           self.user_admin_btn.clicked.connect(self.root)
+           self.Hlayout.addWidget(self.user_admin_btn)
+
+           
     def updatePwd(self):
         self.pwd_dialog = UpdatePwd(self.id_number)
         self.pwd_dialog.exec_()

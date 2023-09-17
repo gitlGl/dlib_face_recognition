@@ -45,7 +45,7 @@ password = password,  # 数据库密码
 charset = charset,  # 字符集
 user = user
 
-)
+)#083e8ef25874
 class BaseRemote(Model):
    class Meta:
          database = RemoteDatabase
@@ -54,7 +54,9 @@ class RemoteAdmin(BaseRemote):
     mac_address = CharField(null=True)
     verifye = CharField(unique=True)
     vector = BlobField(null=True)
+    id_number = CharField(null=True)
     isResgister = BooleanField(null=False)
+    
 
     
     class Meta:
@@ -75,6 +77,10 @@ class Resquest(BaseHTTPRequestHandler):
             return
         if data['flag']=='login':
             self.login(data)
+            return
+        if data['flag']=='is_admin':
+            id_number = pickle.dumps('12345678910')
+            self.wfile.write(id_number)
             return
 
     def resgister(self,data):
@@ -111,14 +117,15 @@ class Resquest(BaseHTTPRequestHandler):
             self.wfile.write(self.flag_fals)
             return
         RemoteAdmin.update({RemoteAdmin.mac_address: data["mac_address"],
-                            RemoteAdmin.vector:vector_md5,RemoteAdmin.isResgister:False}
+                            RemoteAdmin.vector:vector_md5,RemoteAdmin.id_number:data['id_number'] ,RemoteAdmin.isResgister:False}
         ).where(RemoteAdmin.id == data["id"]).execute()
         return True
         
     def login(self,data):
-        flag = RemoteAdmin.get_or_none(RemoteAdmin.mac_address == data["mac_address"])
+        flag1 = RemoteAdmin.get_or_none(RemoteAdmin.mac_address == data["mac_address"])
+        flag2 = RemoteAdmin.get_or_none(RemoteAdmin.id_number == data["id_number"])
         
-        if flag:
+        if flag1 and flag2:
             self.responses = self.flag_true
 
             self.wfile.write(self.flag_true)

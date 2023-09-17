@@ -183,7 +183,7 @@ class LoginUi(QWidget):
             self.request.setHeader(QNetworkRequest.ContentTypeHeader, "application/x-www-form-urlencoded")
 
             # 发送POST请求
-            data = pickle.dumps({'flag':'login',"mac_address":uuid.uuid1().hex[-12:]})
+            data = pickle.dumps({'flag':'login',"mac_address":uuid.uuid1().hex[-12:],"id_number":self.user_id})
             self.reply = self.manager.post(self.request, data)
 
             self.reply.finished.connect(lambda: self.handle_response(self.reply))
@@ -242,7 +242,7 @@ VALUES ({PH})", (self.user_id, ))
     
  #self.emitsingal.emit(item["id_number"])
     def faceLogin(self):
-        self.face_login_page = FaceLoginPage()
+        self.face_login_page = FaceLoginPage(self.user_line.text())
         self.face_login_page.emit_show_parent.connect(self.rev)
 #接受人脸识别登录成功信号，接收发送给主页面
     @Slot(str)

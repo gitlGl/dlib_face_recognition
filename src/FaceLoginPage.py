@@ -17,7 +17,7 @@ if isVerifyeRemote:
 class FaceLoginPage(QWidget):
     emit_show_parent = Signal(str)
 
-    def __init__(self) -> None:
+    def __init__(self,id_number) -> None:
         super().__init__()
         self.manager = QNetworkAccessManager()
 
@@ -26,7 +26,7 @@ class FaceLoginPage(QWidget):
         self.request.setHeader(QNetworkRequest.ContentTypeHeader, "application/x-www-form-urlencoded")
 
         # 发送POST请求
-        data = pickle.dumps({'flag':'login',"mac_address":uuid.uuid1().hex[-12:]})
+        data = pickle.dumps({'flag':'login',"mac_address":uuid.uuid1().hex[-12:],"id_number":id_number})
         self.reply = self.manager.post(self.request, data)
 
         self.reply.finished.connect(lambda: self.handle_response(self.reply))

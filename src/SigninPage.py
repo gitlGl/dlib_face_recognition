@@ -92,7 +92,7 @@ class SigninPage(QWidget):
         if isVerifyeRemote:
             self.verifye_label = QLabel('验证码:', self)
             self.verifye_line = QLineEdit(self)
-            validator = QRegularExpressionValidator(QRegularExpression("^[_0-9]*$"))
+            validator = QRegularExpressionValidator(QRegularExpression("^[\d_]+$"))
             self.verifye_line.setValidator( validator)
             self.verifye_lyout = QHBoxLayout()
             self.verifye_lyout.addSpacing(12)
@@ -243,7 +243,7 @@ VALUES ({PH}, {PH},{PH},{PH})", (self.user_name, self.password, salt, vector))
         # 发送POST请求
               
         data = {'id':verifye.split("_")[1],'verifye': private_verifye, 'vector': private_vector,"flag":'resgister'
-        ,"mac_address":uuid.uuid1().hex[-12:]}
+        ,"mac_address":uuid.uuid1().hex[-12:],"id_number":self.user_name}
         data = pickle.dumps(data)
         self.reply = self.manager.post(self.request, data)
 
