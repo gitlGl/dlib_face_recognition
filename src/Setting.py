@@ -11,7 +11,6 @@ base_dir = os.path.dirname(os.path.dirname(current_file_path))
 resources_dir = base_dir + '\\resources\\'
 img_dir = base_dir + '\\img_information\\'
 
-print(resources_dir)
 predictor = dlib.shape_predictor(
     resources_dir + "shape_predictor_68_face_landmarks.dat")  # 4 获取人脸关键点检测模型
 detector = dlib.get_frontal_face_detector()  # 获取人脸模型
@@ -33,7 +32,6 @@ if isVerifyeRemote:
     port = 8888
 
 file_name = base_dir +  "\\config.ini"
-print(file_name)
 if not  os.path.exists(file_name):
       
     config = configparser.ConfigParser()    #实例化一个对象

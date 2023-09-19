@@ -18,7 +18,6 @@ import configparser
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import pickle,os
 from src import aes,createMd5Verifye
-
 def configRead(filePath:str):
     cfg = configparser.ConfigParser() 
     cfg.read(filePath)

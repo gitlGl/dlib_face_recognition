@@ -1,13 +1,17 @@
+
+import os,sys
+current_file_path = os.path.abspath(__file__)
+current_work_path = os.path.dirname(current_file_path)
+os.chdir(current_work_path)
 from PySide6.QtWidgets import QApplication
 from src import Main
 import sys
 from qss import StyleSheet
 from PySide6.QtGui import QFont
 from PySide6 import QtCore
-from src import resources_dir,base_dir
+from src import resources_dir,base_dir,isVerifyeRemote
 #方便启动远程验证时进行测试
-import os
-from src import isVerifyeRemote
+
 
 
 if __name__ == '__main__':
