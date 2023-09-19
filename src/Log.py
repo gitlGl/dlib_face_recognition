@@ -27,7 +27,7 @@ class  studentlog():
         """
         向数据库插入识时照片
         """
-        path = img_dir +  +"student/" +str(self.item["id_number"])+"/log"
+        path = img_dir  +"student/" +str(self.item["id_number"])+"/log"
         if not os.path.exists(path):  # 判断是否存在文件夹如果不存在则创建为文件夹
             os.makedirs(path)
         cv2.imwrite(

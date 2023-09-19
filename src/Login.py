@@ -247,8 +247,9 @@ VALUES ({PH})", (self.user_id, ))
 #接受人脸识别登录成功信号，接收发送给主页面
     @Slot(str)
     def rev(self,id_number):
+        print(id_number)
         self.face_login_page.close()
-        if id_number == True:
+        if id_number :
             self.emitsingal.emit(id_number)
             return
         QMessageBox.critical(self, '警告', "网络错误或服务器错误")

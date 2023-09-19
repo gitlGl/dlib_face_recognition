@@ -67,7 +67,7 @@ class FaceLoginPage(QWidget):
         self.show()
     def handle_response(self,reply): 
         if reply.error().value:
-            self.emit_show_parent.emit(False)
+            self.emit_show_parent.emit(False)#接收到的是空字符串
             return
            
         data = reply.readAll()
@@ -87,6 +87,7 @@ class FaceLoginPage(QWidget):
        
         
     def getResult(self):
+
         self.get_result_timer.stop()
         rgbImage = cv2.cvtColor(self.capture.frame, cv2.COLOR_BGR2RGB)
         location_faces = detector(rgbImage)
