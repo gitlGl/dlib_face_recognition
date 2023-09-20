@@ -19,7 +19,7 @@ lancedb                 0.2.2<br>
 numpy                   1.15.4 <br> 
 opencv-python           4.5.5.62<br>  
 psutil                  5.9.0 <br> 
-PySide6                   5.15.6<br>               
+PySide6                   6.4.0<br>               
 xlrd                    1.2.0 <br> 
 Chart               5.15.5<br>
 pycryptodome    3.16.0<br>
