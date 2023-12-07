@@ -112,7 +112,7 @@ class ShowData(QWidget):
     
     
     def refreshProgressBar(self):
-        for  index,result in enumerate(self.results):
+        for  index,result in enumerate(self.results[:]):
             if index == Setting.processes:
                 return
             if not result.ready():
