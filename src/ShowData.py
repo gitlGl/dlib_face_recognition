@@ -96,8 +96,7 @@ class ShowData(QWidget):
 
     # 插件菜单
     def posMenu(self, pos):  # pos是按钮坐标
-        path = os.path.abspath(base_dir + "\\src\\plugins")  # 获取绝对路径
-        controls_class = Plugins(path).load_plugins()
+        controls_class = Plugins().load_plugins()
         pop_menu = QMenu()
         for label, clazz in controls_class.items():
             pop_menu.addAction(label)
