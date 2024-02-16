@@ -11,7 +11,7 @@ from PySide6.QtCore import QUrl, Slot
 from PySide6.QtNetwork import QNetworkAccessManager, QNetworkRequest, QNetworkReply
 import pickle
 import uuid
-from .logger import logger
+from .logger import logger_error
 if isVerifyeRemote:
     from .Setting import ip,port
 class FaceLoginPage(QWidget):
@@ -74,7 +74,7 @@ class FaceLoginPage(QWidget):
         flag = pickle.loads(data) 
         print("Response:",flag)
         if not flag:
-            logger.error(reply.error())
+            logger_error.error(reply.error())
             self.emit_show_parent.emit(False)
             self.close()
             return

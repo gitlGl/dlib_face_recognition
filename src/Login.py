@@ -14,7 +14,7 @@ import configparser
 from .Database import PH
 from PySide6.QtGui import  QRegularExpressionValidator,QIcon
 from .encryption import *
-from .logger import logger
+from .logger import logger_error
 from .Setting import resources_dir
 from PySide6.QtNetwork import QNetworkAccessManager, QNetworkRequest
 #from PySide6 import QString
@@ -220,7 +220,7 @@ VALUES ({PH})", (self.user_id, ))
     
     def handle_response(self,reply):
         if reply.error().value:  
-            logger.error(reply.error())
+            logger_error.error(reply.error())
             QMessageBox.critical(self, '警告', "网络错误")
             self.login_button.setText("登录")
             self.login_button.setEnabled(True)
@@ -230,7 +230,7 @@ VALUES ({PH})", (self.user_id, ))
         flag = pickle.loads(data) 
         print("Response:",flag)
         if not flag:
-            logger.error(reply.error())
+            logger_error.error(reply.error())
             QMessageBox.critical(self, '警告', "账号与设备不匹配")
             self.login_button.setText("登录")
             self.login_button.setEnabled(True)

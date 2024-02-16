@@ -10,6 +10,7 @@ from qss import StyleSheet
 from PySide6.QtGui import QFont
 from PySide6 import QtCore
 from src import resources_dir,base_dir,isVerifyeRemote
+from src import logger
 #方便启动远程验证时进行测试
 
 
@@ -17,6 +18,7 @@ from src import resources_dir,base_dir,isVerifyeRemote
 if __name__ == '__main__':
     # QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
     # QApplication.setHighDpiScaleFactorRoundingPolicy(QtCore.Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
+    logger.basicConfig()#初始化全局默认日志配置
     if isVerifyeRemote:
         os.system(f'start python {base_dir}\\Server.py')  
     app = QApplication(sys.argv)

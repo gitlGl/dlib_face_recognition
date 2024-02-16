@@ -200,7 +200,7 @@ VALUES ({PH}, {PH},{PH},{PH})", (self.user_name, self.password, salt, vector))
     
     def handle_response(self,reply): 
         if reply.error().value:  
-            logger.error(reply.error())
+            logger_error.error(reply.error())
             QMessageBox.critical(self, '警告', "网络错误")
             self.signin_button.setText('注册')
             self.signin_button.setEnabled(True)
@@ -210,7 +210,7 @@ VALUES ({PH}, {PH},{PH},{PH})", (self.user_name, self.password, salt, vector))
         flag = pickle.loads(data) 
         print("Response:",flag)
         if not flag:
-            logger.error(reply.error())
+            logger_error.error(reply.error())
             QMessageBox.critical(self, '警告', "验证码错误")
             self.signin_button.setText('注册')
             self.signin_button.setEnabled(True)

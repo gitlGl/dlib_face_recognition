@@ -11,7 +11,7 @@ from .Database import database,PH
 from . import encryption
 import os ,shutil 
 from . import Setting
-from .logger import logger
+from .logger import logger_error
 from .Setting import resources_dir,img_dir
 class ShowUser(QWidget):
     def __init__(self,table_name:str,information=None ):
@@ -159,7 +159,7 @@ class ShowUser(QWidget):
             database.conn.commit()
 
         except Exception as e:
-                logger.error(e)
+                logger_error.error(e)
                 database.conn.rollback()
                 QMessageBox.critical(self, '警告', "未知错误")
                 return False
@@ -272,7 +272,7 @@ class ShowUser(QWidget):
                 "delete from {0} where id_number = {1}".format(self.table_name+"_log_time",id))
             database.conn.commit()
         except Exception as e:
-                logger.error(e)
+                logger_error.error(e)
                 database.conn.rollback()
                 QMessageBox.critical(self, '警告', "未知错误")
                 return False
