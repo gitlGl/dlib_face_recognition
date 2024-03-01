@@ -30,6 +30,7 @@ class Database():
                                         detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
             self.conn.row_factory = dictFactory
             self.c = self.conn.cursor()
+            
         elif type_database == 'mysql':
             self.conn = pymysql.connect(**connect_user,
                 cursorclass=pymysql.cursors.DictCursor

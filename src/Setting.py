@@ -25,7 +25,7 @@ class user(Enum):
     reg_pwd = "[A-Za-z0-9!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]*"
 
 
-type_database = 'mysql' # 'sqlite3' or 'mysql
+type_database = 'sqlite3' # 'sqlite3' or 'mysql
 isVerifyeRemote = True
 if isVerifyeRemote:
     ip = "localhost"
@@ -79,7 +79,7 @@ def configRead(filePath:str):
         return None
     
 if type_database == 'sqlite3':
-    connect_user = file_name
+    connect_user = base_dir + "\\data.db"
 else:
     connect_user = configRead(file_name)
     if connect_user is None:
